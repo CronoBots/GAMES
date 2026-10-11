@@ -783,11 +783,11 @@ function dessinerMini(){if(!PROG.options.cube)return;var w=mini.clientWidth||84,
 JeuP.apres=function(){dessinerMini();if(J&&J.t0&&!J.fini&&!J.enPause)document.getElementById("jTemps").textContent=fmt(performance.now()-J.t0);};
 function fmt(ms){var s=Math.floor(ms/1000);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");}
 // Le plateau prend toute la largeur ; le cube, au centre de la ligne des coups et du temps, prend la
-// hauteur qui reste (entre 64 et 150 px). Sur un écran court, il rapetisse avant que le plateau ne le fasse.
+// hauteur qui reste (entre 64 et 120 px). Sur un écran court, il rapetisse avant que le plateau ne le fasse.
 function redimJeu(){var jeu=document.getElementById("jeu"),z=document.getElementById("zonePlateau");if(!jeu.clientWidth)return;
   if(PROG.options.cube){var paysage=getComputedStyle(jeu).display==="grid",
       autres=jeu.querySelector(".jtete").offsetHeight+jeu.querySelector(".jbas").offsetHeight+30,
-      c=paysage?96:Math.max(64,Math.min(150,jeu.clientHeight-autres-Math.min(jeu.clientWidth,560)-12));
+      c=paysage?96:Math.max(64,Math.min(120,jeu.clientHeight-autres-Math.min(jeu.clientWidth,560)-12));
     jeu.style.setProperty("--cube",Math.round(c)+"px");}
   var r=z.getBoundingClientRect();if(!r.width)return;JeuP.dimension(Math.min(r.width,r.height-8));dessinerMini();}
 function redimAide(){var w=document.getElementById("aideCanvas").getBoundingClientRect().width;if(w)AideP.dimension(w);}
