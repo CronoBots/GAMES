@@ -130,6 +130,8 @@ async function resoudre(p) {
     (await coups()) === "1" && /^U2$/.test(nota) ? ok("un demi-tour en un geste compte un coup, noté U2") : faute("demi-tour : " + (await coups()) + " coup(s), notation « " + nota + " »");
     await p.click("#btnAnnuler"); await p.waitForTimeout(900);
     (await coups()) === "0" ? ok("« Annuler » défait le demi-tour en entier") : faute("annuler le demi-tour laisse " + (await coups()) + " coup(s)");
+    await p.mouse.click(...pt(-Math.PI / 2)); await p.waitForTimeout(700);
+    (await coups()) === "0" ? ok("un simple appui sur un cercle ne tourne rien") : faute("un appui sur un cercle a joué " + (await coups()) + " coup(s)");
     await ctx.close();
   }
 

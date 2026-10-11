@@ -56,9 +56,9 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   « l'endroit optimal ») : le plateau prend d'abord la largeur moins 14 px de chaque côté, et `redimJeu()` donne au cube la
   hauteur qui reste (`--cube`, de 64 à 150 px). Pas en filigrane : des couleurs derrière les pastilles
   se confondraient avec elles.
-- **Le cube pivote au doigt, jamais au simple appui** (le client, le 11/10/2026 : l'appui ne tournait
-  que dans un sens) : glisser à gauche/droite le fait tourner autour de la verticale, vers le haut/bas
-  le bascule (face du dessous) ; au lâcher il se cale au quart de tour près (`PIVOT`, `caler()`).
+- **Seul le plateau se manipule, et seulement en glissant** (le client, le 11/10/2026) : un simple appui
+  sur un cercle ne tourne rien (il ne tournait que dans un sens), et le cube en perspective est une
+  image fixe qui suit les tours (`pointer-events:none`). Le parcours de test vérifie l'appui à vide.
 - Les niveaux de campagne sont tirés d'une graine fixe (`orbicube-<monde>-<niveau>`) : changer
   `genererMelange()` change tous les niveaux des joueurs. Ne le faire qu'avec une nouvelle graine.
 - La progression est dans `localStorage` (clé `orbicube-v1`) et, sur téléphone, dans
@@ -75,6 +75,6 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 - **Un geste vaut au plus un coup, compté au lâcher** (le client, le 11/10/2026) : pendant le
   glisser, les quarts de tour franchis sont posés sur le plateau mais pas comptés ; au lâcher,
   `finirGeste()` lit la rotation nette : 0 (aller-retour, tour complet) = aucun coup, un quart =
-  `U`/`U′`, un demi-tour = `U2`, un seul coup comme dans la notation du cube. Toucher, clavier et
-  pavé restent un quart de tour = un coup.
+  `U`/`U′`, un demi-tour = `U2`, un seul coup comme dans la notation du cube. Clavier et pavé
+  restent un quart de tour = un coup.
 - `?capture` dans l'adresse expose `window.__orbicube.solution()`, pour `outils/captures.js` seulement.
