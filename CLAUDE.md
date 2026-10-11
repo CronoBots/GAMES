@@ -56,9 +56,12 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   « l'endroit optimal ») : le plateau prend d'abord la largeur moins 14 px de chaque côté, et `redimJeu()` donne au cube la
   hauteur qui reste (`--cube`, de 64 à 150 px). Pas en filigrane : des couleurs derrière les pastilles
   se confondraient avec elles.
-- **Seul le plateau se manipule, et seulement en glissant** (le client, le 11/10/2026) : un simple appui
-  sur un cercle ne tourne rien (il ne tournait que dans un sens), et le cube en perspective est une
-  image fixe qui suit les tours (`pointer-events:none`). Le parcours de test vérifie l'appui à vide.
+- **Le plateau se manipule en glissant** : un simple appui sur un cercle ne tourne rien (le parcours de test
+  le vérifie). **Le cube en perspective pivote au doigt** (redemandé par le client le 11/10/2026) : gauche/droite
+  autour de la verticale, haut/bas pour la face du dessous, calé au quart de tour au lâcher (`PIVOT`).
+- **Facettes** (option « Pastilles », par défaut) : chaque pastille est un losange dont les côtés suivent les
+  deux cercles qui se croisent sous elle (`FORME`, tangentes) ; pendant un tour, la forme du départ tourne
+  avec le cercle et se fond dans celle de l'arrivée (`formeA`). Les croisements font au moins 50°.
 - **Deux sortes d'étoiles** (le client, le 11/10/2026) : de coups (`etoilesPour`) et de temps
   (`etoilesTempsPour`, objectif `(par×4+6) s`, trois sous l'objectif, deux sous le double). Le chrono part
   au premier contact avec le plateau et avance seul (`majTemps`, toutes les 250 ms).
