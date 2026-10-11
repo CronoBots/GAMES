@@ -95,7 +95,7 @@ body{background:
 #accueil .defile>:first-child{margin-top:auto}#accueil .defile>:last-child{margin-bottom:auto}
 /* le logo prend la hauteur que le menu laisse, mesurée par la mise en page elle-même (et non estimée) :
    l'accueil tient sur un écran quelles que soient la police et la taille du texte du téléphone */
-.logoboite{flex:1 1 0;min-height:110px;max-height:310px;width:100%;display:grid;place-items:center;overflow:hidden}
+.logoboite{flex:1 1 0;min-height:110px;max-height:360px;width:100%;display:grid;place-items:center;overflow:hidden}
 #logo{width:min(74vw,310px,36vh);aspect-ratio:1/1;display:block}
 @media (max-height:700px){#accueil .menu{gap:8px}#accueil .bouton{min-height:50px}#accueil .defile{gap:8px}}
 .marque{font-family:var(--f-titre);font-weight:800;font-size:clamp(34px,11vw,52px);letter-spacing:.08em;margin:0;line-height:1;
@@ -963,23 +963,25 @@ Logo.apres=function(now){if(this.occupe()||now<this.prochain)return;this.prochai
 // toucher l'orbicube de l'accueil le fait tourner d'un cran : un petit jouet avant d'entrer
 document.getElementById("logo").addEventListener("pointerdown",function(){if(Logo.occupe())return;audio();var b=TOUS[Math.floor(Math.random()*9)],m=MV[b],mv={a:m[0],L:m[1],q:Math.random()<.5?1:-1};
   Logo.pile.push(mv);Logo.prochain=performance.now()+1400;Logo.jouer(mv,300,null,"rebond");sonTour(mv);vibrer(8);});
-Logo.demarrer=function(){var b=this.cv.parentNode.getBoundingClientRect(),w=Math.min(b.height,innerWidth*.74,310);if(w>0)this.dimension(w);};
+Logo.demarrer=function(){var b=this.cv.parentNode.getBoundingClientRect(),w=Math.min(b.height,innerWidth*.82,360);if(w>0)this.dimension(w);};
 function etoilesTotal(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t+=PROG.niveaux[k].etoiles||0;});return t;}
 function prochainNiveau(){for(var w=0;w<MONDES.length;w++)for(var i=0;i<MONDES[w].coups.length;i++)if(!PROG.niveaux[(w+1)+"-"+(i+1)])return{w:w,i:i};return null;}
 function estHier(k){var d=new Date();d.setDate(d.getDate()-1);return k===cleJour(d);}
 function rafraichirAccueil(){var pn=prochainNiveau(),fait=Object.keys(PROG.niveaux).length;
-  document.getElementById("jouerTxt").textContent=fait?"Continuer":"Jouer";
-  document.getElementById("jouerSous").textContent=pn?"niveau "+(pn.w+1)+"-"+(pn.i+1):"★ "+etoilesTotal();
+  // la suite de la campagne peut être dans le jeu complet : le bouton dit alors « Campagne », pas « Continuer »
+  var bloque=pn&&fait&&mondePaye(pn.w);
+  document.getElementById("jouerTxt").textContent=!fait?"Jouer":(bloque||!pn)?"Campagne":"Continuer";
+  document.getElementById("jouerSous").textContent=bloque?"":pn?"niveau "+(pn.w+1)+"-"+(pn.i+1):"★ "+etoilesTotal();
   // défi du jour : réussi, il dit dans combien de temps vient le suivant ; sinon la série en cours, sinon « nouveau »
   var j=PROG.jours[cleJour()],dem=new Date();dem.setHours(24,0,0,0);var reste=dem-Date.now(),h=Math.floor(reste/3600000);
   document.getElementById("jourSous").textContent=j?(h>=1?"dans "+h+" h":"dans "+Math.max(1,Math.ceil(reste/60000))+" min"):
     (PROG.serie>1&&estHier(PROG.dernierJour)?"série de "+PROG.serie:"nouveau");
   // sous « Continuer » : le monde en cours et ses étoiles, dans sa couleur
   var jm=document.getElementById("jouerMonde");if(pn&&fait){var M=MONDES[pn.w];jm.style.setProperty("--acc",ACCENTS[pn.w]);
-    jm.innerHTML='<span>'+M.nom+'</span><span class="notrad">· ★ '+etoilesMonde(pn.w)+'/'+M.coups.length*3+'</span>';jm.hidden=false;}else jm.hidden=true;
+    jm.innerHTML=bloque?'<span>Mondes gratuits terminés · la suite dans le jeu complet</span>':'<span>'+M.nom+'</span><span class="notrad">· ★ '+etoilesMonde(pn.w)+'/'+M.coups.length*3+'</span>';jm.hidden=false;}else jm.hidden=true;
   document.querySelector("#accueil .devise").hidden=fait>0;
   document.getElementById("succesSous").textContent=Object.keys(PROG.succes).length+"/"+SUCCES.length;// pied de l'accueil : les deux sortes d'étoiles, côte à côte (les succès sont déjà sur leur tuile)
-  document.getElementById("piedTxt").innerHTML='<span class="notrad">'+SVG_ET+etoilesTotal()+'<small> / '+NB_NIV*3+'</small></span><span class="notrad">'+SVG_ETT+etoilesChrono()+'<small> / '+NB_NIV*3+'</small></span>';if(typeof majAchat==="function")majAchat();}
+  document.getElementById("piedTxt").innerHTML='<span class="notrad">'+SVG_ET+etoilesTotal()+'</span><span class="notrad">'+SVG_ETT+etoilesChrono()+'</span>';if(typeof majAchat==="function")majAchat();}
 
 /* ========== 10. CAMPAGNE ========== */
 var ET_PATH='<path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/>';
@@ -1303,9 +1305,11 @@ function majBoutonStore(){var b=document.getElementById("btnSuccesStore");b.hidd
   document.getElementById("succesStoreNom").textContent=NATIF.plateforme==="ios"?"Game Center":"Google Play Jeux";}
 function rafraichirSucces(){document.getElementById("sucCompte").textContent=Object.keys(PROG.succes).length+"/"+SUCCES.length;
   var meil=PROG.stats.meilleur,best=Object.keys(meil).map(Number).sort(function(a,b){return b-a;})[0];
-  var tu=[[etoilesTotal()+"<small>/"+NB_NIV*3+"</small>","étoiles"],[Object.keys(PROG.niveaux).length+"<small>/"+NB_NIV+"</small>","niveaux finis"],
-    [PROG.stats.tours.toLocaleString(locale()),"tours de cercle"],[(PROG.serie||0)+"<small> · record "+Math.max(PROG.serieMax||0,PROG.serie||0)+"</small>","jours de suite au défi"],
-    [best?fmt(meil[best].temps):"–",best?"record libre · "+best+" coups":"record en partie libre"],[PROG.stats.indices,"indices utilisés"]];
+  var serie=PROG.serie&&(PROG.dernierJour===cleJour()||estHier(PROG.dernierJour))?PROG.serie:0,rec=Math.max(PROG.serieMax||0,PROG.serie||0);
+  var tu=[[etoilesTotal()+"<small>/"+NB_NIV*3+"</small>","étoiles de coups"],[etoilesChrono()+"<small>/"+NB_NIV*3+"</small>","étoiles de temps"],
+    [Object.keys(PROG.niveaux).length+"<small>/"+NB_NIV+"</small>","niveaux finis"],[PROG.stats.tours.toLocaleString(locale()),"tours de cercle"],
+    [serie+(rec>serie?"<small> · record "+rec+"</small>":""),"jours de suite au défi"],
+    [best?fmt(meil[best].temps):(PROG.stats.sansFin?"<small>étape "+PROG.stats.sansFin+"</small>":"<small>à venir</small>"),best?"record libre · "+best+" coups":PROG.stats.sansFin?"record sans fin":"record en partie libre"]];
   document.getElementById("tuiles").innerHTML=tu.map(function(t){return '<div class="tuile"><b>'+t[0]+'</b><span>'+t[1]+'</span></div>';}).join("");
   document.getElementById("listeSucces").innerHTML=SUCCES.map(function(s){var ok=!!PROG.succes[s.id];
     return '<div class="suc'+(ok?" ok":"")+'"><div class="med"><svg viewBox="0 0 24 24">'+(ok?'<path d="M5 12.5l4.5 4.5L19 7.5"/>':'<rect x="6" y="11" width="12" height="9" rx="2"/><path d="M9 11V8.5a3 3 0 0 1 6 0V11"/>')+'</svg></div><div><b>'+s.nom+'</b><span>'+s.desc+'</span></div></div>';}).join("");}
@@ -1313,7 +1317,7 @@ function rafraichirSucces(){document.getElementById("sucCompte").textContent=Obj
 /* ========== 14. OPTIONS ========== */
 function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)&&PALETTES[o.palette])||PALETTES.classique;
   document.getElementById("optSon").checked=o.son;document.getElementById("optVib").checked=o.vib;document.getElementById("optCube").checked=o.cube;
-  document.getElementById("optPave").checked=o.pave;document.getElementById("optZen").checked=!!o.zen;document.getElementById("optMusique").checked=o.musique!==false;
+  document.getElementById("optPave").checked=o.pave;document.getElementById("optZen").checked=!!o.zen;document.getElementById("optMusique").checked=o.musique!==false;document.getElementById("optVolMusique").closest(".ligne").hidden=o.musique===false;
   document.querySelectorAll("#optVolMusique button").forEach(function(b){b.classList.toggle("on",+b.dataset.v===(o.volMusique||2));});Musique.regler();document.body.classList.toggle("zen",!!o.zen);
   document.querySelectorAll("#optForme button").forEach(function(b){b.classList.toggle("on",b.dataset.v===(o.forme||"facettes"));});
   document.querySelectorAll("#optVitesse button").forEach(function(b){b.classList.toggle("on",+b.dataset.v===o.vitesse);});
@@ -1342,7 +1346,7 @@ document.getElementById("btnJour").addEventListener("click",function(){audio();s
 document.getElementById("btnLibre").addEventListener("click",function(){audio();sonClic();
   ouvrirFenetre('<h3>Partie libre</h3><p>Les neuf cercles, un mélange au hasard, le chrono tourne.</p><div class="menu">'+LIBRES.map(function(l){var m=PROG.stats.meilleur[l.n];
     var ok=libreOuvert(l.n);return '<button class="bouton" data-a="'+l.n+'" type="button"><span>'+l.nom+' · '+l.n+' coups</span><span class="droite">'+(ok?(m?"record "+fmt(m.temps):""):"jeu complet")+'</span></button>';}).join("")+
-    '<button class="bouton or" data-a="sansfin" type="button"><span>Sans fin</span><span class="droite">'+(PROG.stats.sansFin?"record "+PROG.stats.sansFin:"étape 1")+'</span></button>'+
+    '<button class="bouton or" data-a="sansfin" type="button"><span>Sans fin</span><span class="droite">'+(PROG.stats.sansFin?"record étape "+PROG.stats.sansFin:"nouveau")+'</span></button>'+
     '<button class="bouton" data-a="x" type="button" style="justify-content:center;color:var(--pale)">Fermer</button></div>',function(a){fermerFenetre();if(a==="sansfin"){lancer(sansFinDef(1));return;}if(a&&a!=="x"){if(libreOuvert(+a))lancer(libreDef(+a));else ouvrirBoutique("libre");}},"x");});
 document.getElementById("btnSucces").addEventListener("click",function(){sonClic();montrer("succes");});
 document.getElementById("btnSuccesStore").addEventListener("click",function(){sonClic();NATIF.succesAfficher();});

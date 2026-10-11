@@ -87,7 +87,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   offre une par jour ; à zéro, une revient après 10 min (`RECHARGE_AMP`). Fusion par `ampMaj`.
 - **Logo** : les trois anneaux de l'écran de chargement (`ANNEAUX` dans `outils/icones.py`) pour l'icône et
   le démarrage natif ; les médailles des succès gardent le plateau. Accueil : la devise disparaît après le
-  premier niveau, la pastille « Jeu complet » n'apparaît qu'après dix niveaux.
+  premier niveau, la pastille « Jeu complet » n'apparaît qu'après dix niveaux. Quand la suite de la campagne est payante, le bouton
+  principal dit « Campagne » (et non « Continuer ») et la ligne dessous le dit.
 - Les niveaux de campagne sont tirés d'une graine fixe (`orbicube-<monde>-<niveau>`) : changer
   `genererMelange()` change tous les niveaux des joueurs. Ne le faire qu'avec une nouvelle graine.
 - La progression est dans `localStorage` (clé `orbicube-v1`) et, sur téléphone, dans

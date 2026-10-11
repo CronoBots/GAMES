@@ -207,6 +207,11 @@
     // --- succès
     ["Succès débloqué", "Achievement unlocked", "Prestatie ontgrendeld", "Erfolg freigeschaltet", "Logro desbloqueado"],
     ["étoiles", "stars", "sterren", "Sterne", "estrellas"],
+    ["étoiles de coups", "move stars", "zettensterren", "Zug-Sterne", "estrellas de movimientos"],
+    ["étoiles de temps", "time stars", "tijdsterren", "Zeit-Sterne", "estrellas de tiempo"],
+    ["à venir", "to come", "nog te gaan", "noch offen", "por llegar"],
+    ["record sans fin", "endless record", "record eindeloos", "Endlos-Rekord", "récord sin fin"],
+    ["Mondes gratuits terminés · la suite dans le jeu complet", "Free worlds done · the rest is in the full game", "Gratis werelden klaar · de rest zit in het volledige spel", "Kostenlose Welten geschafft · der Rest steckt im Vollspiel", "Mundos gratuitos terminados · el resto, en el juego completo"],
     ["niveaux finis", "levels completed", "levels voltooid", "Level geschafft", "niveles superados"],
     ["tours de cercle", "circle turns", "cirkeldraaien", "Kreisdrehungen", "giros de círculo"],
     ["jours de suite au défi", "daily challenges in a row", "uitdagingen op rij", "Tagesrätsel in Folge", "retos seguidos"],
