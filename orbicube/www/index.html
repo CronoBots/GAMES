@@ -151,7 +151,7 @@ a.bouton{text-decoration:none;color:inherit}
 .jtitre span{display:block;font-size:12px;color:var(--pale);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ico.indice{color:var(--or)}
 .ico.indice.off{color:var(--sourd)}
-.jinfo{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:4px 16px 0;gap:8px}
+.jinfo{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:2px 16px 0;gap:8px}
 .stat{font-size:11px;color:var(--pale);text-transform:uppercase;letter-spacing:.1em}
 .stat b{display:block;font-family:var(--f-chiffre);font-size:20px;color:var(--encre);letter-spacing:0;text-transform:none;font-variant-numeric:tabular-nums}
 .stat.d{text-align:right}
@@ -159,8 +159,12 @@ a.bouton{text-decoration:none;color:inherit}
 .jetoiles{display:flex;gap:4px}.jetoiles svg{width:22px;height:22px}
 .plateau{flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center;padding:4px 0}
 #plateau{display:block;touch-action:none;max-width:100%}
-#mini{--mini:clamp(76px,min(29vw,15vh),118px);position:absolute;left:10px;top:6px;width:var(--mini);height:var(--mini);border-radius:14px;background:rgba(20,20,31,.6);border:1px solid var(--trait);cursor:pointer}
-.miniv{position:absolute;left:10px;top:calc(clamp(76px,min(29vw,15vh),118px) + 10px);font-size:10px;color:var(--sourd);width:clamp(76px,min(29vw,15vh),118px);text-align:center;font-family:var(--f-chiffre);pointer-events:none}
+/* le cube en perspective trône au centre, entre les coups et le temps, comme dans la visualisation de
+   référence : sa taille (--cube) est la hauteur que le plateau laisse, calculée par redimJeu() */
+.jcube{display:grid;justify-items:center;gap:0;min-width:0}
+#mini{width:var(--cube,96px);height:var(--cube,96px);display:block;cursor:pointer;touch-action:manipulation}
+.miniv{font-size:10px;color:var(--sourd);text-align:center;font-family:var(--f-chiffre);pointer-events:none;letter-spacing:.1em}
+.jinfo .stat{align-self:start;padding-top:6px}.jinfo .jetoiles{margin-top:8px}.jinfo .jetoiles svg{width:18px;height:18px}
 .coupgeant{position:absolute;right:14px;top:4px;font-family:var(--f-math);font-size:44px;color:var(--lilas);line-height:1;pointer-events:none;text-shadow:0 0 24px rgba(165,139,255,.5)}
 .fenetre{animation:pop .45s cubic-bezier(.3,1.4,.5,1)!important}
 .bulle{position:relative;background:rgba(27,27,41,.97);border:1px solid var(--lilas);border-radius:14px;padding:12px 14px;
@@ -340,14 +344,12 @@ a.bouton{text-decoration:none;color:inherit}
       <button class="ico indice" id="btnIndice" type="button" aria-label="Indice"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg></button>
     </div>
     <div class="jinfo">
-      <div class="stat">Coups<b id="jCoups">0</b></div>
-      <div class="jetoiles" id="jEt" aria-label="Étoiles possibles"></div>
+      <div class="stat">Coups<b id="jCoups">0</b><div class="jetoiles" id="jEt" aria-label="Étoiles possibles"></div></div>
+      <div class="jcube"><canvas id="mini" aria-label="Cube en perspective, touchez pour changer de vue"></canvas><div class="miniv" id="miniv">U · F · R</div></div>
       <div class="stat d">Temps<b id="jTemps">0:00</b></div>
     </div>
     <div class="plateau" id="zonePlateau">
       <canvas id="plateau" aria-label="Plateau de cercles"></canvas>
-      <canvas id="mini" aria-label="Cube en perspective, touchez pour changer de vue"></canvas>
-      <div class="miniv" id="miniv">U · F · R</div>
       <div class="coupgeant" id="coupGeant"></div>
       <div class="melange" id="melangeTxt" hidden>MÉLANGE…</div>
     </div>
@@ -780,13 +782,14 @@ function dessinerMini(){if(!PROG.options.cube)return;var w=mini.clientWidth||84,
   dessinerCube(miniC,w,JeuP.col,JeuP.anim,VUE,PIVOT);}
 JeuP.apres=function(){dessinerMini();if(J&&J.t0&&!J.fini&&!J.enPause)document.getElementById("jTemps").textContent=fmt(performance.now()-J.t0);};
 function fmt(ms){var s=Math.floor(ms/1000);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");}
-// Le plateau prend toute la largeur. Sur un téléphone haut, il reste de la hauteur : au lieu de centrer
-// le plateau sur toute la zone (il passait sous le cube en perspective et laissait un vide en bas),
-// on le centre dans l'espace sous le cube, quand cet espace suffit.
-function redimJeu(){var z=document.getElementById("zonePlateau"),r=z.getBoundingClientRect();if(!r.width)return;
-  var t=Math.min(r.width,r.height-8),mv=document.getElementById("miniv"),hc=0;
-  if(PROG.options.cube&&!mv.hidden){hc=mv.getBoundingClientRect().bottom-r.top+2;if(r.height-hc<t+8)hc=0;}
-  JeuP.cv.style.marginTop=hc?hc+"px":"";JeuP.dimension(t);dessinerMini();}
+// Le plateau prend toute la largeur ; le cube, au centre de la ligne des coups et du temps, prend la
+// hauteur qui reste (entre 64 et 150 px). Sur un écran court, il rapetisse avant que le plateau ne le fasse.
+function redimJeu(){var jeu=document.getElementById("jeu"),z=document.getElementById("zonePlateau");if(!jeu.clientWidth)return;
+  if(PROG.options.cube){var paysage=getComputedStyle(jeu).display==="grid",
+      autres=jeu.querySelector(".jtete").offsetHeight+jeu.querySelector(".jbas").offsetHeight+30,
+      c=paysage?96:Math.max(64,Math.min(150,jeu.clientHeight-autres-Math.min(jeu.clientWidth,560)-12));
+    jeu.style.setProperty("--cube",Math.round(c)+"px");}
+  var r=z.getBoundingClientRect();if(!r.width)return;JeuP.dimension(Math.min(r.width,r.height-8));dessinerMini();}
 function redimAide(){var w=document.getElementById("aideCanvas").getBoundingClientRect().width;if(w)AideP.dimension(w);}
 var ro=new ResizeObserver(function(){if(ECRAN==="jeu")redimJeu();if(ECRAN==="accueil")Logo.demarrer();if(ECRAN==="aide")redimAide();});
 ["zonePlateau","logo","aideCanvas"].forEach(function(id){ro.observe(document.getElementById(id));});

@@ -52,6 +52,10 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   pastilles de chaque face bien groupées. Une recherche qui maximise seulement l'écart minimal entre
   pastilles casse les faces en anneau : ne pas la reprendre. Ces deux constantes sont recopiées dans
   `outils/icones.py` et `outils/tester.js` (geste le long de U) : les changer aux trois endroits.
+- **Le cube en perspective est au centre de la ligne des coups et du temps** (le client, le 11/10/2026,
+  « l'endroit optimal ») : le plateau prend d'abord toute la largeur, et `redimJeu()` donne au cube la
+  hauteur qui reste (`--cube`, de 64 à 150 px). Pas en filigrane : des couleurs derrière les pastilles
+  se confondraient avec elles.
 - Les niveaux de campagne sont tirés d'une graine fixe (`orbicube-<monde>-<niveau>`) : changer
   `genererMelange()` change tous les niveaux des joueurs. Ne le faire qu'avec une nouvelle graine.
 - La progression est dans `localStorage` (clé `orbicube-v1`) et, sur téléphone, dans
