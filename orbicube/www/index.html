@@ -356,7 +356,7 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
 /* la carte d'un monde s'agrandit jusqu'à devenir l'écran de ses niveaux */
 .envol{position:fixed;z-index:15;border-radius:20px;pointer-events:none;border:1px solid rgba(var(--acc),.45);
   background:radial-gradient(120% 120% at 20% 0%,rgba(var(--acc),.32),rgba(var(--acc),.04) 60%),#0d0d17;
-  box-shadow:0 0 60px -10px rgba(var(--acc),.6);transition:all .42s cubic-bezier(.2,.8,.2,1)}
+  box-shadow:0 0 60px -10px rgba(var(--acc),.6);transition:left .42s var(--ease),top .42s var(--ease),width .42s var(--ease),height .42s var(--ease),border-radius .42s var(--ease)}
 
 /* ===== Accueil en mosaïque (11/10/2026) : le bouton principal, puis deux tuiles hautes, puis le reste ===== */
 #accueil .menu{gap:12px}
