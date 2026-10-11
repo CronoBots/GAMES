@@ -1,0 +1,33 @@
+{
+  "name": "orbicube",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Orbicube : le cube 3×3 joué en faisant tourner neuf cercles.",
+  "scripts": {
+    "verifier": "node outils/verifier.js",
+    "tester": "node outils/tester.js",
+    "icones": "python3 outils/icones.py",
+    "captures": "node outils/captures.js",
+    "servir": "npx --yes http-server www -p 8080 -c-1",
+    "cap:sync": "npm run construire && npx cap sync",
+    "cap:ios": "npx cap open ios",
+    "cap:android": "npx cap open android",
+    "construire": "esbuild src/natif.js --bundle --format=iife --minify --target=es2019,safari15 --legal-comments=none --outfile=www/natif.js"
+  },
+  "dependencies": {
+    "@capacitor/app": "8.1.2",
+    "@capacitor/core": "8.5.3",
+    "@capacitor/haptics": "8.0.2",
+    "@capacitor/preferences": "8.0.1",
+    "@capacitor/splash-screen": "8.0.2",
+    "@capacitor/status-bar": "8.0.4",
+    "@revenuecat/purchases-capacitor": "13.7.3"
+  },
+  "devDependencies": {
+    "@capacitor/android": "8.5.3",
+    "@capacitor/cli": "8.5.3",
+    "@capacitor/ios": "8.5.3",
+    "esbuild": "0.25.10",
+    "playwright": "1.56.1"
+  }
+}

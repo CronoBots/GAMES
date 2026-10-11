@@ -1,0 +1,58 @@
+name: Orbicube
+
+on:
+  push:
+    branches: [main]
+    paths: ["orbicube/**", ".github/workflows/orbicube.yml"]
+  pull_request:
+    paths: ["orbicube/**", ".github/workflows/orbicube.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verifier:
+    name: Vérifier et tester
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: orbicube
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: orbicube/package-lock.json
+      - run: npm ci
+      - name: Le pont natif compilé correspond à sa source
+        run: |
+          npm run construire
+          git diff --exit-code -- www/natif.js || (echo "www/natif.js n'est pas à jour : lancer npm run construire et committer" && exit 1)
+      - run: npm run verifier
+      - run: npx playwright install --with-deps chromium
+      - run: npm run tester
+
+  # Version jouable dans le navigateur et politique de confidentialité, sur GitHub Pages.
+  # Pour l'activer : Settings > Pages > Source « GitHub Actions », puis
+  # Settings > Secrets and variables > Actions > Variables : PAGES_ACTIF = true
+  pages:
+    name: Publier la version web
+    needs: verifier
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.PAGES_ACTIF == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: orbicube/www
+      - id: deploiement
+        uses: actions/deploy-pages@v4

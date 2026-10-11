@@ -1,0 +1,115 @@
+// Contrôles à lancer avant chaque commit :  npm run verifier   (code de retour 1 = faute)
+// Chaque contrôle a été éprouvé en sabotant une copie : il doit pouvoir échouer.
+const fs = require("fs");
+const path = require("path");
+const vm = require("vm");
+
+const RACINE = path.join(__dirname, "..");
+const WWW = path.join(RACINE, "www");
+let fautes = 0;
+const ok = (m) => console.log("  ✓ " + m);
+const faute = (m) => { console.log("  ✗ " + m); fautes++; };
+
+const html = fs.readFileSync(path.join(WWW, "index.html"), "utf8");
+const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+const jeu = scripts[scripts.length - 1];
+
+console.log("Syntaxe");
+try { new vm.Script(jeu, { filename: "index.html" }); ok("script du jeu"); } catch (e) { faute("script du jeu : " + e.message); }
+try { new vm.Script(fs.readFileSync(path.join(WWW, "config.js"), "utf8")); ok("config.js"); } catch (e) { faute("config.js : " + e.message); }
+
+console.log("Configuration");
+const fen = {};
+vm.runInNewContext(fs.readFileSync(path.join(WWW, "config.js"), "utf8"), { window: fen });
+const CFG = fen.ORBICUBE_CONFIG || {};
+["essai", "complet"].includes(CFG.modele) ? ok("modèle « " + CFG.modele + " »") : faute("modele doit valoir essai ou complet");
+CFG.mondesGratuits >= 1 && CFG.mondesGratuits <= 6 ? ok(CFG.mondesGratuits + " monde(s) gratuit(s)") : faute("mondesGratuits hors de 1 à 6");
+const pkg = require(path.join(RACINE, "package.json"));
+CFG.version === pkg.version ? ok("version " + pkg.version + " identique dans config.js et package.json") : faute("version différente : config.js " + CFG.version + ", package.json " + pkg.version);
+
+console.log("Marque déposée");
+// « Rubik's Cube » est une marque : elle ne doit apparaître ni dans le jeu ni dans les textes des stores
+const aRelire = [];
+(function parcourir(d) {
+  for (const f of fs.readdirSync(d)) {
+    const p = path.join(d, f);
+    if (fs.statSync(p).isDirectory()) parcourir(p);
+    else if (/\.(html|js|json|webmanifest|txt)$/.test(f)) aRelire.push(p);
+  }
+})(WWW);
+aRelire.push(...["fiche-store.md"].map((f) => path.join(RACINE, "docs", f)).filter(fs.existsSync));
+const marque = aRelire.filter((p) => /rubik/i.test(fs.readFileSync(p, "utf8")));
+marque.length ? marque.forEach((p) => faute("« Rubik » dans " + path.relative(RACINE, p))) : ok(aRelire.length + " fichiers sans la marque");
+
+console.log("Secrets");
+// seules les clés PUBLIQUES du SDK RevenueCat (appl_…, goog_…) ont leur place dans l'app ; une clé secrète sk_ jamais
+const fuites = [];
+(function parcourir(d) {
+  for (const f of fs.readdirSync(d)) {
+    if (f === "node_modules" || f.startsWith(".git")) continue;
+    const p = path.join(d, f);
+    if (fs.statSync(p).isDirectory()) parcourir(p);
+    else if (/\.(html|js|json|md|ts|yml)$/.test(f) && /\bsk_[A-Za-z0-9]{16,}/.test(fs.readFileSync(p, "utf8"))) fuites.push(p);
+  }
+})(RACINE);
+fuites.length ? fuites.forEach((p) => faute("clé secrète RevenueCat dans " + path.relative(RACINE, p))) : ok("aucune clé secrète");
+
+console.log("Fichiers hors ligne (sw.js)");
+const sw = fs.readFileSync(path.join(WWW, "sw.js"), "utf8");
+const liste = vm.runInNewContext(sw.match(/var FICHIERS = (\[[\s\S]*?\]);/)[1]);
+const manquants = liste.filter((f) => f !== "./" && !fs.existsSync(path.join(WWW, f)));
+manquants.length ? manquants.forEach((f) => faute("sw.js met en cache un fichier absent : " + f)) : ok(liste.length + " fichiers présents");
+const polices = fs.readdirSync(path.join(WWW, "polices")).filter((f) => f.endsWith(".woff2"));
+const oublies = polices.filter((f) => !liste.includes("polices/" + f));
+oublies.length ? oublies.forEach((f) => faute("police absente du cache hors ligne : " + f)) : ok("toutes les polices en cache");
+// chaque url() de la feuille des polices doit mener à un fichier, relativement à la feuille elle-même
+const css = fs.readFileSync(path.join(WWW, "polices", "polices.css"), "utf8");
+const casses = [...css.matchAll(/url\(([^)]+)\)/g)].map((m) => m[1]).filter((u) => !fs.existsSync(path.join(WWW, "polices", u)));
+casses.length ? casses.forEach((u) => faute("polices.css pointe vers un fichier absent : " + u)) : ok("polices.css : chaque url() mène à son fichier");
+fs.existsSync(path.join(WWW, "natif.js")) ? ok("natif.js construit") : faute("www/natif.js manque : npm run construire");
+if (fs.existsSync(path.join(WWW, "natif.js")) && fs.statSync(path.join(RACINE, "src", "natif.js")).mtimeMs > fs.statSync(path.join(WWW, "natif.js")).mtimeMs + 1000)
+  faute("src/natif.js est plus récent que www/natif.js : npm run construire");
+
+console.log("Géométrie et niveaux");
+// on rejoue le vrai code du jeu, découpé dans index.html, sans le recopier
+const debut = jeu.indexOf("/* ========== 1.");
+const fin = jeu.indexOf("/* ========== 3.");
+const debN = jeu.indexOf("/* ========== 5.");
+const finN = jeu.indexOf("/* ========== 6.");
+if (debut < 0 || fin < 0 || debN < 0 || finN < 0) faute("découpe impossible : les intertitres de sections ont changé");
+else {
+  const ctx = { window: { matchMedia: () => ({ matches: false }) }, matchMedia: () => ({ matches: false }), console };
+  vm.createContext(ctx);
+  vm.runInContext(jeu.slice(debut, fin) + "\n" + jeu.slice(debN, finN) + "\nthis.__=({S,perm,delta,PAS,angle,CEN,MONDES,niveauDef,jourDef,genererMelange,appliquer,estResolu,resoluCol,TOUS});", ctx);
+  const G = ctx.__;
+  let tours = 0, pasOk = true, sensOk = true, arriveeOk = true;
+  for (let a = 0; a < 3; a++) for (let L = -1; L <= 1; L++) for (const q of [1, -1]) {
+    tours++;
+    const d = G.delta(a, L, q), m = G.perm(a, L, q), signes = new Set();
+    for (const k in m) {
+      const i = +k, s = G.S[i];
+      if (s.a === a) continue;
+      signes.add(Math.sign(d[i]));
+      const c = G.CEN[a], r = Math.hypot(s.xy[0] - c[0], s.xy[1] - c[1]), aa = G.angle(s.xy, c) + d[i];
+      if (Math.hypot(c[0] + r * Math.cos(aa) - G.S[m[i]].xy[0], c[1] + r * Math.sin(aa) - G.S[m[i]].xy[1]) > 1e-9) arriveeOk = false;
+    }
+    if (signes.size !== 1) sensOk = false;
+    if (Math.abs(G.PAS[a][L + 1] - Math.PI / 2) > 1e-9) pasOk = false;
+  }
+  sensOk ? ok(tours + " tours : toutes les pastilles d'un cercle tournent dans le même sens") : faute("une pastille tourne à contresens");
+  arriveeOk ? ok("chaque pastille arrive exactement à sa place") : faute("une pastille n'arrive pas à sa place");
+  pasOk ? ok("un quart de tour vaut π/2 sur les 9 cercles") : faute("PAS différent de π/2");
+  // les 60 niveaux : longueur annoncée, jamais résolus au départ, et identiques d'une ouverture à l'autre
+  let niv = 0, mauvais = [];
+  G.MONDES.forEach((M, w) => M.coups.forEach((n, i) => {
+    niv++;
+    const d1 = G.niveauDef(w, i), d2 = G.niveauDef(w, i);
+    let col = G.resoluCol();
+    d1.melange.forEach((mv) => { col = G.appliquer(col, mv); });
+    if (d1.melange.length !== n || G.estResolu(col) || JSON.stringify(d1.melange) !== JSON.stringify(d2.melange)) mauvais.push(d1.id);
+  }));
+  mauvais.length ? faute("niveaux défectueux : " + mauvais.join(", ")) : ok(niv + " niveaux : bonne longueur, jamais résolus au départ, toujours les mêmes");
+}
+
+console.log(fautes ? "\n" + fautes + " faute(s)." : "\nTout est en ordre.");
+process.exit(fautes ? 1 : 0);

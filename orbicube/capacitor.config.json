@@ -1,0 +1,28 @@
+{
+  "appId": "com.cronobots.orbicube",
+  "appName": "Orbicube",
+  "webDir": "www",
+  "backgroundColor": "#07070c",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#07070c"
+  },
+  "android": {
+    "backgroundColor": "#07070c",
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": true,
+      "launchShowDuration": 3000,
+      "backgroundColor": "#07070c",
+      "showSpinner": false,
+      "androidScaleType": "CENTER_CROP"
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#07070c",
+      "overlaysWebView": true
+    }
+  }
+}

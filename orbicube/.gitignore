@@ -1,0 +1,7 @@
+node_modules/
+# projets natifs générés par `npx cap add ios|android` : à committer seulement une fois créés et signés sur votre machine
+# ios/
+# android/
+captures/brouillon/
+*.log
+.DS_Store
