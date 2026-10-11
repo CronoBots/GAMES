@@ -83,7 +83,10 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   `avancerMissions`), +30 XP chacune, une ampoule pour les trois. **Ciels** (`CIELS`, `appliquerCiel`, classes
   `ciel-…` sur `body`) ouverts par rang. La tuile **Défis** ouvre le défi du jour et celui de la **semaine**
   (`semaineDef`, 14 coups, deux ampoules la première fois). **Relax** (`relaxDef`, depuis Partie libre) : 8 coups,
-  sans chrono, compteur ni étoiles. Écran **Profil** par la bande du rang de l'accueil ou la pastille des étoiles.
+  sans chrono, compteur ni étoiles. Écran **Profil** par la puce du rang, au centre de la barre du haut de l'accueil
+  (anneau d'expérience, titre, trois points de missions). Les joueurs d'avant le rang reçoivent une fois l'expérience
+  de leurs niveaux déjà finis (`rattraperXp`, `PROG.xpInit`). Le bouton principal porte deux lignes (l'action, puis
+  où l'on en est) et le total d'étoiles à droite : plus de phrase sous le bouton ni de bande du rang.
 - **Faces terminées** : halo discret de leur couleur sous leurs neuf pastilles (`RAYON_FACE`), sur le plateau de jeu.
 - **Musique** (`Musique`, `www/audio/nuit-dorbites.m4a`, générée par le client avec Suno sous licence
   commerciale) : AAC 96 kb/s (l'Opus d'origine ne se lit pas sur iPhone), boucle Web Audio avec fondu

@@ -122,8 +122,6 @@ a.bouton{text-decoration:none;color:inherit}
 .rangee2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .rangee2 .bouton{justify-content:center;font-size:15px;padding:0 10px}
 .pied{color:var(--sourd);font-size:12px;margin-top:8px;text-align:center}
-#piedTxt{align-self:center;margin:0;padding:7px 14px;border-radius:99px;background:var(--verre),rgba(14,14,24,.55);border:1px solid var(--bord);display:flex;justify-content:center;gap:14px;font-family:var(--f-chiffre);font-size:13px;color:var(--pale)}
-#piedTxt span{display:inline-flex;align-items:center;gap:6px}#piedTxt svg{width:15px;height:15px}#piedTxt small{color:var(--sourd);font-size:11px}
 
 .mondes{display:grid;gap:12px}
 .monde{display:grid;grid-template-columns:56px minmax(0,1fr);gap:14px;align-items:center;padding:14px;border-radius:var(--r);
@@ -383,6 +381,17 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
 /* ===== Accueil épuré (11/10/2026) : l'orbicube et le nom d'abord ; un bouton, trois tuiles, le reste en icônes ===== */
 .acc-haut{position:absolute;top:8px;left:12px;right:12px;display:flex;justify-content:space-between;z-index:2;pointer-events:none}
 .acc-haut .ico{pointer-events:auto;width:42px;height:42px;border-radius:50%}
+/* au centre de la barre du haut : le rang (anneau d'expérience) et les trois missions du jour */
+.puce-rang{pointer-events:auto;display:flex;align-items:center;gap:9px;height:42px;padding:0 14px 0 4px;border-radius:99px;border:1px solid var(--bord);background:var(--verre),rgba(14,14,24,.55);cursor:pointer;min-width:0}
+.puce-rang:active{transform:scale(.96)}
+.puce-rang .anneau-rang{width:34px;height:34px;font-size:13px}
+.puce-rang b{font-size:13.5px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:42vw}
+.puce-rang .rb-mis{gap:4px}.puce-rang .rb-mis i{width:6px;height:6px}
+#accueil .defile{padding-top:62px}
+.deuxl{display:grid;gap:2px;min-width:0;text-align:left}
+.deuxl small{font-family:var(--f-texte);font-weight:500;font-size:12.5px;letter-spacing:0;opacity:.82;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.deuxl small:empty{display:none}
+#accueil #jouerSous{display:inline-flex;align-items:center;gap:5px;font-size:13px}#accueil #jouerSous svg{width:15px;height:15px;padding:0;background:none;border-radius:0;fill:#ffcf4a;stroke:none}
 /* la bande du rang, sous les modes : le rang, sa barre d'expérience, les missions du jour */
 .rangbande{display:flex;align-items:center;gap:12px;width:100%;padding:9px 14px 9px 9px;border-radius:18px;border:1px solid var(--bord);background:var(--verre),rgba(14,14,24,.55);cursor:pointer;text-align:left;min-height:54px}
 .rangbande:active{transform:scale(.98)}
@@ -396,6 +405,7 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
 .rang-carte .anneau-rang{width:108px;height:108px;font-size:40px}
 .rang-carte h3{margin:6px 0 0;font-family:var(--f-titre);font-size:21px;letter-spacing:.03em}
 .rang-carte .xp{font-family:var(--f-chiffre);font-size:12.5px;color:var(--pale)}
+.rang-carte .rc-et{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-chiffre);font-size:13px;color:var(--pale)}.rang-carte .rc-et svg{width:15px;height:15px}
 .rang-carte .suite{margin:4px 0 0;font-size:13px;color:var(--pale)}
 .mission{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 16px;border-top:1px solid #20202f}
 .groupe h4+.mission{border-top:0}
@@ -453,7 +463,7 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
   <section class="ecran actif" id="accueil" aria-label="Accueil">
     <div class="acc-haut">
       <button class="ico" id="btnAide" type="button" aria-label="Comment jouer"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.8"/><path d="M12 17.2v.1"/></svg></button>
-      <p class="pied" id="piedTxt"></p>
+      <button class="puce-rang" id="btnRang" type="button" aria-label="Profil, rang et missions"><span class="anneau-rang notrad" id="rangAnneau"></span><b id="rangTitre">Novice</b><span class="rb-mis" id="rangMissions"></span></button>
       <button class="ico" id="btnOptions" type="button" aria-label="Options"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
     </div>
     <div class="defile">
@@ -466,8 +476,7 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
         <div class="menu cascade">
           <button class="bouton principal" id="btnJouer" type="button">
             <svg viewBox="0 0 24 24"><path d="M7 4l12 8-12 8z" fill="currentColor" stroke="none"/></svg>
-            <span id="jouerTxt">Jouer</span><span class="droite" id="jouerSous"></span></button>
-          <p class="sous-jouer" id="jouerMonde" hidden></p>
+            <span class="deuxl"><span id="jouerTxt">Jouer</span><small id="jouerMonde"></small></span><span class="droite notrad" id="jouerSous"></span></button>
           <div class="trio">
           <button class="bouton or bloc" id="btnJour" type="button">
             <i class="pastille"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15.5" r="2"/></svg></i>
@@ -479,8 +488,6 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
             <i class="pastille"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M8.5 14l-1.5 7 5-3 5 3-1.5-7"/></svg></i>
             <span>Succès</span><span class="droite notrad" id="succesSous"></span></button>
           </div>
-          <button class="rangbande" id="btnRang" type="button" aria-label="Profil, rang et missions"><span class="anneau-rang notrad" id="rangAnneau"></span>
-            <span class="rb-txt"><b id="rangTitre">Rang 1</b><i class="rb-barre"><i id="rangBarre"></i></i></span><span class="rb-mis" id="rangMissions"></span></button>
           <button class="puce-or" id="btnBoutique" type="button" hidden><svg viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg><span>Jeu complet</span><span class="notrad" id="prixAccueil"></span></button>
         </div>
         
@@ -956,7 +963,7 @@ function fusion(a,b){if(!b||typeof b!=="object")return a;var r=JSON.parse(JSON.s
   Object.keys(sb.meilleur||{}).forEach(function(k){var x=sa.meilleur[k],y=sb.meilleur[k];sa.meilleur[k]=!x?y:{coups:Math.min(x.coups,y.coups),temps:Math.min(x.temps,y.temps)};});
   Object.keys(b.jours||{}).forEach(function(k){var x=r.jours[k],y=b.jours[k];r.jours[k]=!x?y:{coups:Math.min(x.coups,y.coups),temps:Math.min(x.temps,y.temps),etoiles:Math.max(x.etoiles||0,y.etoiles||0)};});
   if((b.dernierJour||"")>(r.dernierJour||"")){r.dernierJour=b.dernierJour;r.serie=b.serie||0;}else if(b.dernierJour===r.dernierJour)r.serie=Math.max(r.serie||0,b.serie||0);r.serieMax=Math.max(r.serieMax||0,b.serieMax||0,r.serie||0);
-  r.xp=Math.max(r.xp||0,b.xp||0);r.semaines=r.semaines||{};
+  r.xp=Math.max(r.xp||0,b.xp||0);r.xpInit=r.xpInit||b.xpInit;r.semaines=r.semaines||{};
   Object.keys(b.semaines||{}).forEach(function(k){var x=r.semaines[k],y=b.semaines[k];r.semaines[k]=!x?y:{coups:Math.min(x.coups,y.coups),temps:Math.min(x.temps,y.temps),etoiles:Math.max(x.etoiles||0,y.etoiles||0)};});
   if(b.missions&&(!r.missions||b.missions.jour>r.missions.jour))r.missions=b.missions;
   else if(b.missions&&r.missions&&b.missions.jour===r.missions.jour){r.missions.bonus=r.missions.bonus||b.missions.bonus;r.missions.l.forEach(function(m,i){var o=b.missions.l[i];if(o&&o.id===m.id)m.p=Math.max(m.p,o.p);});}
@@ -1049,17 +1056,17 @@ function rafraichirAccueil(){var pn=prochainNiveau(),fait=Object.keys(PROG.nivea
   // la suite de la campagne peut être dans le jeu complet : le bouton dit alors « Campagne », pas « Continuer »
   var bloque=pn&&fait&&mondePaye(pn.w);
   document.getElementById("jouerTxt").textContent=!fait?"Jouer":(bloque||!pn)?"Campagne":"Continuer";
-  document.getElementById("jouerSous").textContent=bloque?"":pn?"niveau "+(pn.w+1)+"-"+(pn.i+1):"★ "+etoilesTotal();
+  document.getElementById("jouerSous").innerHTML=fait?SVG_ET+etoilesTotal():"";
   // défi du jour : réussi, il dit dans combien de temps vient le suivant ; sinon la série en cours, sinon « nouveau »
   var j=PROG.jours[cleJour()],dem=new Date();dem.setHours(24,0,0,0);var reste=dem-Date.now(),h=Math.floor(reste/3600000);
   document.getElementById("jourSous").textContent=j?(h>=1?"dans "+h+" h":"dans "+Math.max(1,Math.ceil(reste/60000))+" min"):
     (PROG.serie>1&&estHier(PROG.dernierJour)?"série de "+PROG.serie:"nouveau");
   // sous « Continuer » : le monde en cours et ses étoiles, dans sa couleur
-  var jm=document.getElementById("jouerMonde");if(pn&&fait){var M=MONDES[pn.w];jm.style.setProperty("--acc",ACCENTS[pn.w]);
-    jm.innerHTML=bloque?'<span>Mondes gratuits terminés · la suite dans le jeu complet</span>':'<span>'+M.nom+'</span><span class="notrad">· ★ '+etoilesMonde(pn.w)+'/'+M.coups.length*3+'</span>';jm.hidden=false;}else jm.hidden=true;
+  // la seconde ligne du bouton dit où l'on en est, sans phrase en plus sous le bouton
+  document.getElementById("jouerMonde").textContent=!fait?"Premier niveau":bloque?"Suite dans le jeu complet":!pn?"Campagne terminée":"Niveau "+(pn.w+1)+"-"+(pn.i+1)+" · "+MONDES[pn.w].nom;
   document.querySelector("#accueil .devise").hidden=fait>0;
-  document.getElementById("succesSous").textContent=Object.keys(PROG.succes).length+"/"+SUCCES.length;// pied de l'accueil : les deux sortes d'étoiles, côte à côte (les succès sont déjà sur leur tuile)
-  document.getElementById("piedTxt").innerHTML='<span class="notrad">'+SVG_ET+etoilesTotal()+'</span><span class="notrad">'+SVG_ETT+etoilesChrono()+'</span>';if(typeof majAchat==="function")majAchat();}
+  document.getElementById("succesSous").textContent=Object.keys(PROG.succes).length+"/"+SUCCES.length;
+  if(typeof majAchat==="function")majAchat();}
 
 /* ========== 10. CAMPAGNE ========== */
 var ET_PATH='<path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/>';
@@ -1543,11 +1550,11 @@ function missionsVictoire(d,e,eT,temps){avancerMissions(function(m){return{cubes
     libre:d.mode==="libre"||d.mode==="sansfin"||d.relax?1:0}[m.id]||0;});
   avancerMissions(function(m){return m.id==="sansfin"&&d.mode==="sansfin"?d.etape:m.id==="vite"&&temps<=m.but*1000?m.but:0;},true);}
 function majRang(){var R=rangDe(PROG.xp),M=missionsDuJour();document.getElementById("rangAnneau").innerHTML=anneauRang(PROG.xp);
-  document.getElementById("rangTitre").textContent="Rang "+R.r+" · "+titreRang(R.r);document.getElementById("rangBarre").style.width=(100*R.xp/R.besoin).toFixed(1)+"%";
-  document.getElementById("rangMissions").innerHTML='<span class="notrad">'+M.l.filter(missionFinie).length+'/3</span>'+M.l.map(function(m){return '<i class="'+(missionFinie(m)?"ok":"")+'"></i>';}).join("");}
+  document.getElementById("rangTitre").textContent=titreRang(R.r);
+  document.getElementById("rangMissions").innerHTML=M.l.map(function(m){return '<i class="'+(missionFinie(m)?"ok":"")+'"></i>';}).join("");}
 function rafraichirProfil(){var R=rangDe(PROG.xp),M=missionsDuJour(),proch=CIELS.filter(function(c){return c.rang>R.r;})[0];
   document.getElementById("rangCarte").innerHTML='<span class="anneau-rang notrad">'+anneauRang(PROG.xp,2.4)+'</span><h3>'+titreRang(R.r)+'</h3>'+
-    '<span class="xp notrad">'+R.xp+' / '+R.besoin+' XP</span>'+(proch?'<p class="suite">Prochain ciel : '+proch.nom+', rang '+proch.rang+'</p>':"");
+    '<span class="xp notrad">'+R.xp+' / '+R.besoin+' XP</span><span class="rc-et notrad">'+SVG_ET+etoilesTotal()+' '+SVG_ETT+etoilesChrono()+'</span>'+(proch?'<p class="suite">Prochain ciel : '+proch.nom+', rang '+proch.rang+'</p>':"");
   document.getElementById("listeMissions").innerHTML=M.l.map(function(m){var ok=missionFinie(m);return '<div class="mission'+(ok?" ok":"")+'"><span class="coche">'+(ok?'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>':"")+'</span>'+
     '<div><b>'+texteMission(m)+'</b><i class="mb"><i style="width:'+(100*m.p/m.but).toFixed(0)+'%"></i></i></div><span class="mx notrad">'+(m.id==="vite"||m.id==="sansfin"?(ok?"✓":""):m.p+"/"+m.but)+'</span></div>';}).join("")+
     '<p class="mission-bonus">'+(M.bonus?"Les trois sont réussies : ampoule gagnée. Nouvelles missions demain.":"Les trois réussies : une ampoule. +"+XP_MISSION+" XP chacune.")+'</p>';
@@ -1556,7 +1563,6 @@ function rafraichirProfil(){var R=rangDe(PROG.xp),M=missionsDuJour(),proch=CIELS
 document.getElementById("listeCiels").addEventListener("click",function(e){var b=e.target.closest("[data-ciel]");if(!b)return;var c=CIELS.filter(function(x){return x.id===b.dataset.ciel;})[0];
   if(!cielOuvert(c)){vibrer(20);toast(c.nom,"Débloqué au rang {0}".replace("{0}",c.rang));return;}sonClic();opt("ciel",c.id);appliquerCiel();rafraichirProfil();});
 document.getElementById("btnRang").addEventListener("click",function(){sonClic();montrer("profil");});
-document.getElementById("piedTxt").addEventListener("click",function(){sonClic();montrer("profil");});
 
 // le défi de la semaine : un long mélange, le même pour tous du lundi au dimanche
 function cleSemaine(d){d=new Date(d||Date.now());d.setHours(0,0,0,0);d.setDate(d.getDate()+3-(d.getDay()+6)%7);var a=new Date(d.getFullYear(),0,4);
@@ -1626,7 +1632,11 @@ document.getElementById("optLangue").addEventListener("change",function(){PROG.o
   setTimeout(retirer,2400);})();
 // accès réservé aux outils de captures (npm run captures), actif seulement avec ?capture dans l'adresse
 if(/[?&]capture\b/.test(location.search))window.__orbicube={solution:function(){return J&&J.pret?cheminSolution().map(function(m){return nomDe(m).replace("′","'");}):[];},vus:function(){return Object.keys(VUS);},manques:function(){return Object.keys(MANQUES);}};
-function demarrer(){appliquerLangue();parcourir(document.body);appliquerOptions();majAchat();montrer("accueil");NATIF.demarrer();connecterSucces();
+// le rang est né après les premiers joueurs : leurs niveaux déjà finis lui donnent son expérience, une fois
+function rattraperXp(){if(PROG.xpInit)return;var x=0;Object.keys(PROG.niveaux).forEach(function(k){var w=+k.split("-")[0]-1,i=+k.split("-")[1]-1,r=PROG.niveaux[k];
+    if(MONDES[w]&&MONDES[w].coups[i]!=null)x+=Math.min(70,10+4*MONDES[w].coups[i])+5*(r.etoiles||0)+5*(r.chrono||0);});
+  x+=60*Object.keys(PROG.jours||{}).length;PROG.xp=(PROG.xp||0)+x;PROG.xpInit=true;sauver();}
+function demarrer(){rattraperXp();appliquerLangue();parcourir(document.body);appliquerOptions();majAchat();montrer("accueil");NATIF.demarrer();connecterSucces();
   // hors application native, le jeu se joue aussi hors ligne une fois chargé
   if(!NATIF.natif&&"serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js").catch(function(){});}
 demarrer();

@@ -53,6 +53,10 @@
     ["Monde {0} · Niveau {1} · {2}", "World {0} · Level {1} · {2}", "Wereld {0} · Level {1} · {2}", "Welt {0} · Level {1} · {2}", "Mundo {0} · Nivel {1} · {2}"],
     ["{0} · par {1}", "{0} · par {1}", "{0} · par {1}", "{0} · Par {1}", "{0} · par {1}"],
     // --- rang, missions, ciels, défis, relax
+    ["Premier niveau", "First level", "Eerste level", "Erstes Level", "Primer nivel"],
+    ["Suite dans le jeu complet", "More in the full game", "Meer in het volledige spel", "Mehr im Vollspiel", "Más en el juego completo"],
+    ["Campagne terminée", "Campaign complete", "Campagne voltooid", "Kampagne geschafft", "Campaña terminada"],
+    ["Niveau {0} · {1}", "Level {0} · {1}", "Level {0} · {1}", "Level {0} · {1}", "Nivel {0} · {1}"],
     ["Défis", "Challenges", "Uitdagingen", "Rätsel", "Retos"],
     ["Le même mélange pour tout le monde.", "The same scramble for everyone.", "Dezelfde husseling voor iedereen.", "Dasselbe Mischen für alle.", "La misma mezcla para todos."],
     ["Défi de la semaine", "Weekly challenge", "Wekelijkse uitdaging", "Wochenrätsel", "Reto semanal"],
