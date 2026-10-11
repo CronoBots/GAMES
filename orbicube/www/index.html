@@ -105,7 +105,9 @@ body.ciel-solaire{background:radial-gradient(80% 50% at 50% -5%,rgba(255,180,60,
 @media (max-height:700px){#accueil .menu{gap:8px}#accueil .bouton{min-height:50px}#accueil .defile{gap:8px}}
 .marque{font-family:var(--f-titre);font-weight:800;font-size:clamp(34px,11vw,52px);letter-spacing:.08em;margin:0;line-height:1;
   background:linear-gradient(100deg,#fff 0%,#d9ceff 40%,var(--lilas) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
-.devise{margin:0;color:var(--pale);font-family:var(--f-math);font-style:italic;font-size:17px}
+.entete{text-align:center;display:grid;gap:5px;width:100%}
+.slogan{margin:0;color:var(--lilas);font-family:var(--f-math);font-style:italic;font-size:clamp(16px,4.6vw,19px);letter-spacing:.01em}
+.devise{margin:0;color:var(--sourd);font-family:var(--f-math);font-style:italic;font-size:14.5px}
 .menu{display:grid;gap:10px;width:min(340px,100%);margin-top:10px}
 .bouton{display:flex;align-items:center;gap:12px;min-height:56px;padding:0 18px;border-radius:var(--r);
   border:1px solid var(--trait);background:var(--carte);cursor:pointer;font-weight:600;font-size:16px;text-align:left;
@@ -471,12 +473,12 @@ body.sobre #plateau{transition:none}
       <button class="ico" id="btnOptions" type="button" aria-label="Options"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
     </div>
     <div class="defile">
+      <div class="entete">
+        <h1 class="marque notrad">ORBICUBE</h1>
+        <p class="slogan">Derrière le cube</p>
+      </div>
       <div class="logoboite"><canvas id="logo" aria-hidden="true"></canvas></div>
       <div style="display:grid;justify-items:center;gap:10px">
-        <div style="text-align:center;display:grid;gap:8px">
-          <h1 class="marque notrad">ORBICUBE</h1>
-          <p class="devise">le cube 3×3, cercle par cercle</p>
-        </div>
         <div class="menu cascade">
           <button class="bouton principal" id="btnJouer" type="button">
             <svg viewBox="0 0 24 24"><path d="M7 4l12 8-12 8z" fill="currentColor" stroke="none"/></svg>
@@ -1076,7 +1078,6 @@ function rafraichirAccueil(){var pn=prochainNiveau(),fait=Object.keys(PROG.nivea
   // sous « Continuer » : le monde en cours et ses étoiles, dans sa couleur
   // la seconde ligne du bouton dit où l'on en est, sans phrase en plus sous le bouton
   document.getElementById("jouerMonde").textContent=!fait?"Premier niveau":bloque?"Suite dans le jeu complet":!pn?"Campagne terminée":"Niveau "+(pn.w+1)+"-"+(pn.i+1)+" · "+MONDES[pn.w].nom;
-  document.querySelector("#accueil .devise").hidden=fait>0;
   document.getElementById("succesSous").textContent=Object.keys(PROG.succes).length+"/"+SUCCES.length;
   if(typeof majAchat==="function")majAchat();}
 

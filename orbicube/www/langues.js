@@ -7,6 +7,7 @@
   var T = [
     // --- accueil
     ["le cube 3×3, cercle par cercle", "the 3×3 cube, circle by circle", "de 3×3-kubus, cirkel na cirkel", "der 3×3-Würfel, Kreis für Kreis", "el cubo 3×3, círculo a círculo"],
+    ["Derrière le cube", "Behind the cube", "Achter de kubus", "Hinter dem Würfel", "Detrás del cubo"],
     ["Jouer", "Play", "Spelen", "Spielen", "Jugar"],
     ["Continuer", "Continue", "Verder", "Weiter", "Continuar"],
     ["niveau {0}", "level {0}", "level {0}", "Level {0}", "nivel {0}"],
