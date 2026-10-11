@@ -117,7 +117,7 @@ a.bouton{text-decoration:none;color:inherit}
 .rangee2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .rangee2 .bouton{justify-content:center;font-size:15px;padding:0 10px}
 .pied{color:var(--sourd);font-size:12px;margin-top:8px;text-align:center}
-#piedTxt{display:flex;justify-content:center;gap:18px;font-family:var(--f-chiffre);font-size:13px;color:var(--pale)}
+#piedTxt{align-self:center;margin:0;padding:7px 14px;border-radius:99px;background:var(--verre),rgba(14,14,24,.55);border:1px solid var(--bord);display:flex;justify-content:center;gap:14px;font-family:var(--f-chiffre);font-size:13px;color:var(--pale)}
 #piedTxt span{display:inline-flex;align-items:center;gap:6px}#piedTxt svg{width:15px;height:15px}#piedTxt small{color:var(--sourd);font-size:11px}
 
 .mondes{display:grid;gap:12px}
@@ -384,6 +384,12 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
 .sous-jouer{margin:-4px 0 0;text-align:center;font-size:12.5px;color:rgb(var(--acc));display:flex;justify-content:center;gap:6px}
 .sous-jouer[hidden]{display:none}
 #logo{cursor:pointer;touch-action:manipulation}
+
+#btnIndice{position:relative}
+#btnIndice .badge{position:absolute;top:2px;right:2px;min-width:16px;height:16px;padding:0 4px;font-size:10px!important;border-radius:99px;display:grid;place-items:center;
+  font-family:var(--f-chiffre);font-size:11px;font-weight:700;color:#1a1300;background:var(--or);box-shadow:0 0 0 2px var(--nuit)}
+#btnIndice .badge.vide{background:#3a3850;color:var(--pale)}
+.devise[hidden]{display:none}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
@@ -398,6 +404,7 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
   <section class="ecran actif" id="accueil" aria-label="Accueil">
     <div class="acc-haut">
       <button class="ico" id="btnAide" type="button" aria-label="Comment jouer"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.8"/><path d="M12 17.2v.1"/></svg></button>
+      <p class="pied" id="piedTxt"></p>
       <button class="ico" id="btnOptions" type="button" aria-label="Options"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
     </div>
     <div class="defile">
@@ -425,7 +432,7 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
           </div>
           <button class="puce-or" id="btnBoutique" type="button" hidden><svg viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg><span>Jeu complet</span><span class="notrad" id="prixAccueil"></span></button>
         </div>
-        <p class="pied" id="piedTxt"></p>
+        
       </div>
     </div>
   </section>
@@ -456,7 +463,7 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
     <div class="jtete">
       <button class="ico" id="btnPause" type="button" aria-label="Pause"><svg viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg></button>
       <div class="jtitre"><b id="jTitre">Niveau</b><span id="jSous"></span></div>
-      <button class="ico indice" id="btnIndice" type="button" aria-label="Indice"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg></button>
+      <button class="ico indice" id="btnIndice" type="button" aria-label="Indice"><span class="badge notrad" id="ampNb">3</span><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg></button>
     </div>
     <div class="jinfo">
       <div class="stat">Coups<b id="jCoups">0</b><div class="jetoiles" id="jEt" aria-label="Étoiles possibles"></div></div>
@@ -561,7 +568,7 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
       </div>
       <div class="aide-carte">
         <h3>Gagner des étoiles</h3>
-        <p data-html="aide-etoiles">Un niveau est résolu quand chaque groupe de neuf pastilles est d’une seule couleur. <b>Trois étoiles</b> en au plus autant de coups que le mélange (le « par »), <b>deux</b> jusqu’au double, <b>une</b> au-delà. L’ampoule montre le tour suivant, mais limite le niveau à deux étoiles.</p>
+        <p data-html="aide-etoiles">Un niveau est résolu quand chaque groupe de neuf pastilles est d’une seule couleur. <b>Étoiles de coups</b> : trois en au plus autant de coups que le mélange (le « par »), deux jusqu’au double, une au-delà. <b>Étoiles de temps</b> : trois sous l’objectif affiché à côté du chrono, deux sous le double. Le bouton ampoule montre le tour suivant contre une <b>ampoule</b> de votre réserve, et limite le niveau à deux étoiles de coups. On regagne des ampoules avec le défi du jour, en terminant un monde ou en faisant trois étoiles de coups et de temps.</p>
         <p data-html="aide-clavier">Au clavier : <span class="m">U D L R F B M E S</span>, Maj pour le sens inverse, Ctrl+Z pour annuler, Échap pour la pause.</p>
       </div>
     </div></div>
@@ -828,12 +835,13 @@ function etoilesChrono(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t
 
 /* ========== 6. LA PROGRESSION (appareil, et compte si connecté) ========== */
 var CLE_LOCALE="orbicube-v1";
-function progVide(){return{v:1,niveaux:{},tips:{},succes:{},stats:{tours:0,tranches:0,resolus:0,indices:0,meilleur:{}},jours:{},serie:0,dernierJour:"",
+function progVide(){return{v:1,niveaux:{},tips:{},succes:{},stats:{tours:0,tranches:0,resolus:0,indices:0,meilleur:{}},jours:{},serie:0,dernierJour:"",amp:3,ampVide:0,ampJour:"",ampMaj:0,
   options:{musique:true,volMusique:2,son:true,vib:true,vitesse:1,palette:"classique",cube:true,pave:false,horaire:true,langue:"auto",maj:0}};}
 function fusion(a,b){if(!b||typeof b!=="object")return a;var r=JSON.parse(JSON.stringify(a));if(b.achat)r.achat=true;
   Object.keys(b.niveaux||{}).forEach(function(k){var x=r.niveaux[k],y=b.niveaux[k];if(!x){r.niveaux[k]=y;return;}
     r.niveaux[k]={etoiles:Math.max(x.etoiles||0,y.etoiles||0),chrono:Math.max(x.chrono||0,y.chrono||0),coups:Math.min(x.coups||1e9,y.coups||1e9),temps:Math.min(x.temps||1e12,y.temps||1e12),sansIndice:!!(x.sansIndice||y.sansIndice)};});
   ["tips","succes"].forEach(function(f){Object.keys(b[f]||{}).forEach(function(k){if(!r[f][k])r[f][k]=b[f][k];});});
+  if((b.ampMaj||0)>(r.ampMaj||0)){r.amp=b.amp;r.ampVide=b.ampVide||0;r.ampJour=b.ampJour||"";r.ampMaj=b.ampMaj;}
   var sa=r.stats,sb=b.stats||{};["tours","tranches","resolus","indices","sansFin"].forEach(function(f){sa[f]=Math.max(sa[f]||0,sb[f]||0);});
   Object.keys(sb.meilleur||{}).forEach(function(k){var x=sa.meilleur[k],y=sb.meilleur[k];sa.meilleur[k]=!x?y:{coups:Math.min(x.coups,y.coups),temps:Math.min(x.temps,y.temps)};});
   Object.keys(b.jours||{}).forEach(function(k){var x=r.jours[k],y=b.jours[k];r.jours[k]=!x?y:{coups:Math.min(x.coups,y.coups),temps:Math.min(x.temps,y.temps),etoiles:Math.max(x.etoiles||0,y.etoiles||0)};});
@@ -933,6 +941,7 @@ function rafraichirAccueil(){var pn=prochainNiveau(),fait=Object.keys(PROG.nivea
   // sous « Continuer » : le monde en cours et ses étoiles, dans sa couleur
   var jm=document.getElementById("jouerMonde");if(pn&&fait){var M=MONDES[pn.w];jm.style.setProperty("--acc",ACCENTS[pn.w]);
     jm.innerHTML='<span>'+M.nom+'</span><span class="notrad">· ★ '+etoilesMonde(pn.w)+'/'+M.coups.length*3+'</span>';jm.hidden=false;}else jm.hidden=true;
+  document.querySelector("#accueil .devise").hidden=fait>0;
   document.getElementById("succesSous").textContent=Object.keys(PROG.succes).length+"/"+SUCCES.length;// pied de l'accueil : les deux sortes d'étoiles, côte à côte (les succès sont déjà sur leur tuile)
   document.getElementById("piedTxt").innerHTML='<span class="notrad">'+SVG_ET+etoilesTotal()+'<small> / '+NB_NIV*3+'</small></span><span class="notrad">'+SVG_ETT+etoilesChrono()+'<small> / '+NB_NIV*3+'</small></span>';if(typeof majAchat==="function")majAchat();}
 
@@ -1009,7 +1018,7 @@ J={def:def,hist:[],t0:0,fini:false,indice:false,pret:false,tranches:{}};
   if(def.anneaux.length===9)JeuP.permis=null;else{JeuP.permis={};def.anneaux.forEach(function(b){JeuP.permis[MV[b][0]+","+MV[b][1]]=true;});}
   document.getElementById("jTitre").textContent=def.titre;document.getElementById("jSous").textContent=def.sous+" · par "+def.par;
   document.getElementById("plateau").removeAttribute("data-indice");
-  construirePave();montrer("jeu");majJeu();majTemps();cacherBulle(true);document.getElementById("melangeTxt").hidden=false;
+  construirePave();montrer("jeu");majJeu();majTemps();majAmpoules();cacherBulle(true);document.getElementById("melangeTxt").hidden=false;
   var jeton=J,dur=(def.melange.length>10?90:def.melange.length>5?150:260)*PROG.options.vitesse;
   setTimeout(function(){if(J!==jeton)return;def.melange.forEach(function(mv,i){JeuP.jouer(mv,dur,function(){if(J!==jeton)return;if(i%2===0)bip(280+i*25,.04,"sine",.03);
     if(i===def.melange.length-1){J.pret=true;document.getElementById("melangeTxt").hidden=true;majJeu();tutoriel();}});});},400);}
@@ -1039,6 +1048,18 @@ function cheminSolution(){var tout=J.def.melange.slice(),ch=[];J.hist.forEach(fu
     if(change)continue;
     for(var k=0;k<ch.length-2;k++){var c=cleA(ch[k]);if(c===cleA(ch[k+1])&&c===cleA(ch[k+2])&&ch[k].q===ch[k+1].q&&ch[k].q===ch[k+2].q){ch.splice(k,3,inverse(ch[k]));change=true;break;}}}
   return ch;}
+// Les ampoules : une par indice. 3 au départ ; on en gagne avec le défi du jour, en terminant un monde, en faisant
+// 3 étoiles de coups et 3 de temps ; le jeu complet en offre une par jour ; à zéro, une revient après 10 minutes.
+var RECHARGE_AMP=10*60000;
+function ampoules(){if(!PROG.amp&&PROG.ampVide&&Date.now()-PROG.ampVide>=RECHARGE_AMP){PROG.amp=1;PROG.ampVide=0;PROG.ampMaj=Date.now();sauver();}
+  if(complet()&&PROG.ampJour!==cleJour()){PROG.amp=(PROG.amp||0)+1;PROG.ampJour=cleJour();PROG.ampVide=0;PROG.ampMaj=Date.now();sauver();}return PROG.amp||0;}
+function majAmpoules(){var n=ampoules(),b=document.getElementById("ampNb");b.textContent=n;b.classList.toggle("vide",!n);}
+function gagnerAmpoule(){PROG.amp=ampoules()+1;PROG.ampVide=0;PROG.ampMaj=Date.now();majAmpoules();setTimeout(function(){toast("Ampoule gagnée","+1");},900);}
+function depenserAmpoule(){PROG.amp=Math.max(0,ampoules()-1);if(!PROG.amp)PROG.ampVide=Date.now();PROG.ampMaj=Date.now();sauver();majAmpoules();}
+function plusDAmpoules(){var reste=Math.max(1,Math.ceil((RECHARGE_AMP-(Date.now()-PROG.ampVide))/60000));
+  ouvrirFenetre('<h3>Plus d’ampoules</h3><p>Une ampoule revient dans '+reste+' min.</p><p>Vous en gagnez aussi avec le défi du jour, en terminant un monde ou en faisant trois étoiles de coups et de temps.</p>'+
+    (complet()?'':'<p>Le jeu complet en offre une chaque jour.</p>')+'<div class="menu">'+(complet()?'':'<button class="bouton or" data-a="boutique" type="button"><span>Jeu complet</span></button>')+
+    '<button class="bouton" data-a="x" type="button" style="justify-content:center">Je cherche encore</button></div>',function(a){fermerFenetre();if(a==="boutique")ouvrirBoutique("indice");},"x");}
 function indice(gratuit){if(!J||!J.pret||J.fini||JeuP.occupe())return;var ch=cheminSolution();if(!ch.length)return;JeuP.indice=ch[0];
   document.getElementById("plateau").setAttribute("data-indice",nomDe(ch[0]).replace("′","'"));
   if(!gratuit&&!J.indice){J.indice=true;PROG.stats.indices++;sauver();}majJeu();Ticker.reveiller();}
@@ -1046,9 +1067,10 @@ function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length
   PROG.stats.resolus++;
   if(d.mode==="campagne"){av=PROG.niveaux[d.id];record=!av||e>av.etoiles||n<av.coups;
     record=record||eT>((av&&av.chrono)||0);
+    var gain=(e===3&&eT===3&&!(av&&av.etoiles===3&&av.chrono===3)),finMonde=!av&&MONDES[d.w].coups.every(function(c,i){return i===d.i||PROG.niveaux[(d.w+1)+"-"+(i+1)];});
     PROG.niveaux[d.id]=av?{etoiles:Math.max(av.etoiles,e),chrono:Math.max(av.chrono||0,eT),coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),sansIndice:av.sansIndice||!J.indice}:{etoiles:e,chrono:eT,coups:n,temps:temps,sansIndice:!J.indice};
-    if(n>=3&&temps<10000)PROG.tips.eclair=1;}
-  else if(d.mode==="jour"){av=PROG.jours[d.id];record=!av;PROG.jours[d.id]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),etoiles:Math.max(av.etoiles,e)}:{coups:n,temps:temps,etoiles:e};
+    if(n>=3&&temps<10000)PROG.tips.eclair=1;if(gain)gagnerAmpoule();if(finMonde)gagnerAmpoule();}
+  else if(d.mode==="jour"){av=PROG.jours[d.id];record=!av;if(!av)gagnerAmpoule();PROG.jours[d.id]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),etoiles:Math.max(av.etoiles,e)}:{coups:n,temps:temps,etoiles:e};
     if(PROG.dernierJour!==d.id){PROG.serie=estHier(PROG.dernierJour)?PROG.serie+1:1;PROG.dernierJour=d.id;}PROG.serieMax=Math.max(PROG.serieMax||0,PROG.serie);}
   else if(d.mode==="sansfin"){record=d.etape>(PROG.stats.sansFin||0);PROG.stats.sansFin=Math.max(PROG.stats.sansFin||0,d.etape);}
   else{av=PROG.stats.meilleur[d.n];record=!av||temps<av.temps;PROG.stats.meilleur[d.n]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps)}:{coups:n,temps:temps};}
@@ -1160,10 +1182,13 @@ cvJ.addEventListener("pointerleave",function(){if(!G&&JeuP.survol){JeuP.survol=n
 cvJ.addEventListener("contextmenu",function(e){e.preventDefault();});
 
 document.getElementById("btnPause").addEventListener("click",function(){sonClic();pause();});
-document.getElementById("btnIndice").addEventListener("click",function(){sonClic();if(!J||!J.pret||J.fini)return;
+document.getElementById("btnIndice").addEventListener("click",function(){sonClic();if(!J||!J.pret||J.fini||JeuP.occupe())return;
+  if(JeuP.indice)return;   // l'indice est déjà affiché : rien à payer de plus
+  if(!ampoules()){vibrer(20);plusDAmpoules();return;}
+  function montrer(){depenserAmpoule();indice(false);}
   if(!J.indice&&etoilesPour(J.hist.length,J.def.par,false)===3){
-    ouvrirFenetre('<h3>Un indice ?</h3><p>Le tour suivant s’affichera sur le plateau, mais ce niveau ne pourra plus donner que deux étoiles.</p><div class="menu"><button class="bouton principal" data-a="oui" type="button"><span>Montrer le tour</span></button><button class="bouton" data-a="non" type="button" style="justify-content:center">Je cherche encore</button></div>',
-      function(a){fermerFenetre();if(a==="oui")indice(false);},"non");}else indice(false);});
+    ouvrirFenetre('<h3>Un indice ?</h3><p>Le tour suivant s’affichera sur le plateau, mais ce niveau ne pourra plus donner que deux étoiles.</p><p>Il vous coûte une ampoule.</p><div class="menu"><button class="bouton principal" data-a="oui" type="button"><span>Montrer le tour</span></button><button class="bouton" data-a="non" type="button" style="justify-content:center">Je cherche encore</button></div>',
+      function(a){fermerFenetre();if(a==="oui")montrer();},"non");}else montrer();});
 document.getElementById("btnAnnuler").addEventListener("click",annuler);
 document.getElementById("btnRecommencer").addEventListener("click",function(){sonClic();recommencer();});
 document.getElementById("btnPaveT").addEventListener("click",function(){sonClic();opt("pave",!PROG.options.pave);});
@@ -1290,14 +1315,15 @@ var PRIX=CFG.prixAffiche||"";
 NATIF.prix().then(function(p){if(p){PRIX=p;majAchat();}});
 NATIF.etatAchat().then(function(ok){if(ok===true&&!PROG.achat){PROG.achat=true;sauver();majAchat();rafraichirAccueil();}
   else if(ok===false&&PROG.achat){PROG.achat=false;sauver();majAchat();rafraichirAccueil();}});
-function majAchat(){var c=complet();document.getElementById("btnBoutique").hidden=c||CFG.modele==="complet";document.getElementById("prixAccueil").textContent=PRIX;
+// la pastille d'achat n'apparaît qu'une fois le monde 1 fini : avant, elle parle d'un jeu qu'on ne connaît pas encore
+function majAchat(){var c=complet();document.getElementById("btnBoutique").hidden=c||CFG.modele==="complet"||Object.keys(PROG.niveaux).length<10;document.getElementById("prixAccueil").textContent=PRIX;
   document.getElementById("grpAchat").hidden=CFG.modele==="complet";
   document.getElementById("achatEtat").textContent=c?"Débloqué. Merci pour votre soutien !":"Les 6 mondes, toute la partie libre"+(PRIX?" · "+PRIX:"")+".";
   var b=document.getElementById("btnAchatOpt");b.textContent=c?"Débloqué":"Débloquer";b.disabled=c;
   document.getElementById("optPied").textContent="Orbicube "+(CFG.version||"")+(c||CFG.modele==="complet"?"":" · version d’essai");}
-var POURQUOI={monde:"Les mondes 3 à 6 font partie du jeu complet.",libre:"Ce niveau de partie libre fait partie du jeu complet.",accueil:""};
+var POURQUOI={indice:"Le jeu complet en offre une chaque jour.",monde:"Les mondes 3 à 6 font partie du jeu complet.",libre:"Ce niveau de partie libre fait partie du jeu complet.",accueil:""};
 function ouvrirBoutique(raison){var web=!NATIF.natif,li=CFG.liens||{};
-  var avantages=[["40 niveaux de plus","Les tranches, les six faces, l’orbite complète et le Grand maître."],["Toute la partie libre","Moyen, difficile et expert, avec chrono et records."],["Un seul achat, pour toujours","Sans publicité, sans abonnement."]];
+  var avantages=[["40 niveaux de plus","Les tranches, les six faces, l’orbite complète et le Grand maître."],["Toute la partie libre","Moyen, difficile et expert, avec chrono et records."],["Une ampoule offerte chaque jour","Pour un indice quand vous bloquez."],["Un seul achat, pour toujours","Sans publicité, sans abonnement."]];
   var html='<h3>Orbicube complet</h3>'+(POURQUOI[raison]?'<p>'+POURQUOI[raison]+'</p>':'<p>Vous avez joué la version d’essai. La suite vous attend.</p>')+
     '<div style="display:grid;gap:10px;text-align:left;margin:4px 0 16px">'+avantages.map(function(a){return '<div style="display:flex;gap:10px;align-items:flex-start"><svg viewBox="0 0 24 24" style="width:20px;height:20px;flex:none;margin-top:1px;stroke:var(--or);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b style="display:block">'+a[0]+'</b><span style="color:var(--pale);font-size:13px">'+a[1]+'</span></div></div>';}).join("")+'</div><div class="menu">';
   if(web){html+='<p style="margin:0 0 6px">L’achat se fait dans l’application, sur iPhone ou Android.</p>'+

@@ -59,7 +59,8 @@ async function resoudre(p) {
     await p.waitForTimeout(1200);
 
     (await p.textContent(".devise")).includes("cube 3×3") ? ok("accueil sans la marque") : faute("devise inattendue");
-    (await p.isVisible("#btnBoutique")) ? ok("bouton « Jeu complet » sur l'accueil (version d'essai)") : faute("bouton d'achat absent");
+    (await p.isHidden("#btnBoutique")) ? ok("pastille « Jeu complet » discrète tant que le monde 1 n'est pas fini") : faute("pastille d'achat affichée trop tôt");
+    (await p.textContent("#ampNb")) === "3" ? ok("trois ampoules au départ") : faute("ampoules au départ : " + (await p.textContent("#ampNb")));
 
     await p.tap("#btnJouer"); await p.waitForTimeout(1600);
     (await p.isVisible("#jeu.actif")) ? ok("le premier niveau se lance") : faute("pas d'écran de jeu");
@@ -172,11 +173,10 @@ async function resoudre(p) {
     await p.click("#btnSuccesStore"); await p.waitForTimeout(200);
     (await p.evaluate(() => window.__affiche)) ? ok("le bouton ouvre la liste de Game Center") : faute("le bouton n'ouvre rien");
     await p.click("#succes [data-retour]"); await p.waitForTimeout(400);
-    await p.click("#btnBoutique"); await p.waitForTimeout(400);
+    await p.click("#btnJouer"); await p.waitForTimeout(600); await p.click(".monde.paye"); await p.waitForTimeout(400);
     (await p.textContent("#fenetre")).includes("3,49 €") ? ok("la boutique affiche le prix du store") : faute("prix absent de la boutique");
     await p.click('#fenetre [data-a="acheter"]'); await p.waitForTimeout(1400);
     (await p.isHidden("#btnBoutique")) ? ok("achat réussi : le jeu complet est débloqué") : faute("l'achat ne débloque rien");
-    await p.click("#btnJouer"); await p.waitForTimeout(600);
     (await p.$$eval(".monde.paye", (l) => l.length)) === 0 ? ok("après l'achat, plus aucun monde réservé") : faute("des mondes restent réservés après l'achat");
     erreurs.length ? faute("erreurs : " + erreurs.join(" | ")) : ok("aucune erreur de script");
     await ctx.close();

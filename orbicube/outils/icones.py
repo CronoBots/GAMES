@@ -97,6 +97,55 @@ def plateau(im, echelle_rel, decal_y=0.0):
     return im
 
 
+# --- le logo : les trois anneaux de l'écran de chargement (le client, le 11/10/2026) ---
+# Mêmes cercles que le SVG de #chargement (rayon 34 dans un carré de 120, centres en triangle), arcs de 253°
+# figés à trois angles différents, comme un instant de l'animation, avec leur lueur.
+ANNEAUX = [((0, -12), (165, 139, 255), 200), ((-10.4, 6), (76, 201, 240), 320), ((10.4, 6), (255, 107, 157), 80)]
+
+
+def fond_logo(taille):
+    n = 256
+    im = Image.new("RGBA", (n, n))
+    px = im.load()
+    for j in range(n):
+        for i in range(n):
+            t = min(1.0, math.hypot(i - n * 0.5, j - n * 0.47) / (n * 0.62))
+            px[i, j] = tuple(int(c0 + (c1 - c0) * t) for c0, c1 in zip((27, 22, 54), (7, 7, 12))) + (255,)
+    return im.resize((taille, taille), Image.BICUBIC)
+
+
+def anneaux(im, echelle_rel):
+    T = im.size[0]
+    u = T * echelle_rel / 92.0          # les anneaux tiennent dans 92 unités
+    ox, oy = T / 2, T / 2 + 3 * u       # centre optique (le triangle est un peu plus haut que bas)
+    lueur = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    lg = ImageDraw.Draw(lueur)
+    d = ImageDraw.Draw(im)
+    for (cx, cy), coul, debut in ANNEAUX:
+        R = 34 * u
+        boite = [ox + cx * u - R, oy + cy * u - R, ox + cx * u + R, oy + cy * u + R]
+        lg.arc(boite, debut, debut + 253, fill=coul + (150,), width=max(3, int(9 * u)))
+    lueur = lueur.filter(ImageFilter.GaussianBlur(T * 0.025))
+    im.alpha_composite(lueur)
+    d = ImageDraw.Draw(im)
+    for (cx, cy), coul, debut in ANNEAUX:
+        R = 34 * u
+        boite = [ox + cx * u - R, oy + cy * u - R, ox + cx * u + R, oy + cy * u + R]
+        d.arc(boite, debut, debut + 253, fill=coul + (255,), width=max(2, int(3.6 * u)))
+        # bouts arrondis, comme stroke-linecap:round
+        for ang in (debut, debut + 253):
+            x, y = ox + cx * u + R * math.cos(math.radians(ang)), oy + cy * u + R * math.sin(math.radians(ang))
+            w = 1.8 * u
+            d.ellipse([x - w, y - w, x + w, y + w], fill=coul + (255,))
+    return im
+
+
+def rendre_logo(taille, echelle_rel, transparent=False, sur=3):
+    T = taille * sur
+    im = anneaux(Image.new("RGBA", (T, T), (0, 0, 0, 0)) if transparent else fond_logo(T), echelle_rel)
+    return im.resize((taille, taille), Image.LANCZOS)
+
+
 def rendre(taille, echelle_rel, transparent=False, sur=3):
     T = taille * sur
     im = plateau(fond(T, transparent), echelle_rel)
@@ -112,18 +161,18 @@ def ecrire(im, chemin, opaque=True):
 def main():
     w = os.path.join(RACINE, "www", "icones")
     r = os.path.join(RACINE, "ressources")
-    grande = rendre(1024, 0.9)  # App Store : carré plein, sans transparence ni coins arrondis
+    grande = rendre_logo(1024, 0.74)  # App Store : carré plein, sans transparence ni coins arrondis
     ecrire(grande, os.path.join(r, "icon.png"))
-    ecrire(rendre(1024, 0.74, transparent=True), os.path.join(r, "icon-foreground.png"), opaque=False)  # zone sûre Android
-    ecrire(fond(1024), os.path.join(r, "icon-background.png"))
+    ecrire(rendre_logo(1024, 0.56, transparent=True), os.path.join(r, "icon-foreground.png"), opaque=False)  # zone sûre Android
+    ecrire(fond_logo(1024), os.path.join(r, "icon-background.png"))
     for nom, t in (("favicon.png", 64), ("apple-touch-icon.png", 180), ("icon-192.png", 192), ("icon-512.png", 512)):
         ecrire(grande.resize((t, t), Image.LANCZOS), os.path.join(w, nom))
-    ecrire(rendre(512, 0.76), os.path.join(w, "icon-maskable-512.png"))
-    # écran de démarrage : fond de nuit, petit plateau au centre
+    ecrire(rendre_logo(512, 0.6), os.path.join(w, "icon-maskable-512.png"))
+    # écran de démarrage : les mêmes anneaux qu'à l'écran de chargement du jeu, qui prend le relais en les animant
     S = 2732
-    splash = Image.new("RGBA", (S, S), FOND_BAS + (255,))
-    logo = rendre(900, 0.95, transparent=True)
-    splash.alpha_composite(logo, ((S - 900) // 2, (S - 900) // 2))
+    splash = Image.new("RGBA", (S, S), (7, 7, 12, 255))
+    logo = rendre_logo(700, 0.8, transparent=True)
+    splash.alpha_composite(logo, ((S - 700) // 2, (S - 700) // 2))
     ecrire(splash, os.path.join(r, "splash.png"))
     ecrire(splash, os.path.join(r, "splash-dark.png"))
 

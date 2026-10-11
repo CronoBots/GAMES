@@ -76,6 +76,13 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   commerciale) : AAC 96 kb/s (l'Opus d'origine ne se lit pas sur iPhone), boucle Web Audio avec fondu
   enchaîné de 6 s, démarre au premier geste, se coupe en arrière-plan, baisse sous la victoire. Le Chromium
   des tests n'a pas l'AAC : son échec de décodage doit rester silencieux.
+- **Ampoules** (le client, le 11/10/2026 ; pas de vidéo publicitaire, qui imposerait pub, suivi et RGPD) :
+  un indice coûte une ampoule (`ampoules()`, `depenserAmpoule()`), 3 au départ ; +1 au défi du jour réussi,
+  +1 par monde terminé, +1 à la première fois 3★ de coups et 3★ de temps sur un niveau ; le jeu complet en
+  offre une par jour ; à zéro, une revient après 10 min (`RECHARGE_AMP`). Fusion par `ampMaj`.
+- **Logo** : les trois anneaux de l'écran de chargement (`ANNEAUX` dans `outils/icones.py`) pour l'icône et
+  le démarrage natif ; les médailles des succès gardent le plateau. Accueil : la devise disparaît après le
+  premier niveau, la pastille « Jeu complet » n'apparaît qu'après dix niveaux.
 - Les niveaux de campagne sont tirés d'une graine fixe (`orbicube-<monde>-<niveau>`) : changer
   `genererMelange()` change tous les niveaux des joueurs. Ne le faire qu'avec une nouvelle graine.
 - La progression est dans `localStorage` (clé `orbicube-v1`) et, sur téléphone, dans
