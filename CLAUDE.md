@@ -76,6 +76,14 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 - **Sans fin** (`sansFinDef(k)`, depuis Partie libre) : étape k = mélange de k+2 coups (25 au plus), record
   `PROG.stats.sansFin` ; au-delà de l'étape 5, le jeu complet. **Partager** le défi du jour : `partager()`,
   un résumé texte (coups, temps, étoiles) par la feuille de partage du téléphone ou le presse-papiers.
+- **Progression** (le client, le 11/10/2026 : « un jeu qu'on lance quelques minutes ou dans lequel on s'investit ») :
+  le **rang** vient de l'expérience (`PROG.xp`, `rangDe`, `xpPour(r)=60+40r`, titres `RANGS`), gagnée à chaque cube
+  résolu (`xpVictoire` : longueur puis étoiles ; défis en plus la première fois ; campagne rejouée à moitié) ; chaque
+  rang donne une ampoule. **Trois missions du jour** tirées de la date (`MISSIONS`, `missionsDuJour`,
+  `avancerMissions`), +30 XP chacune, une ampoule pour les trois. **Ciels** (`CIELS`, `appliquerCiel`, classes
+  `ciel-…` sur `body`) ouverts par rang. La tuile **Défis** ouvre le défi du jour et celui de la **semaine**
+  (`semaineDef`, 14 coups, deux ampoules la première fois). **Relax** (`relaxDef`, depuis Partie libre) : 8 coups,
+  sans chrono, compteur ni étoiles. Écran **Profil** par la bande du rang de l'accueil ou la pastille des étoiles.
 - **Faces terminées** : halo discret de leur couleur sous leurs neuf pastilles (`RAYON_FACE`), sur le plateau de jeu.
 - **Musique** (`Musique`, `www/audio/nuit-dorbites.m4a`, générée par le client avec Suno sous licence
   commerciale) : AAC 96 kb/s (l'Opus d'origine ne se lit pas sur iPhone), boucle Web Audio avec fondu

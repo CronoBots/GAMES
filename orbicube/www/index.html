@@ -45,6 +45,11 @@ body{background:
   radial-gradient(70% 45% at 15% 5%,rgba(122,92,240,.22),rgba(122,92,240,0) 70%),
   radial-gradient(60% 40% at 90% 90%,rgba(30,136,229,.14),rgba(30,136,229,0) 70%),
   radial-gradient(50% 35% at 80% 20%,rgba(229,56,59,.07),rgba(229,56,59,0) 70%),var(--nuit)}
+/* les ciels qu'on gagne avec les rangs : seul le fond change, les étoiles restent */
+body.ciel-aurore{background:radial-gradient(80% 50% at 20% 0%,rgba(46,204,153,.22),rgba(46,204,153,0) 70%),radial-gradient(60% 45% at 85% 25%,rgba(76,201,240,.16),rgba(76,201,240,0) 70%),radial-gradient(60% 40% at 50% 100%,rgba(122,92,240,.18),rgba(122,92,240,0) 70%),#070b12}
+body.ciel-nebuleuse{background:radial-gradient(70% 45% at 80% 10%,rgba(255,94,170,.22),rgba(255,94,170,0) 70%),radial-gradient(70% 50% at 10% 70%,rgba(122,92,240,.28),rgba(122,92,240,0) 70%),radial-gradient(50% 35% at 70% 95%,rgba(255,170,90,.12),rgba(255,170,90,0) 70%),#0b0714}
+body.ciel-abysse{background:radial-gradient(90% 55% at 50% 0%,rgba(30,136,229,.24),rgba(30,136,229,0) 70%),radial-gradient(60% 40% at 15% 90%,rgba(0,200,180,.14),rgba(0,200,180,0) 70%),#03080f}
+body.ciel-solaire{background:radial-gradient(80% 50% at 50% -5%,rgba(255,180,60,.26),rgba(255,180,60,0) 70%),radial-gradient(60% 40% at 90% 80%,rgba(229,56,59,.14),rgba(229,56,59,0) 70%),radial-gradient(60% 40% at 5% 60%,rgba(255,120,60,.1),rgba(255,120,60,0) 70%),#0d0806}
 #ciel{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
 #app{position:fixed;inset:0;z-index:1}
 .ecran{position:absolute;
@@ -370,6 +375,42 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
 /* ===== Accueil épuré (11/10/2026) : l'orbicube et le nom d'abord ; un bouton, trois tuiles, le reste en icônes ===== */
 .acc-haut{position:absolute;top:8px;left:12px;right:12px;display:flex;justify-content:space-between;z-index:2;pointer-events:none}
 .acc-haut .ico{pointer-events:auto;width:42px;height:42px;border-radius:50%}
+/* la bande du rang, sous les modes : le rang, sa barre d'expérience, les missions du jour */
+.rangbande{display:flex;align-items:center;gap:12px;width:100%;padding:9px 14px 9px 9px;border-radius:18px;border:1px solid var(--bord);background:var(--verre),rgba(14,14,24,.55);cursor:pointer;text-align:left;min-height:54px}
+.rangbande:active{transform:scale(.98)}
+.anneau-rang{position:relative;flex:none;width:38px;height:38px;display:grid;place-items:center;font-family:var(--f-titre);font-weight:800;font-size:14px;color:var(--encre)}
+.anneau-rang svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.rb-txt{flex:1;min-width:0;display:grid;gap:6px}.rb-txt b{font-size:14px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rb-barre{display:block;height:5px;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden}.rb-barre i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--lilas),#4cc9f0);transition:width .6s}
+.rb-mis{flex:none;font-family:var(--f-chiffre);font-size:12px;color:var(--pale);display:flex;align-items:center;gap:6px}
+.rb-mis i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.14)}.rb-mis i.ok{background:var(--or);box-shadow:0 0 8px rgba(255,207,74,.6)}
+.rang-carte{display:grid;justify-items:center;gap:6px;padding:22px 16px 18px;margin-bottom:14px;border-radius:var(--r);border:1px solid var(--bord);background:var(--verre),rgba(14,14,24,.55);text-align:center}
+.rang-carte .anneau-rang{width:108px;height:108px;font-size:40px}
+.rang-carte h3{margin:6px 0 0;font-family:var(--f-titre);font-size:21px;letter-spacing:.03em}
+.rang-carte .xp{font-family:var(--f-chiffre);font-size:12.5px;color:var(--pale)}
+.rang-carte .suite{margin:4px 0 0;font-size:13px;color:var(--pale)}
+.mission{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 16px;border-top:1px solid #20202f}
+.groupe h4+.mission{border-top:0}
+.mission .coche{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--trait-vif);display:grid;place-items:center}
+.mission .coche svg{width:14px;height:14px;stroke:#1a1405;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.mission.ok .coche{background:var(--or);border-color:var(--or)}
+.mission b{font-size:14px;font-weight:600;display:block}.mission .mb{display:block;height:4px;margin-top:7px;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden}
+.mission .mb i{display:block;height:100%;background:var(--lilas);border-radius:9px}.mission.ok .mb i{background:var(--or)}
+.mission .mx{font-family:var(--f-chiffre);font-size:12px;color:var(--pale)}
+.mission.ok b{color:var(--pale)}
+.mission-bonus{margin:0;padding:10px 16px 14px;font-size:12.5px;color:var(--pale);border-top:1px solid #20202f}
+.ciel-aide{margin:0;padding:2px 16px 10px;font-size:12.5px;color:var(--pale)}
+.ciels{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:10px;padding:0 14px 14px}
+.ciel-ch{position:relative;display:grid;align-content:end;height:76px;padding:8px;border-radius:14px;border:1.5px solid var(--bord);cursor:pointer;font-size:12.5px;font-weight:650;text-align:left;overflow:hidden}
+.ciel-ch.on{border-color:var(--lilas);box-shadow:0 0 0 3px rgba(165,139,255,.25)}
+.ciel-ch.ferme{color:var(--pale)}.ciel-ch.ferme::after{content:"";position:absolute;inset:0;background:rgba(6,6,12,.55)}
+.ciel-ch small{position:relative;z-index:1;font-family:var(--f-chiffre);font-size:10.5px;font-weight:500;color:var(--pale)}.ciel-ch span{position:relative;z-index:1}
+.c-nuit{background:radial-gradient(90% 70% at 15% 10%,rgba(122,92,240,.5),transparent 70%),#0a0a14}
+.c-aurore{background:radial-gradient(90% 70% at 20% 0%,rgba(46,204,153,.55),transparent 70%),radial-gradient(70% 60% at 90% 40%,rgba(76,201,240,.35),transparent 70%),#070b12}
+.c-nebuleuse{background:radial-gradient(90% 70% at 85% 10%,rgba(255,94,170,.5),transparent 70%),radial-gradient(80% 70% at 10% 90%,rgba(122,92,240,.55),transparent 70%),#0b0714}
+.c-abysse{background:radial-gradient(100% 70% at 50% 0%,rgba(30,136,229,.55),transparent 70%),#03080f}
+.c-solaire{background:radial-gradient(100% 70% at 50% 0%,rgba(255,180,60,.6),transparent 70%),radial-gradient(60% 50% at 90% 90%,rgba(229,56,59,.35),transparent 70%),#0d0806}
+.xp-gain{display:inline-flex;align-items:center;gap:6px;margin:2px auto 0;padding:5px 12px;border-radius:99px;background:rgba(165,139,255,.14);color:var(--lilas);font-family:var(--f-chiffre);font-size:12.5px}
 .trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .trio .bouton.bloc{align-items:center;text-align:center;justify-content:center;gap:6px;min-height:96px;padding:12px 6px}
 .trio .bouton.bloc>span:not(.droite){font-size:13.5px;line-height:1.15;hyphens:auto;-webkit-hyphens:auto}
@@ -422,7 +463,7 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
           <div class="trio">
           <button class="bouton or bloc" id="btnJour" type="button">
             <i class="pastille"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15.5" r="2"/></svg></i>
-            <span>Défi du jour</span><span class="droite" id="jourSous"></span></button>
+            <span>Défis</span><span class="droite" id="jourSous"></span></button>
           <button class="bouton bloc" id="btnLibre" type="button">
             <i class="pastille"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg></i>
             <span>Partie libre</span><span class="droite">chrono</span></button>
@@ -430,6 +471,8 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
             <i class="pastille"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M8.5 14l-1.5 7 5-3 5 3-1.5-7"/></svg></i>
             <span>Succès</span><span class="droite notrad" id="succesSous"></span></button>
           </div>
+          <button class="rangbande" id="btnRang" type="button" aria-label="Profil, rang et missions"><span class="anneau-rang notrad" id="rangAnneau"></span>
+            <span class="rb-txt"><b id="rangTitre">Rang 1</b><i class="rb-barre"><i id="rangBarre"></i></i></span><span class="rb-mis" id="rangMissions"></span></button>
           <button class="puce-or" id="btnBoutique" type="button" hidden><svg viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg><span>Jeu complet</span><span class="notrad" id="prixAccueil"></span></button>
         </div>
         
@@ -485,6 +528,22 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
         <button class="action" id="btnPaveT" type="button"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h1M11 10h2M16 10h1M7 14h10"/></svg>Notation</button>
       </div>
     </div>
+  </section>
+
+  <section class="ecran" id="profil" aria-label="Profil">
+    <div class="tete">
+      <button class="ico" data-retour="accueil" type="button" aria-label="Retour"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2>Profil</h2><span class="ico vide"></span>
+    </div>
+    <div class="defile"><div class="centre cascade">
+      <div class="rang-carte" id="rangCarte"></div>
+      <div class="groupe"><h4>Missions du jour</h4><div id="listeMissions"></div></div>
+      <div class="groupe"><h4>Ciel</h4><p class="ciel-aide">Le décor du jeu. Chaque rang en ouvre un nouveau.</p><div class="ciels" id="listeCiels"></div></div>
+      <div class="groupe"><h4>Comment monter</h4><div class="ligne"><div class="lt"><b>Résoudre un cube</b><span>De l’expérience selon sa longueur, plus pour chaque étoile.</span></div></div>
+        <div class="ligne"><div class="lt"><b>Missions du jour</b><span>Trois par jour ; les trois réussies offrent une ampoule.</span></div></div>
+        <div class="ligne"><div class="lt"><b>Défis</b><span>Le défi du jour et celui de la semaine rapportent le plus.</span></div></div>
+        <div class="ligne"><div class="lt"><b>Chaque rang</b><span>Une ampoule, et de nouveaux ciels.</span></div></div></div>
+    </div></div>
   </section>
 
   <section class="ecran" id="options" aria-label="Options">
@@ -871,7 +930,7 @@ function etoilesChrono(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t
 
 /* ========== 6. LA PROGRESSION (appareil, et compte si connecté) ========== */
 var CLE_LOCALE="orbicube-v1";
-function progVide(){return{v:1,niveaux:{},tips:{},succes:{},stats:{tours:0,tranches:0,resolus:0,indices:0,meilleur:{}},jours:{},serie:0,dernierJour:"",amp:3,ampVide:0,ampJour:"",ampMaj:0,
+function progVide(){return{v:1,niveaux:{},tips:{},succes:{},stats:{tours:0,tranches:0,resolus:0,indices:0,meilleur:{}},jours:{},serie:0,dernierJour:"",amp:3,ampVide:0,ampJour:"",ampMaj:0,xp:0,semaines:{},missions:null,
   options:{musique:true,volMusique:2,son:true,vib:true,vitesse:1,palette:"classique",cube:true,pave:false,horaire:true,langue:"auto",maj:0}};}
 function fusion(a,b){if(!b||typeof b!=="object")return a;var r=JSON.parse(JSON.stringify(a));if(b.achat)r.achat=true;
   Object.keys(b.niveaux||{}).forEach(function(k){var x=r.niveaux[k],y=b.niveaux[k];if(!x){r.niveaux[k]=y;return;}
@@ -882,6 +941,10 @@ function fusion(a,b){if(!b||typeof b!=="object")return a;var r=JSON.parse(JSON.s
   Object.keys(sb.meilleur||{}).forEach(function(k){var x=sa.meilleur[k],y=sb.meilleur[k];sa.meilleur[k]=!x?y:{coups:Math.min(x.coups,y.coups),temps:Math.min(x.temps,y.temps)};});
   Object.keys(b.jours||{}).forEach(function(k){var x=r.jours[k],y=b.jours[k];r.jours[k]=!x?y:{coups:Math.min(x.coups,y.coups),temps:Math.min(x.temps,y.temps),etoiles:Math.max(x.etoiles||0,y.etoiles||0)};});
   if((b.dernierJour||"")>(r.dernierJour||"")){r.dernierJour=b.dernierJour;r.serie=b.serie||0;}else if(b.dernierJour===r.dernierJour)r.serie=Math.max(r.serie||0,b.serie||0);r.serieMax=Math.max(r.serieMax||0,b.serieMax||0,r.serie||0);
+  r.xp=Math.max(r.xp||0,b.xp||0);r.semaines=r.semaines||{};
+  Object.keys(b.semaines||{}).forEach(function(k){var x=r.semaines[k],y=b.semaines[k];r.semaines[k]=!x?y:{coups:Math.min(x.coups,y.coups),temps:Math.min(x.temps,y.temps),etoiles:Math.max(x.etoiles||0,y.etoiles||0)};});
+  if(b.missions&&(!r.missions||b.missions.jour>r.missions.jour))r.missions=b.missions;
+  else if(b.missions&&r.missions&&b.missions.jour===r.missions.jour){r.missions.bonus=r.missions.bonus||b.missions.bonus;r.missions.l.forEach(function(m,i){var o=b.missions.l[i];if(o&&o.id===m.id)m.p=Math.max(m.p,o.p);});}
   if(b.options&&(b.options.maj||0)>=(r.options.maj||0))r.options=Object.assign({},r.options,b.options);
   return r;}
 var PROG=progVide();
@@ -939,8 +1002,8 @@ function montrer(id,sens){if(id==="accueil"||id==="mondes")accent(null);sens=sen
     else{if(e.classList.contains("actif"))e.style.setProperty("--dx",(-sens*28)+"px");e.classList.remove("actif");}});ECRAN=id;
   numeroter(document.getElementById(id));
   Logo.visible=id==="accueil";AideP.visible=id==="aide";JeuP.visible=id==="jeu";
-  if(id==="accueil"){rafraichirAccueil();Logo.demarrer();}
-  if(id==="mondes")rafraichirMondes();if(id==="succes")rafraichirSucces();if(id==="aide")redimAide();if(id==="jeu")redimJeu();
+  if(id==="accueil"){rafraichirAccueil();majRang();Logo.demarrer();}
+  if(id==="mondes")rafraichirMondes();if(id==="succes")rafraichirSucces();if(id==="profil")rafraichirProfil();if(id==="aide")redimAide();if(id==="jeu")redimJeu();
   Ticker.reveiller();}
 var OPT_DEPUIS_JEU=false;
 document.querySelectorAll("[data-retour]").forEach(function(b){b.addEventListener("click",function(){sonClic();
@@ -1068,7 +1131,7 @@ var ro=new ResizeObserver(function(){if(ECRAN==="jeu")redimJeu();if(ECRAN==="acc
 ["zonePlateau","logo","aideCanvas"].forEach(function(id){ro.observe(document.getElementById(id));});
 ro.observe(document.querySelector(".logoboite"));
 
-function lancer(def){accent(def.mode==="campagne"?def.w:null);
+function lancer(def){accent(def.mode==="campagne"?def.w:null);document.body.classList.toggle("zen",!!(PROG.options.zen||def.relax));
 J={def:def,hist:[],t0:0,fini:false,indice:false,pret:false,tranches:{}};
   JeuP.col=resoluCol();JeuP.anim=null;JeuP.file=[];JeuP.indice=null;JeuP.survol=null;
   if(def.anneaux.length===9)JeuP.permis=null;else{JeuP.permis={};def.anneaux.forEach(function(b){JeuP.permis[MV[b][0]+","+MV[b][1]]=true;});}
@@ -1082,7 +1145,7 @@ function recommencer(){if(!J||!J.pret)return;JeuP.file=[];JeuP.anim=null;JeuP.co
   J.hist=[];J.t0=0;J.fini=false;J.eTPrec=0;JeuP.indice=null;majJeu();majTemps();Ticker.reveiller();}
 function jouerCoup(mv){if(!J||!J.pret||J.fini||JeuP.occupe()||!JeuP.permisA(cleA(mv)))return;
   JeuP.indice=null;sonTour(mv);vibrer(8);JeuP.jouer(mv,300*PROG.options.vitesse,function(ok){if(ok)apresCoup(mv);},"rebond");}
-function apresCoup(mv){J.hist.push(mv);if(!J.t0){J.t0=performance.now();}PROG.stats.tours+=mv.d||1;if(mv.L===0){PROG.stats.tranches++;J.tranches[mv.a]=1;}
+function apresCoup(mv){J.hist.push(mv);if(!J.t0){J.t0=performance.now();}PROG.stats.tours+=mv.d||1;avancerMissions(function(m){return m.id==="tours"?mv.d||1:0;});if(mv.L===0){PROG.stats.tranches++;J.tranches[mv.a]=1;}
   if(!document.getElementById("bulle").hidden&&document.getElementById("bulle").dataset.tip==="geste")cacherBulle();
   majJeu();if(estResolu(JeuP.col))victoire();else if(PROG.stats.tours%25===0)sauver();}
 function annuler(){if(!J||!J.pret||J.fini||JeuP.occupe()||!J.hist.length)return;var mv=J.hist.pop();sonTour(mv);JeuP.indice=null;
@@ -1128,9 +1191,13 @@ function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length
     if(n>=3&&temps<10000)PROG.tips.eclair=1;if(gain)gagnerAmpoule();if(finMonde)gagnerAmpoule();}
   else if(d.mode==="jour"){av=PROG.jours[d.id];record=!av;if(!av)gagnerAmpoule();PROG.jours[d.id]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),etoiles:Math.max(av.etoiles,e)}:{coups:n,temps:temps,etoiles:e};
     if(PROG.dernierJour!==d.id){PROG.serie=estHier(PROG.dernierJour)?PROG.serie+1:1;PROG.dernierJour=d.id;}PROG.serieMax=Math.max(PROG.serieMax||0,PROG.serie);}
+  else if(d.mode==="semaine"){PROG.semaines=PROG.semaines||{};av=PROG.semaines[d.id];record=!av||temps<av.temps;if(!av){gagnerAmpoule();gagnerAmpoule();}
+    PROG.semaines[d.id]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),etoiles:Math.max(av.etoiles,e)}:{coups:n,temps:temps,etoiles:e};}
+  else if(d.mode==="relax"){}
   else if(d.mode==="sansfin"){record=d.etape>(PROG.stats.sansFin||0);PROG.stats.sansFin=Math.max(PROG.stats.sansFin||0,d.etape);}
   else{av=PROG.stats.meilleur[d.n];record=!av||temps<av.temps;PROG.stats.meilleur[d.n]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps)}:{coups:n,temps:temps};}
   if(J.tranches[0]&&J.tranches[1]&&J.tranches[2])PROG.tips.troisTranches=1;
+  J.xp=xpVictoire(d,e,eT,!av);gagnerXp(J.xp);missionsVictoire(d,e,eT,temps);
   sauver();majJeu();var jeton=J,t0=performance.now();
   // vague de victoire : les cercles s'allument l'un après l'autre, les pastilles sautent du centre vers le bord
   JeuP.vague=t0;S.forEach(function(s,i){JeuP.pops[i]=t0+250+Math.hypot(s.xy[0],s.xy[1])*380;});Ticker.reveiller();
@@ -1142,8 +1209,11 @@ function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length
   setTimeout(function(){if(J!==jeton)return;sonVictoire();vibrer([20,40,20]);confettis();fenetreVictoire(e,n,temps,record);verifierSucces();},CALME?300:1150);}
 function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
   if(d.mode==="campagne"){if(d.i+1<MONDES[d.w].coups.length)suiv={w:d.w,i:d.i+1};else if(d.w+1<MONDES.length)suiv={w:d.w+1,i:0};}
-  var titre=e===3?"Parfait":e===2?"Bien joué":"Résolu";
-  var html='<div class="gros-et">'+[0,1,2].map(function(k){return k<e?SVG_ET:SVG_ET_OFF;}).join("")+'</div><h3>'+titre+'</h3>'+(record?'<span class="nouveau">Nouveau record</span>':"")+
+  var titre=d.relax?"Résolu":e===3?"Parfait":e===2?"Bien joué":"Résolu",xpTxt=J.xp?'<span class="xp-gain notrad">+'+J.xp+' XP</span>':"";
+  if(d.relax){var hr='<h3>'+titre+'</h3>'+xpTxt+'<p>'+n+' coups · '+fmt(temps)+'</p><div class="menu"><button class="bouton principal" data-a="encore" type="button"><span>Nouveau mélange</span></button>'+
+      '<button class="bouton" data-a="menu" type="button" style="justify-content:center">Accueil</button></div>';
+    ouvrirFenetre(hr,function(a){fermerFenetre();if(a==="encore")lancer(relaxDef());else montrer("accueil");},"menu");return;}
+  var html='<div class="gros-et">'+[0,1,2].map(function(k){return k<e?SVG_ET:SVG_ET_OFF;}).join("")+'</div><h3>'+titre+'</h3>'+(record?'<span class="nouveau">Nouveau record</span>':"")+xpTxt+
     '<div class="resume"><div>Coups<b>'+n+' / '+d.par+'</b><i class="mini-et">'+[0,1,2].map(function(k){return k<e?SVG_ET:SVG_ET_OFF;}).join("")+'</i></div>'+
     '<div>Temps<b>'+fmt(temps)+' / '+fmt(objectifTemps(d.par))+'</b><i class="mini-et">'+[0,1,2].map(function(k){return k<J.eT?SVG_ETT:SVG_ET_OFF;}).join("")+'</i></div></div>'+
     (e<3?'<p>'+(J.indice?"L’indice limite le niveau à deux étoiles.":"Trois étoiles en "+d.par+" coups ou moins.")+'</p>':"")+
@@ -1151,7 +1221,7 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
   if(suiv)html+='<button class="bouton principal" data-a="suivant" type="button"><span>'+(suiv.w!==d.w?"Monde "+(suiv.w+1):"Niveau suivant")+'</span></button>';
   if(d.mode==="libre")html+='<button class="bouton principal" data-a="encore" type="button"><span>Nouveau mélange</span></button>';
   if(d.mode==="sansfin")html+='<button class="bouton principal" data-a="etape" type="button"><span>Étape suivante</span></button>';
-  if(d.mode==="jour")html+='<button class="bouton principal" data-a="partager" type="button"><span>Partager mon résultat</span></button>';
+  if(d.mode==="jour"||d.mode==="semaine")html+='<button class="bouton principal" data-a="partager" type="button"><span>Partager mon résultat</span></button>';
   html+='<div class="rangee2"><button class="bouton" data-a="rejouer" type="button">Rejouer</button><button class="bouton" data-a="menu" type="button">'+(d.mode==="campagne"?"Niveaux":"Accueil")+'</button></div>'+
     (J.hist.length?'<button class="bouton" data-a="revoir" type="button" style="justify-content:center;min-height:46px;font-size:14px;color:var(--pale)">Revoir ma partie</button>':"")+'</div>';
   ouvrirFenetre(html,function(a){if(a==="partager"){partager(e,n,temps);return;}fermerFenetre();if(a==="revoir"){revoir(e,n,temps);return;}
@@ -1318,12 +1388,13 @@ function rafraichirSucces(){document.getElementById("sucCompte").textContent=Obj
 function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)&&PALETTES[o.palette])||PALETTES.classique;
   document.getElementById("optSon").checked=o.son;document.getElementById("optVib").checked=o.vib;document.getElementById("optCube").checked=o.cube;
   document.getElementById("optPave").checked=o.pave;document.getElementById("optZen").checked=!!o.zen;document.getElementById("optMusique").checked=o.musique!==false;document.getElementById("optVolMusique").closest(".ligne").hidden=o.musique===false;
-  document.querySelectorAll("#optVolMusique button").forEach(function(b){b.classList.toggle("on",+b.dataset.v===(o.volMusique||2));});Musique.regler();document.body.classList.toggle("zen",!!o.zen);
+  document.querySelectorAll("#optVolMusique button").forEach(function(b){b.classList.toggle("on",+b.dataset.v===(o.volMusique||2));});Musique.regler();document.body.classList.toggle("zen",!!o.zen||!!(J&&J.def.relax));
   document.querySelectorAll("#optForme button").forEach(function(b){b.classList.toggle("on",b.dataset.v===(o.forme||"facettes"));});
   document.querySelectorAll("#optVitesse button").forEach(function(b){b.classList.toggle("on",+b.dataset.v===o.vitesse);});
   document.querySelectorAll("#optPalette button").forEach(function(b){var v=b.dataset.v,ouv=apparenceOuverte(v),c=b.querySelector(".cad");
     b.classList.toggle("on",COUL===PALETTES[v]);b.classList.toggle("verrou",!ouv);
     if(!ouv&&!c){c=document.createElement("span");c.className="cad notrad"+(APP_TEMPS[v]?" t":"");c.textContent="★ "+APPARENCES[v];b.appendChild(c);}else if(ouv&&c)c.remove();});
+  if(CIELS)appliquerCiel();
   mini.hidden=!o.cube;document.getElementById("pave").hidden=!o.pave;
   document.getElementById("btnPaveT").classList.toggle("on",o.pave);
   if(ECRAN==="jeu")requestAnimationFrame(redimJeu);Logo.dessiner();JeuP.dessiner();dessinerMini();}
@@ -1342,12 +1413,13 @@ document.getElementById("btnEffacer").addEventListener("click",function(){ouvrir
 var AideP=new Plateau(document.getElementById("aideCanvas"));AideP.continu=true;AideP.prochain=0;AideP.etape=0;Ticker.actifs.push(AideP);
 AideP.apres=function(now){if(this.occupe()||now<this.prochain)return;this.prochain=now+900;var noms=["U","U'","R","R'","F","F'","M","M'"];this.jouer(parNom(noms[this.etape%noms.length]),700);this.etape++;};
 document.getElementById("btnJouer").addEventListener("click",function(){audio();sonClic();if(!Object.keys(PROG.niveaux).length)lancer(niveauDef(0,0));else montrer("mondes");});
-document.getElementById("btnJour").addEventListener("click",function(){audio();sonClic();lancer(jourDef());});
+document.getElementById("btnJour").addEventListener("click",function(){audio();sonClic();ouvrirDefis();});
 document.getElementById("btnLibre").addEventListener("click",function(){audio();sonClic();
   ouvrirFenetre('<h3>Partie libre</h3><p>Les neuf cercles, un mélange au hasard, le chrono tourne.</p><div class="menu">'+LIBRES.map(function(l){var m=PROG.stats.meilleur[l.n];
     var ok=libreOuvert(l.n);return '<button class="bouton" data-a="'+l.n+'" type="button"><span>'+l.nom+' · '+l.n+' coups</span><span class="droite">'+(ok?(m?"record "+fmt(m.temps):""):"jeu complet")+'</span></button>';}).join("")+
+    '<button class="bouton" data-a="relax" type="button"><span>Relax · sans chrono</span><span class="droite">8 coups</span></button>'+
     '<button class="bouton or" data-a="sansfin" type="button"><span>Sans fin</span><span class="droite">'+(PROG.stats.sansFin?"record étape "+PROG.stats.sansFin:"nouveau")+'</span></button>'+
-    '<button class="bouton" data-a="x" type="button" style="justify-content:center;color:var(--pale)">Fermer</button></div>',function(a){fermerFenetre();if(a==="sansfin"){lancer(sansFinDef(1));return;}if(a&&a!=="x"){if(libreOuvert(+a))lancer(libreDef(+a));else ouvrirBoutique("libre");}},"x");});
+    '<button class="bouton" data-a="x" type="button" style="justify-content:center;color:var(--pale)">Fermer</button></div>',function(a){fermerFenetre();if(a==="sansfin"){lancer(sansFinDef(1));return;}if(a==="relax"){lancer(relaxDef());return;}if(a&&a!=="x"){if(libreOuvert(+a))lancer(libreDef(+a));else ouvrirBoutique("libre");}},"x");});
 document.getElementById("btnSucces").addEventListener("click",function(){sonClic();montrer("succes");});
 document.getElementById("btnSuccesStore").addEventListener("click",function(){sonClic();NATIF.succesAfficher();});
 document.getElementById("btnOptions").addEventListener("click",function(){sonClic();montrer("options");});
@@ -1406,6 +1478,76 @@ if(CFG.liens&&CFG.liens.confidentialite)document.getElementById("lienConf").href
 NATIF.surRetour(function(){if(!document.getElementById("voile").hidden){if(FEN.esc)FEN.esc();return;}
   if(ECRAN==="options"&&OPT_DEPUIS_JEU){document.querySelector("#options [data-retour]").click();return;}
   if(ECRAN==="jeu"){pause();return;}if(ECRAN==="niveaux"){montrer("mondes",-1);return;}if(ECRAN!=="accueil"){montrer("accueil",-1);return;}NATIF.quitter();});
+
+/* ========== 15 quinquies. LE RANG, LES MISSIONS, LES CIELS, LES DÉFIS ==========
+   Le jeu se joue cinq minutes (un défi, trois missions) ou des semaines (les rangs, les ciels, les mondes).
+   L'expérience vient de chaque cube résolu ; chaque rang offre une ampoule et, à certains paliers, un ciel. */
+var RANGS=[[1,"Novice"],[5,"Apprenti"],[10,"Navigateur"],[15,"Astronome"],[20,"Gardien des orbites"],[30,"Maître des cercles"],[40,"Légende"]];
+function xpPour(r){return 60+r*40;}                       // pour passer du rang r au rang r+1
+function rangDe(xp){var r=1;xp=xp||0;while(xp>=xpPour(r)){xp-=xpPour(r);r++;}return{r:r,xp:xp,besoin:xpPour(r)};}
+function titreRang(r){var t=RANGS[0][1];RANGS.forEach(function(x){if(r>=x[0])t=x[1];});return t;}
+var CIELS=[{id:"nuit",nom:"Nuit",rang:1},{id:"aurore",nom:"Aurore",rang:3},{id:"nebuleuse",nom:"Nébuleuse",rang:6},{id:"abysse",nom:"Abysse",rang:10},{id:"solaire",nom:"Solaire",rang:15}];
+function cielOuvert(c){return rangDe(PROG.xp).r>=c.rang;}
+function appliquerCiel(){var id=PROG.options.ciel||"nuit",c=CIELS.filter(function(x){return x.id===id;})[0];if(!c||!cielOuvert(c))id="nuit";
+  CIELS.forEach(function(x){document.body.classList.toggle("ciel-"+x.id,x.id===id&&id!=="nuit");});}
+function anneauRang(xp,epais){var R=rangDe(xp),f=R.xp/R.besoin,c=2*Math.PI*16;
+  return '<svg viewBox="0 0 38 38"><circle cx="19" cy="19" r="16" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="'+(epais||3)+'"/><circle cx="19" cy="19" r="16" fill="none" stroke="url(#gRang)" stroke-width="'+(epais||3)+'" stroke-linecap="round" stroke-dasharray="'+(c*f).toFixed(1)+' '+c.toFixed(1)+'"/>'+
+    '<defs><linearGradient id="gRang" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a58bff"/><stop offset="1" stop-color="#4cc9f0"/></linearGradient></defs></svg><span>'+R.r+'</span>';}
+function gagnerXp(n){if(!n)return;var avant=rangDe(PROG.xp).r;PROG.xp=(PROG.xp||0)+n;var apres=rangDe(PROG.xp).r;
+  for(var r=avant+1;r<=apres;r++){(function(r){setTimeout(function(){toast("Rang "+r,titreRang(r));CIELS.forEach(function(c){if(c.rang===r)toast("Nouveau ciel",c.nom);});},400);})(r);gagnerAmpoule();}
+  if(apres>avant)appliquerCiel();}
+// expérience d'un cube résolu : sa longueur, puis ses étoiles ; les défis comptent double la première fois
+function xpVictoire(d,e,eT,premier){if(d.relax)return 12;var x=d.mode==="sansfin"?6*d.etape+6:Math.min(70,10+4*d.par);x+=5*e+(PROG.options.zen?5:5*eT);
+  if(d.mode==="jour"&&premier)x+=60;if(d.mode==="semaine"&&premier)x+=150;if(d.mode==="campagne"&&!premier)x=Math.round(x/2);return x;}
+
+// les missions du jour : trois, tirées de la date, les mêmes pour tout le monde ce jour-là
+var MISSIONS=[{id:"tours",txt:"Faire {0} tours de cercle",n:[40,60,80]},{id:"cubes",txt:"Résoudre {0} cubes",n:[2,3]},
+  {id:"etT",txt:"Gagner {0} étoiles de temps",n:[3,6]},{id:"jour",txt:"Réussir le défi du jour",n:[1]},
+  {id:"parfait",txt:"Finir un niveau avec trois étoiles",n:[1]},{id:"sansfin",txt:"Atteindre l’étape {0} en sans fin",n:[3,4]},
+  {id:"libre",txt:"Résoudre une partie libre",n:[1]},{id:"vite",txt:"Résoudre un cube en moins de {0} s",n:[30,45]}];
+var XP_MISSION=30;
+function missionsDuJour(){var k=cleJour();if(!PROG.missions||PROG.missions.jour!==k){var rnd=graine("missions-"+k),pool=MISSIONS.slice(),l=[];
+    while(l.length<3){var m=pool.splice(Math.floor(rnd()*pool.length),1)[0];l.push({id:m.id,but:m.n[Math.floor(rnd()*m.n.length)],p:0});}
+    PROG.missions={jour:k,l:l,bonus:false};}return PROG.missions;}
+function texteMission(m){var d=MISSIONS.filter(function(x){return x.id===m.id;})[0];return d.txt.replace("{0}",m.but);}
+function missionFinie(m){return m.p>=m.but;}
+// v(m) : ce que l'événement apporte à la mission m ; max : la mission garde le meilleur, sinon elle cumule
+function avancerMissions(v,max){var M=missionsDuJour(),fini=[];
+  M.l.forEach(function(m){if(missionFinie(m))return;var x=v(m);if(!x)return;m.p=Math.min(m.but,max?Math.max(m.p,x):m.p+x);if(missionFinie(m))fini.push(m);});
+  fini.forEach(function(m){toast("Mission accomplie",texteMission(m));gagnerXp(XP_MISSION);});
+  if(!M.bonus&&M.l.every(missionFinie)){M.bonus=true;gagnerAmpoule();}
+  if(fini.length)majRang();}
+function missionsVictoire(d,e,eT,temps){avancerMissions(function(m){return{cubes:1,etT:d.relax?0:eT,jour:d.mode==="jour"?1:0,parfait:d.mode==="campagne"&&e===3?1:0,
+    libre:d.mode==="libre"||d.relax?1:0}[m.id]||0;});
+  avancerMissions(function(m){return m.id==="sansfin"&&d.mode==="sansfin"?d.etape:m.id==="vite"&&temps<=m.but*1000?m.but:0;},true);}
+function majRang(){var R=rangDe(PROG.xp),M=missionsDuJour();document.getElementById("rangAnneau").innerHTML=anneauRang(PROG.xp);
+  document.getElementById("rangTitre").textContent="Rang "+R.r+" · "+titreRang(R.r);document.getElementById("rangBarre").style.width=(100*R.xp/R.besoin).toFixed(1)+"%";
+  document.getElementById("rangMissions").innerHTML='<span class="notrad">'+M.l.filter(missionFinie).length+'/3</span>'+M.l.map(function(m){return '<i class="'+(missionFinie(m)?"ok":"")+'"></i>';}).join("");}
+function rafraichirProfil(){var R=rangDe(PROG.xp),M=missionsDuJour(),proch=CIELS.filter(function(c){return c.rang>R.r;})[0];
+  document.getElementById("rangCarte").innerHTML='<span class="anneau-rang notrad">'+anneauRang(PROG.xp,2.4)+'</span><h3>'+titreRang(R.r)+'</h3>'+
+    '<span class="xp notrad">'+R.xp+' / '+R.besoin+' XP</span>'+(proch?'<p class="suite">Prochain ciel : '+proch.nom+', rang '+proch.rang+'</p>':"");
+  document.getElementById("listeMissions").innerHTML=M.l.map(function(m){var ok=missionFinie(m);return '<div class="mission'+(ok?" ok":"")+'"><span class="coche">'+(ok?'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>':"")+'</span>'+
+    '<div><b>'+texteMission(m)+'</b><i class="mb"><i style="width:'+(100*m.p/m.but).toFixed(0)+'%"></i></i></div><span class="mx notrad">'+(m.id==="vite"||m.id==="sansfin"?(ok?"✓":""):m.p+"/"+m.but)+'</span></div>';}).join("")+
+    '<p class="mission-bonus">'+(M.bonus?"Les trois sont réussies : ampoule gagnée. Nouvelles missions demain.":"Les trois réussies : une ampoule. +"+XP_MISSION+" XP chacune.")+'</p>';
+  var cur=PROG.options.ciel||"nuit";
+  document.getElementById("listeCiels").innerHTML=CIELS.map(function(c){var ok=cielOuvert(c);return '<button type="button" class="ciel-ch c-'+c.id+(ok?"":" ferme")+(cur===c.id&&ok?" on":"")+'" data-ciel="'+c.id+'"><span>'+c.nom+'</span>'+(ok?"":'<small>rang '+c.rang+'</small>')+'</button>';}).join("");}
+document.getElementById("listeCiels").addEventListener("click",function(e){var b=e.target.closest("[data-ciel]");if(!b)return;var c=CIELS.filter(function(x){return x.id===b.dataset.ciel;})[0];
+  if(!cielOuvert(c)){vibrer(20);toast(c.nom,"Débloqué au rang {0}".replace("{0}",c.rang));return;}sonClic();opt("ciel",c.id);appliquerCiel();rafraichirProfil();});
+document.getElementById("btnRang").addEventListener("click",function(){sonClic();montrer("profil");});
+document.getElementById("piedTxt").addEventListener("click",function(){sonClic();montrer("profil");});
+
+// le défi de la semaine : un long mélange, le même pour tous du lundi au dimanche
+function cleSemaine(d){d=new Date(d||Date.now());d.setHours(0,0,0,0);d.setDate(d.getDate()+3-(d.getDay()+6)%7);var a=new Date(d.getFullYear(),0,4);
+  return d.getFullYear()+"-S"+String(1+Math.round(((d-a)/864e5-3+(a.getDay()+6)%7)/7)).padStart(2,"0");}
+function semaineDef(){var k=cleSemaine();return{mode:"semaine",id:k,anneaux:TOUS,par:14,melange:genererMelange(graine("semaine-"+k),TOUS,14),titre:"Défi de la semaine",sous:"Semaine "+(+k.slice(-2))};}
+// relax : un mélange court, sans chrono, sans compteur, sans étoiles ; pour quelques minutes
+function relaxDef(){return{mode:"relax",relax:true,id:"relax",n:8,anneaux:TOUS,par:8,melange:genererMelange(Math.random,TOUS,8),titre:"Relax",sous:"sans chrono ni étoiles"};}
+function ouvrirDefis(){var j=PROG.jours[cleJour()],w=(PROG.semaines||{})[cleSemaine()];
+  ouvrirFenetre('<h3>Défis</h3><p>Le même mélange pour tout le monde.</p><div class="menu">'+
+    '<button class="bouton or" data-a="jour" type="button"><span>Défi du jour</span><span class="droite">'+(j?"réussi":PROG.serie>1&&estHier(PROG.dernierJour)?"série de "+PROG.serie:"nouveau")+'</span></button>'+
+    '<button class="bouton" data-a="semaine" type="button"><span>Défi de la semaine</span><span class="droite">'+(w?"record "+fmt(w.temps):"2 ampoules")+'</span></button>'+
+    '<button class="bouton" data-a="x" type="button" style="justify-content:center;color:var(--pale)">Fermer</button></div>',
+    function(a){fermerFenetre();if(a==="jour")lancer(jourDef());else if(a==="semaine")lancer(semaineDef());},"x");}
 
 /* ========== 15 quater. LES LANGUES ==========
    Le français est la langue source : chaque texte affiché est cherché tel quel dans le dictionnaire de la langue

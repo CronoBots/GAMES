@@ -96,7 +96,10 @@ console.log("Langues");
 
 console.log("Succès des stores");
 {
-  const ids = [...jeu.matchAll(/\{id:"([a-z0-9]+)",nom:/g)].map((m) => m[1]);
+  // seulement la liste SUCCES : d'autres tables du jeu (les ciels) ont la même forme
+  const debutSucces = jeu.indexOf("var SUCCES=["), listeSucces = jeu.slice(debutSucces, jeu.indexOf("function idStore", debutSucces));
+  const ids = [...listeSucces.matchAll(/\{id:"([a-z0-9]+)",nom:/g)].map((m) => m[1]);
+  if (debutSucces < 0 || !ids.length) faute("liste des succès introuvable");
   const st = CFG.succesStores || {};
   let soucis = 0;
   for (const pf of ["ios", "android"]) {

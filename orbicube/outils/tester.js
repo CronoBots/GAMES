@@ -74,6 +74,9 @@ async function resoudre(p) {
       await p.waitForTimeout(3500);
       !pendant && (await p.isVisible('#fenetre [data-a="revoir"]')) ? ok("« Revoir ma partie » rejoue puis revient à la victoire") : faute("« Revoir ma partie » ne rejoue pas ou ne revient pas");
     } else faute("pas de bouton « Revoir ma partie »");
+    // le premier cube résolu rapporte de l'expérience, que la bande du rang et le profil montrent
+    const xp = await p.evaluate(() => JSON.parse(localStorage.getItem("orbicube-v1")).xp || 0);
+    xp > 0 ? ok("le cube résolu rapporte " + xp + " XP") : faute("aucune expérience gagnée");
 
     // les mondes 3 à 6 mènent à la boutique
     await p.tap('#fenetre [data-a="menu"]'); await p.waitForTimeout(500);
@@ -110,7 +113,7 @@ async function resoudre(p) {
     if (appareil === "iPhone 13") {
       await p.setViewportSize({ width: 844, height: 390 });
       await p.tap("#mondes [data-retour]"); await p.waitForTimeout(400);
-      await p.tap("#btnJour"); await p.waitForTimeout(2200);
+      await p.tap("#btnJour"); await p.waitForTimeout(300); await p.tap('#fenetre [data-a="jour"]'); await p.waitForTimeout(2200);
       const d3 = await debordements(p); d3.length ? faute("débordement en paysage : " + d3) : ok("défi du jour en paysage, sans débordement");
     }
     erreurs.length ? faute("erreurs : " + erreurs.join(" | ")) : ok("aucune erreur de script");
@@ -208,7 +211,9 @@ async function resoudre(p) {
     await go("#btnIndice", 400); await mesurer("indice"); await go('#fenetre [data-a="oui"]'); await go("#btnPause"); await go('#fenetre [data-a="niveaux"]', 600); await mesurer("niveaux");
     await go("#niveaux [data-retour]"); await mesurer("mondes"); await go(".monde.paye"); await mesurer("boutique"); await fermer();
     await go("#mondes [data-retour]"); await go("#btnLibre"); await mesurer("partie libre"); await go('#fenetre [data-a="25"]'); await fermer();
-    await go("#btnJour", 2500); await mesurer("défi du jour"); await go("#btnPause"); await go('#fenetre [data-a="accueil"]');
+    await go("#btnJour"); await mesurer("défis"); await go('#fenetre [data-a="semaine"]', 2500); await mesurer("défi de la semaine"); await go("#btnPause"); await go('#fenetre [data-a="accueil"]');
+    await go("#btnLibre"); await go('#fenetre [data-a="relax"]', 2500); await mesurer("relax"); await go("#btnPause"); await go('#fenetre [data-a="accueil"]');
+    await go("#btnRang"); await mesurer("profil"); await go("#profil [data-retour]");
     await go("#btnSucces"); await mesurer("succès"); await go("#succes [data-retour]"); await go("#btnAide"); await mesurer("aide"); await go("#aide [data-retour]");
     await p.waitForTimeout(3200);
     const manques = await p.evaluate(() => window.__orbicube.manques());

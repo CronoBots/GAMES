@@ -27,8 +27,9 @@ elles. Regroupez chaque couleur pour gagner.
 • 60 niveaux en 6 mondes, de deux cercles jusqu'aux neuf à la fois
 • Un tutoriel intégré : on comprend en jouant
 • Trois étoiles en un minimum de coups
-• Un défi du jour, le même pour tout le monde
-• Une partie libre chronométrée, de facile à expert, et un mode sans fin
+• Un défi du jour et un défi de la semaine, les mêmes pour tout le monde
+• Des rangs à gravir, trois missions chaque jour et des ciels à débloquer
+• Une partie libre chronométrée, de facile à expert, un mode sans fin et un mode relax
 • Des étoiles de coups et des étoiles de temps, chacune avec ses récompenses
 • 14 succès, aussi dans Game Center et Google Play Jeux
 • En français, anglais, néerlandais, allemand et espagnol

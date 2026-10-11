@@ -35,7 +35,7 @@ async function scene(p, id) {
   const tap = (s) => p.locator(s).first().click();
   if (id === "1-accueil") { await p.waitForTimeout(2600); return; }
   if (id === "3-campagne") { await tap("#btnJouer"); await p.waitForTimeout(1400); return; }
-  if (id === "5-defi") { await tap("#btnJour"); await p.waitForTimeout(3200); return; }
+  if (id === "5-defi") { await tap("#btnJour"); await p.waitForTimeout(300); await tap('#fenetre [data-a="jour"]'); await p.waitForTimeout(3200); return; }
   // niveau 5-4 de l'orbite complète, saisi au milieu d'un tour
   await tap("#btnJouer"); await p.waitForTimeout(700);
   await p.locator(".monde").nth(4).click(); await p.waitForTimeout(700);
