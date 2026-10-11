@@ -1068,8 +1068,11 @@ function rafraichirAccueil(){var pn=prochainNiveau(),fait=Object.keys(PROG.nivea
   document.getElementById("jouerSous").innerHTML=fait?SVG_ET+etoilesTotal():"";
   // défi du jour : réussi, il dit dans combien de temps vient le suivant ; sinon la série en cours, sinon « nouveau »
   var j=PROG.jours[cleJour()],dem=new Date();dem.setHours(24,0,0,0);var reste=dem-Date.now(),h=Math.floor(reste/3600000);
-  document.getElementById("jourSous").textContent=j?(h>=1?"dans "+h+" h":"dans "+Math.max(1,Math.ceil(reste/60000))+" min"):
-    (PROG.serie>1&&estHier(PROG.dernierJour)?"série de "+PROG.serie:"nouveau");
+  // la série reste visible tant qu'elle est vive (défi du jour fait ou d'hier), pour renforcer l'habitude ;
+  // sinon, le temps avant le prochain défi, sinon « nouveau »
+  var serieVive=PROG.serie>1&&(PROG.dernierJour===cleJour()||estHier(PROG.dernierJour));
+  document.getElementById("jourSous").textContent=serieVive?"série de "+PROG.serie:
+    j?(h>=1?"dans "+h+" h":"dans "+Math.max(1,Math.ceil(reste/60000))+" min"):"nouveau";
   // sous « Continuer » : le monde en cours et ses étoiles, dans sa couleur
   // la seconde ligne du bouton dit où l'on en est, sans phrase en plus sous le bouton
   document.getElementById("jouerMonde").textContent=!fait?"Premier niveau":bloque?"Suite dans le jeu complet":!pn?"Campagne terminée":"Niveau "+(pn.w+1)+"-"+(pn.i+1)+" · "+MONDES[pn.w].nom;
@@ -1236,7 +1239,9 @@ function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length
     PROG.niveaux[d.id]=av?{etoiles:Math.max(av.etoiles,e),chrono:Math.max(av.chrono||0,eT),coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),sansIndice:av.sansIndice||!J.indice}:{etoiles:e,chrono:eT,coups:n,temps:temps,sansIndice:!J.indice};
     if(n>=3&&temps<10000)PROG.tips.eclair=1;if(gain)gagnerAmpoule();if(finMonde)gagnerAmpoule();}
   else if(d.mode==="jour"){av=PROG.jours[d.id];record=!av;if(!av)gagnerAmpoule();PROG.jours[d.id]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),etoiles:Math.max(av.etoiles,e)}:{coups:n,temps:temps,etoiles:e};
-    if(PROG.dernierJour!==d.id){PROG.serie=estHier(PROG.dernierJour)?PROG.serie+1:1;PROG.dernierJour=d.id;}PROG.serieMax=Math.max(PROG.serieMax||0,PROG.serie);}
+    if(PROG.dernierJour!==d.id){PROG.serie=estHier(PROG.dernierJour)?PROG.serie+1:1;PROG.dernierJour=d.id;
+      // palier de série : une ampoule à 3 jours d'affilée, puis à chaque semaine (7, 14, 21…)
+      if(PROG.serie===3||(PROG.serie>=7&&PROG.serie%7===0))gagnerAmpoule();}PROG.serieMax=Math.max(PROG.serieMax||0,PROG.serie);}
   else if(d.mode==="semaine"){PROG.semaines=PROG.semaines||{};av=PROG.semaines[d.id];record=!av||temps<av.temps;if(!av){gagnerAmpoule();gagnerAmpoule();}
     PROG.semaines[d.id]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),etoiles:Math.max(av.etoiles,e)}:{coups:n,temps:temps,etoiles:e};}
   else if(d.mode==="relax"){}
@@ -1282,10 +1287,41 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
     else if(d.mode==="campagne")ouvrirMonde(d.w);else montrer("accueil");},"menu");
   document.querySelectorAll("#fenetre .gros-et svg").forEach(function(s,k){setTimeout(function(){s.classList.add("vu");if(k<e)sonEtoile(k);},250+k*260);});}
 // Partager le défi du jour, comme on partage une grille de mots : un résumé sans aucune donnée personnelle
+// Une étoile dessinée sur le canvas de la carte (pleine = gagnée, creuse = manquée)
+function etoileCarte(cx,x,y,r,plein,coul){cx.beginPath();for(var i=0;i<10;i++){var a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.42:r;cx[i?"lineTo":"moveTo"](x+rr*Math.cos(a),y+rr*Math.sin(a));}cx.closePath();cx.fillStyle=plein?coul:"rgba(255,255,255,.12)";cx.fill();}
+// Carte image à partager (comme une grille de mots) : un visuel soigné plutôt qu'un texte. Construite de façon
+// SYNCHRONE pour rester dans le geste de l'utilisateur, sinon navigator.share est bloqué.
+function carteResultat(d,e,n,temps,eT){
+  try{
+    var W=1080,H=1080,cv=document.createElement("canvas");cv.width=W;cv.height=H;var cx=cv.getContext("2d");
+    var g=cx.createRadialGradient(W*.3,H*.12,0,W*.3,H*.12,W*1.05);g.addColorStop(0,"#1b1550");g.addColorStop(.55,"#0c0c18");g.addColorStop(1,"#07070c");
+    cx.fillStyle=g;cx.fillRect(0,0,W,H);
+    // les trois anneaux du logo
+    var rings=[[0,-14,"#a58bff"],[-12.1,7,"#4cc9f0"],[12.1,7,"#ff6b9d"]],cxr=W/2,cyr=168,sc=4.0;
+    cx.lineWidth=7;cx.lineCap="round";cx.save();cx.setLineDash([150*sc*.34,64*sc*.34]);
+    rings.forEach(function(r){cx.beginPath();cx.strokeStyle=r[2];cx.arc(cxr+r[0]*sc,cyr+r[1]*sc,34*sc*.6,0,Math.PI*2);cx.stroke();});cx.restore();
+    cx.textAlign="center";
+    cx.fillStyle="#fff";cx.font='800 108px Unbounded,"Arial Black",system-ui,sans-serif';cx.fillText("ORBICUBE",W/2,360);
+    cx.fillStyle="#a58bff";cx.font='italic 44px "STIX Two Text",Georgia,serif';cx.fillText(tr(d.titre),W/2,430);
+    // deux colonnes : coups et temps, chacune avec sa valeur et ses trois étoiles
+    var cols=[[W*.29,(tr("Coups")||"Coups").toUpperCase(),String(n),e,"#ffcf4a"],[W*.71,(tr("Temps")||"Temps").toUpperCase(),fmt(temps),eT,"#4cc9f0"]];
+    cols.forEach(function(c){
+      cx.fillStyle="#8d8ba6";cx.font='500 38px "JetBrains Mono",monospace';cx.fillText(c[1],c[0],600);
+      cx.fillStyle="#fff";cx.font='800 132px "JetBrains Mono",monospace';cx.fillText(c[2],c[0],730);
+      for(var k=0;k<3;k++)etoileCarte(cx,c[0]-80+k*80,820,32,k<c[3],c[4]);});
+    cx.fillStyle="#6e6d86";cx.font='500 32px "JetBrains Mono",monospace';cx.fillText("cronobots.github.io/GAMES",W/2,1000);
+    // dataURL synchrone → File, sans casser le geste utilisateur
+    var dataURL=cv.toDataURL("image/png"),bin=atob(dataURL.split(",")[1]),arr=new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);
+    return new File([arr],"orbicube.png",{type:"image/png"});
+  }catch(err){return null;}}
+function partagerTexte(txt){if(navigator.share){navigator.share({text:txt}).catch(function(){});return;}
+  try{navigator.clipboard.writeText(txt).then(function(){toast("Partager mon résultat","Résultat copié");});}catch(er){}}
 function partager(e,n,temps){var d=J.def,eT=etoilesTempsPour(temps,d.par),url=CFG.liens.appStore||CFG.liens.googlePlay||"https://cronobots.github.io/GAMES/",
     txt="Orbicube · "+d.sous+"\n"+n+" coups "+"★".repeat(e)+"☆".repeat(3-e)+" · "+fmt(temps)+" "+"★".repeat(eT)+"☆".repeat(3-eT)+"\n"+url;
-  if(navigator.share){navigator.share({text:txt}).catch(function(){});return;}
-  try{navigator.clipboard.writeText(txt).then(function(){toast("Partager mon résultat","Résultat copié");});}catch(er){}}
+  var f=carteResultat(d,e,n,temps,eT);
+  if(f&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],text:txt}).catch(function(){});return;}
+  partagerTexte(txt);}
 // Sans fin : chaque victoire relance un mélange d'un coup plus long (de 3 à 25 coups)
 function sansFinDef(k){var n=Math.min(25,k+2);return{mode:"sansfin",id:"sansfin-"+k,etape:k,n:n,anneaux:TOUS,par:n,
   melange:genererMelange(Math.random,TOUS,n),titre:"Sans fin",sous:"Étape "+k};}
@@ -1614,7 +1650,10 @@ function relaxDef(){return{mode:"relax",relax:true,id:"relax",n:8,anneaux:TOUS,p
 var MOTIFS=[
   {id:"points",nom:"Points",coups:["M","M","E","E","S","S"]},
   {id:"croix", nom:"Croix", coups:["U","U","D","D","F","F","B","B","L","L","R","R"]},
-  {id:"bandes",nom:"Bandes",coups:["U","U","D","D","M","M"]}];
+  {id:"bandes",nom:"Bandes",coups:["U","U","D","D","M","M"]},
+  {id:"quatre", nom:"Quatre",  coups:["M","M","S","S"]},
+  {id:"colonnes",nom:"Colonnes",coups:["R","R","L","L"]},
+  {id:"fenetres",nom:"Fenêtres",coups:["F","F","B","B"]}];
 function motifCible(coups){var col=resoluCol();coups.forEach(function(nm){col=appliquer(col,parNom(nm));});return col;}
 function motifDef(k){if(k==null)k=Math.floor(Math.random()*MOTIFS.length);var m=MOTIFS[k],but=motifCible(m.coups),par=8,mel,start,t=0;
   do{mel=genererMelange(Math.random,TOUS,par);start=but;mel.forEach(function(mv){start=appliquer(start,mv);});}while(egalCol(start,but)&&++t<20);
