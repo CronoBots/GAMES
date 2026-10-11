@@ -1,13 +1,13 @@
 // Version web (PWA) : tout le jeu est mis en cache pour se jouer hors ligne.
 // Incrémenter V à chaque publication, sinon les joueurs gardent l'ancienne version.
-var V = "orbicube-v24";
+var V = "orbicube-v25";
 var FICHIERS = ["./", "index.html", "config.js", "natif.js", "langues.js", "manifest.webmanifest", "confidentialite.html",
   "icones/favicon.png", "icones/apple-touch-icon.png", "icones/icon-192.png", "icones/icon-512.png", "icones/icon-maskable-512.png",
   "polices/polices.css", "polices/Unbounded-normal-700.woff2", "polices/Unbounded-normal-800.woff2",
   "polices/STIXTwoText-normal-400.woff2", "polices/STIXTwoText-italic-400.woff2",
   "polices/InstrumentSans-normal-400.woff2", "polices/InstrumentSans-normal-500.woff2",
   "polices/InstrumentSans-normal-600.woff2", "polices/InstrumentSans-normal-700.woff2",
-  "polices/JetBrainsMono-normal-500.woff2", "polices/JetBrainsMono-normal-700.woff2"];
+  "polices/JetBrainsMono-normal-500.woff2", "polices/JetBrainsMono-normal-700.woff2", "audio/nuit-dorbites.m4a"];
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(V).then(function (c) { return c.addAll(FICHIERS); }).then(function () { return self.skipWaiting(); }));
 });

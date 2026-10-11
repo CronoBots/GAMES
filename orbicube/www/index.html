@@ -491,6 +491,10 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
           <select id="optLangue" class="choix notrad" aria-label="Langue du jeu"></select></div>
       </div>
       <div class="groupe"><h4>Son et toucher</h4>
+        <div class="ligne"><div class="lt"><b>Musique</b><span>« Nuit d’orbites », en boucle.</span></div>
+          <label class="interrupteur"><input type="checkbox" id="optMusique" role="switch" aria-label="Musique"><i></i></label></div>
+        <div class="ligne empile"><div class="lt"><b>Volume de la musique</b></div>
+          <div class="segment" id="optVolMusique"><button type="button" data-v="1">Doux</button><button type="button" data-v="2">Moyen</button><button type="button" data-v="3">Fort</button></div></div>
         <div class="ligne"><div class="lt"><b>Effets sonores</b><span>Rotation des cercles, étoiles, victoire.</span></div>
           <label class="interrupteur"><input type="checkbox" id="optSon" role="switch" aria-label="Effets sonores"><i></i></label></div>
         <div class="ligne"><div class="lt"><b>Vibrations</b><span>Un léger retour à chaque tour.</span></div>
@@ -825,7 +829,7 @@ function etoilesChrono(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t
 /* ========== 6. LA PROGRESSION (appareil, et compte si connecté) ========== */
 var CLE_LOCALE="orbicube-v1";
 function progVide(){return{v:1,niveaux:{},tips:{},succes:{},stats:{tours:0,tranches:0,resolus:0,indices:0,meilleur:{}},jours:{},serie:0,dernierJour:"",
-  options:{son:true,vib:true,vitesse:1,palette:"classique",cube:true,pave:false,horaire:true,langue:"auto",maj:0}};}
+  options:{musique:true,volMusique:2,son:true,vib:true,vitesse:1,palette:"classique",cube:true,pave:false,horaire:true,langue:"auto",maj:0}};}
 function fusion(a,b){if(!b||typeof b!=="object")return a;var r=JSON.parse(JSON.stringify(a));if(b.achat)r.achat=true;
   Object.keys(b.niveaux||{}).forEach(function(k){var x=r.niveaux[k],y=b.niveaux[k];if(!x){r.niveaux[k]=y;return;}
     r.niveaux[k]={etoiles:Math.max(x.etoiles||0,y.etoiles||0),chrono:Math.max(x.chrono||0,y.chrono||0),coups:Math.min(x.coups||1e9,y.coups||1e9),temps:Math.min(x.temps||1e12,y.temps||1e12),sansIndice:!!(x.sansIndice||y.sansIndice)};});
@@ -848,7 +852,32 @@ NATIF.lire(CLE_LOCALE).then(function(v){if(!v)return;try{PROG=fusion(PROG,JSON.p
 
 /* ========== 7. SON ET VIBRATIONS ========== */
 var AC=null;
-function audio(){if(!PROG.options.son)return null;try{if(!AC){var C=window.AudioContext||window.webkitAudioContext;if(!C)return null;AC=new C();}if(AC.state==="suspended")AC.resume();}catch(e){return null;}return AC;}
+function contexteAudio(){try{if(!AC){var C=window.AudioContext||window.webkitAudioContext;if(!C)return null;AC=new C();}if(AC.state==="suspended")AC.resume();}catch(e){return null;}return AC;}
+function audio(){var ac=contexteAudio();Musique.lancer();return PROG.options.son?ac:null;}
+// Musique d'ambiance « Nuit d'orbites » : décodée une fois, jouée en boucle par Web Audio avec un fondu
+// enchaîné de 6 s entre la fin et le début (une balise <audio loop> laisse un blanc, surtout sur iPhone).
+// Elle démarre au premier geste (règle des navigateurs), se tait en arrière-plan et s'efface sous la victoire.
+var Musique={buf:null,charge:false,gain:null,suivante:0,minuterie:0,actif:false,FONDU:6,
+  volume:function(){return PROG.options.musique===false?0:[0,.18,.32,.5][PROG.options.volMusique||2];},
+  lancer:function(){if(PROG.options.musique===false||this.actif||document.hidden)return;var ac=contexteAudio();if(!ac)return;var self=this;
+    if(!this.buf){if(this.charge)return;this.charge=true;fetch("audio/nuit-dorbites.m4a").then(function(r){return r.arrayBuffer();})
+      .then(function(a){return new Promise(function(ok,ko){var pr=ac.decodeAudioData(a,ok,ko);if(pr&&pr.catch)pr.catch(function(){});});}).then(function(b){self.buf=b;self.charge=false;self.lancer();}).catch(function(){self.charge=false;});return;}
+    this.actif=true;this.gain=ac.createGain();this.gain.gain.setValueAtTime(0,ac.currentTime);this.gain.gain.linearRampToValueAtTime(this.volume(),ac.currentTime+3);
+    this.gain.connect(ac.destination);this.suivante=ac.currentTime+.05;this.programmer();},
+  programmer:function(){var ac=AC,self=this;if(!this.actif||!ac)return;
+    while(this.suivante<ac.currentTime+8){var src=ac.createBufferSource(),g=ac.createGain(),t=this.suivante,d=this.buf.duration,F=this.FONDU;src.buffer=this.buf;
+      g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(1,t+F);g.gain.setValueAtTime(1,t+d-F);g.gain.linearRampToValueAtTime(0,t+d);
+      src.connect(g);g.connect(this.gain);src.start(t);src.stop(t+d+.05);this.suivante=t+d-F;}
+    clearTimeout(this.minuterie);this.minuterie=setTimeout(function(){self.programmer();},3000);},
+  arreter:function(){if(!this.actif)return;this.actif=false;clearTimeout(this.minuterie);var g=this.gain,ac=AC;
+    if(g&&ac){g.gain.cancelScheduledValues(ac.currentTime);g.gain.setValueAtTime(g.gain.value,ac.currentTime);g.gain.linearRampToValueAtTime(0,ac.currentTime+.6);
+      setTimeout(function(){try{g.disconnect();}catch(e){}},700);}},
+  regler:function(){if(PROG.options.musique===false){this.arreter();return;}if(!this.actif){if(AC&&AC.state==="running")this.lancer();return;}var ac=AC;
+    this.gain.gain.cancelScheduledValues(ac.currentTime);this.gain.gain.setTargetAtTime(this.volume(),ac.currentTime,.2);},
+  // sous la victoire : la musique baisse le temps des jingles, puis revient
+  effacer:function(ms){if(!this.actif||!AC)return;var g=this.gain.gain,t=AC.currentTime,v=this.volume();g.cancelScheduledValues(t);g.setValueAtTime(g.value,t);
+    g.linearRampToValueAtTime(v*.3,t+.3);g.setValueAtTime(v*.3,t+ms/1000);g.linearRampToValueAtTime(v,t+ms/1000+1.5);}};
+document.addEventListener("visibilitychange",function(){if(document.hidden)Musique.arreter();else if(AC)Musique.lancer();});
 function bip(freq,dur,type,vol,quand){var ac=audio();if(!ac)return;var t=ac.currentTime+(quand||0),o=ac.createOscillator(),g=ac.createGain();
   o.type=type||"sine";o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol||.12,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
   o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+dur+.02);}
@@ -1024,7 +1053,7 @@ function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length
   sauver();majJeu();var jeton=J,t0=performance.now();
   // vague de victoire : les cercles s'allument l'un après l'autre, les pastilles sautent du centre vers le bord
   JeuP.vague=t0;S.forEach(function(s,i){JeuP.pops[i]=t0+250+Math.hypot(s.xy[0],s.xy[1])*380;});Ticker.reveiller();
-  [0,1,2,3,4,5].forEach(function(k){bip(392*Math.pow(1.122,k),.12,"sine",.05,k*.075);});
+  Musique.effacer(3500);[0,1,2,3,4,5].forEach(function(k){bip(392*Math.pow(1.122,k),.12,"sine",.05,k*.075);});
   // les six faces s'illuminent l'une après l'autre, et le cube fait un tour complet sur lui-même
   Object.keys(CENTRE_FACE).forEach(function(k,i){setTimeout(function(){if(J!==jeton)return;JeuP.eclats.push({xy:CENTRE_FACE[k],c:JeuP.col[CLE_CENTRE[k]],t0:performance.now()});Ticker.reveiller();},CALME?0:420+i*110);});
   if(!CALME)(function tour(now){if(J!==jeton){PIVOT=null;return;}var k=Math.min(1,(now-t0-200)/1100);if(k<0){requestAnimationFrame(tour);return;}
@@ -1199,7 +1228,8 @@ function rafraichirSucces(){document.getElementById("sucCompte").textContent=Obj
 /* ========== 14. OPTIONS ========== */
 function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)&&PALETTES[o.palette])||PALETTES.classique;
   document.getElementById("optSon").checked=o.son;document.getElementById("optVib").checked=o.vib;document.getElementById("optCube").checked=o.cube;
-  document.getElementById("optPave").checked=o.pave;document.getElementById("optZen").checked=!!o.zen;document.body.classList.toggle("zen",!!o.zen);
+  document.getElementById("optPave").checked=o.pave;document.getElementById("optZen").checked=!!o.zen;document.getElementById("optMusique").checked=o.musique!==false;
+  document.querySelectorAll("#optVolMusique button").forEach(function(b){b.classList.toggle("on",+b.dataset.v===(o.volMusique||2));});Musique.regler();document.body.classList.toggle("zen",!!o.zen);
   document.querySelectorAll("#optVitesse button").forEach(function(b){b.classList.toggle("on",+b.dataset.v===o.vitesse);});
   document.querySelectorAll("#optPalette button").forEach(function(b){var v=b.dataset.v,ouv=apparenceOuverte(v),c=b.querySelector(".cad");
     b.classList.toggle("on",COUL===PALETTES[v]);b.classList.toggle("verrou",!ouv);
@@ -1208,9 +1238,10 @@ function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)
   document.getElementById("btnPaveT").classList.toggle("on",o.pave);
   if(ECRAN==="jeu")requestAnimationFrame(redimJeu);Logo.dessiner();JeuP.dessiner();dessinerMini();}
 function opt(k,v){PROG.options[k]=v;PROG.options.maj=Date.now();sauver();appliquerOptions();}
-[["Son","son"],["Vib","vib"],["Cube","cube"],["Pave","pave"],["Zen","zen"]].forEach(function(c){
-  document.getElementById("opt"+c[0]).addEventListener("change",function(){opt(c[1],this.checked);if(c[1]==="son"&&this.checked)sonClic();if(c[1]==="vib")vibrer(15);});});
+[["Son","son"],["Vib","vib"],["Cube","cube"],["Pave","pave"],["Zen","zen"],["Musique","musique"]].forEach(function(c){
+  document.getElementById("opt"+c[0]).addEventListener("change",function(){opt(c[1],this.checked);if(c[1]==="musique"&&this.checked){contexteAudio();Musique.lancer();}if(c[1]==="son"&&this.checked)sonClic();if(c[1]==="vib")vibrer(15);});});
 document.getElementById("optVitesse").addEventListener("click",function(e){var b=e.target.closest("button");if(b){opt("vitesse",+b.dataset.v);sonClic();}});
+document.getElementById("optVolMusique").addEventListener("click",function(e){var b=e.target.closest("button");if(b){opt("volMusique",+b.dataset.v);sonClic();}});
 document.getElementById("optPalette").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;
   if(!apparenceOuverte(b.dataset.v)){vibrer(20);toast(b.dataset.v==="neon"?"Néon":"Pastel",(APP_TEMPS[b.dataset.v]?"Débloqué à {0} étoiles de temps":"Débloqué à {0} étoiles de coups").replace("{0}",APPARENCES[b.dataset.v]));return;}opt("palette",b.dataset.v);sonClic();});
 document.getElementById("btnEffacer").addEventListener("click",function(){ouvrirFenetre('<h3>Tout effacer ?</h3><p>Étoiles, succès, records et série seront perdus. Les options sont gardées.</p><div class="menu"><button class="bouton" data-a="non" type="button" style="justify-content:center">Garder ma progression</button><button class="danger" data-a="oui" type="button">Effacer définitivement</button></div>',
