@@ -75,7 +75,7 @@ body.ciel-solaire{background:radial-gradient(80% 50% at 50% -5%,rgba(255,180,60,
 @keyframes perd{20%{transform:translateX(-4px) rotate(-12deg)}40%{transform:translateX(4px) rotate(10deg)}60%{transform:translateX(-3px)}100%{transform:none}}
 .jetoiles svg.perd{animation:perd .5s ease}
 @keyframes clignote{50%{opacity:.35}}
-.melange{animation:clignote 1s ease-in-out infinite}
+.melange b{animation:clignote 1s ease-in-out infinite}
 .defile{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-inline:16px;padding-block:4px 24px;
   /* la zone qui défile descend jusqu'au bas de l'écran, sous la barre d'accueil de l'iPhone : sinon le contenu y est coupé net */
   margin-bottom:calc(-1*env(safe-area-inset-bottom,0px));padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
@@ -187,7 +187,11 @@ a.bouton{text-decoration:none;color:inherit}
 .bulle:not([hidden])+.notation{display:none}
 .bulle button{flex:none;background:var(--lilas);color:var(--sur-lilas);border:0;border-radius:10px;padding:8px 12px;font-weight:700;cursor:pointer;min-height:40px}
 @keyframes monte{from{opacity:0;transform:translateY(10px)}}
-.melange{position:absolute;left:0;right:0;bottom:6px;text-align:center;font-family:var(--f-titre);letter-spacing:.3em;font-size:12px;color:var(--pale);pointer-events:none}
+/* pendant le mélange, le logo animé du chargement se pose sur le plateau troublé */
+.melange{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:12px;text-align:center;pointer-events:none;z-index:2}
+.melange[hidden]{display:none}
+.melange svg{width:92px;height:92px;filter:drop-shadow(0 0 18px rgba(165,139,255,.35))}
+.melange b{font-family:var(--f-titre);letter-spacing:.3em;font-size:12px;color:#d9ceff;font-weight:700}
 .jbas{padding:4px 12px 10px;display:grid;gap:8px}
 .notation{font-family:var(--f-math);font-size:20px;letter-spacing:.05em;white-space:nowrap;overflow-x:auto;text-align:center;min-height:30px;scrollbar-width:none;padding:0 4px}
 .notation::-webkit-scrollbar{display:none}
@@ -343,9 +347,9 @@ a.bouton{text-decoration:none;color:inherit}
 #chargement{position:fixed;inset:0;z-index:60;display:grid;place-content:center;justify-items:center;gap:18px;pointer-events:none;
   background:radial-gradient(60% 45% at 50% 45%,#15122a,#07070c 75%);transition:opacity .55s ease,visibility 0s .55s}
 #chargement svg{width:120px;height:120px}
-#chargement circle{transform-box:fill-box;transform-origin:center;animation:orbite 1.6s linear infinite}
-#chargement circle:nth-child(2){animation-duration:2.1s;animation-direction:reverse}
-#chargement circle:nth-child(3){animation-duration:2.6s}
+.anneaux circle{transform-box:fill-box;transform-origin:center;animation:orbite 1.6s linear infinite}
+.anneaux circle:nth-child(2){animation-duration:2.1s;animation-direction:reverse}
+.anneaux circle:nth-child(3){animation-duration:2.6s}
 @keyframes orbite{to{transform:rotate(360deg)}}
 #chargement b{font-family:var(--f-titre);font-weight:800;letter-spacing:.3em;font-size:15px;color:#d9ceff;opacity:.85}
 #chargement.fini{opacity:0;visibility:hidden}
@@ -441,7 +445,7 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
 <body>
 
 <canvas id="ciel" aria-hidden="true"></canvas>
-<div id="chargement" aria-hidden="true"><svg viewBox="-60 -60 120 120"><g fill="none" stroke-width="3" stroke-linecap="round">
+<div id="chargement" class="anneaux" aria-hidden="true"><svg viewBox="-60 -60 120 120"><g fill="none" stroke-width="3" stroke-linecap="round">
   <circle r="34" cx="0" cy="-12" stroke="#a58bff" stroke-dasharray="150 64"/><circle r="34" cx="-10.4" cy="6" stroke="#4cc9f0" stroke-dasharray="150 64"/>
   <circle r="34" cx="10.4" cy="6" stroke="#ff6b9d" stroke-dasharray="150 64"/></g></svg><b class="notrad">ORBICUBE</b></div>
 <div id="app">
@@ -520,7 +524,9 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
     <div class="plateau" id="zonePlateau">
       <canvas id="plateau" aria-label="Plateau de cercles"></canvas>
       <div class="coupgeant" id="coupGeant"></div>
-      <div class="melange" id="melangeTxt" hidden>MÉLANGE…</div>
+      <div class="melange anneaux" id="melangeTxt" hidden><svg viewBox="-60 -60 120 120"><g fill="none" stroke-width="3" stroke-linecap="round">
+  <circle r="34" cx="0" cy="-12" stroke="#a58bff" stroke-dasharray="150 64"/><circle r="34" cx="-10.4" cy="6" stroke="#4cc9f0" stroke-dasharray="150 64"/>
+  <circle r="34" cx="10.4" cy="6" stroke="#ff6b9d" stroke-dasharray="150 64"/></g></svg><b>MÉLANGE…</b></div>
     </div>
     <div class="jbas">
       <div class="bulle" id="bulle" hidden><p id="bulleTxt"></p><button type="button" id="bulleOk">Compris</button></div>
@@ -856,7 +862,12 @@ Plateau.prototype.pas=function(now){var an=this.anim;if(!an||an.libre)return fal
 Plateau.prototype.occupe=function(){return !!(this.anim||this.file.length);};
 // Une seule boucle d'animation pour tous les plateaux visibles
 var Ticker={actifs:[],tourne:false,reveiller:function(){if(!Ticker.tourne){Ticker.tourne=true;requestAnimationFrame(Ticker.tic);}},
-  tic:function(now){var encore=false;Ticker.actifs.forEach(function(p){if(!p.visible)return;var b=p.pas(now);if(b||p.vivant(now))encore=true;p.dessiner(now);if(p.apres)p.apres(now);});
+  // un plateau au repos qui ne fait que pulser (indice, logo entre deux tours) se redessine à 30 images/s :
+  // la moitié du travail, et rien ne se voit ; un tour, un glisser ou un effet gardent la pleine cadence
+  // (seulement s'il reste vivant : l'image sautée sera rattrapée à la suivante)
+  tic:function(now){var encore=false;Ticker.actifs.forEach(function(p){if(!p.visible)return;var b=p.pas(now),v=b||p.vivant(now);if(v)encore=true;
+      if(v&&(p.lent||!b&&!p.anim&&!p.eclats.length&&!p.vague&&!Object.keys(p.pops).length&&!G)&&now-(p.der||0)<30)return;
+      p.der=now;p.dessiner(now);if(p.apres)p.apres(now);});
     Ticker.tourne=false;if(encore&&!document.hidden)Ticker.reveiller();}};
 document.addEventListener("visibilitychange",function(){if(!document.hidden)Ticker.reveiller();});
 
@@ -1022,7 +1033,7 @@ document.addEventListener("pointerdown",function(e){if(CALME)return;var b=e.targ
   o.style.width=o.style.height=d+"px";o.style.left=(e.clientX-r.left)+"px";o.style.top=(e.clientY-r.top)+"px";b.appendChild(o);setTimeout(function(){o.remove();},650);},{passive:true});
 
 /* ========== 9. ACCUEIL : le logo vivant ========== */
-var Logo=new Plateau(document.getElementById("logo"),{etiquettes:false,comete:true});Logo.continu=true;Logo.pile=[];Logo.prochain=0;Ticker.actifs.push(Logo);
+var Logo=new Plateau(document.getElementById("logo"),{etiquettes:false,comete:true});Logo.continu=true;Logo.lent=true;Logo.pile=[];Logo.prochain=0;Ticker.actifs.push(Logo);
 Logo.apres=function(now){if(this.occupe()||now<this.prochain)return;this.prochain=now+650;
   if((this.pile.length<5&&Math.random()<.8)||!this.pile.length){var b=TOUS[Math.floor(Math.random()*9)],m=MV[b],mv={a:m[0],L:m[1],q:Math.random()<.5?1:-1};this.pile.push(mv);this.jouer(mv,520);}
   else this.jouer(inverse(this.pile.pop()),520);};
@@ -1090,7 +1101,9 @@ var JeuP=new Plateau(document.getElementById("plateau"),{eclats:true});Ticker.ac
 JeuP.onFace=function(n){if(!J||!J.pret||J.fini)return;bip(1047,.28,"sine",.07);bip(1568,.32,"sine",.05,.07);vibrer(12);};
 var mini=document.getElementById("mini"),miniC=mini.getContext("2d"),PIVOT={y:0,x:0},J=null;
 function dessinerMini(){if(!PROG.options.cube)return;var w=mini.clientWidth||84,px=Math.round(w*DPR);if(mini.width!==px){mini.width=px;mini.height=px;miniC.setTransform(DPR,0,0,DPR,0,0);}
-  dessinerCube(miniC,w,JeuP.col,JeuP.anim,PIVOT);}
+  // le plateau se redessine à chaque image (indice qui pulse, halos) : le cube, lui, seulement quand il change
+  var an=JeuP.anim,cle=w+"|"+COUL[0]+"|"+JeuP.col.join("")+"|"+PIVOT.y.toFixed(4)+","+PIVOT.x.toFixed(4)+"|"+(an?cleA(an.mv)+an.mv.q+":"+an.t.toFixed(4):"");
+  if(cle===dessinerMini.cle)return;dessinerMini.cle=cle;dessinerCube(miniC,w,JeuP.col,an,PIVOT);}
 // Le cube pivote au doigt : glisser à gauche ou à droite le fait tourner autour de la verticale, vers le
 // haut ou le bas le bascule pour montrer la face du dessous. Au lâcher, il se cale sur la vue la plus
 // proche (un quart de tour, ou retourné). Un simple appui ne fait rien : il ne tournait que dans un sens.
@@ -1135,7 +1148,7 @@ var ro=new ResizeObserver(function(){if(ECRAN==="jeu")redimJeu();if(ECRAN==="acc
 ["zonePlateau","logo","aideCanvas"].forEach(function(id){ro.observe(document.getElementById(id));});
 ro.observe(document.querySelector(".logoboite"));
 
-function lancer(def){document.getElementById("zonePlateau").classList.remove("brouille");document.getElementById("jeu").classList.remove("brouille");accent(def.mode==="campagne"?def.w:null);document.body.classList.toggle("zen",!!(PROG.options.zen||def.relax));
+function lancer(def){document.getElementById("zonePlateau").classList.add("brouille");document.getElementById("jeu").classList.add("brouille");accent(def.mode==="campagne"?def.w:null);document.body.classList.toggle("zen",!!(PROG.options.zen||def.relax));
 J={def:def,hist:[],t0:0,fini:false,indice:false,pret:false,tranches:{}};
   JeuP.col=resoluCol();JeuP.anim=null;JeuP.file=[];JeuP.indice=null;JeuP.survol=null;
   if(def.anneaux.length===9)JeuP.permis=null;else{JeuP.permis={};def.anneaux.forEach(function(b){JeuP.permis[MV[b][0]+","+MV[b][1]]=true;});}
@@ -1144,12 +1157,12 @@ J={def:def,hist:[],t0:0,fini:false,indice:false,pret:false,tranches:{}};
   construirePave();montrer("jeu");majJeu();majTemps();majAmpoules();cacherBulle(true);document.getElementById("melangeTxt").hidden=false;
   // le mélange se fait à l'abri des regards : le plateau se trouble en tournant, les couleurs changent pendant qu'on
   // ne les voit pas, puis il se dévoile. Montrer les coups un par un permettait de les rejouer à l'envers.
-  var jeton=J,z=document.getElementById("zonePlateau"),ecran=document.getElementById("jeu"),voile=CALME?0:420;
+  var jeton=J,z=document.getElementById("zonePlateau"),ecran=document.getElementById("jeu"),voile=CALME?0:420,tenue=CALME?0:900;
   setTimeout(function(){if(J!==jeton)return;z.classList.add("brouille");ecran.classList.add("brouille");
     for(var k=0;k<6;k++)bip(300+k*40,.04,"sine",.03,k*.06);
     setTimeout(function(){if(J!==jeton)return;var col=resoluCol();def.melange.forEach(function(mv){col=appliquer(col,mv);});JeuP.col=col;JeuP.dessiner();dessinerMini();
-      z.classList.remove("brouille");ecran.classList.remove("brouille");
-      setTimeout(function(){if(J!==jeton)return;J.pret=true;document.getElementById("melangeTxt").hidden=true;majJeu();tutoriel();},voile);},voile+120);},250);}
+      z.classList.remove("brouille");ecran.classList.remove("brouille");document.getElementById("melangeTxt").hidden=true;
+      setTimeout(function(){if(J!==jeton)return;J.pret=true;document.getElementById("melangeTxt").hidden=true;majJeu();tutoriel();},voile);},tenue);},150);}
 function recommencer(){if(!J||!J.pret)return;JeuP.file=[];JeuP.anim=null;JeuP.col=resoluCol();J.def.melange.forEach(function(mv){JeuP.col=appliquer(JeuP.col,mv);});
   J.hist=[];J.t0=0;J.fini=false;J.eTPrec=0;JeuP.indice=null;majJeu();majTemps();Ticker.reveiller();}
 function jouerCoup(mv){if(!J||!J.pret||J.fini||JeuP.occupe()||!JeuP.permisA(cleA(mv)))return;
@@ -1419,7 +1432,7 @@ document.getElementById("btnEffacer").addEventListener("click",function(){ouvrir
   function(a){fermerFenetre();if(a==="oui"){var o=PROG.options;PROG=progVide();PROG.options=o;sauver();if(Distant.doc)envoyer();rafraichirAccueil();avertir("Progression","Tout a été effacé.");}},"non");});
 
 /* ========== 15. AIDE ET ACCUEIL ========== */
-var AideP=new Plateau(document.getElementById("aideCanvas"));AideP.continu=true;AideP.prochain=0;AideP.etape=0;Ticker.actifs.push(AideP);
+var AideP=new Plateau(document.getElementById("aideCanvas"));AideP.continu=true;AideP.lent=true;AideP.prochain=0;AideP.etape=0;Ticker.actifs.push(AideP);
 AideP.apres=function(now){if(this.occupe()||now<this.prochain)return;this.prochain=now+900;var noms=["U","U'","R","R'","F","F'","M","M'"];this.jouer(parNom(noms[this.etape%noms.length]),700);this.etape++;};
 document.getElementById("btnJouer").addEventListener("click",function(){audio();sonClic();if(!Object.keys(PROG.niveaux).length)lancer(niveauDef(0,0));else montrer("mondes");});
 document.getElementById("btnJour").addEventListener("click",function(){audio();sonClic();ouvrirDefis();});
@@ -1527,7 +1540,7 @@ function avancerMissions(v,max){var M=missionsDuJour(),fini=[];
   if(!M.bonus&&M.l.every(missionFinie)){M.bonus=true;gagnerAmpoule();}
   if(fini.length)majRang();}
 function missionsVictoire(d,e,eT,temps){avancerMissions(function(m){return{cubes:1,etT:d.relax?0:eT,jour:d.mode==="jour"?1:0,parfait:d.mode==="campagne"&&e===3?1:0,
-    libre:d.mode==="libre"||d.relax?1:0}[m.id]||0;});
+    libre:d.mode==="libre"||d.mode==="sansfin"||d.relax?1:0}[m.id]||0;});
   avancerMissions(function(m){return m.id==="sansfin"&&d.mode==="sansfin"?d.etape:m.id==="vite"&&temps<=m.but*1000?m.but:0;},true);}
 function majRang(){var R=rangDe(PROG.xp),M=missionsDuJour();document.getElementById("rangAnneau").innerHTML=anneauRang(PROG.xp);
   document.getElementById("rangTitre").textContent="Rang "+R.r+" · "+titreRang(R.r);document.getElementById("rangBarre").style.width=(100*R.xp/R.besoin).toFixed(1)+"%";

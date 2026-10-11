@@ -104,6 +104,11 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   `genererMelange()` change tous les niveaux des joueurs. Ne le faire qu'avec une nouvelle graine.
 - La progression est dans `localStorage` (clé `orbicube-v1`) et, sur téléphone, dans
   `Preferences` (iOS peut vider le stockage web). `fusion()` réconcilie les deux.
+- **Cadence** (mesuré le 11/10/2026, processeur ralenti ×4) : un plateau qui ne fait que pulser (indice) et les
+  plateaux décoratifs (`lent` : logo de l'accueil, aide) se redessinent à 30 images/s ; un tour, un glisser ou un effet
+  gardent la pleine cadence (`Ticker.tic`). Le petit cube n'est redessiné que s'il change (`dessinerMini.cle`).
+  Occupation du fil : jeu avec indice 73 % → 32 %, accueil 45 % → 26 %. Pendant le mélange, le logo animé du
+  chargement (`.anneaux`) tourne sur le plateau troublé.
 - Pas d'effet `shadowBlur` du canvas sur le plateau : trop lent sur téléphone, il figeait le jeu.
   Les halos sont des traits translucides superposés (`halo()`).
 - **Les langues** : le français est la source. Un observateur traduit tout texte qui apparaît à
