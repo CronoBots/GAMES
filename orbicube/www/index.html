@@ -898,7 +898,10 @@ function montrer(id,sens){if(id==="accueil"||id==="mondes")accent(null);sens=sen
   if(id==="accueil"){rafraichirAccueil();Logo.demarrer();}
   if(id==="mondes")rafraichirMondes();if(id==="succes")rafraichirSucces();if(id==="aide")redimAide();if(id==="jeu")redimJeu();
   Ticker.reveiller();}
-document.querySelectorAll("[data-retour]").forEach(function(b){b.addEventListener("click",function(){sonClic();montrer(b.getAttribute("data-retour"),-1);});});
+var OPT_DEPUIS_JEU=false;
+document.querySelectorAll("[data-retour]").forEach(function(b){b.addEventListener("click",function(){sonClic();
+  if(OPT_DEPUIS_JEU&&b.closest("#options")){OPT_DEPUIS_JEU=false;if(J&&J.optT){J.t0+=performance.now()-J.optT;J.optT=0;}J.enPause=false;montrer("jeu",-1);setTimeout(pause,380);return;}
+  montrer(b.getAttribute("data-retour"),-1);});});
 function numeroter(racine){if(!racine)return;racine.querySelectorAll(".cascade").forEach(function(c){[].forEach.call(c.children,function(el,i){el.style.setProperty("--i",Math.min(i,14));});
   // relance l'animation d'entrée à chaque affichage
   c.style.display="none";void c.offsetWidth;c.style.display="";});}
@@ -1095,8 +1098,11 @@ function revoir(e,n,temps){var jeton=J,col=resoluCol(),dur=300*PROG.options.vite
 function pause(){if(!J||!document.getElementById("voile").hidden)return;var t=J.t0&&!J.fini?performance.now():0;J.tPause=t;J.enPause=true;
   ouvrirFenetre('<h3>Pause</h3><p>'+J.def.titre+' · '+J.def.sous+'</p><div class="menu"><button class="bouton principal" data-a="reprendre" type="button"><span>Reprendre</span></button>'+
     '<button class="bouton" data-a="recommencer" type="button">Recommencer le niveau</button>'+
+    '<button class="bouton" data-a="options" type="button">Options</button>'+
     (J.def.mode==="campagne"?'<button class="bouton" data-a="niveaux" type="button">Choisir un niveau</button>':"")+
-    '<button class="bouton" data-a="accueil" type="button">Accueil</button></div>',function(a){fermerFenetre();J.enPause=false;
+    '<button class="bouton" data-a="accueil" type="button">Accueil</button></div>',function(a){fermerFenetre();
+      // options pendant la partie : le chrono reste arrêté, et le retour rend la pause là où on l'a laissée
+      if(a==="options"){if(t)J.t0+=performance.now()-t;J.optT=performance.now();OPT_DEPUIS_JEU=true;montrer("options");return;}J.enPause=false;
       if(t)J.t0+=performance.now()-t;
       if(a==="recommencer")recommencer();else if(a==="niveaux")ouvrirMonde(J.def.w);else if(a==="accueil")montrer("accueil");},"reprendre");}
 
@@ -1312,6 +1318,7 @@ document.getElementById("btnRestaurer").addEventListener("click",function(){sonC
 if(CFG.liens&&CFG.liens.confidentialite)document.getElementById("lienConf").href=CFG.liens.confidentialite;
 // bouton retour d'Android : ferme la fenêtre, met en pause, remonte d'un écran, puis quitte
 NATIF.surRetour(function(){if(!document.getElementById("voile").hidden){if(FEN.esc)FEN.esc();return;}
+  if(ECRAN==="options"&&OPT_DEPUIS_JEU){document.querySelector("#options [data-retour]").click();return;}
   if(ECRAN==="jeu"){pause();return;}if(ECRAN==="niveaux"){montrer("mondes",-1);return;}if(ECRAN!=="accueil"){montrer("accueil",-1);return;}NATIF.quitter();});
 
 /* ========== 15 quater. LES LANGUES ==========
