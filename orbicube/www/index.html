@@ -324,12 +324,32 @@ a.bouton{text-decoration:none;color:inherit}
   box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 20px 50px -15px rgba(0,0,0,.9)}
 .tuile b{background:linear-gradient(180deg,#fff,#cbbfff);-webkit-background-clip:text;background-clip:text;color:transparent}
 .suc.ok{border-color:rgba(255,207,74,.3);background:linear-gradient(135deg,rgba(255,207,74,.1),rgba(255,207,74,.02)),rgba(14,14,24,.55)}
+
+/* écran de chargement : trois cercles qui tournent, puis tout se dissout dans l'accueil (n'arrête jamais le doigt) */
+#chargement{position:fixed;inset:0;z-index:60;display:grid;place-content:center;justify-items:center;gap:18px;pointer-events:none;
+  background:radial-gradient(60% 45% at 50% 45%,#15122a,#07070c 75%);transition:opacity .55s ease,visibility 0s .55s}
+#chargement svg{width:120px;height:120px}
+#chargement circle{transform-box:fill-box;transform-origin:center;animation:orbite 1.6s linear infinite}
+#chargement circle:nth-child(2){animation-duration:2.1s;animation-direction:reverse}
+#chargement circle:nth-child(3){animation-duration:2.6s}
+@keyframes orbite{to{transform:rotate(360deg)}}
+#chargement b{font-family:var(--f-titre);font-weight:800;letter-spacing:.3em;font-size:15px;color:#d9ceff;opacity:.85}
+#chargement.fini{opacity:0;visibility:hidden}
+/* mode zen : la partie sans chiffres */
+body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
+/* la carte d'un monde s'agrandit jusqu'à devenir l'écran de ses niveaux */
+.envol{position:fixed;z-index:15;border-radius:20px;pointer-events:none;border:1px solid rgba(var(--acc),.45);
+  background:radial-gradient(120% 120% at 20% 0%,rgba(var(--acc),.32),rgba(var(--acc),.04) 60%),#0d0d17;
+  box-shadow:0 0 60px -10px rgba(var(--acc),.6);transition:all .42s cubic-bezier(.2,.8,.2,1)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
 
 <canvas id="ciel" aria-hidden="true"></canvas>
+<div id="chargement" aria-hidden="true"><svg viewBox="-60 -60 120 120"><g fill="none" stroke-width="3" stroke-linecap="round">
+  <circle r="34" cx="0" cy="-12" stroke="#a58bff" stroke-dasharray="150 64"/><circle r="34" cx="-10.4" cy="6" stroke="#4cc9f0" stroke-dasharray="150 64"/>
+  <circle r="34" cx="10.4" cy="6" stroke="#ff6b9d" stroke-dasharray="150 64"/></g></svg><b class="notrad">ORBICUBE</b></div>
 <div id="app">
 
   <section class="ecran actif" id="accueil" aria-label="Accueil">
@@ -435,6 +455,8 @@ a.bouton{text-decoration:none;color:inherit}
           <div class="segment grille2" id="optPalette"><button type="button" data-v="classique">Classique</button><button type="button" data-v="contraste">Contraste</button><button type="button" data-v="pastel">Pastel</button><button type="button" data-v="neon">Néon</button></div></div>
         <div class="ligne"><div class="lt"><b>Cube en perspective</b><span>Au-dessus du plateau, il suit chaque tour.</span></div>
           <label class="interrupteur"><input type="checkbox" id="optCube" role="switch" aria-label="Cube en perspective"><i></i></label></div>
+        <div class="ligne"><div class="lt"><b>Mode zen</b><span>Ni chrono, ni compteur, ni étoiles pendant la partie.</span></div>
+          <label class="interrupteur"><input type="checkbox" id="optZen" role="switch" aria-label="Mode zen"><i></i></label></div>
         <div class="ligne"><div class="lt"><b>Pavé de notation</b><span>Des boutons U, R′… sous le plateau.</span></div>
           <label class="interrupteur"><input type="checkbox" id="optPave" role="switch" aria-label="Pavé de notation"><i></i></label></div>
       </div>
@@ -825,8 +847,12 @@ function etoilesMonde(w){var t=0;for(var i=0;i<MONDES[w].coups.length;i++){var r
 function rafraichirMondes(){document.getElementById("mondesEt").textContent=etoilesTotal()+"/"+NB_NIV*3;var l=document.getElementById("listeMondes");l.innerHTML="";
   MONDES.forEach(function(M,w){var ouvert=mondeOuvert(w),et=etoilesMonde(w),max=M.coups.length*3,b=document.createElement("button");b.type="button";b.className="monde"+(ouvert?"":" verrou")+(mondePaye(w)?" paye":"");b.style.setProperty("--acc",ACCENTS[w]);
     b.innerHTML='<canvas></canvas><div><div class="num">Monde '+(w+1)+'</div><h3>'+M.nom+'</h3><p>'+(ouvert?M.desc:mondePaye(w)?"Inclus dans le jeu complet.":"Terminez le monde "+w+" pour l’ouvrir.")+'</p><div class="barre"><i style="width:'+(et/max*100)+'%"></i></div><div class="compte"><span>'+et+' / '+max+' ★</span><span>'+M.anneaux.join(" ")+'</span></div></div>'+(ouvert?"":'<svg class="cadenas" viewBox="0 0 24 24">'+CAD+'</svg>');
-    b.addEventListener("click",function(){if(mondePaye(w)){sonClic();ouvrirBoutique("monde");return;}if(!ouvert){vibrer(20);avertir("Verrouillé","Terminez d’abord le monde "+w+".");return;}sonClic();ouvrirMonde(w);});
+    b.addEventListener("click",function(){if(mondePaye(w)){sonClic();ouvrirBoutique("monde");return;}if(!ouvert){vibrer(20);avertir("Verrouillé","Terminez d’abord le monde "+w+".");return;}sonClic();envol(b,w);});
     l.appendChild(b);vignetteMonde(b.querySelector("canvas"),M.anneaux,ouvert);});}
+function envol(carte,w){if(CALME){ouvrirMonde(w);return;}var r=carte.getBoundingClientRect(),v=document.createElement("div");v.className="envol";
+  v.style.setProperty("--acc",ACCENTS[w]);v.style.left=r.left+"px";v.style.top=r.top+"px";v.style.width=r.width+"px";v.style.height=r.height+"px";document.body.appendChild(v);
+  v.getBoundingClientRect();v.style.left="0px";v.style.top="0px";v.style.width=innerWidth+"px";v.style.height=innerHeight+"px";v.style.borderRadius="0px";
+  setTimeout(function(){ouvrirMonde(w);v.style.transition="opacity .35s ease";v.style.opacity="0";setTimeout(function(){v.remove();},400);},380);}
 function vignetteMonde(cv,anneaux,ouvert){var p=new Plateau(cv,{etiquettes:false});p.permis={};anneaux.forEach(function(b){p.permis[MV[b][0]+","+MV[b][1]]=true;});
   if(!ouvert)p.col=p.col.map(function(){return 3;});p.dimension(56);}
 function ouvrirMonde(w){var M=MONDES[w];accent(w);document.getElementById("nivTitre").textContent=M.nom;document.getElementById("nivEt").textContent=etoilesMonde(w)+"/"+M.coups.length*3;
@@ -1077,7 +1103,7 @@ function rafraichirSucces(){document.getElementById("sucCompte").textContent=Obj
 /* ========== 14. OPTIONS ========== */
 function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)&&PALETTES[o.palette])||PALETTES.classique;
   document.getElementById("optSon").checked=o.son;document.getElementById("optVib").checked=o.vib;document.getElementById("optCube").checked=o.cube;
-  document.getElementById("optPave").checked=o.pave;
+  document.getElementById("optPave").checked=o.pave;document.getElementById("optZen").checked=!!o.zen;document.body.classList.toggle("zen",!!o.zen);
   document.querySelectorAll("#optVitesse button").forEach(function(b){b.classList.toggle("on",+b.dataset.v===o.vitesse);});
   document.querySelectorAll("#optPalette button").forEach(function(b){var v=b.dataset.v,ouv=apparenceOuverte(v),c=b.querySelector(".cad");
     b.classList.toggle("on",COUL===PALETTES[v]);b.classList.toggle("verrou",!ouv);
@@ -1086,7 +1112,7 @@ function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)
   document.getElementById("btnPaveT").classList.toggle("on",o.pave);
   if(ECRAN==="jeu")requestAnimationFrame(redimJeu);Logo.dessiner();JeuP.dessiner();dessinerMini();}
 function opt(k,v){PROG.options[k]=v;PROG.options.maj=Date.now();sauver();appliquerOptions();}
-[["Son","son"],["Vib","vib"],["Cube","cube"],["Pave","pave"]].forEach(function(c){
+[["Son","son"],["Vib","vib"],["Cube","cube"],["Pave","pave"],["Zen","zen"]].forEach(function(c){
   document.getElementById("opt"+c[0]).addEventListener("change",function(){opt(c[1],this.checked);if(c[1]==="son"&&this.checked)sonClic();if(c[1]==="vib")vibrer(15);});});
 document.getElementById("optVitesse").addEventListener("click",function(e){var b=e.target.closest("button");if(b){opt("vitesse",+b.dataset.v);sonClic();}});
 document.getElementById("optPalette").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;
@@ -1207,6 +1233,12 @@ function appliquerLangue(){var o=PROG.options.langue||"auto";changerLangue(o==="
 document.getElementById("optLangue").addEventListener("change",function(){PROG.options.langue=this.value;PROG.options.maj=Date.now();sauver();appliquerLangue();sonClic();});
 
 /* ========== 16. DÉMARRAGE ========== */
+// l'écran de chargement se retire quand les polices sont prêtes (au moins 0,7 s pour qu'on le voie, au plus 1,6 s)
+(function(){var el=document.getElementById("chargement"),t0=performance.now(),fini=false;
+  function retirer(){if(fini)return;fini=true;el.classList.add("fini");setTimeout(function(){el.remove();},700);}
+  if(/[?&]capture\b/.test(location.search)||CALME){retirer();return;}
+  (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(function(){setTimeout(retirer,Math.max(0,700-(performance.now()-t0)));});
+  setTimeout(retirer,1600);})();
 // accès réservé aux outils de captures (npm run captures), actif seulement avec ?capture dans l'adresse
 if(/[?&]capture\b/.test(location.search))window.__orbicube={solution:function(){return J&&J.pret?cheminSolution().map(function(m){return nomDe(m).replace("′","'");}):[];},vus:function(){return Object.keys(VUS);},manques:function(){return Object.keys(MANQUES);}};
 function demarrer(){appliquerLangue();parcourir(document.body);appliquerOptions();majAchat();montrer("accueil");NATIF.demarrer();connecterSucces();

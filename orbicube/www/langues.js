@@ -145,6 +145,8 @@
     ["Couleurs", "Colours", "Kleuren", "Farben", "Colores"],
     ["« Contraste » est lisible par les daltoniens. Pastel et Néon se gagnent avec les étoiles.", "“Contrast” is colour-blind friendly. Pastel and Neon are earned with stars.", "„Contrast” is leesbaar voor kleurenblinden. Pastel en Neon verdien je met sterren.", "„Kontrast“ ist für Farbenblinde lesbar. Pastell und Neon verdienst du mit Sternen.", "«Contraste» es apta para daltónicos. Pastel y Neón se ganan con estrellas."],
     ["Pastel", "Pastel", "Pastel", "Pastell", "Pastel"],
+    ["Mode zen", "Zen mode", "Zenmodus", "Zen-Modus", "Modo zen"],
+    ["Ni chrono, ni compteur, ni étoiles pendant la partie.", "No timer, no move count, no stars while you play.", "Geen klok, geen teller, geen sterren tijdens het spel.", "Keine Uhr, kein Zähler, keine Sterne während des Spiels.", "Sin cronómetro, sin contador ni estrellas durante la partida."],
     ["Néon", "Neon", "Neon", "Neon", "Neón"],
     ["Débloqué à {0} étoiles", "Unlocked at {0} stars", "Vrij vanaf {0} sterren", "Ab {0} Sternen freigeschaltet", "Se desbloquea con {0} estrellas"],
     ["Revoir ma partie", "Watch my game", "Mijn spel terugkijken", "Mein Spiel ansehen", "Ver mi partida"],
