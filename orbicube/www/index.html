@@ -450,6 +450,9 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
 #btnIndice .badge.vide{background:#3a3850;color:var(--pale)}
 .devise[hidden]{display:none}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+/* réglage « Animations » décoché : même neutralisation, à la demande du joueur (en plus du réglage système) */
+body.sobre *,body.sobre *::before,body.sobre *::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+body.sobre #plateau{transition:none}
 </style>
 </head>
 <body>
@@ -597,6 +600,8 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
           <label class="interrupteur"><input type="checkbox" id="optZen" role="switch" aria-label="Mode zen"><i></i></label></div>
         <div class="ligne"><div class="lt"><b>Pavé de notation</b><span>Des boutons U, R′… sous le plateau.</span></div>
           <label class="interrupteur"><input type="checkbox" id="optPave" role="switch" aria-label="Pavé de notation"><i></i></label></div>
+        <div class="ligne"><div class="lt"><b>Animations</b><span>Décochez pour réduire les mouvements et les effets.</span></div>
+          <label class="interrupteur"><input type="checkbox" id="optAnims" role="switch" aria-label="Animations"><i></i></label></div>
       </div>
       <div class="groupe" id="grpAchat"><h4>Achat</h4>
         <div class="ligne"><div class="lt"><b>Orbicube complet</b><span id="achatEtat">Les 6 mondes, toute la partie libre.</span></div>
@@ -954,7 +959,7 @@ function etoilesChrono(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t
 /* ========== 6. LA PROGRESSION (appareil, et compte si connecté) ========== */
 var CLE_LOCALE="orbicube-v1";
 function progVide(){return{v:1,niveaux:{},tips:{},succes:{},stats:{tours:0,tranches:0,resolus:0,indices:0,meilleur:{}},jours:{},serie:0,dernierJour:"",amp:3,ampVide:0,ampJour:"",ampMaj:0,xp:0,semaines:{},missions:null,
-  options:{musique:true,volMusique:2,son:true,vib:true,vitesse:1,palette:"classique",cube:true,pave:false,horaire:true,langue:"auto",maj:0}};}
+  options:{musique:true,volMusique:2,son:true,vib:true,anims:true,vitesse:1,palette:"classique",cube:true,pave:false,horaire:true,langue:"auto",maj:0}};}
 function fusion(a,b){if(!b||typeof b!=="object")return a;var r=JSON.parse(JSON.stringify(a));if(b.achat)r.achat=true;
   Object.keys(b.niveaux||{}).forEach(function(k){var x=r.niveaux[k],y=b.niveaux[k];if(!x){r.niveaux[k]=y;return;}
     r.niveaux[k]={etoiles:Math.max(x.etoiles||0,y.etoiles||0),chrono:Math.max(x.chrono||0,y.chrono||0),coups:Math.min(x.coups||1e9,y.coups||1e9),temps:Math.min(x.temps||1e12,y.temps||1e12),sansIndice:!!(x.sansIndice||y.sansIndice)};});
@@ -1375,7 +1380,7 @@ function toastSuivant(){var t=toastFile.shift();if(!t){toastActif=false;return;}
   var el=document.getElementById("toast");el.classList.add("vu");if(t[0]==="Succès débloqué"){bip(988,.2,"sine",.08);bip(1319,.3,"sine",.07,.1);}
   setTimeout(function(){el.classList.remove("vu");setTimeout(toastSuivant,500);},2600);}
 function avertir(titre,txt){toast(titre,txt);}
-function confettis(){if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;var cv=document.getElementById("confettis"),cx=cv.getContext("2d"),W=innerWidth,H=innerHeight;cv.hidden=false;
+function confettis(){if(CALME)return;var cv=document.getElementById("confettis"),cx=cv.getContext("2d"),W=innerWidth,H=innerHeight;cv.hidden=false;
   cv.width=W*DPR;cv.height=H*DPR;cx.setTransform(DPR,0,0,DPR,0,0);var ps=[];
   for(var i=0;i<140;i++)ps.push({x:W/2+(Math.random()-.5)*60,y:H*.42,vx:(Math.random()-.5)*12,vy:-Math.random()*14-4,r:Math.random()*5+3,c:COUL[i%6]});
   var t0=performance.now();(function f(now){cx.clearRect(0,0,W,H);ps.forEach(function(p){p.vy+=.38;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;cx.fillStyle=p.c;cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);cx.fill();});
@@ -1430,6 +1435,10 @@ function rafraichirSucces(){document.getElementById("sucCompte").textContent=Obj
 
 /* ========== 14. OPTIONS ========== */
 function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)&&PALETTES[o.palette])||PALETTES.classique;
+  // « Animations » décoché = calme forcé, en plus du réglage système prefers-reduced-motion
+  CALME=!!((window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)||o.anims===false);
+  document.body.classList.toggle("sobre",o.anims===false);
+  document.getElementById("optAnims").checked=o.anims!==false;
   document.getElementById("optSon").checked=o.son;document.getElementById("optVib").checked=o.vib;document.getElementById("optCube").checked=o.cube;
   document.getElementById("optPave").checked=o.pave;document.getElementById("optZen").checked=!!o.zen;document.getElementById("optMusique").checked=o.musique!==false;document.getElementById("optVolMusique").closest(".ligne").hidden=o.musique===false;
   document.querySelectorAll("#optVolMusique button").forEach(function(b){b.classList.toggle("on",+b.dataset.v===(o.volMusique||2));});Musique.regler();document.body.classList.toggle("zen",!!o.zen||!!(J&&J.def.relax));
@@ -1443,7 +1452,7 @@ function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)
   document.getElementById("btnPaveT").classList.toggle("on",o.pave);
   if(ECRAN==="jeu")requestAnimationFrame(redimJeu);Logo.dessiner();JeuP.dessiner();dessinerMini();}
 function opt(k,v){PROG.options[k]=v;PROG.options.maj=Date.now();sauver();appliquerOptions();}
-[["Son","son"],["Vib","vib"],["Cube","cube"],["Pave","pave"],["Zen","zen"],["Musique","musique"]].forEach(function(c){
+[["Son","son"],["Vib","vib"],["Cube","cube"],["Pave","pave"],["Zen","zen"],["Musique","musique"],["Anims","anims"]].forEach(function(c){
   document.getElementById("opt"+c[0]).addEventListener("change",function(){opt(c[1],this.checked);if(c[1]==="musique"&&this.checked){contexteAudio();Musique.lancer();}if(c[1]==="son"&&this.checked)sonClic();if(c[1]==="vib")vibrer(15);});});
 document.getElementById("optVitesse").addEventListener("click",function(e){var b=e.target.closest("button");if(b){opt("vitesse",+b.dataset.v);sonClic();}});
 document.getElementById("optForme").addEventListener("click",function(e){var b=e.target.closest("button");if(b){opt("forme",b.dataset.v);sonClic();rafraichirMondes&&document.getElementById("listeMondes").children.length&&rafraichirMondes();}});

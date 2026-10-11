@@ -197,6 +197,8 @@
     ["Rotation des cercles, étoiles, victoire.", "Turning circles, stars, victory.", "Draaiende cirkels, sterren, overwinning.", "Drehende Kreise, Sterne, Sieg.", "Giro de círculos, estrellas, victoria."],
     ["Vibrations", "Vibrations", "Trillingen", "Vibration", "Vibración"],
     ["Un léger retour à chaque tour.", "A light tap on every turn.", "Een lichte tik bij elke draai.", "Ein leichtes Feedback bei jeder Drehung.", "Un toque suave en cada giro."],
+    ["Animations", "Animations", "Animaties", "Animationen", "Animaciones"],
+    ["Décochez pour réduire les mouvements et les effets.", "Turn off to reduce motion and effects.", "Schakel uit om beweging en effecten te verminderen.", "Ausschalten, um Bewegung und Effekte zu reduzieren.", "Desactiva para reducir el movimiento y los efectos."],
     ["Plateau", "Board", "Bord", "Brett", "Tablero"],
     ["Vitesse des rotations", "Turn speed", "Draaisnelheid", "Drehgeschwindigkeit", "Velocidad de giro"],
     ["Lente", "Slow", "Traag", "Langsam", "Lenta"],
