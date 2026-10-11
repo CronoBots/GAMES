@@ -5,3 +5,7 @@ node_modules/
 captures/brouillon/
 *.log
 .DS_Store
+# skills d'aide au développement installés en local (npx skills) : outils de l'atelier, pas du jeu
+.agents/
+.claude/
+skills-lock.json
