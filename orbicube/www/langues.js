@@ -53,6 +53,8 @@
     ["Monde {0} · Niveau {1} · {2}", "World {0} · Level {1} · {2}", "Wereld {0} · Level {1} · {2}", "Welt {0} · Level {1} · {2}", "Mundo {0} · Nivel {1} · {2}"],
     ["{0} · par {1}", "{0} · par {1}", "{0} · par {1}", "{0} · Par {1}", "{0} · par {1}"],
     // --- rang, missions, ciels, défis, relax
+    ["Classements", "Leaderboards", "Ranglijsten", "Bestenlisten", "Clasificaciones"],
+    ["Voir le classement", "See the leaderboard", "Bekijk de ranglijst", "Bestenliste ansehen", "Ver la clasificación"],
     ["Premier niveau", "First level", "Eerste level", "Erstes Level", "Primer nivel"],
     ["Suite dans le jeu complet", "More in the full game", "Meer in het volledige spel", "Mehr im Vollspiel", "Más en el juego completo"],
     ["Campagne terminée", "Campaign complete", "Campagne voltooid", "Kampagne geschafft", "Campaña terminada"],

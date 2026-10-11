@@ -108,6 +108,15 @@ window.Natif = {
     if (!this.succesDisponibles()) return Promise.resolve(false);
     return SuccesNatifs.afficher().then(() => true).catch(() => false);
   },
+  // Classements : valeur entière ; temps = vrai pour un chrono en millisecondes (le plus petit gagne)
+  classementEnvoyer(id, valeur, temps) {
+    if (!this.succesDisponibles() || !id) return Promise.resolve(false);
+    return SuccesNatifs.envoyerScore({ id, valeur: Math.round(valeur), temps: !!temps }).then(() => true).catch(() => false);
+  },
+  classementsAfficher(id) {
+    if (!this.succesDisponibles()) return Promise.resolve(false);
+    return SuccesNatifs.afficherClassements({ id: id || '' }).then(() => true).catch(() => false);
+  },
   restaurer() {
     return configurer()
       .then((ok) => (ok ? Purchases.restorePurchases().then((r) => ({ ok: droitActif(r.customerInfo) })) : { ok: false, erreur: 'indisponible' }))

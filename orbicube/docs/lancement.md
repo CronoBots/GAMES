@@ -148,6 +148,37 @@ rouvrir ne fait rien perdre (les succès déjà gagnés sont renvoyés, sans dou
 > Android Studio). `npm run tester` vérifie tout le branchement côté jeu avec un téléphone
 > simulé ; la première compilation dans Xcode et Android Studio est le vrai test du module.
 
+## 3 ter. Les classements dans Game Center et Google Play Jeux **[vous]**
+
+Décidé le 11/10/2026 : pas de compte à nous, les classements passent par le service de jeu du
+téléphone. Le joueur n'a rien à créer, aucune donnée ne nous parvient, et la politique de
+confidentialité ne change pas. Même module que les succès (`plugins/succes-natifs`). Sans
+configuration, rien ne change : le bouton « Classements » du Profil reste caché.
+
+| Clé du jeu | Identifiant Apple | Nom | Format | Classement | Récurrence (Apple) |
+|---|---|---|---|---|---|
+| jour | `orbicube.classement.jour` | Défi du jour | Temps écoulé, au centième | le plus petit gagne | quotidienne, à minuit |
+| semaine | `orbicube.classement.semaine` | Défi de la semaine | Temps écoulé, au centième | le plus petit gagne | hebdomadaire, le lundi |
+| sansfin | `orbicube.classement.sansfin` | Sans fin | Entier | le plus grand gagne | aucune |
+| etoiles | `orbicube.classement.etoiles` | Étoiles | Entier (sur 360 : coups + temps) | le plus grand gagne | aucune |
+
+Le jeu envoie un chrono en millisecondes : le module le convertit en centièmes pour Game Center,
+et Google Play Jeux attend des millisecondes. À la connexion, les meilleurs résultats déjà faits
+(étoiles, sans fin, défi du jour et de la semaine en cours) sont renvoyés ; le service garde le meilleur.
+
+**iPhone** : App Store Connect > votre app > **Game Center** > **Classements** > créez les quatre,
+avec exactement les identifiants du tableau (déjà dans `www/config.js` > `classementsStores.ios`).
+Les deux défis sont des classements **récurrents** (iOS 14 et plus) : quotidien et hebdomadaire.
+
+**Android** : Play Console > **Services de jeux Play** > **Classements** > créez les quatre (format
+*Temps* pour les défis, *Numérique* sinon ; ordre « plus petit » pour les défis). Google donne à
+chacun un identifiant `CgkI…` : recopiez-les dans `www/config.js` > `classementsStores.android`.
+Google Play Jeux propose de lui-même les vues du jour, de la semaine et de tous les temps.
+Publiez-les, sinon seuls les testeurs les voient.
+
+**À vérifier sur un vrai téléphone** : réussir le défi du jour puis « Voir le classement » ouvre le
+classement du jour avec son temps ; Profil > « Classements » ouvre la liste des quatre.
+
 ---
 
 ## 3 ter. Les langues

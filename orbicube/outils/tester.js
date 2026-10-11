@@ -151,12 +151,13 @@ async function resoudre(p) {
     console.log("Application iOS simulée");
     const ctx = await b.newContext({ ...devices["iPhone 13"], locale: "fr-FR" });
     await ctx.route("**/natif.js", (r) => r.fulfill({ contentType: "text/javascript", body: `
-      window.__envoyes = []; window.__connexions = 0;
+      window.__envoyes = []; window.__connexions = 0; window.__scores = [];
       window.Natif = { natif: true, plateforme: "ios", vibrer: () => true, lire: () => Promise.resolve(null), ecrire() {}, demarrer() {}, surRetour() {}, quitter() {},
         achatsDisponibles: () => Promise.resolve(true), prix: () => Promise.resolve("3,49 €"), etatAchat: () => Promise.resolve(null),
         acheter: () => new Promise((ok) => setTimeout(() => ok({ ok: true }), 200)), restaurer: () => Promise.resolve({ ok: false, erreur: "aucun" }),
         succesDisponibles: () => true, succesConnecter: () => { window.__connexions++; return Promise.resolve(true); },
-        succesDebloquer: (id) => { window.__envoyes.push(id); return Promise.resolve(true); }, succesAfficher: () => { window.__affiche = true; return Promise.resolve(true); } };` }));
+        succesDebloquer: (id) => { window.__envoyes.push(id); return Promise.resolve(true); }, succesAfficher: () => { window.__affiche = true; return Promise.resolve(true); },
+        classementEnvoyer: (id, v, t) => { window.__scores.push([id, v, t]); return Promise.resolve(true); }, classementsAfficher: (id) => { window.__classement = id; return Promise.resolve(true); } };` }));
     const p = await ctx.newPage();
     p.setDefaultTimeout(8000);
     const erreurs = [];
@@ -171,6 +172,12 @@ async function resoudre(p) {
     await p.reload(); await p.waitForTimeout(1200);
     const renvoi = await p.evaluate(() => ({ c: window.__connexions, e: window.__envoyes }));
     renvoi.c === 1 && renvoi.e.includes("orbicube.premier") ? ok("à l'ouverture : connexion, puis renvoi des succès déjà gagnés") : faute("pas de renvoi à l'ouverture : " + JSON.stringify(renvoi));
+    const scores = await p.evaluate(() => window.__scores);
+    scores.some((s) => s[0] === "orbicube.classement.etoiles" && s[1] > 0) ? ok("total d'étoiles envoyé au classement de Game Center") : faute("classement des étoiles non envoyé : " + JSON.stringify(scores));
+    await p.click("#btnRang"); await p.waitForTimeout(400);
+    if (await p.isVisible("#btnClassements")) { await p.click("#btnClassements"); await p.waitForTimeout(200); }
+    (await p.evaluate(() => window.__classement)) === "" ? ok("le Profil ouvre les classements de Game Center") : faute("bouton Classements absent ou inactif");
+    await p.click("#profil [data-retour]"); await p.waitForTimeout(400);
     await p.click("#btnSucces"); await p.waitForTimeout(400);
     (await p.isVisible("#btnSuccesStore")) && (await p.textContent("#btnSuccesStore")).includes("Game Center") ? ok("bouton « Game Center » sur l'écran des succès") : faute("bouton Game Center absent");
     await p.click("#btnSuccesStore"); await p.waitForTimeout(200);

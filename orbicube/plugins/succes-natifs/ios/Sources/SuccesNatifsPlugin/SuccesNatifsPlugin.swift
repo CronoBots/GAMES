@@ -4,7 +4,9 @@ import GameKit
 /// Succès d'Orbicube dans Game Center.
 /// connecter : identifie le joueur (Apple affiche sa fenêtre la première fois) ;
 /// debloquer : déclare un succès gagné (sans effet s'il l'est déjà) ;
-/// afficher : ouvre la liste des succès de Game Center.
+/// afficher : ouvre la liste des succès de Game Center ;
+/// envoyerScore : envoie un score à un classement (un chrono arrive en millisecondes : Game Center compte en centièmes) ;
+/// afficherClassements : ouvre un classement, ou la liste des classements sans identifiant.
 @objc(SuccesNatifsPlugin)
 public class SuccesNatifsPlugin: CAPPlugin, CAPBridgedPlugin, GKGameCenterControllerDelegate {
     public let identifier = "SuccesNatifsPlugin"
@@ -12,7 +14,9 @@ public class SuccesNatifsPlugin: CAPPlugin, CAPBridgedPlugin, GKGameCenterContro
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "connecter", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "debloquer", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "afficher", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "afficher", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "envoyerScore", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "afficherClassements", returnType: CAPPluginReturnPromise)
     ]
     private var appelsEnAttente: [CAPPluginCall] = []
 
@@ -62,6 +66,38 @@ public class SuccesNatifsPlugin: CAPPlugin, CAPBridgedPlugin, GKGameCenterContro
     @objc public func afficher(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
             let vue = GKGameCenterViewController(state: .achievements)
+            vue.gameCenterDelegate = self
+            self.bridge?.viewController?.present(vue, animated: true)
+            call.resolve()
+        }
+    }
+
+    @objc public func envoyerScore(_ call: CAPPluginCall) {
+        guard let id = call.getString("id"), !id.isEmpty else {
+            call.reject("identifiant de classement manquant")
+            return
+        }
+        guard GKLocalPlayer.local.isAuthenticated else {
+            call.reject("joueur non connecté à Game Center")
+            return
+        }
+        let valeur = call.getInt("valeur") ?? 0
+        let score = call.getBool("temps") ?? false ? valeur / 10 : valeur
+        GKLeaderboard.submitScore(score, context: 0, player: GKLocalPlayer.local, leaderboardIDs: [id]) { erreur in
+            if let erreur = erreur {
+                call.reject(erreur.localizedDescription)
+            } else {
+                call.resolve()
+            }
+        }
+    }
+
+    @objc public func afficherClassements(_ call: CAPPluginCall) {
+        let id = call.getString("id") ?? ""
+        DispatchQueue.main.async {
+            let vue = id.isEmpty
+                ? GKGameCenterViewController(state: .leaderboards)
+                : GKGameCenterViewController(leaderboardID: id, playerScope: .global, timeScope: .allTime)
             vue.gameCenterDelegate = self
             self.bridge?.viewController?.present(vue, animated: true)
             call.resolve()

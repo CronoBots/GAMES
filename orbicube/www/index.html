@@ -554,6 +554,7 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
     </div>
     <div class="defile"><div class="centre cascade">
       <div class="rang-carte" id="rangCarte"></div>
+      <button class="bouton" id="btnClassements" type="button" hidden style="width:100%;justify-content:center;margin-bottom:14px"><svg viewBox="0 0 24 24"><path d="M4 20V11h4v9M10 20V5h4v15M16 20v-6h4v6"/></svg><span>Classements</span></button>
       <div class="groupe"><h4>Missions du jour</h4><div id="listeMissions"></div></div>
       <div class="groupe"><h4>Ciel</h4><p class="ciel-aide">Le décor du jeu. Chaque rang en ouvre un nouveau.</p><div class="ciels" id="listeCiels"></div></div>
       <div class="groupe"><h4>Comment monter</h4><div class="ligne"><div class="lt"><b>Résoudre un cube</b><span>De l’expérience selon sa longueur, plus pour chaque étoile.</span></div></div>
@@ -1226,6 +1227,9 @@ function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length
   else if(d.mode==="sansfin"){record=d.etape>(PROG.stats.sansFin||0);PROG.stats.sansFin=Math.max(PROG.stats.sansFin||0,d.etape);}
   else{av=PROG.stats.meilleur[d.n];record=!av||temps<av.temps;PROG.stats.meilleur[d.n]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps)}:{coups:n,temps:temps};}
   if(J.tranches[0]&&J.tranches[1]&&J.tranches[2])PROG.tips.troisTranches=1;
+  if(d.mode==="jour"||d.mode==="semaine")envoyerClassement(d.mode,temps,true);
+  if(d.mode==="sansfin")envoyerClassement("sansfin",d.etape);
+  if(d.mode==="campagne")envoyerClassement("etoiles",etoilesTotal()+etoilesChrono());
   J.xp=xpVictoire(d,e,eT,!av);gagnerXp(J.xp);missionsVictoire(d,e,eT,temps);
   sauver();majJeu();var jeton=J,t0=performance.now();
   // vague de victoire : les cercles s'allument l'un après l'autre, les pastilles sautent du centre vers le bord
@@ -1251,9 +1255,10 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
   if(d.mode==="libre")html+='<button class="bouton principal" data-a="encore" type="button"><span>Nouveau mélange</span></button>';
   if(d.mode==="sansfin")html+='<button class="bouton principal" data-a="etape" type="button"><span>Étape suivante</span></button>';
   if(d.mode==="jour"||d.mode==="semaine")html+='<button class="bouton principal" data-a="partager" type="button"><span>Partager mon résultat</span></button>';
+  if((d.mode==="jour"||d.mode==="semaine"||d.mode==="sansfin")&&classementsDispo()&&idClassement(d.mode))html+='<button class="bouton" data-a="classement" type="button" style="justify-content:center">Voir le classement</button>';
   html+='<div class="rangee2"><button class="bouton" data-a="rejouer" type="button">Rejouer</button><button class="bouton" data-a="menu" type="button">'+(d.mode==="campagne"?"Niveaux":"Accueil")+'</button></div>'+
     (J.hist.length?'<button class="bouton" data-a="revoir" type="button" style="justify-content:center;min-height:46px;font-size:14px;color:var(--pale)">Revoir ma partie</button>':"")+'</div>';
-  ouvrirFenetre(html,function(a){if(a==="partager"){partager(e,n,temps);return;}fermerFenetre();if(a==="revoir"){revoir(e,n,temps);return;}
+  ouvrirFenetre(html,function(a){if(a==="partager"){partager(e,n,temps);return;}if(a==="classement"){sonClic();NATIF.classementsAfficher(idClassement(d.mode));return;}fermerFenetre();if(a==="revoir"){revoir(e,n,temps);return;}
     if(a==="etape"){var k=d.etape+1;if(k>5&&!complet())ouvrirBoutique("libre");else lancer(sansFinDef(k));return;}if(a==="suivant"){if(mondePaye(suiv.w))ouvrirBoutique("monde");else lancer(niveauDef(suiv.w,suiv.i));}
     else if(a==="encore")lancer(libreDef(d.n));else if(a==="rejouer")lancer(d.mode==="libre"?libreDef(d.n):d.mode==="sansfin"?sansFinDef(d.etape):d);
     else if(d.mode==="campagne")ouvrirMonde(d.w);else montrer("accueil");},"menu");
@@ -1399,8 +1404,16 @@ function verifierSucces(){SUCCES.forEach(function(s){if(!PROG.succes[s.id]&&s.ok
 var STORE_SUCCES=false;
 // à l'ouverture : connexion au service du téléphone, puis renvoi des succès déjà gagnés (sans effet s'ils y sont déjà)
 function connecterSucces(){if(!NATIF.succesDisponibles||!NATIF.succesDisponibles())return;
-  NATIF.succesConnecter().then(function(ok){STORE_SUCCES=ok;majBoutonStore();if(ok)Object.keys(PROG.succes).forEach(versStore);});}
-function majBoutonStore(){var b=document.getElementById("btnSuccesStore");b.hidden=!STORE_SUCCES;
+  NATIF.succesConnecter().then(function(ok){STORE_SUCCES=ok;majBoutonStore();if(ok){Object.keys(PROG.succes).forEach(versStore);envoyerClassements();}});}
+// classements des stores : seulement quand le joueur est connecté au service du téléphone
+var CLASSEMENTS=["jour","semaine","sansfin","etoiles"];
+function idClassement(k){var m=(CFG.classementsStores||{})[NATIF.plateforme]||{};return m[k]||"";}
+function classementsDispo(){return STORE_SUCCES&&!!NATIF.classementEnvoyer;}
+function envoyerClassement(k,v,temps){if(classementsDispo()&&idClassement(k)&&v>0)NATIF.classementEnvoyer(idClassement(k),Math.round(v),!!temps);}
+// à la connexion : les meilleurs résultats déjà faits rejoignent les classements (le service garde le meilleur)
+function envoyerClassements(){envoyerClassement("etoiles",etoilesTotal()+etoilesChrono());envoyerClassement("sansfin",PROG.stats.sansFin||0);
+  var j=PROG.jours[cleJour()];if(j)envoyerClassement("jour",j.temps,true);var w=(PROG.semaines||{})[cleSemaine()];if(w)envoyerClassement("semaine",w.temps,true);}
+function majBoutonStore(){document.getElementById("btnClassements").hidden=!classementsDispo();var b=document.getElementById("btnSuccesStore");b.hidden=!STORE_SUCCES;
   document.getElementById("succesStoreNom").textContent=NATIF.plateforme==="ios"?"Game Center":"Google Play Jeux";}
 function rafraichirSucces(){document.getElementById("sucCompte").textContent=Object.keys(PROG.succes).length+"/"+SUCCES.length;
   var meil=PROG.stats.meilleur,best=Object.keys(meil).map(Number).sort(function(a,b){return b-a;})[0];
@@ -1562,6 +1575,7 @@ function rafraichirProfil(){var R=rangDe(PROG.xp),M=missionsDuJour(),proch=CIELS
   document.getElementById("listeCiels").innerHTML=CIELS.map(function(c){var ok=cielOuvert(c);return '<button type="button" class="ciel-ch c-'+c.id+(ok?"":" ferme")+(cur===c.id&&ok?" on":"")+'" data-ciel="'+c.id+'"><span>'+c.nom+'</span>'+(ok?"":'<small>rang '+c.rang+'</small>')+'</button>';}).join("");}
 document.getElementById("listeCiels").addEventListener("click",function(e){var b=e.target.closest("[data-ciel]");if(!b)return;var c=CIELS.filter(function(x){return x.id===b.dataset.ciel;})[0];
   if(!cielOuvert(c)){vibrer(20);toast(c.nom,"Débloqué au rang {0}".replace("{0}",c.rang));return;}sonClic();opt("ciel",c.id);appliquerCiel();rafraichirProfil();});
+document.getElementById("btnClassements").addEventListener("click",function(){sonClic();NATIF.classementsAfficher("");});
 document.getElementById("btnRang").addEventListener("click",function(){sonClic();montrer("profil");});
 
 // le défi de la semaine : un long mélange, le même pour tous du lundi au dimanche

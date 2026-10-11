@@ -113,6 +113,23 @@ console.log("Succès des stores");
   if (!soucis) ok(ids.length + " succès, chacun avec sa correspondance iOS et Android");
 }
 
+console.log("Classements des stores");
+{
+  const m = jeu.match(/var CLASSEMENTS=\[([^\]]*)\]/), ids = m ? [...m[1].matchAll(/"([a-z0-9]+)"/g)].map((x) => x[1]) : [];
+  if (!ids.length) faute("liste des classements introuvable");
+  const st = CFG.classementsStores || {};
+  let soucis = 0;
+  for (const pf of ["ios", "android"]) {
+    const c = st[pf] || {};
+    const ecart = ids.filter((i) => !(i in c)).concat(Object.keys(c).filter((i) => !ids.includes(i)));
+    if (ecart.length) { faute(pf + " : classements sans correspondance " + ecart.join(", ")); soucis++; }
+    const remplis = Object.values(c).filter(Boolean);
+    if (new Set(remplis).size !== remplis.length) { faute(pf + " : deux classements partagent un identifiant"); soucis++; }
+    if (pf === "ios" && remplis.some((v) => !/^[A-Za-z0-9._]+$/.test(v))) { faute("ios : identifiant de classement invalide"); soucis++; }
+  }
+  if (!soucis) ok(ids.length + " classements, chacun avec sa correspondance iOS et Android");
+}
+
 console.log("Géométrie et niveaux");
 // on rejoue le vrai code du jeu, découpé dans index.html, sans le recopier
 const debut = jeu.indexOf("/* ========== 1.");

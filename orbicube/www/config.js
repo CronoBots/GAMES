@@ -33,6 +33,13 @@ window.ORBICUBE_CONFIG = {
     }
   },
 
+  // Classements de Game Center et de Google Play Jeux : défi du jour (temps), défi de la semaine (temps),
+  // sans fin (étape la plus haute) et total des étoiles (coups + temps). Android : identifiants de la Play Console.
+  classementsStores: {
+    ios: { jour: "orbicube.classement.jour", semaine: "orbicube.classement.semaine", sansfin: "orbicube.classement.sansfin", etoiles: "orbicube.classement.etoiles" },
+    android: { jour: "", semaine: "", sansfin: "", etoiles: "" }
+  },
+
   // Liens affichés dans la version web (laisser vides tant que l'app n'est pas publiée).
   liens: { appStore: "", googlePlay: "", confidentialite: "confidentialite.html" }
 };

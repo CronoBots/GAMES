@@ -121,6 +121,12 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 - **Les succès des stores** passent par `plugins/succes-natifs` ; sans module ni configuration,
   tout se replie sans bruit. Le module natif n'a jamais été compilé ici : la première build Xcode
   et Android Studio le validera.
+- **Classements** (le client, le 11/10/2026 : « on fera comme tu le dis ») : par Game Center et Google Play Jeux,
+  **pas de compte à nous** (la politique de confidentialité ne change pas). `CLASSEMENTS` (jour, semaine, sansfin,
+  etoiles), identifiants dans `www/config.js` > `classementsStores`, contrôlés par le vérificateur ; envoi à la victoire
+  et à la connexion (`envoyerClassements`), chrono en millisecondes (le module iOS le passe en centièmes). Bouton
+  « Classements » du Profil et « Voir le classement » dans la fenêtre de victoire des défis et du sans fin, visibles
+  seulement connecté. Procédure dans `docs/lancement.md` 3 ter.
 - **Un geste vaut au plus un coup, compté au lâcher** (le client, le 11/10/2026) : pendant le
   glisser, les quarts de tour franchis sont posés sur le plateau mais pas comptés ; au lâcher,
   `finirGeste()` lit la rotation nette : 0 (aller-retour, tour complet) = aucun coup, un quart =
