@@ -341,6 +341,24 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
 .envol{position:fixed;z-index:15;border-radius:20px;pointer-events:none;border:1px solid rgba(var(--acc),.45);
   background:radial-gradient(120% 120% at 20% 0%,rgba(var(--acc),.32),rgba(var(--acc),.04) 60%),#0d0d17;
   box-shadow:0 0 60px -10px rgba(var(--acc),.6);transition:all .42s cubic-bezier(.2,.8,.2,1)}
+
+/* ===== Accueil en mosaïque (11/10/2026) : le bouton principal, puis deux tuiles hautes, puis le reste ===== */
+#accueil .menu{gap:12px}
+#accueil .bouton.principal{min-height:62px;border-radius:20px;font-size:18px}
+#accueil .bouton.principal svg{width:34px;height:34px;padding:9px;border-radius:50%;background:rgba(255,255,255,.18);box-sizing:border-box}
+.bento{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bouton.bloc{flex-direction:column;align-items:flex-start;justify-content:space-between;gap:10px;min-height:104px;padding:14px 15px;border-radius:20px}
+.bouton.bloc>span:not(.droite){font-size:16px;line-height:1.15}
+.bouton.bloc .droite{margin-left:0;margin-top:-6px}
+.pastille{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:rgba(var(--acc),.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
+.pastille svg{width:20px!important;height:20px!important;stroke:rgb(var(--acc))}
+.bouton.or .pastille{background:rgba(255,207,74,.16)}.bouton.or .pastille svg{stroke:var(--or)}
+.bouton .droite{text-transform:uppercase;letter-spacing:.1em;font-size:11px}
+#accueil .rangee2 .bouton{border-radius:18px}
+.lien{background:none;border:0;color:var(--pale);font-size:14px;font-weight:600;padding:10px;cursor:pointer;text-decoration:underline;text-decoration-color:rgba(255,255,255,.2);text-underline-offset:4px}
+/* titres de partie : la date du défi commence par une majuscule */
+.jtitre span::first-letter{text-transform:uppercase}
+.jrecord{display:block;margin-top:10px;font-family:var(--f-chiffre);font-size:11px;letter-spacing:.06em;color:var(--sourd);text-transform:none}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
@@ -364,18 +382,20 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
           <button class="bouton principal" id="btnJouer" type="button">
             <svg viewBox="0 0 24 24"><path d="M7 4l12 8-12 8z" fill="currentColor" stroke="none"/></svg>
             <span id="jouerTxt">Jouer</span><span class="droite" id="jouerSous"></span></button>
-          <button class="bouton or" id="btnJour" type="button">
-            <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15.5" r="2"/></svg>
+          <div class="bento">
+          <button class="bouton or bloc" id="btnJour" type="button">
+            <i class="pastille"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15.5" r="2"/></svg></i>
             <span>Défi du jour</span><span class="droite" id="jourSous"></span></button>
-          <button class="bouton" id="btnLibre" type="button">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>
+          <button class="bouton bloc" id="btnLibre" type="button">
+            <i class="pastille"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg></i>
             <span>Partie libre</span><span class="droite">chrono</span></button>
+          </div>
           <div class="rangee2">
             <button class="bouton" id="btnSucces" type="button"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M8.5 14l-1.5 7 5-3 5 3-1.5-7"/></svg>Succès</button>
             <button class="bouton" id="btnOptions" type="button"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>Options</button>
           </div>
           <button class="bouton or" id="btnBoutique" type="button" hidden><svg viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg><span>Jeu complet</span><span class="droite" id="prixAccueil"></span></button>
-          <button class="bouton" id="btnAide" type="button" style="justify-content:center;min-height:46px;font-size:14px;color:var(--pale)">Comment jouer</button>
+          <button class="lien" id="btnAide" type="button">Comment jouer</button>
         </div>
         <p class="pied" id="piedTxt"></p>
       </div>
@@ -413,7 +433,7 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
     <div class="jinfo">
       <div class="stat">Coups<b id="jCoups">0</b><div class="jetoiles" id="jEt" aria-label="Étoiles possibles"></div></div>
       <div class="jcube"><canvas id="mini" aria-label="Cube en perspective"></canvas></div>
-      <div class="stat d">Temps<b id="jTemps">0:00</b></div>
+      <div class="stat d">Temps<b id="jTemps">0:00</b><span class="jrecord" id="jRecord"></span></div>
     </div>
     <div class="plateau" id="zonePlateau">
       <canvas id="plateau" aria-label="Plateau de cercles"></canvas>
@@ -884,13 +904,19 @@ function redimJeu(){var jeu=document.getElementById("jeu"),z=document.getElement
       autres=jeu.querySelector(".jtete").offsetHeight+jeu.querySelector(".jbas").offsetHeight+30,
       c=paysage?96:Math.max(64,Math.min(150,jeu.clientHeight-autres-Math.min(jeu.clientWidth-28,560)-12));
     jeu.style.setProperty("--cube",Math.round(c)+"px");}
-  var r=z.getBoundingClientRect();if(!r.width)return;JeuP.dimension(Math.min(r.width-28,r.height-8));dessinerMini();}
+  var r=z.getBoundingClientRect();if(!r.width)return;JeuP.dimension(Math.min(r.width-28,r.height-8));dessinerMini();
+  // le cube se centre verticalement entre le titre et le haut du grand cercle (décalage visuel seulement)
+  mini.style.transform="";if(PROG.options.cube&&getComputedStyle(jeu).display!=="grid"){var h=jeu.querySelector(".jtete").getBoundingClientRect().bottom,
+    c=JeuP.cv.getBoundingClientRect().top+JeuP.OY-(ECART+RAY[2])*JeuP.ECH,m=mini.getBoundingClientRect(),dy=(h+c)/2-(m.top+m.height/2);
+    if(Math.abs(dy)>1)mini.style.transform="translateY("+Math.round(dy)+"px)";}}
 function redimAide(){var w=document.getElementById("aideCanvas").getBoundingClientRect().width;if(w)AideP.dimension(w);}
 var ro=new ResizeObserver(function(){if(ECRAN==="jeu")redimJeu();if(ECRAN==="accueil")Logo.demarrer();if(ECRAN==="aide")redimAide();});
 ["zonePlateau","logo","aideCanvas"].forEach(function(id){ro.observe(document.getElementById(id));});
 ro.observe(document.querySelector(".logoboite"));
 
-function lancer(def){accent(def.mode==="campagne"?def.w:null);J={def:def,hist:[],t0:0,fini:false,indice:false,pret:false,tranches:{}};
+function lancer(def){accent(def.mode==="campagne"?def.w:null);
+  var rec=def.mode==="campagne"?PROG.niveaux[def.id]:def.mode==="jour"?PROG.jours[def.id]:PROG.stats.meilleur[def.n];
+  document.getElementById("jRecord").textContent=rec&&rec.temps?"record "+fmt(rec.temps):"";J={def:def,hist:[],t0:0,fini:false,indice:false,pret:false,tranches:{}};
   JeuP.col=resoluCol();JeuP.anim=null;JeuP.file=[];JeuP.indice=null;JeuP.survol=null;
   if(def.anneaux.length===9)JeuP.permis=null;else{JeuP.permis={};def.anneaux.forEach(function(b){JeuP.permis[MV[b][0]+","+MV[b][1]]=true;});}
   document.getElementById("jTitre").textContent=def.titre;document.getElementById("jSous").textContent=def.sous+" · par "+def.par;
@@ -1233,12 +1259,12 @@ function appliquerLangue(){var o=PROG.options.langue||"auto";changerLangue(o==="
 document.getElementById("optLangue").addEventListener("change",function(){PROG.options.langue=this.value;PROG.options.maj=Date.now();sauver();appliquerLangue();sonClic();});
 
 /* ========== 16. DÉMARRAGE ========== */
-// l'écran de chargement se retire quand les polices sont prêtes (au moins 0,7 s pour qu'on le voie, au plus 1,6 s)
+// l'écran de chargement se retire quand les polices sont prêtes (au moins 1,5 s pour qu'on le voie, au plus 2,4 s)
 (function(){var el=document.getElementById("chargement"),t0=performance.now(),fini=false;
   function retirer(){if(fini)return;fini=true;el.classList.add("fini");setTimeout(function(){el.remove();},700);}
   if(/[?&]capture\b/.test(location.search)||CALME){retirer();return;}
-  (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(function(){setTimeout(retirer,Math.max(0,700-(performance.now()-t0)));});
-  setTimeout(retirer,1600);})();
+  (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(function(){setTimeout(retirer,Math.max(0,1500-(performance.now()-t0)));});
+  setTimeout(retirer,2400);})();
 // accès réservé aux outils de captures (npm run captures), actif seulement avec ?capture dans l'adresse
 if(/[?&]capture\b/.test(location.search))window.__orbicube={solution:function(){return J&&J.pret?cheminSolution().map(function(m){return nomDe(m).replace("′","'");}):[];},vus:function(){return Object.keys(VUS);},manques:function(){return Object.keys(MANQUES);}};
 function demarrer(){appliquerLangue();parcourir(document.body);appliquerOptions();majAchat();montrer("accueil");NATIF.demarrer();connecterSucces();
