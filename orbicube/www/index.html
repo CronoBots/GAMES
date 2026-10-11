@@ -162,8 +162,7 @@ a.bouton{text-decoration:none;color:inherit}
 /* le cube en perspective trône au centre, entre les coups et le temps, comme dans la visualisation de
    référence : sa taille (--cube) est la hauteur que le plateau laisse, calculée par redimJeu() */
 .jcube{display:grid;justify-items:center;gap:0;min-width:0;padding-top:14px}
-#mini{width:var(--cube,96px);height:var(--cube,96px);display:block;cursor:pointer;touch-action:manipulation}
-.miniv{font-size:10px;color:var(--sourd);text-align:center;font-family:var(--f-chiffre);pointer-events:none;letter-spacing:.1em}
+#mini{width:var(--cube,96px);height:var(--cube,96px);display:block;cursor:grab;touch-action:none}#mini:active{cursor:grabbing}
 .jinfo .stat{align-self:start;padding-top:6px}.jinfo .jetoiles{margin-top:8px}.jinfo .jetoiles svg{width:18px;height:18px}
 .coupgeant{position:absolute;right:14px;top:4px;font-family:var(--f-math);font-size:44px;color:var(--lilas);line-height:1;pointer-events:none;text-shadow:0 0 24px rgba(165,139,255,.5)}
 .fenetre{animation:pop .45s cubic-bezier(.3,1.4,.5,1)!important}
@@ -345,7 +344,7 @@ a.bouton{text-decoration:none;color:inherit}
     </div>
     <div class="jinfo">
       <div class="stat">Coups<b id="jCoups">0</b><div class="jetoiles" id="jEt" aria-label="Étoiles possibles"></div></div>
-      <div class="jcube"><canvas id="mini" aria-label="Cube en perspective, touchez pour changer de vue"></canvas><div class="miniv" id="miniv">U · F · R</div></div>
+      <div class="jcube"><canvas id="mini" aria-label="Cube en perspective, glissez pour le faire pivoter"></canvas></div>
       <div class="stat d">Temps<b id="jTemps">0:00</b></div>
     </div>
     <div class="plateau" id="zonePlateau">
@@ -386,7 +385,7 @@ a.bouton{text-decoration:none;color:inherit}
           <div class="segment" id="optVitesse"><button type="button" data-v="1.5">Lente</button><button type="button" data-v="1">Normale</button><button type="button" data-v="0.6">Rapide</button></div></div>
         <div class="ligne empile"><div class="lt"><b>Couleurs</b><span>« Contraste » suit une palette lisible par les daltoniens.</span></div>
           <div class="segment" id="optPalette"><button type="button" data-v="classique">Classique</button><button type="button" data-v="contraste">Contraste</button></div></div>
-        <div class="ligne"><div class="lt"><b>Cube en perspective</b><span>La vignette en haut à gauche du plateau.</span></div>
+        <div class="ligne"><div class="lt"><b>Cube en perspective</b><span>Au-dessus du plateau : glissez-le pour le faire pivoter.</span></div>
           <label class="interrupteur"><input type="checkbox" id="optCube" role="switch" aria-label="Cube en perspective"><i></i></label></div>
         <div class="ligne"><div class="lt"><b>Pavé de notation</b><span>Des boutons U, R′… sous le plateau.</span></div>
           <label class="interrupteur"><input type="checkbox" id="optPave" role="switch" aria-label="Pavé de notation"><i></i></label></div>
@@ -440,7 +439,7 @@ a.bouton{text-decoration:none;color:inherit}
         <h3>Les gestes</h3>
         <p data-html="aide-glisser"><b>Glisser</b> le long d’un cercle le tourne dans le sens du doigt. Lâchez tôt et il revient en place.</p>
         <p data-html="aide-toucher"><b>Toucher</b> un cercle le tourne d’un quart de tour, dans le sens horaire (réglable dans les options).</p>
-        <p data-html="aide-vue"><b>Toucher la vignette du cube</b> change la vue : U·F·R, U·B·L, D·F·L.</p>
+        <p data-html="aide-vue"><b>Glisser le cube</b> au-dessus du plateau le fait pivoter : à gauche ou à droite pour en faire le tour, vers le haut ou le bas pour voir la face du dessous.</p>
       </div>
       <div class="aide-carte">
         <h3>Gagner des étoiles</h3>
@@ -627,10 +626,14 @@ var Ticker={actifs:[],tourne:false,reveiller:function(){if(!Ticker.tourne){Ticke
 document.addEventListener("visibilitychange",function(){if(!document.hidden)Ticker.reveiller();});
 
 /* ========== 4. LE CUBE EN PERSPECTIVE ========== */
-var VUES=[{nom:"U · F · R",m:function(v){return v;}},{nom:"U · B · L",m:function(v){return[-v[0],v[1],-v[2]];}},{nom:"D · F · L",m:function(v){return[-v[0],-v[1],v[2]];}}];
 var C30=Math.cos(Math.PI/6);
-function dessinerCube(cc,w,col,anim,vue,pivot){cc.clearRect(0,0,w,w);var k=w/6.6,ox=w/2,oy=w/2,V=VUES[vue].m;
-  function rotV(v){var r=V(v);return pivot?rotAng(r,1,pivot):r;}
+function dessinerCube(cc,w,col,anim,pivot){cc.clearRect(0,0,w,w);var k=w/6.6,ox=w/2,oy=w/2;
+  // orientation libre : pivot.y fait tourner autour de la verticale, pivot.x bascule vers l'avant
+  // (autour de l'axe horizontal de l'écran, (1,0,−1)/√2), ce qui montre la face du dessous
+  var cy=pivot?Math.cos(pivot.y):1,sy=pivot?Math.sin(pivot.y):0,cx_=pivot?Math.cos(pivot.x):1,sx=pivot?Math.sin(pivot.x):0,h=Math.SQRT1_2;
+  function rotV(v){var r=v;if(!pivot)return r;r=[r[0]*cy+r[2]*sy,r[1],-r[0]*sy+r[2]*cy];
+    var d=h*(r[0]-r[2]),cr=[h*(-r[1]),h*(r[2]+r[0]),h*(-r[1])];
+    return[r[0]*cx_+cr[0]*sx+h*d*(1-cx_),r[1]*cx_+cr[1]*sx,r[2]*cx_+cr[2]*sx-h*d*(1-cx_)];}
   function proj(v){v=rotV(v);return[ox+(v[0]-v[2])*C30*k,oy+((v[0]+v[2])*.5-v[1])*k];}
   var mv=anim?anim.mv:null,th=anim?mv.q*anim.t*Math.PI/2:0,cubies=[];
   // Ordre de dessin (algorithme du peintre) : le cube est coupé en trois tranches le long de l'axe du tour.
@@ -786,9 +789,9 @@ function ouvrirMonde(w){var M=MONDES[w];document.getElementById("nivTitre").text
 /* ========== 11. LA PARTIE ========== */
 var JeuP=new Plateau(document.getElementById("plateau"),{eclats:true});Ticker.actifs.push(JeuP);
 JeuP.onFace=function(n){if(!J||!J.pret||J.fini)return;bip(1047,.28,"sine",.07);bip(1568,.32,"sine",.05,.07);vibrer(12);};
-var mini=document.getElementById("mini"),miniC=mini.getContext("2d"),VUE=0,PIVOT=0,J=null;
+var mini=document.getElementById("mini"),miniC=mini.getContext("2d"),PIVOT={y:0,x:0},J=null;
 function dessinerMini(){if(!PROG.options.cube)return;var w=mini.clientWidth||84,px=Math.round(w*DPR);if(mini.width!==px){mini.width=px;mini.height=px;miniC.setTransform(DPR,0,0,DPR,0,0);}
-  dessinerCube(miniC,w,JeuP.col,JeuP.anim,VUE,PIVOT);}
+  dessinerCube(miniC,w,JeuP.col,JeuP.anim,PIVOT);}
 JeuP.apres=function(){dessinerMini();if(J&&J.t0&&!J.fini&&!J.enPause)document.getElementById("jTemps").textContent=fmt(performance.now()-J.t0);};
 function fmt(ms){var s=Math.floor(ms/1000);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");}
 // Le plateau prend la largeur, moins une marge pour que les cercles ne frôlent pas les bords (le client, le 11/10/2026) ; le cube, au centre de la ligne des coups et du temps, prend la
@@ -881,9 +884,9 @@ var TUTOS={"1-1":["geste","Glissez le long du cercle qui brille, dans le sens de
   "1-2":["toucher","Touchez un cercle pour le tourner d’un quart de tour dans le sens horaire. Glisser permet de choisir le sens."],
   "1-3":["pastille","Chaque pastille est au croisement de deux cercles. Un tour déplace douze pastilles, et les neuf de la face pivotent sur place."],
   "1-5":["indice","Bloqué ? L’ampoule en haut à droite montre le tour suivant, mais limite le niveau à deux étoiles."],
-  "2-1":["vue","La vignette du cube en haut à gauche se touche : elle change de vue pour montrer les faces cachées."],
+  "2-1":["vue","Le cube au-dessus du plateau se fait pivoter au doigt : glissez-le pour voir les faces cachées."],
   "3-1":["tranche","Les cercles du milieu sont les tranches M, E et S. Ils n’ont pas de face à eux : seules douze pastilles bougent."]};
-function tutoriel(){if(!J||J.def.mode!=="campagne")return;var t=TUTOS[J.def.id];if(!t||PROG.tips[t[0]])return;
+function tutoriel(){if(!J||J.def.mode!=="campagne")return;var t=TUTOS[J.def.id];if(!t||PROG.tips[t[0]]||(t[0]==="vue"&&!PROG.options.cube))return;
   var b=document.getElementById("bulle");document.getElementById("bulleTxt").textContent=t[1];b.dataset.tip=t[0];b.hidden=false;if(t[0]==="geste")indice(true);}
 function cacherBulle(sansNoter){var b=document.getElementById("bulle");if(!b.hidden&&b.dataset.tip&&!sansNoter){PROG.tips[b.dataset.tip]=1;sauver();}b.hidden=true;}
 document.getElementById("bulleOk").addEventListener("click",function(){sonClic();cacherBulle();});
@@ -928,9 +931,24 @@ cvJ.addEventListener("pointerup",lacher);cvJ.addEventListener("pointercancel",la
 cvJ.addEventListener("pointerleave",function(){if(!G&&JeuP.survol){JeuP.survol=null;JeuP.dessiner();}});
 cvJ.addEventListener("contextmenu",function(e){e.preventDefault();if(!J||!J.pret)return;var p=pt(e),c=JeuP.anneauxSous(p[0],p[1]);
   if(c.length)jouerCoup({a:c[0].a,L:c[0].L,q:qPourSens(c[0].a,PROG.options.horaire?1:-1)});});
-mini.addEventListener("click",function(){VUE=(VUE+1)%3;document.getElementById("miniv").textContent=VUES[VUE].nom;sonClic();
-  var t0=performance.now();(function tour(now){var k=Math.min(1,(now-t0)/320);PIVOT=(1-ease(k))*Math.PI*.5;dessinerMini();if(k<1)requestAnimationFrame(tour);else{PIVOT=0;dessinerMini();}})(t0);
-  if(!PROG.tips.vue){PROG.tips.vue=1;sauver();}var b=document.getElementById("bulle");if(!b.hidden&&b.dataset.tip==="vue")cacherBulle();});
+// Le cube pivote au doigt : glisser à gauche ou à droite le fait tourner autour de la verticale, vers le
+// haut ou le bas le bascule pour montrer la face du dessous. Au lâcher, il se cale sur la vue la plus
+// proche (un quart de tour, ou retourné). Un simple appui ne fait rien : il ne tournait que dans un sens.
+(function(){var g=null,anim=0,attente=false;
+  function redessiner(){if(attente)return;attente=true;requestAnimationFrame(function(){attente=false;dessinerMini();});}
+  function norm(a){a%=2*Math.PI;return a<0?a+2*Math.PI:a;}
+  function caler(){var y0=PIVOT.y,x0=PIVOT.x,y1=Math.round(y0/(Math.PI/2))*Math.PI/2,x1=Math.round(x0/Math.PI)*Math.PI,t0=performance.now(),n=++anim;
+    (function pas(now){if(n!==anim)return;var k=Math.min(1,(now-t0)/260),e=ease(k);PIVOT={y:y0+(y1-y0)*e,x:x0+(x1-x0)*e};dessinerMini();
+      if(k<1)requestAnimationFrame(pas);else PIVOT={y:norm(y1),x:norm(x1)};})(t0);}
+  mini.addEventListener("pointerdown",function(e){if(e.button)return;anim++;g={x:e.clientX,y:e.clientY,bouge:false};try{mini.setPointerCapture(e.pointerId);}catch(_){}});
+  mini.addEventListener("pointermove",function(e){if(!g)return;if(e.pointerType==="mouse"&&!e.buttons){lacher();return;}
+    var dx=e.clientX-g.x,dy=e.clientY-g.y;if(!g.bouge){if(Math.hypot(dx,dy)<4)return;g.bouge=true;vibrer(6);}
+    // pas à pas : le sens horizontal suit la bascule du moment (retourné, la droite devient la gauche)
+    var k=(Math.PI/2)/(0.9*Math.max(60,mini.clientWidth)),sens=Math.cos(PIVOT.x)<0?-1:1;
+    PIVOT={y:PIVOT.y+sens*dx*k,x:PIVOT.x-dy*k};g.x=e.clientX;g.y=e.clientY;redessiner();});
+  function lacher(){if(!g)return;var b=g.bouge;g=null;if(!b)return;caler();
+    if(!PROG.tips.vue){PROG.tips.vue=1;sauver();}var bu=document.getElementById("bulle");if(!bu.hidden&&bu.dataset.tip==="vue")cacherBulle();}
+  mini.addEventListener("pointerup",lacher);mini.addEventListener("pointercancel",lacher);})();
 
 document.getElementById("btnPause").addEventListener("click",function(){sonClic();pause();});
 document.getElementById("btnIndice").addEventListener("click",function(){sonClic();if(!J||!J.pret||J.fini)return;
@@ -1010,7 +1028,7 @@ function appliquerOptions(){var o=PROG.options;COUL=PALETTES[o.palette]||PALETTE
   document.getElementById("optPave").checked=o.pave;document.getElementById("optSens").checked=o.horaire;
   document.querySelectorAll("#optVitesse button").forEach(function(b){b.classList.toggle("on",+b.dataset.v===o.vitesse);});
   document.querySelectorAll("#optPalette button").forEach(function(b){b.classList.toggle("on",b.dataset.v===o.palette);});
-  mini.hidden=!o.cube;document.getElementById("miniv").hidden=!o.cube;document.getElementById("pave").hidden=!o.pave;
+  mini.hidden=!o.cube;document.getElementById("pave").hidden=!o.pave;
   document.getElementById("btnPaveT").classList.toggle("on",o.pave);
   if(ECRAN==="jeu")requestAnimationFrame(redimJeu);Logo.dessiner();JeuP.dessiner();dessinerMini();}
 function opt(k,v){PROG.options[k]=v;PROG.options.maj=Date.now();sauver();appliquerOptions();}

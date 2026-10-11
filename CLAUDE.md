@@ -56,6 +56,9 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   « l'endroit optimal ») : le plateau prend d'abord la largeur moins 14 px de chaque côté, et `redimJeu()` donne au cube la
   hauteur qui reste (`--cube`, de 64 à 150 px). Pas en filigrane : des couleurs derrière les pastilles
   se confondraient avec elles.
+- **Le cube pivote au doigt, jamais au simple appui** (le client, le 11/10/2026 : l'appui ne tournait
+  que dans un sens) : glisser à gauche/droite le fait tourner autour de la verticale, vers le haut/bas
+  le bascule (face du dessous) ; au lâcher il se cale au quart de tour près (`PIVOT`, `caler()`).
 - Les niveaux de campagne sont tirés d'une graine fixe (`orbicube-<monde>-<niveau>`) : changer
   `genererMelange()` change tous les niveaux des joueurs. Ne le faire qu'avec une nouvelle graine.
 - La progression est dans `localStorage` (clé `orbicube-v1`) et, sur téléphone, dans
