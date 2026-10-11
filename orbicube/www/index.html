@@ -132,6 +132,8 @@ a.bouton{text-decoration:none;color:inherit}
 .monde.paye{opacity:.8;border-color:#4a3d18}.monde.paye .cadenas{stroke:var(--or)}
 .monde .cadenas{position:absolute;right:12px;top:12px;width:20px;height:20px;stroke:var(--pale);fill:none;stroke-width:2}
 
+#nivApercu{display:block;margin:2px auto 8px;width:min(230px,60vw,30vh);aspect-ratio:1/1}
+#niveaux .centre{margin:auto}#niveaux .defile{display:flex;flex-direction:column}
 .niv-intro{color:var(--pale);font-size:14px;margin:2px 0 14px;text-align:center;line-height:1.4}
 .niveaux{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
 .niveau{aspect-ratio:1/1.08;border-radius:14px;background:var(--carte);border:1px solid var(--trait);cursor:pointer;
@@ -282,6 +284,37 @@ a.bouton{text-decoration:none;color:inherit}
 #toast svg{width:26px;height:26px;flex:none}
 #toast b{display:block;font-size:12px;color:var(--or);letter-spacing:.1em;text-transform:uppercase}
 #toast span{font-size:14px}
+
+/* ===== Habillage moderne (11/10/2026) : surfaces en verre dépoli, bords lumineux, profondeur douce =====
+   Pas de backdrop-filter sur les surfaces : le ciel étoilé est animé, et un flou recalculé à chaque image
+   sous une dizaine de cartes ferait ramer un téléphone. Le verre est simulé par un dégradé translucide. */
+:root{--verre:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.025));--bord:rgba(255,255,255,.09);
+  --reflet:inset 0 1px 0 rgba(255,255,255,.07);--ombre:0 14px 34px -22px rgba(0,0,0,.9);--r:18px}
+.bouton,.ico,.action,.monde,.niveau,.groupe,.tuile,.suc,.puce,.segment{background:var(--verre),rgba(14,14,24,.55);border-color:var(--bord);
+  box-shadow:var(--reflet),var(--ombre)}
+.bouton:hover,.action:hover,.ico:hover{border-color:rgba(255,255,255,.16)}
+.bouton.principal{background:linear-gradient(135deg,#a68cff 0%,#7b57ff 55%,#5a37ea 100%);color:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 14px 34px -12px rgba(123,87,255,.75)}
+.bouton.principal .droite{color:rgba(255,255,255,.78)}
+.bouton.principal svg{fill:#fff}
+.bouton.or{background:linear-gradient(135deg,rgba(255,207,74,.13),rgba(255,207,74,.03)),rgba(14,14,24,.55);border-color:rgba(255,207,74,.32)}
+.niveau{border-radius:16px}
+.niveau.fait{background:linear-gradient(180deg,rgba(165,139,255,.16),rgba(165,139,255,.04)),rgba(14,14,24,.55);border-color:rgba(165,139,255,.28)}
+.niveau.courant{background:linear-gradient(180deg,rgba(165,139,255,.28),rgba(165,139,255,.08)),rgba(14,14,24,.6);border-color:var(--lilas);
+  box-shadow:0 0 0 1px var(--lilas),0 0 26px -6px var(--lilas);animation:respire 2.6s ease-in-out infinite}
+@keyframes respire{50%{box-shadow:0 0 0 1px var(--lilas),0 0 34px -4px var(--lilas)}}
+.monde{border-radius:20px}
+.monde:not(.verrou):not(.paye){border-color:rgba(165,139,255,.22)}
+.segment{border-radius:14px}
+.segment button.on{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.06));box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.niv-intro,.fenetre p,.monde p{text-wrap:balance}
+.fenetre{background:linear-gradient(180deg,rgba(38,33,66,.92),rgba(18,18,30,.94));border-color:rgba(165,139,255,.28);border-radius:26px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 40px 90px -25px rgba(0,0,0,.95),0 0 60px -30px rgba(165,139,255,.6)}
+.voile{background:rgba(5,5,12,.6);backdrop-filter:blur(10px) saturate(130%);-webkit-backdrop-filter:blur(10px) saturate(130%)}
+#toast{background:linear-gradient(180deg,rgba(52,44,22,.96),rgba(28,24,14,.96));border-color:rgba(255,207,74,.45);border-radius:20px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 20px 50px -15px rgba(0,0,0,.9)}
+.tuile b{background:linear-gradient(180deg,#fff,#cbbfff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.suc.ok{border-color:rgba(255,207,74,.3);background:linear-gradient(135deg,rgba(255,207,74,.1),rgba(255,207,74,.02)),rgba(14,14,24,.55)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
@@ -336,6 +369,7 @@ a.bouton{text-decoration:none;color:inherit}
       <span class="puce"><svg viewBox="0 0 24 24" class="etoile"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg><span id="nivEt">0</span></span>
     </div>
     <div class="defile"><div class="centre">
+      <canvas id="nivApercu" aria-hidden="true"></canvas>
       <p class="niv-intro" id="nivIntro"></p>
       <div class="niveaux cascade" id="grilleNiv"></div>
     </div></div>
@@ -790,7 +824,11 @@ function ouvrirMonde(w){var M=MONDES[w];document.getElementById("nivTitre").text
     b.setAttribute("aria-label","Niveau "+(i+1)+(r?", "+r.etoiles+" étoiles":"")+(ouvert?"":", verrouillé"));
     b.innerHTML=ouvert?'<b>'+(i+1)+'</b><span class="et">'+[0,1,2].map(function(k){return r&&r.etoiles>k?SVG_ET:SVG_ET_OFF;}).join("")+'</span><span class="par">par '+par+'</span>':'<svg viewBox="0 0 24 24" class="cad">'+CAD+'</svg>';
     b.addEventListener("click",function(){if(!ouvert){vibrer(20);return;}sonClic();lancer(niveauDef(w,i));});g.appendChild(b);});
-  montrer("niveaux");}
+  montrer("niveaux");
+  // aperçu du monde : ses cercles en trait plein, les autres en pointillé, le cube résolu
+  NivP.col=resoluCol();if(M.anneaux.length===9)NivP.permis=null;else{NivP.permis={};M.anneaux.forEach(function(b){NivP.permis[MV[b][0]+","+MV[b][1]]=true;});}
+  requestAnimationFrame(function(){var w=document.getElementById("nivApercu").getBoundingClientRect().width;if(w)NivP.dimension(w);});}
+var NivP=new Plateau(document.getElementById("nivApercu"),{etiquettes:false});
 
 /* ========== 11. LA PARTIE ========== */
 var JeuP=new Plateau(document.getElementById("plateau"),{eclats:true});Ticker.actifs.push(JeuP);
