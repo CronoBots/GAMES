@@ -159,8 +159,8 @@ a.bouton{text-decoration:none;color:inherit}
 .jetoiles{display:flex;gap:4px}.jetoiles svg{width:22px;height:22px}
 .plateau{flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center;padding:4px 8px}
 #plateau{display:block;touch-action:none;max-width:100%}
-#mini{position:absolute;left:10px;top:6px;width:84px;height:84px;border-radius:14px;background:rgba(20,20,31,.6);border:1px solid var(--trait);cursor:pointer}
-.miniv{position:absolute;left:10px;top:94px;font-size:10px;color:var(--sourd);width:84px;text-align:center;font-family:var(--f-chiffre);pointer-events:none}
+#mini{--mini:clamp(84px,29vw,118px);position:absolute;left:10px;top:6px;width:var(--mini);height:var(--mini);border-radius:14px;background:rgba(20,20,31,.6);border:1px solid var(--trait);cursor:pointer}
+.miniv{position:absolute;left:10px;top:calc(clamp(84px,29vw,118px) + 10px);font-size:10px;color:var(--sourd);width:clamp(84px,29vw,118px);text-align:center;font-family:var(--f-chiffre);pointer-events:none}
 .coupgeant{position:absolute;right:14px;top:4px;font-family:var(--f-math);font-size:44px;color:var(--lilas);line-height:1;pointer-events:none;text-shadow:0 0 24px rgba(165,139,255,.5)}
 .fenetre{animation:pop .45s cubic-bezier(.3,1.4,.5,1)!important}
 .bulle{position:relative;background:rgba(27,27,41,.97);border:1px solid var(--lilas);border-radius:14px;padding:12px 14px;
@@ -460,7 +460,7 @@ a.bouton{text-decoration:none;color:inherit}
 (function(){
 "use strict";
 /* ========== 1. LE CUBE : 54 facettes, 9 tranches ========== */
-var PALETTES={classique:["#FF7F1E","#E5383B","#FFD60A","#F3F2EC","#1FB25A","#1E88E5"],
+var PALETTES={classique:["#FF6A00","#D7192C","#FFD500","#F5F5F0","#00A651","#0B5FD6"],
   contraste:["#E69F00","#CC79A7","#F0E442","#FFFFFF","#009E73","#0072B2"]};
 var COUL=PALETTES.classique;
 function faceDe(n){return n[0]>0?0:n[0]<0?1:n[1]>0?2:n[1]<0?3:n[2]>0?4:5;}
@@ -486,8 +486,10 @@ function inverse(mv){return{a:mv.a,L:mv.L,q:-mv.q};}
 function cleA(mv){return mv.a+","+mv.L;}
 
 /* ========== 2. LA GÉOMÉTRIE : trois familles de cercles concentriques ========== */
-var RAY=[0.65,0.845,1.04];
-var CEN=[-30,90,210].map(function(d){var r=d*Math.PI/180;return[Math.cos(r)/Math.sqrt(3),Math.sin(r)/Math.sqrt(3)];});
+// proportions relevées sur la visualisation de référence (le client, le 11/10/2026) : des cercles plus grands
+// par rapport à l'écart de leurs centres, ce qui vide le milieu et sépare les neuf pastilles de chaque face
+var RAY=[0.7296,0.904,1.0835],ECART=0.5336;
+var CEN=[-30,90,210].map(function(d){var r=d*Math.PI/180;return[Math.cos(r)*ECART,Math.sin(r)*ECART];});
 function inter(c1,r1,c2,r2){var dx=c2[0]-c1[0],dy=c2[1]-c1[1],d=Math.hypot(dx,dy),a=(r1*r1-r2*r2+d*d)/(2*d),h=Math.sqrt(r1*r1-a*a),mx=c1[0]+a*dx/d,my=c1[1]+a*dy/d;
   return[[mx-h*dy/d,my+h*dx/d],[mx+h*dy/d,my-h*dx/d]];}
 S.forEach(function(s){var b=(s.a+1)%3,c=(s.a+2)%3,pts=inter(CEN[b],RAY[s.p[b]+1],CEN[c],RAY[s.p[c]+1]);
@@ -523,7 +525,7 @@ function Plateau(canvas,opts){this.cv=canvas;this.cx=canvas.getContext("2d");thi
   this.permis=null;this.survol=null;this.indice=null;this.opts=opts||{};this.taille=0;this.visible=false;
   this.pops={};this.eclats=[];this.trace=[];this.vague=0;}
 Plateau.prototype.dimension=function(px){px=Math.max(40,Math.floor(px));this.taille=px;var c=this.cv;c.style.width=px+"px";c.style.height=px+"px";
-  c.width=Math.round(px*DPR);c.height=Math.round(px*DPR);this.cx.setTransform(DPR,0,0,DPR,0,0);this.ECH=px/3.2;this.OX=px/2;this.OY=px/2+0.145*this.ECH;this.dessiner();};
+  c.width=Math.round(px*DPR);c.height=Math.round(px*DPR);this.cx.setTransform(DPR,0,0,DPR,0,0);this.ECH=px/3.2;this.OX=px/2;this.OY=px/2+0.133*this.ECH;this.dessiner();};
 Plateau.prototype.vers=function(pt){return[this.OX+pt[0]*this.ECH,this.OY-pt[1]*this.ECH];};
 Plateau.prototype.depuis=function(px,py){return[(px-this.OX)/this.ECH,-(py-this.OY)/this.ECH];};
 // t est déjà la progression affichée (courbe appliquée par pas()) ; il peut dépasser 1 pendant le rebond
@@ -637,11 +639,15 @@ function dessinerCube(cc,w,col,anim,vue,pivot){cc.clearRect(0,0,w,w);var k=w/6.6
     var a=d[0]?0:d[1]?1:2,u=(a+1)%3,v=(a+2)%3;
     function coin(su,sv,h){var q=cb.p.slice();q[a]+=d[a]*.5;q[u]+=su*h;q[v]+=sv*h;return proj(cb.tr(q));}
     var pts=[coin(-1,-1,.5),coin(1,-1,.5),coin(1,1,.5),coin(-1,1,.5)];
-    cc.beginPath();pts.forEach(function(q,i){i?cc.lineTo(q[0],q[1]):cc.moveTo(q[0],q[1]);});cc.closePath();cc.fillStyle="#0a0a10";cc.fill();cc.strokeStyle="#0a0a10";cc.lineWidth=1;cc.stroke();
+    cc.beginPath();pts.forEach(function(q,i){i?cc.lineTo(q[0],q[1]):cc.moveTo(q[0],q[1]);});cc.closePath();cc.fillStyle="#0b0b0e";cc.fill();cc.strokeStyle="#0b0b0e";cc.lineWidth=1.2;cc.lineJoin="round";cc.stroke();
     var idx=CLE[cb.p+"|"+d];if(idx===undefined)return;
-    var sp=[coin(-1,-1,.4),coin(1,-1,.4),coin(1,1,.4),coin(-1,1,.4)];
-    cc.beginPath();sp.forEach(function(q,i){i?cc.lineTo(q[0],q[1]):cc.moveTo(q[0],q[1]);});cc.closePath();
-    cc.fillStyle=COUL[col[idx]];cc.fill();cc.lineJoin="round";cc.lineWidth=k*.07;cc.strokeStyle=COUL[col[idx]];cc.stroke();});});}
+    // facette « cube de compétition » : carré arrondi sur corps noir, avec un léger reflet
+    var sp=[coin(-1,-1,.42),coin(1,-1,.42),coin(1,1,.42),coin(-1,1,.42)],ra=k*.13;
+    cc.beginPath();for(var i=0;i<4;i++){var A=sp[(i+3)%4],B=sp[i],C=sp[(i+1)%4];
+      if(!i)cc.moveTo((A[0]+B[0])/2,(A[1]+B[1])/2);cc.arcTo(B[0],B[1],(B[0]+C[0])/2,(B[1]+C[1])/2,ra);}
+    cc.closePath();cc.fillStyle=COUL[col[idx]];cc.fill();
+    var g=cc.createLinearGradient(sp[0][0],sp[0][1],sp[2][0],sp[2][1]);g.addColorStop(0,"rgba(255,255,255,.28)");g.addColorStop(.45,"rgba(255,255,255,0)");g.addColorStop(1,"rgba(0,0,0,.14)");
+    cc.fillStyle=g;cc.fill();});});}
 
 /* ========== 5. LES NIVEAUX ========== */
 var MONDES=[
@@ -770,7 +776,7 @@ function ouvrirMonde(w){var M=MONDES[w];document.getElementById("nivTitre").text
 var JeuP=new Plateau(document.getElementById("plateau"),{eclats:true});Ticker.actifs.push(JeuP);
 JeuP.onFace=function(n){if(!J||!J.pret||J.fini)return;bip(1047,.28,"sine",.07);bip(1568,.32,"sine",.05,.07);vibrer(12);};
 var mini=document.getElementById("mini"),miniC=mini.getContext("2d"),VUE=0,PIVOT=0,J=null;
-function dessinerMini(){if(!PROG.options.cube)return;var w=84,px=Math.round(w*DPR);if(mini.width!==px){mini.width=px;mini.height=px;miniC.setTransform(DPR,0,0,DPR,0,0);}
+function dessinerMini(){if(!PROG.options.cube)return;var w=mini.clientWidth||84,px=Math.round(w*DPR);if(mini.width!==px){mini.width=px;mini.height=px;miniC.setTransform(DPR,0,0,DPR,0,0);}
   dessinerCube(miniC,w,JeuP.col,JeuP.anim,VUE,PIVOT);}
 JeuP.apres=function(){dessinerMini();if(J&&J.t0&&!J.fini&&!J.enPause)document.getElementById("jTemps").textContent=fmt(performance.now()-J.t0);};
 function fmt(ms){var s=Math.floor(ms/1000);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");}

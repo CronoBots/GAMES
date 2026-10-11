@@ -12,12 +12,13 @@ import os
 from PIL import Image, ImageDraw, ImageFilter
 
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-COUL = ["#FF7F1E", "#E5383B", "#FFD60A", "#F3F2EC", "#1FB25A", "#1E88E5"]  # R L U D F B, comme le jeu
+COUL = ["#FF6A00", "#D7192C", "#FFD500", "#F5F5F0", "#00A651", "#0B5FD6"]  # R L U D F B, comme le jeu
 FOND_HAUT, FOND_BAS = (34, 24, 72), (7, 7, 12)
 
 # --- la géométrie du plateau, identique à index.html ---
-RAY = [0.65, 0.845, 1.04]
-CEN = [(math.cos(math.radians(d)) / math.sqrt(3), math.sin(math.radians(d)) / math.sqrt(3)) for d in (-30, 90, 210)]
+RAY = [0.7296, 0.904, 1.0835]
+ECART = 0.5336
+CEN = [(math.cos(math.radians(d)) * ECART, math.sin(math.radians(d)) * ECART) for d in (-30, 90, 210)]
 
 
 def inter(c1, r1, c2, r2):

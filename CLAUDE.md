@@ -47,6 +47,11 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   `delta()` donne à chacune son vrai déplacement dans le sens du cercle. Prendre le chemin le plus
   court (`normA`) les faisait tourner à contresens et rendait le pas d'un quart de tour nul, ce qui
   figeait le glisser en boucle infinie. Le vérificateur rejoue les 18 tours.
+- **Les proportions des cercles** (`RAY`, `ECART`) sont relevées sur la visualisation de référence du
+  client (11/10/2026) : cercles grands par rapport à l'écart de leurs centres, milieu vide, neuf
+  pastilles de chaque face bien groupées. Une recherche qui maximise seulement l'écart minimal entre
+  pastilles casse les faces en anneau : ne pas la reprendre. Ces deux constantes sont recopiées dans
+  `outils/icones.py` et `outils/tester.js` (geste le long de U) : les changer aux trois endroits.
 - Les niveaux de campagne sont tirés d'une graine fixe (`orbicube-<monde>-<niveau>`) : changer
   `genererMelange()` change tous les niveaux des joueurs. Ne le faire qu'avec une nouvelle graine.
 - La progression est dans `localStorage` (clé `orbicube-v1`) et, sur téléphone, dans

@@ -76,7 +76,7 @@ function miseEnPage(f, titre, image, polices) {
   for (const f of process.argv[2] === "banniere" ? [] : FORMATS) {
     fs.mkdirSync(path.join(SORTIE, f.nom), { recursive: true });
     for (const s of SCENES) {
-      const ctx = await b.newContext({ viewport: f.vue, deviceScaleFactor: f.dpr, isMobile: f.nom !== "ipad-13" || true, hasTouch: true, reducedMotion: "no-preference" });
+      const ctx = await b.newContext({ viewport: f.vue, deviceScaleFactor: f.dpr, isMobile: f.nom !== "ipad-13" || true, hasTouch: true, reducedMotion: "no-preference", locale: "fr-FR" });
       const prog = progression();
       await ctx.addInitScript((v) => { try { if (!sessionStorage.getItem("cap")) { localStorage.setItem("orbicube-v1", v); sessionStorage.setItem("cap", "1"); } } catch (e) {} }, JSON.stringify(prog));
       const p = await ctx.newPage();
@@ -96,7 +96,7 @@ function miseEnPage(f, titre, image, polices) {
   }
   // bannière Google Play (1024 × 500, obligatoire) : le plateau vivant de l'accueil et le nom
   {
-    const ctx = await b.newContext({ viewport: { width: 420, height: 900 }, deviceScaleFactor: 2 });
+    const ctx = await b.newContext({ viewport: { width: 420, height: 900 }, deviceScaleFactor: 2, locale: "fr-FR" });
     const p = await ctx.newPage();
     await p.goto(serveur.url + "index.html?capture");
     await p.waitForTimeout(2600);
