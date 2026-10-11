@@ -117,6 +117,8 @@ a.bouton{text-decoration:none;color:inherit}
 .rangee2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .rangee2 .bouton{justify-content:center;font-size:15px;padding:0 10px}
 .pied{color:var(--sourd);font-size:12px;margin-top:8px;text-align:center}
+#piedTxt{display:flex;justify-content:center;gap:18px;font-family:var(--f-chiffre);font-size:13px;color:var(--pale)}
+#piedTxt span{display:inline-flex;align-items:center;gap:6px}#piedTxt svg{width:15px;height:15px}#piedTxt small{color:var(--sourd);font-size:11px}
 
 .mondes{display:grid;gap:12px}
 .monde{display:grid;grid-template-columns:56px minmax(0,1fr);gap:14px;align-items:center;padding:14px;border-radius:var(--r);
@@ -880,7 +882,8 @@ function rafraichirAccueil(){var pn=prochainNiveau(),fait=Object.keys(PROG.nivea
   document.getElementById("jouerTxt").textContent=fait?"Continuer":"Jouer";
   document.getElementById("jouerSous").textContent=pn?"niveau "+(pn.w+1)+"-"+(pn.i+1):"★ "+etoilesTotal();
   var j=PROG.jours[cleJour()];document.getElementById("jourSous").textContent=j?"réussi · "+"★".repeat(j.etoiles||1):(PROG.serie>1&&estHier(PROG.dernierJour)?"série de "+PROG.serie:"nouveau");
-  document.getElementById("succesSous").textContent=Object.keys(PROG.succes).length+"/"+SUCCES.length;document.getElementById("piedTxt").textContent="★ "+etoilesTotal()+" / "+NB_NIV*3+" · "+Object.keys(PROG.succes).length+" succès sur "+SUCCES.length;if(typeof majAchat==="function")majAchat();}
+  document.getElementById("succesSous").textContent=Object.keys(PROG.succes).length+"/"+SUCCES.length;// pied de l'accueil : les deux sortes d'étoiles, côte à côte (les succès sont déjà sur leur tuile)
+  document.getElementById("piedTxt").innerHTML='<span class="notrad">'+SVG_ET+etoilesTotal()+'<small> / '+NB_NIV*3+'</small></span><span class="notrad">'+SVG_ETT+etoilesChrono()+'<small> / '+NB_NIV*3+'</small></span>';if(typeof majAchat==="function")majAchat();}
 
 /* ========== 10. CAMPAGNE ========== */
 var ET_PATH='<path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/>';
