@@ -34,6 +34,7 @@
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{height:100%}
+@media all and (display-mode:standalone){html,body{height:100vh}#app,#ciel{bottom:auto;height:100vh}}
 body{background:var(--nuit);color:var(--encre);font-family:var(--f-texte);font-size:15px;margin:0;
   overflow:hidden;overscroll-behavior:none;-webkit-tap-highlight-color:transparent;
   -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
@@ -154,9 +155,10 @@ a.bouton{text-decoration:none;color:inherit}
 .miniv{position:absolute;left:10px;top:94px;font-size:10px;color:var(--sourd);width:84px;text-align:center;font-family:var(--f-chiffre);pointer-events:none}
 .coupgeant{position:absolute;right:14px;top:4px;font-family:var(--f-math);font-size:44px;color:var(--lilas);line-height:1;pointer-events:none;text-shadow:0 0 24px rgba(165,139,255,.5)}
 .fenetre{animation:pop .45s cubic-bezier(.3,1.4,.5,1)!important}
-.bulle{position:absolute;left:12px;right:12px;bottom:8px;background:rgba(27,27,41,.97);border:1px solid var(--lilas);border-radius:14px;padding:12px 14px;
+.bulle{position:relative;background:rgba(27,27,41,.97);border:1px solid var(--lilas);border-radius:14px;padding:12px 14px;
   display:flex;gap:12px;align-items:center;font-size:14px;line-height:1.4;box-shadow:0 14px 40px -12px rgba(0,0,0,.8);animation:monte .35s var(--ease)}
 .bulle p{margin:0;flex:1}
+.bulle:not([hidden])+.notation{display:none}
 .bulle button{flex:none;background:var(--lilas);color:var(--sur-lilas);border:0;border-radius:10px;padding:8px 12px;font-weight:700;cursor:pointer;min-height:40px}
 @keyframes monte{from{opacity:0;transform:translateY(10px)}}
 .melange{position:absolute;left:0;right:0;bottom:6px;text-align:center;font-family:var(--f-titre);letter-spacing:.3em;font-size:12px;color:var(--pale);pointer-events:none}
@@ -252,10 +254,10 @@ a.bouton{text-decoration:none;color:inherit}
 .resume b{display:block;font-family:var(--f-chiffre);font-size:20px;color:var(--encre);letter-spacing:0}
 .nouveau{display:inline-block;background:var(--or-doux);color:var(--or);border-radius:99px;padding:3px 10px;font-size:12px;font-weight:700;margin-bottom:4px}
 #confettis{position:fixed;inset:0;pointer-events:none;z-index:30;width:100%;height:100%}
-#toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 12px);transform:translate(-50%,-160%);z-index:40;
+#toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 12px);transform:translate(-50%,calc(-100% - env(safe-area-inset-top,0px) - 40px));visibility:hidden;z-index:40;
   background:#1d1a33;border:1px solid var(--or);border-radius:16px;padding:10px 16px;display:flex;gap:10px;align-items:center;
-  box-shadow:0 20px 50px -15px rgba(0,0,0,.9);transition:transform .45s var(--ease);max-width:calc(100% - 32px)}
-#toast.vu{transform:translate(-50%,0)}
+  box-shadow:0 20px 50px -15px rgba(0,0,0,.9);transition:transform .45s var(--ease),visibility 0s .45s;max-width:calc(100% - 32px)}
+#toast.vu{transform:translate(-50%,0);visibility:visible;transition:transform .45s var(--ease)}
 #toast svg{width:26px;height:26px;flex:none}
 #toast b{display:block;font-size:12px;color:var(--or);letter-spacing:.1em;text-transform:uppercase}
 #toast span{font-size:14px}
@@ -335,9 +337,9 @@ a.bouton{text-decoration:none;color:inherit}
       <div class="miniv" id="miniv">U · F · R</div>
       <div class="coupgeant" id="coupGeant"></div>
       <div class="melange" id="melangeTxt" hidden>MÉLANGE…</div>
-      <div class="bulle" id="bulle" hidden><p id="bulleTxt"></p><button type="button" id="bulleOk">Compris</button></div>
     </div>
     <div class="jbas">
+      <div class="bulle" id="bulle" hidden><p id="bulleTxt"></p><button type="button" id="bulleOk">Compris</button></div>
       <div class="notation" id="notation"></div>
       <div class="pave" id="pave" hidden></div>
       <div class="actions">
@@ -982,7 +984,7 @@ var Ciel=(function(){var cv=document.getElementById("ciel"),cx=cv.getContext("2d
     for(var i=0;i<et.length;i++){var s=et[i];if(!CALME){s.y-=s.p;if(s.y<-2){s.y=H+2;s.x=Math.random()*W;}}
       var a=CALME?.6:.35+.45*(.5+.5*Math.sin(now/1000*s.v+s.ph));cx.beginPath();cx.arc(s.x,s.y,s.r,0,6.283);cx.fillStyle="rgba("+s.c+","+a+")";cx.fill();}
     if(CALME)return;
-    if(!fil&&now>proch){proch=now+6000+Math.random()*9000;var ang=Math.PI*(.12+Math.random()*.12);fil={x:Math.random()*W*.8,y:Math.random()*H*.35,dx:Math.cos(ang),dy:Math.sin(ang),t0:now,v:.9+Math.random()*.5};}
+    if(!fil&&now>proch&&ECRAN==="accueil"){proch=now+6000+Math.random()*9000;var ang=Math.PI*(.12+Math.random()*.12);fil={x:Math.random()*W*.8,y:Math.random()*H*.35,dx:Math.cos(ang),dy:Math.sin(ang),t0:now,v:.9+Math.random()*.5};}
     if(fil){var e=(now-fil.t0)/900;if(e>=1)fil=null;else{var d=e*fil.v*W*.5,x=fil.x+fil.dx*d,y=fil.y+fil.dy*d,l=120*(1-Math.abs(e-.5)),g=cx.createLinearGradient(x,y,x-fil.dx*l,y-fil.dy*l);
       g.addColorStop(0,"rgba(235,228,255,"+(1-e)+")");g.addColorStop(1,"rgba(235,228,255,0)");cx.strokeStyle=g;cx.lineWidth=1.6;cx.lineCap="round";cx.beginPath();cx.moveTo(x,y);cx.lineTo(x-fil.dx*l,y-fil.dy*l);cx.stroke();}}}
   function boucle(now){if(!document.hidden&&now-der>33){der=now;dessin(now);}if(!CALME)requestAnimationFrame(boucle);}
