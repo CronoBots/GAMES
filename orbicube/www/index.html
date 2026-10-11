@@ -1106,7 +1106,9 @@ var NivP=new Plateau(document.getElementById("nivApercu"),{etiquettes:false});
 
 /* ========== 11. LA PARTIE ========== */
 var JeuP=new Plateau(document.getElementById("plateau"),{eclats:true});Ticker.actifs.push(JeuP);
-JeuP.onFace=function(n){if(!J||!J.pret||J.fini)return;bip(1047,.28,"sine",.07);bip(1568,.32,"sine",.05,.07);vibrer(12);};
+JeuP.onFace=function(n){if(!J||!J.pret||J.fini)return;bip(1047,.28,"sine",.07);bip(1568,.32,"sine",.05,.07);
+  // le retour grandit avec le nombre de faces finies d'un même coup : une double arrivée est un plus grand moment
+  if(n>1){bip(2093,.34,"sine",.045,.12);vibrer(16);}else vibrer(12);};
 var mini=document.getElementById("mini"),miniC=mini.getContext("2d"),PIVOT={y:0,x:0},J=null;
 function dessinerMini(){if(!PROG.options.cube)return;var w=mini.clientWidth||84,px=Math.round(w*DPR);if(mini.width!==px){mini.width=px;mini.height=px;miniC.setTransform(DPR,0,0,DPR,0,0);}
   // le plateau se redessine à chaque image (indice qui pulse, halos) : le cube, lui, seulement quand il change
