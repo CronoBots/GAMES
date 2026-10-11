@@ -89,6 +89,8 @@ body{background:
 .etoile.eteinte{fill:#34324a}
 
 #accueil .defile{display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:12px}
+/* l'accueil descend un peu dans la zone de la barre d'accueil de l'iPhone (le client, le 11/10/2026) */
+#accueil .defile{padding-bottom:max(10px,calc(env(safe-area-inset-bottom,0px) - 12px))}
 #accueil .defile>:first-child{margin-top:auto}#accueil .defile>:last-child{margin-bottom:auto}
 /* le logo prend la hauteur que le menu laisse, mesurée par la mise en page elle-même (et non estimée) :
    l'accueil tient sur un écran quelles que soient la police et la taille du texte du téléphone */
