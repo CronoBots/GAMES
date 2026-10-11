@@ -108,6 +108,31 @@ async function resoudre(p) {
     erreurs.length ? faute("erreurs : " + erreurs.join(" | ")) : ok("aucune erreur de script");
     await ctx.close();
   }
+  // gestes au doigt : un geste ne compte qu'au lâcher, d'après la position finale du cercle
+  {
+    console.log("Gestes (iPhone 13)");
+    const ctx = await b.newContext({ ...devices["iPhone 13"], locale: "fr-FR" });
+    const p = await ctx.newPage();
+    p.setDefaultTimeout(8000);
+    await p.goto(URL); await p.waitForTimeout(1000);
+    await p.click("#btnLibre"); await p.waitForTimeout(300); await p.click('#fenetre [data-a="5"]'); await p.waitForTimeout(2600);
+    const bx = await (await p.$("#plateau")).boundingBox(), E = bx.width / 3.2, ox = bx.x + bx.width / 2, oy = bx.y + bx.width / 2 + 0.145 * E;
+    const C = [0, 1 / Math.sqrt(3)], R = 1.04, pt = (a) => [ox + (C[0] + R * Math.cos(a)) * E, oy - (C[1] + R * Math.sin(a)) * E];
+    const coups = async () => (await p.textContent("#jCoups")).split("/")[0].trim();
+    // glisse lentement le long du cercle U, d'une suite d'angles (en radians, autour de son centre)
+    const glisser = async (etapes) => { let a = -Math.PI / 2; await p.mouse.move(...pt(a)); await p.mouse.down();
+      for (const d of etapes) { const n = Math.ceil(Math.abs(d) / 0.04); for (let i = 0; i < n; i++) { a += d / n; await p.mouse.move(...pt(a)); await p.waitForTimeout(12); } }
+      await p.waitForTimeout(150); await p.mouse.up(); await p.waitForTimeout(700); };
+    await glisser([Math.PI / 2 * 1.1, -Math.PI / 2 * 1.1]);
+    (await coups()) === "0" ? ok("un aller-retour d'un quart de tour ne compte aucun coup") : faute("aller-retour compté : " + (await coups()) + " coup(s)");
+    await glisser([Math.PI * 1.03]);
+    const nota = (await p.textContent("#notation")).trim();
+    (await coups()) === "1" && /^U2$/.test(nota) ? ok("un demi-tour en un geste compte un coup, noté U2") : faute("demi-tour : " + (await coups()) + " coup(s), notation « " + nota + " »");
+    await p.click("#btnAnnuler"); await p.waitForTimeout(900);
+    (await coups()) === "0" ? ok("« Annuler » défait le demi-tour en entier") : faute("annuler le demi-tour laisse " + (await coups()) + " coup(s)");
+    await ctx.close();
+  }
+
   // application simulée : un faux pont natif (iOS) pour éprouver le branchement des succès des stores et de l'achat
   {
     console.log("Application iOS simulée");

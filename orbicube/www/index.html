@@ -472,7 +472,7 @@ function estResolu(col){var g={};for(var i=0;i<54;i++){var k=S[i].a+","+S[i].s;i
 var MV={R:[0,1,-1],M:[0,0,1],L:[0,-1,1],U:[1,1,-1],E:[1,0,1],D:[1,-1,1],F:[2,1,-1],S:[2,0,-1],B:[2,-1,1]};
 var TOUS=["U","D","L","R","F","B","M","E","S"];
 var NOM_ANNEAU={};Object.keys(MV).forEach(function(k){NOM_ANNEAU[MV[k][0]+","+MV[k][1]]=k;});
-function nomDe(mv){var b=NOM_ANNEAU[mv.a+","+mv.L];return MV[b][2]===mv.q?b:b+"′";}
+function nomDe(mv){var b=NOM_ANNEAU[mv.a+","+mv.L];if(mv.d===2)return b+"2";return MV[b][2]===mv.q?b:b+"′";}
 function parNom(t){var b=t.charAt(0),m=MV[b];return{a:m[0],L:m[1],q:t.length>1?-m[2]:m[2]};}
 function inverse(mv){return{a:mv.a,L:mv.L,q:-mv.q};}
 function cleA(mv){return mv.a+","+mv.L;}
@@ -783,10 +783,11 @@ function recommencer(){if(!J||!J.pret)return;JeuP.file=[];JeuP.anim=null;JeuP.co
   J.hist=[];J.t0=0;J.fini=false;JeuP.indice=null;document.getElementById("jTemps").textContent="0:00";majJeu();Ticker.reveiller();}
 function jouerCoup(mv){if(!J||!J.pret||J.fini||JeuP.occupe()||!JeuP.permisA(cleA(mv)))return;
   JeuP.indice=null;sonTour(mv);vibrer(8);JeuP.jouer(mv,300*PROG.options.vitesse,function(ok){if(ok)apresCoup(mv);},"rebond");}
-function apresCoup(mv){J.hist.push(mv);if(!J.t0)J.t0=performance.now();PROG.stats.tours++;if(mv.L===0){PROG.stats.tranches++;J.tranches[mv.a]=1;}
+function apresCoup(mv){J.hist.push(mv);if(!J.t0)J.t0=performance.now();PROG.stats.tours+=mv.d||1;if(mv.L===0){PROG.stats.tranches++;J.tranches[mv.a]=1;}
   if(!document.getElementById("bulle").hidden&&document.getElementById("bulle").dataset.tip==="geste")cacherBulle();
   majJeu();if(estResolu(JeuP.col))victoire();else if(PROG.stats.tours%25===0)sauver();}
 function annuler(){if(!J||!J.pret||J.fini||JeuP.occupe()||!J.hist.length)return;var mv=J.hist.pop();sonTour(mv);JeuP.indice=null;
+  if(mv.d===2)JeuP.jouer(inverse(mv),170*PROG.options.vitesse,null,"doux");
   JeuP.jouer(inverse(mv),240*PROG.options.vitesse,function(){majJeu();},"rebond");majJeu();}
 function majJeu(){if(!J)return;var n=J.hist.length,par=J.def.par;
   document.getElementById("jCoups").innerHTML='<span class="'+(n&&n!==J.nPrec?"saut":"")+'">'+n+'</span><small> / '+par+'</small>';J.nPrec=n;
@@ -798,7 +799,7 @@ function majJeu(){if(!J)return;var n=J.hist.length,par=J.def.par;
   else{nt.innerHTML=J.hist.map(function(m,i){return i===n-1?'<span class="der">'+nomDe(m)+'</span>':nomDe(m);}).join(" ");nt.scrollLeft=nt.scrollWidth;}
   document.getElementById("coupGeant").textContent=n?nomDe(J.hist[n-1]):"";
   document.getElementById("btnAnnuler").disabled=!n;document.getElementById("btnIndice").classList.toggle("off",J.indice);}
-function cheminSolution(){var tout=J.def.melange.concat(J.hist),ch=[];for(var i=tout.length-1;i>=0;i--)ch.push(inverse(tout[i]));
+function cheminSolution(){var tout=J.def.melange.slice(),ch=[];J.hist.forEach(function(m){tout.push(m);if(m.d===2)tout.push(m);});for(var i=tout.length-1;i>=0;i--)ch.push(inverse(tout[i]));
   var change=true;while(change){change=false;
     for(var j=0;j<ch.length-1;j++)if(cleA(ch[j])===cleA(ch[j+1])&&ch[j].q===-ch[j+1].q){ch.splice(j,2);change=true;break;}
     if(change)continue;
@@ -857,7 +858,7 @@ document.getElementById("bulleOk").addEventListener("click",function(){sonClic()
 var cvJ=document.getElementById("plateau"),G=null;
 function pt(e){var r=cvJ.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top];}
 cvJ.addEventListener("pointerdown",function(e){if(!J||!J.pret||J.fini||JeuP.occupe()||e.button===2)return;var p=pt(e),cand=JeuP.anneauxSous(p[0],p[1]);if(!cand.length)return;
-  e.preventDefault();try{cvJ.setPointerCapture(e.pointerId);}catch(er){}G={p0:p,cand:cand,choisi:null,der:0,cumul:0,trace:[],cran:false};JeuP.survol=cleA(cand[0]);audio();Ticker.reveiller();});
+  e.preventDefault();try{cvJ.setPointerCapture(e.pointerId);}catch(er){}G={p0:p,cand:cand,choisi:null,der:0,cumul:0,trace:[],cran:false,net:0};JeuP.survol=cleA(cand[0]);audio();Ticker.reveiller();});
 cvJ.addEventListener("pointermove",function(e){var p=pt(e);
   if(!G){if(e.pointerType==="mouse"&&J&&J.pret&&!JeuP.occupe()){var c=JeuP.anneauxSous(p[0],p[1]),k=c.length?cleA(c[0]):null;if(k!==JeuP.survol){JeuP.survol=k;cvJ.style.cursor=k?"grab":"default";JeuP.dessiner();}}return;}
   var dx=p[0]-G.p0[0],dy=p[1]-G.p0[1];
@@ -867,23 +868,28 @@ cvJ.addEventListener("pointermove",function(e){var p=pt(e);
     G.choisi=best;JeuP.survol=cleA(best);G.der=angle(m0,CEN[best.a]);}
   var m=JeuP.depuis(p[0],p[1]),a=angle(m,CEN[G.choisi.a]),d=normA(a-G.der),now=performance.now(),pas1=PAS[G.choisi.a][G.choisi.L+1];G.der=a;G.cumul+=d;
   G.trace.push([now,G.cumul]);while(G.trace.length>2&&now-G.trace[0][0]>110)G.trace.shift();
-  // rotation continue : chaque quart de tour franchi est joué aussitôt, et le doigt continue
+  // rotation continue : chaque quart de tour franchi est posé aussitôt sur le plateau, et le doigt continue ;
+  // le coup, lui, ne se compte qu'au lâcher (voir finirGeste)
   while(Math.abs(G.cumul)>=pas1){var vis1=G.cumul>0?1:-1,mv1={a:G.choisi.a,L:G.choisi.L,q:qPourSens(G.choisi.a,vis1)},avant=JeuP.col;
     JeuP.anim=null;JeuP.col=appliquer(JeuP.col,mv1);JeuP.arrivee(mv1,avant);sonTour(mv1);vibrer(12);G.cumul-=vis1*pas1;G.cran=false;G.trace=[[now,G.cumul]];
-    apresCoup(mv1);if(J.fini){G=null;JeuP.survol=null;return;}}
+    G.net+=mv1.q;}
   var prog=G.cumul/pas1,q=qPourSens(G.choisi.a,prog>=0?1:-1);
   // un cran tactile quand on passe la moitié : relâcher maintenant valide le tour
   if(Math.abs(prog)>=.5&&!G.cran){G.cran=true;vibrer(6);bip(520,.03,"sine",.03);}else if(Math.abs(prog)<.4)G.cran=false;
   JeuP.anim={mv:{a:G.choisi.a,L:G.choisi.L,q:q},t:Math.abs(prog),libre:true};JeuP.indice=null;JeuP.dessiner();dessinerMini();});
 function lacher(){if(!G)return;var g=G;G=null;JeuP.survol=null;
   if(!g.choisi){var c=g.cand[0];jouerCoup({a:c.a,L:c.L,q:qPourSens(c.a,PROG.options.horaire?-1:1)});return;}
-  var an=JeuP.anim;if(!an||!an.libre){Ticker.reveiller();return;}
+  var an=JeuP.anim;if(!an||!an.libre){finirGeste(g,g.net);Ticker.reveiller();return;}
   // vitesse du doigt sur les 110 dernières ms, en quarts de tour par seconde, dans le sens du tour en cours
   var tr=g.trace,v=0;if(tr.length>1){var dt=tr[tr.length-1][0]-tr[0][0];if(dt>0)v=(tr[tr.length-1][1]-tr[0][1])/dt*1000/PAS[g.choisi.a][g.choisi.L+1];}
   var sens=sensVis(an.mv),vit=v*sens,ok=an.t>.4||(an.t>.06&&vit>2.2);if(vit<-2.2)ok=false;var mv=an.mv;
   an.libre=false;an.deb=performance.now();an.de=an.t;an.vers=ok?1:0;an.courbe="rebond";
   an.duree=((ok?1-an.t:an.t)*240+90)*PROG.options.vitesse/(ok&&vit>3?Math.min(2,vit/3):1);
-  if(ok){sonTour(mv);vibrer(10);an.fin=function(){apresCoup(mv);};}Ticker.reveiller();}
+  if(ok){sonTour(mv);vibrer(10);}an.fin=function(fait){finirGeste(g,g.net+(fait?mv.q:0));};Ticker.reveiller();}
+// Un geste vaut au plus un coup, compté au lâcher : revenir au départ ne coûte rien, un quart de tour net vaut
+// un coup (U ou U′), un demi-tour dans le même geste aussi (U2), comme dans la notation du cube.
+function finirGeste(g,net){var n=((net%4)+4)%4;if(!J||J.fini)return;if(!n){majJeu();return;}
+  var mv={a:g.choisi.a,L:g.choisi.L,q:n===3?-1:1};if(n===2)mv.d=2;apresCoup(mv);}
 cvJ.addEventListener("pointerup",lacher);cvJ.addEventListener("pointercancel",lacher);
 cvJ.addEventListener("pointerleave",function(){if(!G&&JeuP.survol){JeuP.survol=null;JeuP.dessiner();}});
 cvJ.addEventListener("contextmenu",function(e){e.preventDefault();if(!J||!J.pret)return;var p=pt(e),c=JeuP.anneauxSous(p[0],p[1]);

@@ -60,4 +60,9 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 - **Les succès des stores** passent par `plugins/succes-natifs` ; sans module ni configuration,
   tout se replie sans bruit. Le module natif n'a jamais été compilé ici : la première build Xcode
   et Android Studio le validera.
+- **Un geste vaut au plus un coup, compté au lâcher** (le client, le 11/10/2026) : pendant le
+  glisser, les quarts de tour franchis sont posés sur le plateau mais pas comptés ; au lâcher,
+  `finirGeste()` lit la rotation nette : 0 (aller-retour, tour complet) = aucun coup, un quart =
+  `U`/`U′`, un demi-tour = `U2`, un seul coup comme dans la notation du cube. Toucher, clavier et
+  pavé restent un quart de tour = un coup.
 - `?capture` dans l'adresse expose `window.__orbicube.solution()`, pour `outils/captures.js` seulement.
