@@ -620,7 +620,7 @@ function inter(c1,r1,c2,r2){var dx=c2[0]-c1[0],dy=c2[1]-c1[1],d=Math.hypot(dx,dy
 S.forEach(function(s){var b=(s.a+1)%3,c=(s.a+2)%3,pts=inter(CEN[b],RAY[s.p[b]+1],CEN[c],RAY[s.p[c]+1]);
   var d=function(q){return Math.hypot(q[0]-CEN[s.a][0],q[1]-CEN[s.a][1]);};pts.sort(function(u,v){return d(u)-d(v);});s.xy=s.s>0?pts[0]:pts[1];});
 var CENTRE_FACE={},CLE_CENTRE={};S.forEach(function(s,i){if(s.p[(s.a+1)%3]===0&&s.p[(s.a+2)%3]===0){CENTRE_FACE[s.a+","+s.s]=s.xy;CLE_CENTRE[s.a+","+s.s]=i;}});
-var RAYON_FACE=0;S.forEach(function(s){var c=CENTRE_FACE[s.a+","+s.s];RAYON_FACE=Math.max(RAYON_FACE,Math.hypot(s.xy[0]-c[0],s.xy[1]-c[1]));});RAYON_FACE+=.09;
+var RAYON_FACE=0;S.forEach(function(s){var c=CENTRE_FACE[s.a+","+s.s];RAYON_FACE=Math.max(RAYON_FACE,Math.hypot(s.xy[0]-c[0],s.xy[1]-c[1]));});RAYON_FACE+=.045;
 function angle(pt,c){return Math.atan2(pt[1]-c[1],pt[0]-c[0]);}
 function normA(d){while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;return d;}
 // Déplacement angulaire de chaque pastille pour un tour, dans le sens réel du cercle.
