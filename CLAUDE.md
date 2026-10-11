@@ -60,8 +60,10 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   le vérifie). **Le cube en perspective pivote au doigt** (redemandé par le client le 11/10/2026) : gauche/droite
   autour de la verticale, haut/bas pour la face du dessous, calé au quart de tour au lâcher (`PIVOT`).
 - **Facettes** (option « Pastilles », par défaut) : chaque pastille est un losange dont les côtés suivent les
-  deux cercles qui se croisent sous elle (`FORME`, tangentes) ; pendant un tour, la forme du départ tourne
-  avec le cercle et se fond dans celle de l'arrivée (`formeA`). Les croisements font au moins 50°.
+  deux cercles qui se croisent sous elle (`FORME`, tangentes) ; pendant un tour, une pastille qui glisse
+  sur un cercle garde un côté collé à ce cercle (sa tangente) et seul l'autre angle passe de celui du départ à
+  celui de l'arrivée ; une face qui pivote sur son centre choisit l'appariement de ses côtés une fois, sur
+  l'arrivée (`formeA`). Le choisir à chaque image le faisait basculer à mi-course. Les croisements font au moins 50°.
 - **Deux sortes d'étoiles** (le client, le 11/10/2026) : de coups (`etoilesPour`) et de temps
   (`etoilesTempsPour`, objectif `(par×4+6) s`, trois sous l'objectif, deux sous le double). Le chrono part
   au premier contact avec le plateau et avance seul (`majTemps`, toutes les 250 ms).

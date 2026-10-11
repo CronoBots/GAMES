@@ -673,7 +673,7 @@ Plateau.prototype.positionsA=function(t){var col=this.col,out=S.map(function(s,i
   if(!this.anim)return out;var mv=this.anim.mv,m=perm(mv.a,mv.L,mv.q),D=delta(mv.a,mv.L,mv.q);
   for(var k in m){var i=+k,j=m[i],s=S[i],f=s.a===mv.a,c=f?CENTRE_FACE[s.a+","+s.s]:CEN[mv.a];
     var a0=angle(S[i].xy,c),a1=angle(S[j].xy,c),r0=Math.hypot(S[i].xy[0]-c[0],S[i].xy[1]-c[1]),r1=Math.hypot(S[j].xy[0]-c[0],S[j].xy[1]-c[1]);
-    var aa=a0+D[i]*t,rr=r0+(r1-r0)*Math.min(1,t);out[i]={xy:[c[0]+rr*Math.cos(aa),c[1]+rr*Math.sin(aa)],c:col[i],m:true,f:f,src:i,dst:j,rot:D[i]*t,t:Math.min(1,Math.max(0,t))};}
+    var aa=a0+D[i]*t,rr=r0+(r1-r0)*Math.min(1,t);out[i]={xy:[c[0]+rr*Math.cos(aa),c[1]+rr*Math.sin(aa)],c:col[i],m:true,f:f,ax:mv.a,src:i,dst:j,rot:D[i]*t,rotF:D[i],t:Math.min(1,Math.max(0,t))};}
   return out;};
 // Forme d'une pastille à l'instant de l'animation : celle du départ, tournée avec le cercle, fondue dans celle
 // de l'arrivée (les deux côtés de l'arrivée sont appariés à ceux du départ, au signe près).
@@ -683,10 +683,17 @@ function tourne(w,a){var c=Math.cos(a),s=Math.sin(a);return[w[0]*c-w[1]*s,w[0]*s
 // Un mélange de vecteurs pouvait les rendre presque parallèles, et le tracé arrondi partait alors en longues aiguilles.
 function demi(a){a%=Math.PI;if(a>Math.PI/2)a-=Math.PI;if(a<=-Math.PI/2)a+=Math.PI;return a;}
 function angles(f){var au=Math.atan2(f.u[1],f.u[0]),d=demi(Math.atan2(f.v[1],f.v[0])-au);if(d<0){d+=Math.PI;}return[au,d];}
-function formeA(p,i){if(!p.m)return FORME[i];var A0=angles(FORME[p.src]),A1=angles(FORME[p.dst]),au0=A0[0]+p.rot,d0=A0[1];
-  // deux appariements possibles des côtés à l'arrivée : on garde celui qui tourne le moins
-  var c1=au0+demi(A1[0]-au0),c2=au0+demi(A1[0]+A1[1]-au0),ch1=Math.abs(c1-au0)+Math.abs(A1[1]-d0),ch2=Math.abs(c2-au0)+Math.abs(Math.PI-A1[1]-d0);
-  var au1=ch1<=ch2?c1:c2,d1=ch1<=ch2?A1[1]:Math.PI-A1[1],e=ease(p.t),au=au0+(au1-au0)*e,d=d0+(d1-d0)*e;
+// Une pastille qui glisse le long d'un cercle garde un côté collé à ce cercle, exactement (la tangente au point
+// où elle se trouve) : elle roule sur son rail comme un wagon. Seul l'angle de l'autre côté passe, d'un mouvement
+// régulier, de celui du départ à celui de l'arrivée ; il reste entre 50° et 130°, le losange ne s'écrase jamais.
+function relatif(i,ax){var f=FORME[i],surU=(S[i].a+1)%3===ax,T=surU?f.u:f.v,O=surU?f.v:f.u,r=demi(Math.atan2(O[1],O[0])-Math.atan2(T[1],T[0]));return r<0?r+Math.PI:r;}
+function formeA(p,i){if(!p.m)return FORME[i];
+  if(!p.f){var T=tangente(p.xy,CEN[p.ax]),a=Math.atan2(T[1],T[0]),r0=relatif(p.src,p.ax),r1=relatif(p.dst,p.ax),r=r0+(r1-r0)*p.t;
+    return{u:T,v:[Math.cos(a+r),Math.sin(a+r)]};}var A0=angles(FORME[p.src]),A1=angles(FORME[p.dst]),au0=A0[0]+p.rot,d0=A0[1];
+  // face qui pivote sur son centre : l'appariement des côtés se choisit une fois, sur la position d'arrivée
+  // (le choisir à chaque image le faisait basculer à mi-course), et l'écart se rattrape le long du tour
+  var auF=A0[0]+p.rotF,c1=auF+demi(A1[0]-auF),c2=auF+demi(A1[0]+A1[1]-auF),ch1=Math.abs(c1-auF)+Math.abs(A1[1]-d0),ch2=Math.abs(c2-auF)+Math.abs(Math.PI-A1[1]-d0);
+  var au1=ch1<=ch2?c1:c2,d1=ch1<=ch2?A1[1]:Math.PI-A1[1],e=p.t,au=au0+(au1-auF)*e,d=d0+(d1-d0)*e;
   return{u:[Math.cos(au),Math.sin(au)],v:[Math.cos(au+d),Math.sin(au+d)]};}
 function facette(cx,q,f,h,coul){var U=[f.u[0]*h,-f.u[1]*h],V=[f.v[0]*h,-f.v[1]*h],P=[[1,1],[1,-1],[-1,-1],[-1,1]].map(function(k){return[q[0]+k[0]*U[0]+k[1]*V[0],q[1]+k[0]*U[1]+k[1]*V[1]];});
   // coins arrondis par des courbes posées sur les côtés eux-mêmes : rien ne peut sortir du losange
