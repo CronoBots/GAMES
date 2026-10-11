@@ -63,6 +63,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   campagne ; une apparence choisie puis reperdue (progression effacée) retombe sur Classique.
 - **Fin de niveau** : les six faces s'illuminent l'une après l'autre et le cube fait un tour sur
   lui-même (`PIVOT` n'est animé que là) ; « Revoir ma partie » rejoue le mélange puis les coups (`revoir()`).
+- **Couleur d'accent par monde** (`ACCENTS`, `accent(w)`) : variable CSS `--acc` (triplet r,g,b) et
+  `ACC` pour le canevas (cercle saisi, vague de victoire). Accueil, défi et partie libre : le lilas.
 - Les niveaux de campagne sont tirés d'une graine fixe (`orbicube-<monde>-<niveau>`) : changer
   `genererMelange()` change tous les niveaux des joueurs. Ne le faire qu'avec une nouvelle graine.
 - La progression est dans `localStorage` (clé `orbicube-v1`) et, sur téléphone, dans
