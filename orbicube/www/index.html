@@ -90,10 +90,10 @@ body{background:
 
 #accueil .defile{display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:12px}
 #accueil .defile>:first-child{margin-top:auto}#accueil .defile>:last-child{margin-bottom:auto}
-/* le logo prend la hauteur que le menu laisse (environ 580 px) : l'accueil tient sur un écran, sans défiler */
-#logo{--haut:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
-  width:min(74vw,310px,max(120px,calc(var(--haut) - 580px)));aspect-ratio:1/1;display:block;flex:none}
-@supports (height:100dvh){#logo{--haut:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}}
+/* le logo prend la hauteur que le menu laisse, mesurée par la mise en page elle-même (et non estimée) :
+   l'accueil tient sur un écran quelles que soient la police et la taille du texte du téléphone */
+.logoboite{flex:1 1 0;min-height:110px;max-height:310px;width:100%;display:grid;place-items:center;overflow:hidden}
+#logo{width:min(74vw,310px,36vh);aspect-ratio:1/1;display:block}
 @media (max-height:700px){#accueil .menu{gap:8px}#accueil .bouton{min-height:50px}#accueil .defile{gap:8px}}
 .marque{font-family:var(--f-titre);font-weight:800;font-size:clamp(34px,11vw,52px);letter-spacing:.08em;margin:0;line-height:1;
   background:linear-gradient(100deg,#fff 0%,#d9ceff 40%,var(--lilas) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -197,7 +197,7 @@ a.bouton{text-decoration:none;color:inherit}
   #jeu .plateau{grid-column:1;grid-row:1/5}
   #jeu .jbas{grid-column:2;grid-row:4}
   #accueil .defile{flex-direction:row;flex-wrap:wrap;align-content:center;gap:10px 28px}
-  #logo{width:min(40vw,60vh)}
+  .logoboite{flex:none;width:auto;height:min(40vw,60vh);max-height:none}#logo{width:min(40vw,60vh)}
 }
 
 .groupe{background:var(--carte);border:1px solid var(--trait);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
@@ -282,7 +282,7 @@ a.bouton{text-decoration:none;color:inherit}
 
   <section class="ecran actif" id="accueil" aria-label="Accueil">
     <div class="defile">
-      <canvas id="logo" aria-hidden="true"></canvas>
+      <div class="logoboite"><canvas id="logo" aria-hidden="true"></canvas></div>
       <div style="display:grid;justify-items:center;gap:10px">
         <div style="text-align:center;display:grid;gap:8px">
           <h1 class="marque notrad">ORBICUBE</h1>
@@ -727,7 +727,8 @@ var Logo=new Plateau(document.getElementById("logo"),{etiquettes:false,comete:tr
 Logo.apres=function(now){if(this.occupe()||now<this.prochain)return;this.prochain=now+650;
   if((this.pile.length<5&&Math.random()<.8)||!this.pile.length){var b=TOUS[Math.floor(Math.random()*9)],m=MV[b],mv={a:m[0],L:m[1],q:Math.random()<.5?1:-1};this.pile.push(mv);this.jouer(mv,520);}
   else this.jouer(inverse(this.pile.pop()),520);};
-Logo.demarrer=function(){var w=this.cv.getBoundingClientRect().width;if(w)this.dimension(w);};
+// la taille vient de la boîte qui l'entoure : la place que le menu laisse, sans dépasser 74 % de la largeur ni 310 px
+Logo.demarrer=function(){var b=this.cv.parentNode.getBoundingClientRect(),w=Math.min(b.height,innerWidth*.74,310);if(w>0)this.dimension(w);};
 function etoilesTotal(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t+=PROG.niveaux[k].etoiles||0;});return t;}
 function prochainNiveau(){for(var w=0;w<MONDES.length;w++)for(var i=0;i<MONDES[w].coups.length;i++)if(!PROG.niveaux[(w+1)+"-"+(i+1)])return{w:w,i:i};return null;}
 function estHier(k){var d=new Date();d.setDate(d.getDate()-1);return k===cleJour(d);}
@@ -775,6 +776,7 @@ function redimJeu(){var z=document.getElementById("zonePlateau"),r=z.getBounding
 function redimAide(){var w=document.getElementById("aideCanvas").getBoundingClientRect().width;if(w)AideP.dimension(w);}
 var ro=new ResizeObserver(function(){if(ECRAN==="jeu")redimJeu();if(ECRAN==="accueil")Logo.demarrer();if(ECRAN==="aide")redimAide();});
 ["zonePlateau","logo","aideCanvas"].forEach(function(id){ro.observe(document.getElementById(id));});
+ro.observe(document.querySelector(".logoboite"));
 
 function lancer(def){J={def:def,hist:[],t0:0,fini:false,indice:false,pret:false,tranches:{}};
   JeuP.col=resoluCol();JeuP.anim=null;JeuP.file=[];JeuP.indice=null;JeuP.survol=null;
