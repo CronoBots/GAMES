@@ -168,7 +168,11 @@ a.bouton{text-decoration:none;color:inherit}
 .stat b small{font-size:13px;color:var(--sourd)}
 .jetoiles{display:flex;gap:4px}.jetoiles svg{width:22px;height:22px}
 .plateau{flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center;padding:4px 0}
-#plateau{display:block;touch-action:none;max-width:100%}
+#plateau{display:block;touch-action:none;max-width:100%;transition:filter .38s ease,transform .38s ease,opacity .38s ease}
+/* le mélange ne se montre pas : vu coup par coup, il suffirait de le rejouer à l'envers */
+.plateau.brouille #plateau{filter:blur(12px);opacity:.3;transform:scale(.9) rotate(-30deg)}
+#jeu.brouille .jcube{opacity:0;transition:opacity .2s}
+@media (prefers-reduced-motion:reduce){#plateau{transition:none}}
 /* le cube en perspective trône au centre, entre les coups et le temps, comme dans la visualisation de
    référence : sa taille (--cube) est la hauteur que le plateau laisse, calculée par redimJeu() */
 .jcube{display:grid;justify-items:center;gap:0;min-width:0;padding-top:14px}
@@ -1131,16 +1135,21 @@ var ro=new ResizeObserver(function(){if(ECRAN==="jeu")redimJeu();if(ECRAN==="acc
 ["zonePlateau","logo","aideCanvas"].forEach(function(id){ro.observe(document.getElementById(id));});
 ro.observe(document.querySelector(".logoboite"));
 
-function lancer(def){accent(def.mode==="campagne"?def.w:null);document.body.classList.toggle("zen",!!(PROG.options.zen||def.relax));
+function lancer(def){document.getElementById("zonePlateau").classList.remove("brouille");document.getElementById("jeu").classList.remove("brouille");accent(def.mode==="campagne"?def.w:null);document.body.classList.toggle("zen",!!(PROG.options.zen||def.relax));
 J={def:def,hist:[],t0:0,fini:false,indice:false,pret:false,tranches:{}};
   JeuP.col=resoluCol();JeuP.anim=null;JeuP.file=[];JeuP.indice=null;JeuP.survol=null;
   if(def.anneaux.length===9)JeuP.permis=null;else{JeuP.permis={};def.anneaux.forEach(function(b){JeuP.permis[MV[b][0]+","+MV[b][1]]=true;});}
   document.getElementById("jTitre").textContent=def.titre;document.getElementById("jSous").textContent=def.sous+" · par "+def.par;
   document.getElementById("plateau").removeAttribute("data-indice");
   construirePave();montrer("jeu");majJeu();majTemps();majAmpoules();cacherBulle(true);document.getElementById("melangeTxt").hidden=false;
-  var jeton=J,dur=(def.melange.length>10?90:def.melange.length>5?150:260)*PROG.options.vitesse;
-  setTimeout(function(){if(J!==jeton)return;def.melange.forEach(function(mv,i){JeuP.jouer(mv,dur,function(){if(J!==jeton)return;if(i%2===0)bip(280+i*25,.04,"sine",.03);
-    if(i===def.melange.length-1){J.pret=true;document.getElementById("melangeTxt").hidden=true;majJeu();tutoriel();}});});},400);}
+  // le mélange se fait à l'abri des regards : le plateau se trouble en tournant, les couleurs changent pendant qu'on
+  // ne les voit pas, puis il se dévoile. Montrer les coups un par un permettait de les rejouer à l'envers.
+  var jeton=J,z=document.getElementById("zonePlateau"),ecran=document.getElementById("jeu"),voile=CALME?0:420;
+  setTimeout(function(){if(J!==jeton)return;z.classList.add("brouille");ecran.classList.add("brouille");
+    for(var k=0;k<6;k++)bip(300+k*40,.04,"sine",.03,k*.06);
+    setTimeout(function(){if(J!==jeton)return;var col=resoluCol();def.melange.forEach(function(mv){col=appliquer(col,mv);});JeuP.col=col;JeuP.dessiner();dessinerMini();
+      z.classList.remove("brouille");ecran.classList.remove("brouille");
+      setTimeout(function(){if(J!==jeton)return;J.pret=true;document.getElementById("melangeTxt").hidden=true;majJeu();tutoriel();},voile);},voile+120);},250);}
 function recommencer(){if(!J||!J.pret)return;JeuP.file=[];JeuP.anim=null;JeuP.col=resoluCol();J.def.melange.forEach(function(mv){JeuP.col=appliquer(JeuP.col,mv);});
   J.hist=[];J.t0=0;J.fini=false;J.eTPrec=0;JeuP.indice=null;majJeu();majTemps();Ticker.reveiller();}
 function jouerCoup(mv){if(!J||!J.pret||J.fini||JeuP.occupe()||!JeuP.permisA(cleA(mv)))return;

@@ -97,6 +97,9 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   le démarrage natif ; les médailles des succès gardent le plateau. Accueil : la devise disparaît après le
   premier niveau, la pastille « Jeu complet » n'apparaît qu'après dix niveaux. Quand la suite de la campagne est payante, le bouton
   principal dit « Campagne » (et non « Continuer ») et la ligne dessous le dit.
+- **Le mélange ne se montre jamais** (le client, le 11/10/2026) : au lancement, le plateau se trouble en tournant
+  (`.brouille`, flou), les couleurs changent hors de vue puis il se dévoile. Animer les coups un par un permettait
+  de les rejouer à l'envers. Seul « Revoir ma partie », après la victoire, rejoue le mélange.
 - Les niveaux de campagne sont tirés d'une graine fixe (`orbicube-<monde>-<niveau>`) : changer
   `genererMelange()` change tous les niveaux des joueurs. Ne le faire qu'avec une nouvelle graine.
 - La progression est dans `localStorage` (clé `orbicube-v1`) et, sur téléphone, dans
