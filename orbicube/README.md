@@ -3,7 +3,9 @@
 Le cube 3×3 joué en faisant tourner neuf cercles. Chaque tranche du cube est un cercle, chaque
 facette une pastille posée au croisement des deux cercles qui peuvent la déplacer.
 
-- 60 niveaux en 6 mondes, un défi du jour, une partie libre chronométrée, 14 succès
+- 60 niveaux en 6 mondes, un défi du jour, une partie libre chronométrée
+- 14 succès, aussi dans Game Center et Google Play Jeux
+- en français, anglais, néerlandais, allemand et espagnol (langue du téléphone, ou au choix dans les options)
 - gratuit pour les mondes 1 et 2, **un achat unique** (« Orbicube complet ») pour le reste
 - sans publicité, sans compte, sans collecte de données, jouable hors ligne
 - application iOS et Android par [Capacitor](https://capacitorjs.com), achats par [RevenueCat](https://www.revenuecat.com)
@@ -16,7 +18,9 @@ Textes des stores : [`docs/fiche-store.md`](docs/fiche-store.md).
 | Chemin | Rôle |
 |---|---|
 | `www/index.html` | tout le jeu : HTML, CSS et JavaScript, sans bundler |
+| `www/langues.js` | les traductions : une ligne par phrase française, et les paragraphes d'aide en blocs |
 | `www/config.js` | les réglages de publication : modèle gratuit/payant, mondes gratuits, prix affiché, clés RevenueCat |
+| `plugins/succes-natifs/` | notre module natif : succès Game Center (Swift) et Google Play Jeux (Java) |
 | `src/natif.js` | le pont avec le téléphone (haptique, sauvegarde, barre d'état, retour Android, achats), compilé en `www/natif.js` |
 | `www/polices/` | les polices, embarquées : l'app ne dépend d'aucun réseau |
 | `www/sw.js`, `www/manifest.webmanifest` | la version web installable et hors ligne |
@@ -32,8 +36,8 @@ npm install
 npm run servir        # le jeu dans le navigateur : http://localhost:8080
 npm run construire    # recompile www/natif.js après une modification de src/natif.js
 npm run verifier      # contrôles rapides (syntaxe, marque, secrets, hors ligne, géométrie, 60 niveaux)
-npm run tester        # parcours complet sur iPhone 13, iPhone SE et Pixel 7 simulés
-npm run icones        # régénère les icônes et l'écran de démarrage
+npm run tester        # parcours sur iPhone 13, iPhone SE et Pixel 7, app iOS simulée, et les 5 langues
+npm run icones        # régénère les icônes, l'écran de démarrage et les images des succès
 npm run captures      # régénère les 15 captures et la bannière des stores
 npm run cap:sync      # recopie le jeu dans les projets iOS et Android
 ```

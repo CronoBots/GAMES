@@ -1,7 +1,7 @@
 // Pont entre le jeu (www/index.html, sans bundler) et le téléphone.
 // Compilé par `npm run construire` en www/natif.js, qui expose window.Natif.
 // Dans un navigateur, tout se replie : Natif.natif vaut false et chaque fonction rend une valeur neutre.
-import { Capacitor } from '@capacitor/core';
+import { Capacitor, registerPlugin } from '@capacitor/core';
 import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 import { Preferences } from '@capacitor/preferences';
 import { StatusBar, Style } from '@capacitor/status-bar';
@@ -10,6 +10,8 @@ import { App } from '@capacitor/app';
 import { Purchases } from '@revenuecat/purchases-capacitor';
 
 const natif = Capacitor.isNativePlatform();
+// notre module (plugins/succes-natifs) : Game Center sur iOS, Google Play Jeux sur Android
+const SuccesNatifs = registerPlugin('SuccesNatifs');
 const plateforme = Capacitor.getPlatform(); // 'ios', 'android' ou 'web'
 const cfg = () => window.ORBICUBE_CONFIG || {};
 
@@ -89,6 +91,22 @@ window.Natif = {
         })
         .catch((e) => ({ ok: false, annule: !!(e && e.userCancelled), erreur: 'store' }));
     });
+  },
+  // Succès des stores. Chaque fonction se tait sans module ou sans configuration : les succès restent alors locaux.
+  succesDisponibles() {
+    return natif && Capacitor.isPluginAvailable('SuccesNatifs');
+  },
+  succesConnecter() {
+    if (!this.succesDisponibles()) return Promise.resolve(false);
+    return SuccesNatifs.connecter().then((r) => !!(r && r.connecte)).catch(() => false);
+  },
+  succesDebloquer(id) {
+    if (!this.succesDisponibles() || !id) return Promise.resolve(false);
+    return SuccesNatifs.debloquer({ id }).then(() => true).catch(() => false);
+  },
+  succesAfficher() {
+    if (!this.succesDisponibles()) return Promise.resolve(false);
+    return SuccesNatifs.afficher().then(() => true).catch(() => false);
   },
   restaurer() {
     return configurer()

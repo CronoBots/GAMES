@@ -127,5 +127,62 @@ def main():
     ecrire(splash, os.path.join(r, "splash-dark.png"))
 
 
+# --- images des succès (Game Center : 1024 × 1024 ; Google Play Jeux : 512 × 512) ---
+# Une médaille par succès : le plateau, un cercle allumé en or propre au succès, et 1 à 3 étoiles selon sa valeur.
+SUCCES = [("premier", 10), ("m1", 25), ("m3", 50), ("m5", 75), ("m6", 100), ("p10", 50), ("pm", 75),
+          ("p60", 100), ("eclair", 50), ("jour", 25), ("serie3", 75), ("expert", 100), ("axes", 50), ("tours", 100)]
+OR, OR_CLAIR = (255, 207, 74), (255, 236, 170)
+
+
+def etoile(d, cx, cy, r, couleur):
+    pts = []
+    for k in range(10):
+        a = -math.pi / 2 + k * math.pi / 5
+        rr = r if k % 2 == 0 else r * 0.45
+        pts.append((cx + rr * math.cos(a), cy + rr * math.sin(a)))
+    d.polygon(pts, fill=couleur)
+
+
+def medaille(index, points, taille=1024, sur=2):
+    T = taille * sur
+    im = fond(T)
+    d = ImageDraw.Draw(im)
+    # anneau de la médaille
+    m = T * 0.04
+    d.ellipse([m, m, T - m, T - m], outline=OR + (255,), width=int(T * 0.035))
+    d.ellipse([m + T * 0.05, m + T * 0.05, T - m - T * 0.05, T - m - T * 0.05], outline=(255, 207, 74, 90), width=int(T * 0.008))
+    # le plateau, plus petit, et le cercle propre à ce succès en or
+    E = T * 0.62 / 3.2
+    OX, OY = T / 2, T / 2 + 0.145 * E - T * 0.05
+    vers = lambda q: (OX + q[0] * E, OY - q[1] * E)
+    a_, L_ = index % 3, index // 3 % 3 - 1
+    for a in range(3):
+        c = vers(CEN[a])
+        for L, r in zip((-1, 0, 1), RAY):
+            R = r * E
+            allume = (a, L) == (a_, L_)
+            d.ellipse([c[0] - R, c[1] - R, c[0] + R, c[1] + R], outline=(OR + (255,)) if allume else (90, 86, 140, 255),
+                      width=int(E * (0.06 if allume else 0.018)))
+    rp = E * 0.075
+    for q, f in pastilles():
+        x, y = vers(q)
+        d.ellipse([x - rp, y - rp, x + rp, y + rp], fill=hexa(COUL[f]) + (255,), outline=(0, 0, 0, 120), width=max(1, int(rp * 0.18)))
+    # étoiles : 1 (≤ 25 points), 2 (≤ 75), 3 (100)
+    n = 1 if points <= 25 else 2 if points <= 75 else 3
+    for k in range(n):
+        x = T / 2 + (k - (n - 1) / 2) * T * 0.11
+        etoile(d, x, T * 0.84, T * 0.045, OR_CLAIR + (255,))
+    return im.resize((taille, taille), Image.LANCZOS)
+
+
+def images_succes():
+    r = os.path.join(RACINE, "ressources", "succes")
+    for i, (cle, points) in enumerate(SUCCES):
+        im = medaille(i, points)
+        ecrire(im, os.path.join(r, "apple", cle + ".png"))
+        ecrire(im.resize((512, 512), Image.LANCZOS), os.path.join(r, "google", cle + ".png"))
+
+
 if __name__ == "__main__":
     main()
+    images_succes()

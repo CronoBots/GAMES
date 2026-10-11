@@ -49,7 +49,7 @@ async function resoudre(p) {
   const b = await chromium.launch(NAV);
   for (const appareil of ["iPhone 13", "iPhone SE", "Pixel 7"]) {
     console.log(appareil);
-    const ctx = await b.newContext({ ...devices[appareil] });
+    const ctx = await b.newContext({ ...devices[appareil], locale: "fr-FR" });
     const p = await ctx.newPage();
     p.setDefaultTimeout(8000);
     const erreurs = [];
@@ -108,8 +108,86 @@ async function resoudre(p) {
     erreurs.length ? faute("erreurs : " + erreurs.join(" | ")) : ok("aucune erreur de script");
     await ctx.close();
   }
+  // application simulée : un faux pont natif (iOS) pour éprouver le branchement des succès des stores et de l'achat
+  {
+    console.log("Application iOS simulée");
+    const ctx = await b.newContext({ ...devices["iPhone 13"], locale: "fr-FR" });
+    await ctx.route("**/natif.js", (r) => r.fulfill({ contentType: "text/javascript", body: `
+      window.__envoyes = []; window.__connexions = 0;
+      window.Natif = { natif: true, plateforme: "ios", vibrer: () => true, lire: () => Promise.resolve(null), ecrire() {}, demarrer() {}, surRetour() {}, quitter() {},
+        achatsDisponibles: () => Promise.resolve(true), prix: () => Promise.resolve("3,49 €"), etatAchat: () => Promise.resolve(null),
+        acheter: () => new Promise((ok) => setTimeout(() => ok({ ok: true }), 200)), restaurer: () => Promise.resolve({ ok: false, erreur: "aucun" }),
+        succesDisponibles: () => true, succesConnecter: () => { window.__connexions++; return Promise.resolve(true); },
+        succesDebloquer: (id) => { window.__envoyes.push(id); return Promise.resolve(true); }, succesAfficher: () => { window.__affiche = true; return Promise.resolve(true); } };` }));
+    const p = await ctx.newPage();
+    p.setDefaultTimeout(8000);
+    const erreurs = [];
+    p.on("pageerror", (e) => erreurs.push(e.message));
+    await p.goto(URL + "?capture"); await p.waitForTimeout(1200);
+    (await p.textContent("#prixAccueil")) === "3,49 €" ? ok("le prix vient du store (3,49 €)") : faute("prix du store non affiché");
+    await p.click("#btnJouer"); await p.waitForTimeout(1800);
+    for (const m of await p.evaluate(() => window.__orbicube.solution())) { await p.keyboard.press(m.length > 1 ? "Shift+" + m[0] : m[0]); await p.waitForTimeout(450); }
+    await p.waitForTimeout(2200);
+    const envoyes = await p.evaluate(() => window.__envoyes);
+    envoyes.includes("orbicube.premier") ? ok("succès « Premier tour » déclaré à Game Center (orbicube.premier)") : faute("succès non déclaré : " + JSON.stringify(envoyes));
+    await p.reload(); await p.waitForTimeout(1200);
+    const renvoi = await p.evaluate(() => ({ c: window.__connexions, e: window.__envoyes }));
+    renvoi.c === 1 && renvoi.e.includes("orbicube.premier") ? ok("à l'ouverture : connexion, puis renvoi des succès déjà gagnés") : faute("pas de renvoi à l'ouverture : " + JSON.stringify(renvoi));
+    await p.click("#btnSucces"); await p.waitForTimeout(400);
+    (await p.isVisible("#btnSuccesStore")) && (await p.textContent("#btnSuccesStore")).includes("Game Center") ? ok("bouton « Game Center » sur l'écran des succès") : faute("bouton Game Center absent");
+    await p.click("#btnSuccesStore"); await p.waitForTimeout(200);
+    (await p.evaluate(() => window.__affiche)) ? ok("le bouton ouvre la liste de Game Center") : faute("le bouton n'ouvre rien");
+    await p.click("#succes [data-retour]"); await p.waitForTimeout(400);
+    await p.click("#btnBoutique"); await p.waitForTimeout(400);
+    (await p.textContent("#fenetre")).includes("3,49 €") ? ok("la boutique affiche le prix du store") : faute("prix absent de la boutique");
+    await p.click('#fenetre [data-a="acheter"]'); await p.waitForTimeout(1400);
+    (await p.isHidden("#btnBoutique")) ? ok("achat réussi : le jeu complet est débloqué") : faute("l'achat ne débloque rien");
+    await p.click("#btnJouer"); await p.waitForTimeout(600);
+    (await p.$$eval(".monde.paye", (l) => l.length)) === 0 ? ok("après l'achat, plus aucun monde réservé") : faute("des mondes restent réservés après l'achat");
+    erreurs.length ? faute("erreurs : " + erreurs.join(" | ")) : ok("aucune erreur de script");
+    await ctx.close();
+  }
+
+  // chaque langue : tous les écrans et fenêtres sur le plus petit iPhone, phrases manquantes et textes qui débordent
+  for (const langue of ["en", "nl", "de", "es"]) {
+    console.log("Langue " + langue + " (iPhone SE)");
+    const ctx = await b.newContext({ ...devices["iPhone SE"] });
+    const p = await ctx.newPage();
+    p.setDefaultTimeout(8000);
+    const erreurs = [];
+    p.on("pageerror", (e) => erreurs.push(e.message));
+    await p.goto(URL + "?capture");
+    await p.waitForTimeout(1000);
+    const debord = new Set();
+    const mesurer = async (ou) => (await p.evaluate(() => [...document.querySelectorAll(".ecran.actif *, #fenetre *, #toast *")].filter((e) => {
+      const r = e.getBoundingClientRect(); if (!r.width || getComputedStyle(e).visibility === "hidden" || e.classList.contains("onde")) return false;
+      return r.right > innerWidth + 1 || (e.matches("button,.bouton,.action,h2,h3,b,span,select") && e.scrollWidth > e.clientWidth + 2 && getComputedStyle(e).overflow !== "hidden" && !e.closest(".notation"));
+    }).map((e) => (e.id || e.className || e.tagName) + " « " + (e.textContent || "").trim().slice(0, 30) + " »"))).forEach((x) => debord.add(ou + " : " + x));
+    const go = async (sel, t = 450) => { const el = await p.$(sel); if (el && await el.isVisible()) { await el.click(); await p.waitForTimeout(t); return true; } return false; };
+    const fermer = async () => { for (const a of ["x", "non", "reprendre", "menu"]) if (await go(`#fenetre [data-a="${a}"]`)) return; };
+    await go("#btnOptions"); await p.selectOption("#optLangue", langue); await p.waitForTimeout(300); await mesurer("options");
+    await go("#btnEffacer"); await mesurer("effacer"); await fermer(); await go("#btnRestaurer"); await go("#options [data-retour]");
+    await mesurer("accueil");
+    await go("#btnJouer", 1800); await mesurer("niveau 1-1"); await go("#bulleOk"); await go("#btnPause"); await mesurer("pause"); await fermer();
+    for (const m of await p.evaluate(() => window.__orbicube.solution())) { await p.keyboard.press(m.length > 1 ? "Shift+" + m[0] : m[0]); await p.waitForTimeout(450); }
+    await p.waitForTimeout(2200); await mesurer("victoire"); await go('#fenetre [data-a="suivant"]', 2000);
+    await go("#btnIndice", 400); await mesurer("indice"); await go('#fenetre [data-a="oui"]'); await go("#btnPause"); await go('#fenetre [data-a="niveaux"]', 600); await mesurer("niveaux");
+    await go("#niveaux [data-retour]"); await mesurer("mondes"); await go(".monde.paye"); await mesurer("boutique"); await fermer();
+    await go("#mondes [data-retour]"); await go("#btnLibre"); await mesurer("partie libre"); await go('#fenetre [data-a="25"]'); await fermer();
+    await go("#btnJour", 2500); await mesurer("défi du jour"); await go("#btnPause"); await go('#fenetre [data-a="accueil"]');
+    await go("#btnSucces"); await mesurer("succès"); await go("#succes [data-retour]"); await go("#btnAide"); await mesurer("aide"); await go("#aide [data-retour]");
+    await p.waitForTimeout(3200);
+    const manques = await p.evaluate(() => window.__orbicube.manques());
+    manques.length ? faute(manques.length + " phrase(s) sans traduction : " + manques.slice(0, 6).map((m) => "« " + m + " »").join(", ")) : ok("toutes les phrases affichées sont traduites");
+    debord.size ? faute("textes qui débordent : " + [...debord].slice(0, 5).join(" | ")) : ok("aucun texte ne déborde sur 320 px");
+    const jouer = await p.textContent("#jouerTxt");
+    await go("#btnOptions"); await p.selectOption("#optLangue", "fr"); await p.waitForTimeout(300); await go("#options [data-retour]");
+    (await p.textContent("#jouerTxt")) === "Continuer" && jouer !== "Continuer" ? ok("retour au français sans recharger (« " + jouer + " » → « Continuer »)") : faute("le retour au français ne retraduit pas l'écran");
+    erreurs.length ? faute("erreurs : " + erreurs.join(" | ")) : ok("aucune erreur de script");
+    await ctx.close();
+  }
   await b.close();
   serveur.fermer();
-  console.log(fautes ? "\n" + fautes + " faute(s)." : "\nParcours réussi sur les trois téléphones.");
+  console.log(fautes ? "\n" + fautes + " faute(s)." : "\nParcours réussi sur les trois téléphones et dans les cinq langues.");
   process.exit(fautes ? 1 : 0);
 })();

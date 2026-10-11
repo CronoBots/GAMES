@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Vide par défaut : les succès restent locaux tant que l'application ne fournit pas son identifiant
+         (même nom de ressource dans android/app/src/main/res/values/strings.xml, qui prend le dessus). -->
+    <string name="game_services_project_id" translatable="false"></string>
+</resources>

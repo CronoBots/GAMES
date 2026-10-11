@@ -15,9 +15,11 @@ Les jeux de CronoBots, un dossier par jeu. Le premier : `orbicube/`.
 | Touché | À lancer, résultat exigé |
 |---|---|
 | tout | `npm run verifier` → « Tout est en ordre. » (code 0) |
-| `www/` | `npm run tester` → « Parcours réussi sur les trois téléphones. » |
+| `www/` | `npm run tester` → « Parcours réussi sur les trois téléphones et dans les cinq langues. » |
 | `src/natif.js` | `npm run construire`, et committer `www/natif.js` avec : la CI refuse un pont pas à jour |
 | une version publiée | même numéro dans `package.json` et `www/config.js` ; `V` incrémenté dans `www/sw.js` |
+| un texte affiché | sa ligne dans `www/langues.js`, en cinq langues : `npm run tester` signale toute phrase affichée sans traduction |
+| un succès | sa clé dans `www/config.js` > `succesStores` (iOS et Android), sa ligne dans `docs/lancement.md` 3 bis, son image (`npm run icones`) |
 | l'aspect du jeu | `npm run captures` si les captures des stores ne le montrent plus |
 
 Un contrôle qui ne peut pas échouer ne contrôle rien : chaque contrôle du vérificateur a été
@@ -51,4 +53,11 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   `Preferences` (iOS peut vider le stockage web). `fusion()` réconcilie les deux.
 - Pas d'effet `shadowBlur` du canvas sur le plateau : trop lent sur téléphone, il figeait le jeu.
   Les halos sont des traits translucides superposés (`halo()`).
+- **Les langues** : le français est la source. Un observateur traduit tout texte qui apparaît à
+  l'écran en le cherchant tel quel dans `www/langues.js` (modèles « Monde {0} » pour les nombres).
+  On écrit donc le jeu en français, et on ajoute la phrase à la table : pas d'appel de traduction
+  à semer dans le code. Les paragraphes d'aide à balises se traduisent en blocs (`data-html`).
+- **Les succès des stores** passent par `plugins/succes-natifs` ; sans module ni configuration,
+  tout se replie sans bruit. Le module natif n'a jamais été compilé ici : la première build Xcode
+  et Android Studio le validera.
 - `?capture` dans l'adresse expose `window.__orbicube.solution()`, pour `outils/captures.js` seulement.

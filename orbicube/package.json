@@ -21,7 +21,8 @@
     "@capacitor/preferences": "8.0.1",
     "@capacitor/splash-screen": "8.0.2",
     "@capacitor/status-bar": "8.0.4",
-    "@revenuecat/purchases-capacitor": "13.7.3"
+    "@revenuecat/purchases-capacitor": "13.7.3",
+    "orbicube-succes-natifs": "file:plugins/succes-natifs"
   },
   "devDependencies": {
     "@capacitor/android": "8.5.3",

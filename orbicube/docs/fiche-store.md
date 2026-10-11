@@ -29,7 +29,8 @@ elles. Regroupez chaque couleur pour gagner.
 • Trois étoiles en un minimum de coups
 • Un défi du jour, le même pour tout le monde
 • Une partie libre chronométrée, de facile à expert
-• 14 succès et vos statistiques
+• 14 succès, aussi dans Game Center et Google Play Jeux
+• En français, anglais, néerlandais, allemand et espagnol
 • Des gestes faits pour le pouce : glisser, lancer, enchaîner les tours sans lever le doigt
 • Une palette lisible par les daltoniens
 • Hors ligne, sans publicité, sans compte, sans collecte de données
@@ -68,7 +69,8 @@ twelve dots turn, and the 3D cube turns with them. Group every colour to win.
 • Three stars for the fewest moves
 • A daily challenge, the same for everyone
 • Timed free play, from easy to expert
-• 14 achievements and your stats
+• 14 achievements, also in Game Center and Google Play Games
+• In English, French, Dutch, German and Spanish
 • Gestures made for your thumb: swipe, flick, chain turns without lifting your finger
 • A colour-blind friendly palette
 • Offline, no ads, no account, no data collection
@@ -78,6 +80,97 @@ The first two worlds are free. A single purchase unlocks the whole game, forever
 **App Store keywords**: puzzle,cube,3x3,circles,logic,permutation,brain,daily,challenge,math,twisty
 
 **Category**: Games > Puzzle (secondary: Games > Education)
+
+## Nederlands
+
+**Naam**: Orbicube · **Ondertitel** (30): De 3×3-kubus in negen cirkels
+
+**Korte beschrijving Google Play** (80): Draai negen cirkels om de kubus weer op orde te brengen. 60 levels.
+
+**Promotietekst**: Elke dag een nieuwe uitdaging. Veeg over een cirkel en twaalf bolletjes draaien
+mee: de 3×3-kubus zoals je hem nog nooit zag.
+
+**Beschrijving**:
+
+En als je de 3×3-kubus plat kon spelen, door cirkels te draaien?
+
+In Orbicube wordt elke plak van de kubus een cirkel. De 54 vakjes worden gekleurde bolletjes, op
+het kruispunt van de twee cirkels die ze kunnen verplaatsen. Veeg met je vinger langs een cirkel:
+twaalf bolletjes draaien, en de 3D-kubus draait mee. Breng elke kleur samen om te winnen.
+
+• 60 levels in 6 werelden, van twee cirkels tot alle negen
+• Een ingebouwde uitleg: je leert al spelend
+• Drie sterren voor zo weinig mogelijk zetten
+• Elke dag een nieuwe uitdaging, voor iedereen dezelfde
+• Vrij spel op tijd, van makkelijk tot expert
+• 14 prestaties, ook in Game Center en Google Play Games
+• Een palet voor kleurenblinden · in 5 talen
+• Offline, zonder reclame, zonder account, zonder gegevensverzameling
+
+De eerste twee werelden zijn gratis. Eén aankoop ontgrendelt het hele spel, voor altijd.
+
+**Trefwoorden**: puzzel,kubus,3x3,cirkels,logica,denkspel,breinbreker,uitdaging,wiskunde
+
+## Deutsch
+
+**Name**: Orbicube · **Untertitel** (30): Der 3×3-Würfel in neun Kreisen
+
+**Kurzbeschreibung Google Play** (80): Drehe neun Kreise, bis der Würfel wieder geordnet ist. 60 Level.
+
+**Werbetext**: Jeden Tag ein neues Rätsel. Wische über einen Kreis und zwölf Punkte drehen sich:
+der 3×3-Würfel, wie du ihn noch nie gesehen hast.
+
+**Beschreibung**:
+
+Was wäre, wenn man den 3×3-Würfel flach spielen könnte, indem man Kreise dreht?
+
+In Orbicube wird jede Scheibe des Würfels zu einem Kreis. Die 54 Felder werden zu farbigen
+Punkten, dort, wo sich die beiden Kreise kreuzen, die sie bewegen können. Wische an einem Kreis
+entlang: Zwölf Punkte drehen sich, und der 3D-Würfel dreht sich mit. Bringe jede Farbe zusammen,
+um zu gewinnen.
+
+• 60 Level in 6 Welten, von zwei Kreisen bis zu allen neun
+• Eine eingebaute Anleitung: Du lernst beim Spielen
+• Drei Sterne für möglichst wenige Züge
+• Jeden Tag ein neues Rätsel, für alle gleich
+• Freies Spiel mit Zeit, von leicht bis Experte
+• 14 Erfolge, auch in Game Center und Google Play Spiele
+• Eine Palette für Farbenblinde · in 5 Sprachen
+• Offline, ohne Werbung, ohne Konto, ohne Datensammlung
+
+Die ersten beiden Welten sind kostenlos. Ein einziger Kauf schaltet das ganze Spiel frei, für immer.
+
+**Schlüsselwörter**: puzzle,würfel,3x3,kreise,logik,denkspiel,knobeln,rätsel,mathe
+
+## Español
+
+**Nombre**: Orbicube · **Subtítulo** (30): El cubo 3×3 en nueve círculos
+
+**Descripción breve Google Play** (80): Gira nueve círculos para volver a ordenar el cubo. 60 niveles.
+
+**Texto promocional**: Un reto nuevo cada día. Desliza un círculo y giran doce bolitas: el cubo 3×3
+como nunca lo habías visto.
+
+**Descripción**:
+
+¿Y si el cubo 3×3 se pudiera jugar en plano, girando círculos?
+
+En Orbicube, cada capa del cubo se convierte en un círculo. Las 54 pegatinas se convierten en
+bolitas de colores, en el cruce de los dos círculos que pueden moverlas. Desliza el dedo por un
+círculo: giran doce bolitas, y el cubo en 3D gira con ellas. Reúne cada color para ganar.
+
+• 60 niveles en 6 mundos, de dos círculos a los nueve
+• Un tutorial integrado: se aprende jugando
+• Tres estrellas con el mínimo de movimientos
+• Un reto diario, el mismo para todos
+• Juego libre cronometrado, de fácil a experto
+• 14 logros, también en Game Center y Google Play Juegos
+• Una paleta apta para daltónicos · en 5 idiomas
+• Sin conexión, sin anuncios, sin cuenta, sin recogida de datos
+
+Los dos primeros mundos son gratis. Una sola compra desbloquea todo el juego, para siempre.
+
+**Palabras clave**: puzle,cubo,3x3,círculos,lógica,ingenio,reto,diario,matemáticas
 
 ## Achat intégré
 
@@ -89,6 +182,4 @@ The first two worlds are free. A single purchase unlocks the whole game, forever
 | Description | Les 6 mondes et toute la partie libre. · All 6 worlds and every free-play level. |
 | Prix | 2,99 € |
 
-> L'application parle aujourd'hui uniquement français. La fiche anglaise sert le jour où le jeu
-> sera traduit, ce qui ouvre le reste du monde. Ne publiez la fiche anglaise qu'avec le jeu
-> traduit : sinon, les joueurs le signaleront dans leurs avis.
+> Le jeu parle les cinq langues de cette fiche : publiez chaque langue sur les deux stores.

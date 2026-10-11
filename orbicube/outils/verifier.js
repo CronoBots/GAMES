@@ -70,6 +70,46 @@ fs.existsSync(path.join(WWW, "natif.js")) ? ok("natif.js construit") : faute("ww
 if (fs.existsSync(path.join(WWW, "natif.js")) && fs.statSync(path.join(RACINE, "src", "natif.js")).mtimeMs > fs.statSync(path.join(WWW, "natif.js")).mtimeMs + 1000)
   faute("src/natif.js est plus récent que www/natif.js : npm run construire");
 
+console.log("Langues");
+{
+  const fenL = {};
+  vm.runInNewContext(fs.readFileSync(path.join(WWW, "langues.js"), "utf8"), { window: fenL });
+  const L = fenL.ORBICUBE_LANGUES, n = L.codes.length + 1, vues = new Set();
+  let soucis = 0;
+  for (const ligne of L.table) {
+    const fr = ligne[0];
+    if (ligne.length !== n || ligne.some((x) => typeof x !== "string" || !x.trim())) { faute("ligne incomplète : « " + fr + " »"); soucis++; continue; }
+    if (vues.has(fr)) { faute("phrase en double : « " + fr + " »"); soucis++; }
+    vues.add(fr);
+    const marques = (x) => (x.match(/\{\d\}/g) || []).sort().join("");
+    ligne.slice(1).forEach((x, i) => { if (marques(x) !== marques(fr)) { faute(L.codes[i] + " : variables différentes dans « " + fr + " »"); soucis++; } });
+  }
+  const aide = [...html.matchAll(/data-html="([^"]+)">([\s\S]*?)<\/p>/g)];
+  for (const [, cle, fr] of aide) {
+    const b = L.blocs[cle];
+    if (!b || b.length !== L.codes.length) { faute("bloc d'aide « " + cle + " » sans ses traductions"); soucis++; continue; }
+    const compte = (x) => (x.match(/<span class="m">/g) || []).length + "/" + (x.match(/<b>/g) || []).length;
+    b.forEach((x, i) => { if (compte(x) !== compte(fr)) { faute(L.codes[i] + " : mise en forme différente dans le bloc « " + cle + " »"); soucis++; } });
+  }
+  if (!soucis) ok(L.table.length + " phrases et " + aide.length + " blocs d'aide en " + n + " langues (" + Object.keys(L.noms).join(", ") + ")");
+}
+
+console.log("Succès des stores");
+{
+  const ids = [...jeu.matchAll(/\{id:"([a-z0-9]+)",nom:/g)].map((m) => m[1]);
+  const st = CFG.succesStores || {};
+  let soucis = 0;
+  for (const pf of ["ios", "android"]) {
+    const m = st[pf] || {};
+    const absents = ids.filter((i) => !(i in m)), en_trop = Object.keys(m).filter((i) => !ids.includes(i));
+    if (absents.length || en_trop.length) { faute(pf + " : succès sans correspondance " + absents.concat(en_trop).join(", ")); soucis++; }
+    const remplis = Object.values(m).filter(Boolean);
+    if (new Set(remplis).size !== remplis.length) { faute(pf + " : deux succès partagent un identifiant"); soucis++; }
+    if (pf === "ios" && remplis.some((v) => !/^[A-Za-z0-9._]+$/.test(v))) { faute("ios : identifiant Game Center invalide (lettres, chiffres, point, soulignement)"); soucis++; }
+  }
+  if (!soucis) ok(ids.length + " succès, chacun avec sa correspondance iOS et Android");
+}
+
 console.log("Géométrie et niveaux");
 // on rejoue le vrai code du jeu, découpé dans index.html, sans le recopier
 const debut = jeu.indexOf("/* ========== 1.");

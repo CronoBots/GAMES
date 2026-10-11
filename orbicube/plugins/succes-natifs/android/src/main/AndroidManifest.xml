@@ -1,0 +1,9 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <!-- Identifiant du projet Google Play Jeux : à renseigner dans l'application,
+             android/app/src/main/res/values/strings.xml > game_services_project_id -->
+        <meta-data
+            android:name="com.google.android.gms.games.APP_ID"
+            android:value="@string/game_services_project_id" />
+    </application>
+</manifest>

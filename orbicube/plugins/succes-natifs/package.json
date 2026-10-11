@@ -1,0 +1,16 @@
+{
+  "name": "orbicube-succes-natifs",
+  "version": "1.0.0",
+  "description": "Succès d'Orbicube dans Game Center (iOS) et Google Play Jeux (Android)",
+  "license": "MIT",
+  "author": "CronoBots",
+  "private": true,
+  "files": ["android/src/main/", "android/build.gradle", "ios/Sources", "Package.swift", "OrbicubeSuccesNatifs.podspec"],
+  "capacitor": {
+    "ios": { "src": "ios" },
+    "android": { "src": "android" }
+  },
+  "peerDependencies": {
+    "@capacitor/core": ">=8.0.0"
+  }
+}

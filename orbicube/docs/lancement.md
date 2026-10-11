@@ -92,6 +92,72 @@ Le jeu lit le prix, achète, restaure et vérifie le droit « complet » par `sr
 
 ---
 
+## 3 bis. Les succès dans Game Center et Google Play Jeux **[vous]**
+
+Les 14 succès du jeu sont aussi déclarés au service de jeu du téléphone : Game Center sur
+iPhone, Google Play Jeux sur Android. Le joueur les retrouve dans l'app Jeux d'Apple ou dans
+Google Play Jeux, avec la bannière « Succès déverrouillé » du système. Le code est prêt :
+`plugins/succes-natifs` (Swift et Java), branché par `src/natif.js`. Sans configuration, rien
+ne change : les succès restent dans le jeu.
+
+**Les succès à créer**, avec les images de `ressources/succes/` (`apple/` en 1024 × 1024,
+`google/` en 512 × 512). Les points totalisent 835 sur les 1 000 qu'Apple autorise : il reste
+de la marge pour des succès futurs.
+
+| Clé du jeu | Identifiant Apple | Nom | Description | Points |
+|---|---|---|---|---|
+| premier | `orbicube.premier` | Premier tour | Résoudre le premier niveau. | 10 |
+| m1 | `orbicube.monde1` | Initié | Terminer le monde 1. | 25 |
+| m3 | `orbicube.tranches` | Trancheur | Terminer le monde des tranches. | 50 |
+| m5 | `orbicube.orbite` | En orbite | Terminer le monde 5. | 75 |
+| m6 | `orbicube.grandmaitre` | Grand maître | Terminer toute la campagne. | 100 |
+| p10 | `orbicube.precision` | Précision | Trois étoiles sur 10 niveaux. | 50 |
+| pm | `orbicube.perfectionniste` | Perfectionniste | Trois étoiles sur tout un monde. | 75 |
+| p60 | `orbicube.sansfaute` | Sans faute | Les 180 étoiles de la campagne. | 100 |
+| eclair | `orbicube.eclair` | Éclair | Résoudre un niveau d'au moins 3 coups en moins de 10 secondes. | 50 |
+| jour | `orbicube.rendezvous` | Rendez-vous | Réussir un défi du jour. | 25 |
+| serie3 | `orbicube.serie3` | Trois jours de suite | Réussir le défi du jour trois jours d'affilée. | 75 |
+| expert | `orbicube.expert` | Expert | Résoudre une partie libre de 25 coups. | 100 |
+| axes | `orbicube.troisaxes` | Trois axes | Tourner M, E et S dans une même partie résolue. | 50 |
+| tours | `orbicube.milletours` | Mille tours | Tourner les cercles 1 000 fois. | 100 |
+
+Les noms et descriptions traduits sont dans `www/langues.js` : recopiez-les dans chaque langue
+de la fiche. Aucun succès n'est caché.
+
+**iPhone, Game Center**
+1. App Store Connect > votre app > **Game Center** : activez-le, puis **Succès** > créez les 14
+   avec exactement les identifiants Apple du tableau (ils sont déjà dans `www/config.js`).
+2. Xcode > *Signing & Capabilities* > **+ Capability > Game Center**.
+3. À la première ouverture, iOS demande au joueur de se connecter à Game Center ; ensuite c'est automatique.
+
+**Android, Google Play Jeux**
+1. Play Console > votre app > **Services de jeux Play** > Configuration : créez le projet de jeu
+   et reliez-le à l'app (Google vous guide pour les identifiants OAuth et l'empreinte SHA-1 de la
+   clé de signature).
+2. **Succès** > créez les 14. Google donne à chacun un identifiant de la forme `CgkI…` :
+   recopiez-les dans `www/config.js` > `succesStores.android`, en face de la bonne clé.
+3. Copiez l'**ID du projet** (un nombre) dans `android/app/src/main/res/values/strings.xml` :
+   `<string name="game_services_project_id" translatable="false">123456789012</string>`.
+4. Publiez les succès (bouton *Publier* des services de jeux), sinon seuls les testeurs les voient.
+
+**À vérifier sur un vrai téléphone** : gagner le niveau 1-1 fait apparaître la bannière du
+système ; *Succès > Game Center* (ou *Google Play Jeux*) ouvre la liste ; réinstaller l'app et la
+rouvrir ne fait rien perdre (les succès déjà gagnés sont renvoyés, sans double bannière).
+
+> Le module natif n'a pas pu être compilé dans l'environnement où il a été écrit (ni Xcode ni
+> Android Studio). `npm run tester` vérifie tout le branchement côté jeu avec un téléphone
+> simulé ; la première compilation dans Xcode et Android Studio est le vrai test du module.
+
+---
+
+## 3 ter. Les langues
+
+Le jeu parle **français, anglais, néerlandais, allemand et espagnol**. Il prend la langue du
+téléphone, et le joueur peut la changer dans *Options > Langue*. Déclarez ces cinq langues sur
+les deux stores, avec les textes de [`fiche-store.md`](fiche-store.md).
+
+---
+
 ## 4. Construire l'application
 
 Sur votre ordinateur, avec Node 20 ou plus récent. Pour iOS, il faut un **Mac avec Xcode**.
@@ -201,4 +267,5 @@ l'adresse de contact** dans la page avant de la publier.
 - **Les chiffres à suivre** (App Store Connect et Play Console, sans rien ajouter au jeu) :
   rétention à 1 jour et à 7 jours, part des joueurs qui achètent, note moyenne.
 - **Les mises à jour qui comptent** : de nouveaux mondes (un pack de 20 niveaux peut devenir un
-  second achat), un classement du défi du jour, l'anglais pour viser le monde entier.
+  second achat), un classement du défi du jour dans Game Center et Google Play Jeux (le module de
+  succès est la bonne base pour l'ajouter).

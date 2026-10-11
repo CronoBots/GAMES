@@ -198,7 +198,10 @@ a.bouton{text-decoration:none;color:inherit}
 .groupe h4{margin:0;padding:12px 16px 4px;font-size:11px;color:var(--lilas);letter-spacing:.14em;text-transform:uppercase;font-weight:700}
 .ligne{display:flex;align-items:center;gap:12px;padding:12px 16px;min-height:58px;border-top:1px solid #20202f}
 .groupe h4+.ligne{border-top:0}
-.ligne .lt{flex:1;min-width:0}
+.ligne{flex-wrap:wrap}
+.ligne .lt{flex:1 1 150px;min-width:0}
+.ligne .lt b,.ligne .lt span{overflow-wrap:break-word;hyphens:auto;-webkit-hyphens:auto}
+.ligne>:not(.lt){margin-left:auto}
 .ligne .lt b{display:block;font-weight:600;font-size:15px}
 .ligne .lt span{display:block;color:var(--pale);font-size:12.5px;margin-top:2px;line-height:1.35}
 .interrupteur{position:relative;width:52px;height:32px;flex:none}
@@ -212,6 +215,8 @@ a.bouton{text-decoration:none;color:inherit}
 .segment button{border:0;background:none;padding:7px 10px;border-radius:9px;font-size:13px;font-weight:600;color:var(--pale);cursor:pointer;min-height:34px}
 .segment button.on{background:var(--carte2);color:var(--encre);box-shadow:0 0 0 1px var(--trait-vif)}
 .ligne.empile{flex-wrap:wrap}
+.choix{flex:none;max-width:52%;font:600 14px var(--f-texte);color:var(--encre);background:var(--carte2);border:1px solid var(--trait-vif);border-radius:12px;padding:9px 30px 9px 12px;min-height:44px;-webkit-appearance:none;appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,var(--pale) 50%),linear-gradient(135deg,var(--pale) 50%,transparent 50%);background-position:calc(100% - 17px) 50%,calc(100% - 12px) 50%;background-size:5px 5px;background-repeat:no-repeat}
 .danger{color:var(--rouge);border:1px solid #5a2a2e;background:#221216;border-radius:12px;padding:10px 14px;font-weight:600;cursor:pointer;min-height:44px}
 
 .tuiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:16px}
@@ -274,7 +279,7 @@ a.bouton{text-decoration:none;color:inherit}
       <canvas id="logo" aria-hidden="true"></canvas>
       <div style="display:grid;justify-items:center;gap:10px">
         <div style="text-align:center;display:grid;gap:8px">
-          <h1 class="marque">ORBICUBE</h1>
+          <h1 class="marque notrad">ORBICUBE</h1>
           <p class="devise">le cube 3×3, cercle par cercle</p>
         </div>
         <div class="menu cascade">
@@ -356,6 +361,10 @@ a.bouton{text-decoration:none;color:inherit}
       <h2>Options</h2><span class="ico vide"></span>
     </div>
     <div class="defile"><div class="centre">
+      <div class="groupe"><h4>Langue</h4>
+        <div class="ligne"><div class="lt"><b>Langue du jeu</b><span>Automatique : celle du téléphone.</span></div>
+          <select id="optLangue" class="choix notrad" aria-label="Langue du jeu"></select></div>
+      </div>
       <div class="groupe"><h4>Son et toucher</h4>
         <div class="ligne"><div class="lt"><b>Effets sonores</b><span>Rotation des cercles, étoiles, victoire.</span></div>
           <label class="interrupteur"><input type="checkbox" id="optSon" role="switch" aria-label="Effets sonores"><i></i></label></div>
@@ -396,6 +405,7 @@ a.bouton{text-decoration:none;color:inherit}
       <h2>Succès</h2><span class="puce" id="sucCompte">0/0</span>
     </div>
     <div class="defile"><div class="centre">
+      <button class="bouton" id="btnSuccesStore" type="button" hidden style="width:100%;justify-content:center;margin-bottom:14px"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M8.5 14l-1.5 7 5-3 5 3-1.5-7"/></svg><span id="succesStoreNom" class="notrad">Game Center</span></button>
       <div class="tuiles cascade" id="tuiles"></div>
       <div class="succes cascade" id="listeSucces"></div>
     </div></div>
@@ -410,7 +420,7 @@ a.bouton{text-decoration:none;color:inherit}
       <div class="aide-carte">
         <canvas id="aideCanvas" aria-hidden="true"></canvas>
         <h3>Neuf cercles, un cube</h3>
-        <p>Chaque cercle est une tranche du cube 3×3. Il y a trois familles de trois cercles, une par axe du cube. Le grand cercle de chaque famille est une face (<span class="m">R</span>, <span class="m">U</span>, <span class="m">F</span>), le petit la face opposée (<span class="m">L</span>, <span class="m">D</span>, <span class="m">B</span>), celui du milieu la tranche centrale (<span class="m">M</span>, <span class="m">E</span>, <span class="m">S</span>).</p>
+        <p data-html="aide-faces">Chaque cercle est une tranche du cube 3×3. Il y a trois familles de trois cercles, une par axe du cube. Le grand cercle de chaque famille est une face (<span class="m">R</span>, <span class="m">U</span>, <span class="m">F</span>), le petit la face opposée (<span class="m">L</span>, <span class="m">D</span>, <span class="m">B</span>), celui du milieu la tranche centrale (<span class="m">M</span>, <span class="m">E</span>, <span class="m">S</span>).</p>
       </div>
       <div class="aide-carte">
         <h3>Une pastille, deux cercles</h3>
@@ -418,14 +428,14 @@ a.bouton{text-decoration:none;color:inherit}
       </div>
       <div class="aide-carte">
         <h3>Les gestes</h3>
-        <p><b>Glisser</b> le long d’un cercle le tourne dans le sens du doigt. Lâchez tôt et il revient en place.</p>
-        <p><b>Toucher</b> un cercle le tourne d’un quart de tour, dans le sens horaire (réglable dans les options).</p>
-        <p><b>Toucher la vignette du cube</b> change la vue : U·F·R, U·B·L, D·F·L.</p>
+        <p data-html="aide-glisser"><b>Glisser</b> le long d’un cercle le tourne dans le sens du doigt. Lâchez tôt et il revient en place.</p>
+        <p data-html="aide-toucher"><b>Toucher</b> un cercle le tourne d’un quart de tour, dans le sens horaire (réglable dans les options).</p>
+        <p data-html="aide-vue"><b>Toucher la vignette du cube</b> change la vue : U·F·R, U·B·L, D·F·L.</p>
       </div>
       <div class="aide-carte">
         <h3>Gagner des étoiles</h3>
-        <p>Un niveau est résolu quand chaque groupe de neuf pastilles est d’une seule couleur. <b>Trois étoiles</b> en au plus autant de coups que le mélange (le « par »), <b>deux</b> jusqu’au double, <b>une</b> au-delà. L’ampoule montre le tour suivant, mais limite le niveau à deux étoiles.</p>
-        <p>Au clavier : <span class="m">U D L R F B M E S</span>, Maj pour le sens inverse, Ctrl+Z pour annuler, Échap pour la pause.</p>
+        <p data-html="aide-etoiles">Un niveau est résolu quand chaque groupe de neuf pastilles est d’une seule couleur. <b>Trois étoiles</b> en au plus autant de coups que le mélange (le « par »), <b>deux</b> jusqu’au double, <b>une</b> au-delà. L’ampoule montre le tour suivant, mais limite le niveau à deux étoiles.</p>
+        <p data-html="aide-clavier">Au clavier : <span class="m">U D L R F B M E S</span>, Maj pour le sens inverse, Ctrl+Z pour annuler, Échap pour la pause.</p>
       </div>
     </div></div>
   </section>
@@ -437,6 +447,7 @@ a.bouton{text-decoration:none;color:inherit}
 
 <script src="config.js"></script>
 <script src="natif.js"></script>
+<script src="langues.js"></script>
 <script>
 (function(){
 "use strict";
@@ -643,7 +654,7 @@ function niveauDef(w,i){var M=MONDES[w];return{mode:"campagne",w:w,i:i,id:(w+1)+
   melange:genererMelange(graine("orbicube-"+w+"-"+i),M.anneaux,M.coups[i]),titre:"Monde "+(w+1)+" · Niveau "+(i+1),sous:M.nom};}
 function cleJour(d){d=d||new Date();return d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0");}
 function jourDef(){var k=cleJour(),d=new Date();return{mode:"jour",id:k,anneaux:TOUS,par:8,melange:genererMelange(graine("jour-"+k),TOUS,8),
-  titre:"Défi du jour",sous:d.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"})};}
+  titre:"Défi du jour",sous:d.toLocaleDateString(locale(),{weekday:"long",day:"numeric",month:"long"})};}
 var LIBRES=[{n:5,nom:"Facile"},{n:10,nom:"Moyen"},{n:15,nom:"Difficile"},{n:25,nom:"Expert"}];
 function libreDef(n){var nm=LIBRES.filter(function(l){return l.n===n;})[0];return{mode:"libre",id:"libre-"+n,n:n,anneaux:TOUS,par:n,
   melange:genererMelange(Math.random,TOUS,n),titre:"Partie libre",sous:nm.nom};}
@@ -652,7 +663,7 @@ function etoilesPour(coups,par,indice){var e=coups<=par?3:coups<=par*2+1?2:1;ret
 /* ========== 6. LA PROGRESSION (appareil, et compte si connecté) ========== */
 var CLE_LOCALE="orbicube-v1";
 function progVide(){return{v:1,niveaux:{},tips:{},succes:{},stats:{tours:0,tranches:0,resolus:0,indices:0,meilleur:{}},jours:{},serie:0,dernierJour:"",
-  options:{son:true,vib:true,vitesse:1,palette:"classique",cube:true,pave:false,horaire:true,maj:0}};}
+  options:{son:true,vib:true,vitesse:1,palette:"classique",cube:true,pave:false,horaire:true,langue:"auto",maj:0}};}
 function fusion(a,b){if(!b||typeof b!=="object")return a;var r=JSON.parse(JSON.stringify(a));if(b.achat)r.achat=true;
   Object.keys(b.niveaux||{}).forEach(function(k){var x=r.niveaux[k],y=b.niveaux[k];if(!x){r.niveaux[k]=y;return;}
     r.niveaux[k]={etoiles:Math.max(x.etoiles||0,y.etoiles||0),coups:Math.min(x.coups||1e9,y.coups||1e9),temps:Math.min(x.temps||1e12,y.temps||1e12),sansIndice:!!(x.sansIndice||y.sansIndice)};});
@@ -668,7 +679,7 @@ try{var brut=localStorage.getItem(CLE_LOCALE);if(brut)PROG=fusion(progVide(),JSO
 var CFG=window.ORBICUBE_CONFIG||{modele:"essai",mondesGratuits:2,libresGratuits:[5],prixAffiche:"2,99 €",liens:{}};
 var NATIF=window.Natif||{natif:false,vibrer:function(){return false;},lire:function(){return Promise.resolve(null);},ecrire:function(){},demarrer:function(){},surRetour:function(){},quitter:function(){},
   achatsDisponibles:function(){return Promise.resolve(false);},prix:function(){return Promise.resolve(null);},etatAchat:function(){return Promise.resolve(null);},
-  acheter:function(){return Promise.resolve({ok:false,erreur:"indisponible"});},restaurer:function(){return Promise.resolve({ok:false,erreur:"indisponible"});}};
+  acheter:function(){return Promise.resolve({ok:false,erreur:"indisponible"});},succesDisponibles:function(){return false;},restaurer:function(){return Promise.resolve({ok:false,erreur:"indisponible"});}};
 function sauver(){var j=JSON.stringify(PROG);try{localStorage.setItem(CLE_LOCALE,j);}catch(e){}NATIF.ecrire(CLE_LOCALE,j);}
 // sur téléphone, la copie native fait foi si le stockage web a été vidé par le système
 NATIF.lire(CLE_LOCALE).then(function(v){if(!v)return;try{PROG=fusion(PROG,JSON.parse(v));}catch(e){}appliquerOptions();rafraichirAccueil();});
@@ -934,11 +945,20 @@ var SUCCES=[
   {id:"expert",nom:"Expert",desc:"Résoudre une partie libre de 25 coups.",ok:function(){return !!PROG.stats.meilleur[25];}},
   {id:"axes",nom:"Trois axes",desc:"Tourner M, E et S dans une même partie résolue.",ok:function(){return !!PROG.tips.troisTranches;}},
   {id:"tours",nom:"Mille tours",desc:"Tourner les cercles 1 000 fois.",ok:function(){return PROG.stats.tours>=1000;}}];
-function verifierSucces(){SUCCES.forEach(function(s){if(!PROG.succes[s.id]&&s.ok()){PROG.succes[s.id]=Date.now();toast("Succès débloqué",s.nom);}});sauver();}
+// les succès gagnés sont aussi déclarés à Game Center ou Google Play Jeux, quand l'app est configurée pour
+function idStore(id){var m=(CFG.succesStores||{})[NATIF.plateforme]||{};return m[id]||"";}
+function versStore(id){if(NATIF.succesDebloquer&&idStore(id))NATIF.succesDebloquer(idStore(id));}
+function verifierSucces(){SUCCES.forEach(function(s){if(!PROG.succes[s.id]&&s.ok()){PROG.succes[s.id]=Date.now();toast("Succès débloqué",s.nom);versStore(s.id);}});sauver();}
+var STORE_SUCCES=false;
+// à l'ouverture : connexion au service du téléphone, puis renvoi des succès déjà gagnés (sans effet s'ils y sont déjà)
+function connecterSucces(){if(!NATIF.succesDisponibles||!NATIF.succesDisponibles())return;
+  NATIF.succesConnecter().then(function(ok){STORE_SUCCES=ok;majBoutonStore();if(ok)Object.keys(PROG.succes).forEach(versStore);});}
+function majBoutonStore(){var b=document.getElementById("btnSuccesStore");b.hidden=!STORE_SUCCES;
+  document.getElementById("succesStoreNom").textContent=NATIF.plateforme==="ios"?"Game Center":"Google Play Jeux";}
 function rafraichirSucces(){document.getElementById("sucCompte").textContent=Object.keys(PROG.succes).length+"/"+SUCCES.length;
   var meil=PROG.stats.meilleur,best=Object.keys(meil).map(Number).sort(function(a,b){return b-a;})[0];
   var tu=[[etoilesTotal()+"<small>/"+NB_NIV*3+"</small>","étoiles"],[Object.keys(PROG.niveaux).length+"<small>/"+NB_NIV+"</small>","niveaux finis"],
-    [PROG.stats.tours.toLocaleString("fr-FR"),"tours de cercle"],[PROG.serie||0,"jours de suite au défi"],
+    [PROG.stats.tours.toLocaleString(locale()),"tours de cercle"],[PROG.serie||0,"jours de suite au défi"],
     [best?fmt(meil[best].temps):"–",best?"record libre · "+best+" coups":"record en partie libre"],[PROG.stats.indices,"indices utilisés"]];
   document.getElementById("tuiles").innerHTML=tu.map(function(t){return '<div class="tuile"><b>'+t[0]+'</b><span>'+t[1]+'</span></div>';}).join("");
   document.getElementById("listeSucces").innerHTML=SUCCES.map(function(s){var ok=!!PROG.succes[s.id];
@@ -971,6 +991,7 @@ document.getElementById("btnLibre").addEventListener("click",function(){audio();
     var ok=libreOuvert(l.n);return '<button class="bouton" data-a="'+l.n+'" type="button"><span>'+l.nom+' · '+l.n+' coups</span><span class="droite">'+(ok?(m?"record "+fmt(m.temps):""):"jeu complet")+'</span></button>';}).join("")+
     '<button class="bouton" data-a="x" type="button" style="justify-content:center;color:var(--pale)">Fermer</button></div>',function(a){fermerFenetre();if(a&&a!=="x"){if(libreOuvert(+a))lancer(libreDef(+a));else ouvrirBoutique("libre");}},"x");});
 document.getElementById("btnSucces").addEventListener("click",function(){sonClic();montrer("succes");});
+document.getElementById("btnSuccesStore").addEventListener("click",function(){sonClic();NATIF.succesAfficher();});
 document.getElementById("btnOptions").addEventListener("click",function(){sonClic();montrer("options");});
 document.getElementById("btnAide").addEventListener("click",function(){sonClic();montrer("aide");});
 document.addEventListener("visibilitychange",function(){if(document.hidden&&ECRAN==="jeu"&&J&&J.t0&&!J.fini)pause();});
@@ -1026,10 +1047,56 @@ if(CFG.liens&&CFG.liens.confidentialite)document.getElementById("lienConf").href
 NATIF.surRetour(function(){if(!document.getElementById("voile").hidden){if(FEN.esc)FEN.esc();return;}
   if(ECRAN==="jeu"){pause();return;}if(ECRAN==="niveaux"){montrer("mondes",-1);return;}if(ECRAN!=="accueil"){montrer("accueil",-1);return;}NATIF.quitter();});
 
+/* ========== 15 quater. LES LANGUES ==========
+   Le français est la langue source : chaque texte affiché est cherché tel quel dans le dictionnaire de la langue
+   choisie (www/langues.js). Un observateur traduit tout texte qui apparaît, qu'il vienne du HTML ou du code ;
+   les textes à nombres passent par des modèles (« Monde {0} · Niveau {1} »). Un changement de langue retraduit
+   tout l'écran depuis le français gardé en mémoire, sans recharger. */
+var LANGUES=window.ORBICUBE_LANGUES||{noms:{fr:"Français"},dicos:{}};
+var LANG="fr",DICO=null,VUS={},MANQUES={};
+var LOCALES={fr:"fr-FR",en:"en-GB",nl:"nl-BE",de:"de-DE",es:"es-ES"};
+function locale(){return LOCALES[LANG]||LANG;}
+function langueAuto(){var l=(navigator.languages||[navigator.language||"fr"]);for(var i=0;i<l.length;i++){var c=String(l[i]).slice(0,2).toLowerCase();if(LANGUES.noms[c])return c;}return "en";}
+function compiler(l){var d=LANGUES.dicos[l];if(!d)return null;var c={exact:{},motifs:[],blocs:d.blocs||{}};
+  Object.keys(d.textes||{}).forEach(function(k){if(k.indexOf("{0}")<0){c.exact[k]=d.textes[k];return;}
+    var re=new RegExp("^"+k.replace(/[.*+?^$()|[\]\\]/g,"\\$&").replace(/\{(\d)\}/g,"(.+?)")+"$");c.motifs.push({re:re,sortie:d.textes[k]});});
+  c.motifs.sort(function(a,b){return b.re.source.replace(/\(\.\+\?\)/g,"").length-a.re.source.replace(/\(\.\+\?\)/g,"").length;});
+  return c;}
+var LETTRE=/[A-Za-zÀ-ÿ]{2}/;
+function tr(src,partie){var k=src.trim();if(!k||!LETTRE.test(k))return src;if(!partie)VUS[k]=1;if(LANG==="fr"||!DICO)return src;
+  var r=DICO.exact[k];
+  if(r===undefined)for(var i=0;i<DICO.motifs.length;i++){var m=k.match(DICO.motifs[i].re);if(m){r=DICO.motifs[i].sortie.replace(/\{(\d)\}/g,function(_,n){return tr(m[+n+1],true);});break;}}
+  if(r===undefined){if(!partie)MANQUES[k]=1;return src;}
+  return src.replace(k,r);}
+var SOURCE=new WeakMap(),ATTR=new WeakMap();
+function horsTraduction(el){return !el||!!el.closest("[data-html],script,style,.notrad");}
+function traiterTexte(n){if(horsTraduction(n.parentElement))return;var v=n.nodeValue,rec=SOURCE.get(n);if(rec&&v===rec.sortie)return;
+  var sortie=tr(v);SOURCE.set(n,{src:v,sortie:sortie});if(sortie!==v)n.nodeValue=sortie;}
+function traiterAttr(el){var v=el.getAttribute("aria-label");if(v==null)return;var rec=ATTR.get(el);if(rec&&v===rec.sortie)return;
+  var sortie=tr(v);ATTR.set(el,{src:v,sortie:sortie});if(sortie!==v)el.setAttribute("aria-label",sortie);}
+function parcourir(racine){if(racine.nodeType===3){traiterTexte(racine);return;}if(racine.nodeType!==1)return;
+  if(racine.hasAttribute("aria-label"))traiterAttr(racine);racine.querySelectorAll("[aria-label]").forEach(traiterAttr);
+  var w=document.createTreeWalker(racine,NodeFilter.SHOW_TEXT),n;while((n=w.nextNode()))traiterTexte(n);}
+new MutationObserver(function(ms){ms.forEach(function(m){if(m.type==="characterData")traiterTexte(m.target);else if(m.type==="attributes")traiterAttr(m.target);
+  else m.addedNodes.forEach(parcourir);});}).observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:["aria-label"]});
+function changerLangue(l){LANG=LANGUES.noms[l]?l:"fr";DICO=LANG==="fr"?null:compiler(LANG);document.documentElement.lang=LANG;
+  // retraduit depuis la source française tout ce qui est déjà à l'écran
+  var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),n;
+  while((n=w.nextNode())){if(horsTraduction(n.parentElement))continue;var rec=SOURCE.get(n),src=rec&&n.nodeValue===rec.sortie?rec.src:n.nodeValue,s=tr(src);SOURCE.set(n,{src:src,sortie:s});if(s!==n.nodeValue)n.nodeValue=s;}
+  document.querySelectorAll("[aria-label]").forEach(function(el){var rec=ATTR.get(el),v=el.getAttribute("aria-label"),src=rec&&v===rec.sortie?rec.src:v,s=tr(src);ATTR.set(el,{src:src,sortie:s});if(s!==v)el.setAttribute("aria-label",s);});
+  document.querySelectorAll("[data-html]").forEach(function(el){if(el.__fr===undefined)el.__fr=el.innerHTML;var b=DICO&&DICO.blocs[el.getAttribute("data-html")];el.innerHTML=b||el.__fr;});
+  if(J&&J.def&&J.def.mode==="jour")document.getElementById("jSous").textContent=jourDef().sous+" · par "+J.def.par;
+  if(ECRAN==="succes")rafraichirSucces();}
+function appliquerLangue(){var o=PROG.options.langue||"auto";changerLangue(o==="auto"?langueAuto():o);
+  var sel=document.getElementById("optLangue");if(!sel.options.length){var a=document.createElement("option");a.value="auto";sel.appendChild(a);
+    Object.keys(LANGUES.noms).forEach(function(c){var op=document.createElement("option");op.value=c;op.textContent=LANGUES.noms[c];sel.appendChild(op);});}
+  sel.options[0].textContent=tr("Automatique");sel.value=o;}
+document.getElementById("optLangue").addEventListener("change",function(){PROG.options.langue=this.value;PROG.options.maj=Date.now();sauver();appliquerLangue();sonClic();});
+
 /* ========== 16. DÉMARRAGE ========== */
 // accès réservé aux outils de captures (npm run captures), actif seulement avec ?capture dans l'adresse
-if(/[?&]capture\b/.test(location.search))window.__orbicube={solution:function(){return J&&J.pret?cheminSolution().map(function(m){return nomDe(m).replace("′","'");}):[];}};
-function demarrer(){appliquerOptions();majAchat();montrer("accueil");NATIF.demarrer();
+if(/[?&]capture\b/.test(location.search))window.__orbicube={solution:function(){return J&&J.pret?cheminSolution().map(function(m){return nomDe(m).replace("′","'");}):[];},vus:function(){return Object.keys(VUS);},manques:function(){return Object.keys(MANQUES);}};
+function demarrer(){appliquerLangue();parcourir(document.body);appliquerOptions();majAchat();montrer("accueil");NATIF.demarrer();connecterSucces();
   // hors application native, le jeu se joue aussi hors ligne une fois chargé
   if(!NATIF.natif&&"serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js").catch(function(){});}
 demarrer();
