@@ -165,6 +165,7 @@ a.bouton{text-decoration:none;color:inherit}
 #mini{width:var(--cube,96px);height:var(--cube,96px);display:block;pointer-events:none}
 .jinfo .stat{align-self:start;padding-top:6px}.jinfo .jetoiles{margin-top:8px}.jinfo .jetoiles svg{width:18px;height:18px}
 .coupgeant{position:absolute;right:14px;top:4px;font-family:var(--f-math);font-size:44px;color:var(--lilas);line-height:1;pointer-events:none;text-shadow:0 0 24px rgba(165,139,255,.5)}
+.fenetre .serie{color:var(--or);font-family:var(--f-chiffre);font-size:13px;margin:4px 0 0}
 .fenetre{animation:pop .45s cubic-bezier(.3,1.4,.5,1)!important}
 .bulle{position:relative;background:rgba(27,27,41,.97);border:1px solid var(--lilas);border-radius:14px;padding:12px 14px;
   display:flex;gap:12px;align-items:center;font-size:14px;line-height:1.4;box-shadow:0 14px 40px -12px rgba(0,0,0,.8);animation:monte .35s var(--ease)}
@@ -224,6 +225,9 @@ a.bouton{text-decoration:none;color:inherit}
 .interrupteur input:focus-visible+i{outline:2px solid var(--lilas);outline-offset:2px}
 .segment{display:flex;background:#0e0e17;border:1px solid var(--trait);border-radius:12px;padding:3px;gap:2px;flex:none}
 .segment button{border:0;background:none;padding:7px 10px;border-radius:9px;font-size:13px;font-weight:600;color:var(--pale);cursor:pointer;min-height:34px}
+.segment.grille2{display:grid;grid-template-columns:1fr 1fr;width:100%}
+.segment button .cad{font-family:var(--f-chiffre);font-size:11px;color:var(--or);margin-left:6px}
+.segment button.verrou{opacity:.55}
 .segment button.on{background:var(--carte2);color:var(--encre);box-shadow:0 0 0 1px var(--trait-vif)}
 .ligne.empile{flex-wrap:wrap}
 .choix{flex:none;max-width:52%;font:600 14px var(--f-texte);color:var(--encre);background:var(--carte2);border:1px solid var(--trait-vif);border-radius:12px;padding:9px 30px 9px 12px;min-height:44px;-webkit-appearance:none;appearance:none;
@@ -254,6 +258,7 @@ a.bouton{text-decoration:none;color:inherit}
 .voile{position:fixed;inset:0;background:rgba(5,5,10,.72);display:grid;place-items:center;padding:16px;z-index:20;
   backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:fondu .25s ease}
 @keyframes fondu{from{opacity:0}}
+.fenetre .serie{color:var(--or);font-family:var(--f-chiffre);font-size:13px;margin:4px 0 0}
 .fenetre{width:min(380px,100%);max-height:100%;overflow-y:auto;background:linear-gradient(180deg,#1c1a30,#14141f);border:1px solid #3a3360;border-radius:22px;padding:22px 20px 18px;text-align:center;
   box-shadow:0 30px 80px -20px rgba(0,0,0,.9);animation:pop .35s var(--ease)}
 @keyframes pop{from{transform:scale(.92);opacity:0}}
@@ -383,8 +388,8 @@ a.bouton{text-decoration:none;color:inherit}
       <div class="groupe"><h4>Plateau</h4>
         <div class="ligne empile"><div class="lt"><b>Vitesse des rotations</b></div>
           <div class="segment" id="optVitesse"><button type="button" data-v="1.5">Lente</button><button type="button" data-v="1">Normale</button><button type="button" data-v="0.6">Rapide</button></div></div>
-        <div class="ligne empile"><div class="lt"><b>Couleurs</b><span>« Contraste » suit une palette lisible par les daltoniens.</span></div>
-          <div class="segment" id="optPalette"><button type="button" data-v="classique">Classique</button><button type="button" data-v="contraste">Contraste</button></div></div>
+        <div class="ligne empile"><div class="lt"><b>Couleurs</b><span>« Contraste » est lisible par les daltoniens. Pastel et Néon se gagnent avec les étoiles.</span></div>
+          <div class="segment grille2" id="optPalette"><button type="button" data-v="classique">Classique</button><button type="button" data-v="contraste">Contraste</button><button type="button" data-v="pastel">Pastel</button><button type="button" data-v="neon">Néon</button></div></div>
         <div class="ligne"><div class="lt"><b>Cube en perspective</b><span>Au-dessus du plateau, il suit chaque tour.</span></div>
           <label class="interrupteur"><input type="checkbox" id="optCube" role="switch" aria-label="Cube en perspective"><i></i></label></div>
         <div class="ligne"><div class="lt"><b>Pavé de notation</b><span>Des boutons U, R′… sous le plateau.</span></div>
@@ -458,7 +463,12 @@ a.bouton{text-decoration:none;color:inherit}
 "use strict";
 /* ========== 1. LE CUBE : 54 facettes, 9 tranches ========== */
 var PALETTES={classique:["#FF6A00","#D7192C","#FFD500","#F5F5F0","#00A651","#0B5FD6"],
-  contraste:["#E69F00","#CC79A7","#F0E442","#FFFFFF","#009E73","#0072B2"]};
+  contraste:["#E69F00","#CC79A7","#F0E442","#FFFFFF","#009E73","#0072B2"],
+  pastel:["#FFB27A","#F28B9B","#FFE38A","#F4F1EA","#8FD9A8","#8DB8F2"],
+  neon:["#FF7A00","#FF2E63","#F5F500","#E8FFFF","#00FF9C","#00C8FF"]};
+// apparences du cube : les deux premières sont ouvertes, les autres se gagnent avec les étoiles de la campagne
+var APPARENCES={classique:0,contraste:0,pastel:45,neon:90};
+function apparenceOuverte(v){return etoilesTotal()>=(APPARENCES[v]||0);}
 var COUL=PALETTES.classique;
 function faceDe(n){return n[0]>0?0:n[0]<0?1:n[1]>0?2:n[1]<0?3:n[2]>0?4:5;}
 var S=[],CLE={};
@@ -491,7 +501,7 @@ function inter(c1,r1,c2,r2){var dx=c2[0]-c1[0],dy=c2[1]-c1[1],d=Math.hypot(dx,dy
   return[[mx-h*dy/d,my+h*dx/d],[mx+h*dy/d,my-h*dx/d]];}
 S.forEach(function(s){var b=(s.a+1)%3,c=(s.a+2)%3,pts=inter(CEN[b],RAY[s.p[b]+1],CEN[c],RAY[s.p[c]+1]);
   var d=function(q){return Math.hypot(q[0]-CEN[s.a][0],q[1]-CEN[s.a][1]);};pts.sort(function(u,v){return d(u)-d(v);});s.xy=s.s>0?pts[0]:pts[1];});
-var CENTRE_FACE={};S.forEach(function(s){if(s.p[(s.a+1)%3]===0&&s.p[(s.a+2)%3]===0)CENTRE_FACE[s.a+","+s.s]=s.xy;});
+var CENTRE_FACE={},CLE_CENTRE={};S.forEach(function(s,i){if(s.p[(s.a+1)%3]===0&&s.p[(s.a+2)%3]===0){CENTRE_FACE[s.a+","+s.s]=s.xy;CLE_CENTRE[s.a+","+s.s]=i;}});
 function angle(pt,c){return Math.atan2(pt[1]-c[1],pt[0]-c[0]);}
 function normA(d){while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;return d;}
 // Déplacement angulaire de chaque pastille pour un tour, dans le sens réel du cercle.
@@ -602,7 +612,7 @@ Plateau.prototype.fleche=function(mv,now){var cx=this.cx,E=this.ECH,c=CEN[mv.a],
   var p1=pts[16],p0=pts[14],ang=Math.atan2(p1[1]-p0[1],p1[0]-p0[0]),h=Math.max(10,E*.11);
   cx.fillStyle="rgba(255,207,74,"+al+")";cx.beginPath();cx.moveTo(p1[0]+Math.cos(ang)*h*.6,p1[1]+Math.sin(ang)*h*.6);
   cx.lineTo(p1[0]+Math.cos(ang+2.4)*h,p1[1]+Math.sin(ang+2.4)*h);cx.lineTo(p1[0]+Math.cos(ang-2.4)*h,p1[1]+Math.sin(ang-2.4)*h);cx.closePath();cx.fill();cx.restore();};
-Plateau.prototype.anneauxSous=function(px,py){var m=this.depuis(px,py),tol=Math.max(14,this.ECH*.1),out=[];
+Plateau.prototype.anneauxSous=function(px,py){var m=this.depuis(px,py),tol=Math.max(22,this.ECH*.2),out=[];
   for(var a=0;a<3;a++)for(var L=-1;L<=1;L++){var k=a+","+L;if(!this.permisA(k))continue;var d=Math.abs(Math.hypot(m[0]-CEN[a][0],m[1]-CEN[a][1])-RAY[L+1])*this.ECH;
     if(d<=tol)out.push({a:a,L:L,d:d});}
   out.sort(function(u,v){return u.d-v.d;});return out;};
@@ -695,7 +705,7 @@ function fusion(a,b){if(!b||typeof b!=="object")return a;var r=JSON.parse(JSON.s
   var sa=r.stats,sb=b.stats||{};["tours","tranches","resolus","indices"].forEach(function(f){sa[f]=Math.max(sa[f]||0,sb[f]||0);});
   Object.keys(sb.meilleur||{}).forEach(function(k){var x=sa.meilleur[k],y=sb.meilleur[k];sa.meilleur[k]=!x?y:{coups:Math.min(x.coups,y.coups),temps:Math.min(x.temps,y.temps)};});
   Object.keys(b.jours||{}).forEach(function(k){var x=r.jours[k],y=b.jours[k];r.jours[k]=!x?y:{coups:Math.min(x.coups,y.coups),temps:Math.min(x.temps,y.temps),etoiles:Math.max(x.etoiles||0,y.etoiles||0)};});
-  if((b.dernierJour||"")>(r.dernierJour||"")){r.dernierJour=b.dernierJour;r.serie=b.serie||0;}else if(b.dernierJour===r.dernierJour)r.serie=Math.max(r.serie||0,b.serie||0);
+  if((b.dernierJour||"")>(r.dernierJour||"")){r.dernierJour=b.dernierJour;r.serie=b.serie||0;}else if(b.dernierJour===r.dernierJour)r.serie=Math.max(r.serie||0,b.serie||0);r.serieMax=Math.max(r.serieMax||0,b.serieMax||0,r.serie||0);
   if(b.options&&(b.options.maj||0)>=(r.options.maj||0))r.options=Object.assign({},r.options,b.options);
   return r;}
 var PROG=progVide();
@@ -847,27 +857,39 @@ function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length
     PROG.niveaux[d.id]=av?{etoiles:Math.max(av.etoiles,e),coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),sansIndice:av.sansIndice||!J.indice}:{etoiles:e,coups:n,temps:temps,sansIndice:!J.indice};
     if(n>=3&&temps<10000)PROG.tips.eclair=1;}
   else if(d.mode==="jour"){av=PROG.jours[d.id];record=!av;PROG.jours[d.id]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),etoiles:Math.max(av.etoiles,e)}:{coups:n,temps:temps,etoiles:e};
-    if(PROG.dernierJour!==d.id){PROG.serie=estHier(PROG.dernierJour)?PROG.serie+1:1;PROG.dernierJour=d.id;}}
+    if(PROG.dernierJour!==d.id){PROG.serie=estHier(PROG.dernierJour)?PROG.serie+1:1;PROG.dernierJour=d.id;}PROG.serieMax=Math.max(PROG.serieMax||0,PROG.serie);}
   else{av=PROG.stats.meilleur[d.n];record=!av||temps<av.temps;PROG.stats.meilleur[d.n]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps)}:{coups:n,temps:temps};}
   if(J.tranches[0]&&J.tranches[1]&&J.tranches[2])PROG.tips.troisTranches=1;
   sauver();majJeu();var jeton=J,t0=performance.now();
   // vague de victoire : les cercles s'allument l'un après l'autre, les pastilles sautent du centre vers le bord
   JeuP.vague=t0;S.forEach(function(s,i){JeuP.pops[i]=t0+250+Math.hypot(s.xy[0],s.xy[1])*380;});Ticker.reveiller();
   [0,1,2,3,4,5].forEach(function(k){bip(392*Math.pow(1.122,k),.12,"sine",.05,k*.075);});
+  // les six faces s'illuminent l'une après l'autre, et le cube fait un tour complet sur lui-même
+  Object.keys(CENTRE_FACE).forEach(function(k,i){setTimeout(function(){if(J!==jeton)return;JeuP.eclats.push({xy:CENTRE_FACE[k],c:JeuP.col[CLE_CENTRE[k]],t0:performance.now()});Ticker.reveiller();},CALME?0:420+i*110);});
+  if(!CALME)(function tour(now){if(J!==jeton){PIVOT=null;return;}var k=Math.min(1,(now-t0-200)/1100);if(k<0){requestAnimationFrame(tour);return;}
+    PIVOT={y:ease(k)*Math.PI*2,x:0};dessinerMini();if(k<1)requestAnimationFrame(tour);else{PIVOT=null;dessinerMini();}})(t0);
   setTimeout(function(){if(J!==jeton)return;sonVictoire();vibrer([20,40,20]);confettis();fenetreVictoire(e,n,temps,record);verifierSucces();},CALME?300:1150);}
 function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
   if(d.mode==="campagne"){if(d.i+1<MONDES[d.w].coups.length)suiv={w:d.w,i:d.i+1};else if(d.w+1<MONDES.length)suiv={w:d.w+1,i:0};}
   var titre=e===3?"Parfait":e===2?"Bien joué":"Résolu";
   var html='<div class="gros-et">'+[0,1,2].map(function(k){return k<e?SVG_ET:SVG_ET_OFF;}).join("")+'</div><h3>'+titre+'</h3>'+(record?'<span class="nouveau">Nouveau record</span>':"")+
     '<div class="resume"><div>Coups<b>'+n+'</b></div><div>Par<b>'+d.par+'</b></div><div>Temps<b>'+fmt(temps)+'</b></div></div>'+
-    (e<3?'<p>'+(J.indice?"L’indice limite le niveau à deux étoiles.":"Trois étoiles en "+d.par+" coups ou moins.")+'</p>':"")+'<div class="menu">';
+    (e<3?'<p>'+(J.indice?"L’indice limite le niveau à deux étoiles.":"Trois étoiles en "+d.par+" coups ou moins.")+'</p>':"")+
+    (d.mode==="jour"?'<p class="serie">Série : '+PROG.serie+' · record : '+Math.max(PROG.serieMax||0,PROG.serie)+'</p>':"")+'<div class="menu">';
   if(suiv)html+='<button class="bouton principal" data-a="suivant" type="button"><span>'+(suiv.w!==d.w?"Monde "+(suiv.w+1):"Niveau suivant")+'</span></button>';
   if(d.mode==="libre")html+='<button class="bouton principal" data-a="encore" type="button"><span>Nouveau mélange</span></button>';
-  html+='<div class="rangee2"><button class="bouton" data-a="rejouer" type="button">Rejouer</button><button class="bouton" data-a="menu" type="button">'+(d.mode==="campagne"?"Niveaux":"Accueil")+'</button></div></div>';
-  ouvrirFenetre(html,function(a){fermerFenetre();if(a==="suivant"){if(mondePaye(suiv.w))ouvrirBoutique("monde");else lancer(niveauDef(suiv.w,suiv.i));}
+  html+='<div class="rangee2"><button class="bouton" data-a="rejouer" type="button">Rejouer</button><button class="bouton" data-a="menu" type="button">'+(d.mode==="campagne"?"Niveaux":"Accueil")+'</button></div>'+
+    (J.hist.length?'<button class="bouton" data-a="revoir" type="button" style="justify-content:center;min-height:46px;font-size:14px;color:var(--pale)">Revoir ma partie</button>':"")+'</div>';
+  ouvrirFenetre(html,function(a){fermerFenetre();if(a==="revoir"){revoir(e,n,temps);return;}if(a==="suivant"){if(mondePaye(suiv.w))ouvrirBoutique("monde");else lancer(niveauDef(suiv.w,suiv.i));}
     else if(a==="encore")lancer(libreDef(d.n));else if(a==="rejouer")lancer(d.mode==="libre"?libreDef(d.n):d);
     else if(d.mode==="campagne")ouvrirMonde(d.w);else montrer("accueil");},"menu");
   document.querySelectorAll("#fenetre .gros-et svg").forEach(function(s,k){setTimeout(function(){s.classList.add("vu");if(k<e)sonEtoile(k);},250+k*260);});}
+// Revoir ma partie : le mélange revient, puis les coups du joueur sont rejoués en accéléré, et la fenêtre revient.
+function revoir(e,n,temps){var jeton=J,col=resoluCol(),dur=300*PROG.options.vitesse,coups=[];J.revoit=true;
+  J.def.melange.forEach(function(mv){col=appliquer(col,mv);});JeuP.col=col;JeuP.anim=null;JeuP.file=[];JeuP.indice=null;JeuP.dessiner();dessinerMini();
+  J.hist.forEach(function(m){coups.push(m);if(m.d===2)coups.push(m);});
+  setTimeout(function(){if(J!==jeton)return;coups.forEach(function(mv,i){JeuP.jouer({a:mv.a,L:mv.L,q:mv.q},dur,function(){if(J!==jeton)return;sonTour(mv);
+    if(i===coups.length-1)setTimeout(function(){if(J!==jeton)return;J.revoit=false;fenetreVictoire(e,n,temps,false);},700);},"doux");});},450);}
 function pause(){if(!J||!document.getElementById("voile").hidden)return;var t=J.t0&&!J.fini?performance.now():0;J.enPause=true;
   ouvrirFenetre('<h3>Pause</h3><p>'+J.def.titre+' · '+J.def.sous+'</p><div class="menu"><button class="bouton principal" data-a="reprendre" type="button"><span>Reprendre</span></button>'+
     '<button class="bouton" data-a="recommencer" type="button">Recommencer le niveau</button>'+
@@ -908,6 +930,8 @@ cvJ.addEventListener("pointermove",function(e){var p=pt(e);
   var prog=G.cumul/pas1,q=qPourSens(G.choisi.a,prog>=0?1:-1);
   // un cran tactile quand on passe la moitié : relâcher maintenant valide le tour
   if(Math.abs(prog)>=.5&&!G.cran){G.cran=true;vibrer(6);bip(520,.03,"sine",.03);}else if(Math.abs(prog)<.4)G.cran=false;
+  // un léger clic chaque fois que les pastilles franchissent un cran (trois crans par quart de tour), comme un vrai cube
+  var tiers=Math.floor(Math.abs(prog)*3+1e-6);if(tiers!==G.tiers){if(G.tiers!==undefined&&tiers>0&&tiers<3){vibrer(3);bip(700+tiers*90,.018,"sine",.018);}G.tiers=tiers;}
   JeuP.anim={mv:{a:G.choisi.a,L:G.choisi.L,q:q},t:Math.abs(prog),libre:true};JeuP.indice=null;JeuP.dessiner();dessinerMini();});
 function lacher(){if(!G)return;var g=G;G=null;JeuP.survol=null;
   // un simple appui ne tourne rien (le client, le 11/10/2026) : le sens se choisit en glissant
@@ -993,18 +1017,20 @@ function majBoutonStore(){var b=document.getElementById("btnSuccesStore");b.hidd
 function rafraichirSucces(){document.getElementById("sucCompte").textContent=Object.keys(PROG.succes).length+"/"+SUCCES.length;
   var meil=PROG.stats.meilleur,best=Object.keys(meil).map(Number).sort(function(a,b){return b-a;})[0];
   var tu=[[etoilesTotal()+"<small>/"+NB_NIV*3+"</small>","étoiles"],[Object.keys(PROG.niveaux).length+"<small>/"+NB_NIV+"</small>","niveaux finis"],
-    [PROG.stats.tours.toLocaleString(locale()),"tours de cercle"],[PROG.serie||0,"jours de suite au défi"],
+    [PROG.stats.tours.toLocaleString(locale()),"tours de cercle"],[(PROG.serie||0)+"<small> · record "+Math.max(PROG.serieMax||0,PROG.serie||0)+"</small>","jours de suite au défi"],
     [best?fmt(meil[best].temps):"–",best?"record libre · "+best+" coups":"record en partie libre"],[PROG.stats.indices,"indices utilisés"]];
   document.getElementById("tuiles").innerHTML=tu.map(function(t){return '<div class="tuile"><b>'+t[0]+'</b><span>'+t[1]+'</span></div>';}).join("");
   document.getElementById("listeSucces").innerHTML=SUCCES.map(function(s){var ok=!!PROG.succes[s.id];
     return '<div class="suc'+(ok?" ok":"")+'"><div class="med"><svg viewBox="0 0 24 24">'+(ok?'<path d="M5 12.5l4.5 4.5L19 7.5"/>':'<rect x="6" y="11" width="12" height="9" rx="2"/><path d="M9 11V8.5a3 3 0 0 1 6 0V11"/>')+'</svg></div><div><b>'+s.nom+'</b><span>'+s.desc+'</span></div></div>';}).join("");}
 
 /* ========== 14. OPTIONS ========== */
-function appliquerOptions(){var o=PROG.options;COUL=PALETTES[o.palette]||PALETTES.classique;
+function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)&&PALETTES[o.palette])||PALETTES.classique;
   document.getElementById("optSon").checked=o.son;document.getElementById("optVib").checked=o.vib;document.getElementById("optCube").checked=o.cube;
   document.getElementById("optPave").checked=o.pave;
   document.querySelectorAll("#optVitesse button").forEach(function(b){b.classList.toggle("on",+b.dataset.v===o.vitesse);});
-  document.querySelectorAll("#optPalette button").forEach(function(b){b.classList.toggle("on",b.dataset.v===o.palette);});
+  document.querySelectorAll("#optPalette button").forEach(function(b){var v=b.dataset.v,ouv=apparenceOuverte(v),c=b.querySelector(".cad");
+    b.classList.toggle("on",COUL===PALETTES[v]);b.classList.toggle("verrou",!ouv);
+    if(!ouv&&!c){c=document.createElement("span");c.className="cad notrad";c.textContent="★ "+APPARENCES[v];b.appendChild(c);}else if(ouv&&c)c.remove();});
   mini.hidden=!o.cube;document.getElementById("pave").hidden=!o.pave;
   document.getElementById("btnPaveT").classList.toggle("on",o.pave);
   if(ECRAN==="jeu")requestAnimationFrame(redimJeu);Logo.dessiner();JeuP.dessiner();dessinerMini();}
@@ -1012,7 +1038,8 @@ function opt(k,v){PROG.options[k]=v;PROG.options.maj=Date.now();sauver();appliqu
 [["Son","son"],["Vib","vib"],["Cube","cube"],["Pave","pave"]].forEach(function(c){
   document.getElementById("opt"+c[0]).addEventListener("change",function(){opt(c[1],this.checked);if(c[1]==="son"&&this.checked)sonClic();if(c[1]==="vib")vibrer(15);});});
 document.getElementById("optVitesse").addEventListener("click",function(e){var b=e.target.closest("button");if(b){opt("vitesse",+b.dataset.v);sonClic();}});
-document.getElementById("optPalette").addEventListener("click",function(e){var b=e.target.closest("button");if(b){opt("palette",b.dataset.v);sonClic();}});
+document.getElementById("optPalette").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;
+  if(!apparenceOuverte(b.dataset.v)){vibrer(20);toast(b.dataset.v==="neon"?"Néon":"Pastel","Débloqué à "+APPARENCES[b.dataset.v]+" étoiles");return;}opt("palette",b.dataset.v);sonClic();});
 document.getElementById("btnEffacer").addEventListener("click",function(){ouvrirFenetre('<h3>Tout effacer ?</h3><p>Étoiles, succès, records et série seront perdus. Les options sont gardées.</p><div class="menu"><button class="bouton" data-a="non" type="button" style="justify-content:center">Garder ma progression</button><button class="danger" data-a="oui" type="button">Effacer définitivement</button></div>',
   function(a){fermerFenetre();if(a==="oui"){var o=PROG.options;PROG=progVide();PROG.options=o;sauver();if(Distant.doc)envoyer();rafraichirAccueil();avertir("Progression","Tout a été effacé.");}},"non");});
 

@@ -66,6 +66,13 @@ async function resoudre(p) {
     (await p.isVisible("#bulle")) ? ok("bulle du tutoriel") : faute("pas de tutoriel au niveau 1-1");
     (await resoudre(p)) ? ok("niveau 1-1 résolu, fenêtre de victoire") : faute("victoire non atteinte");
     const d1 = await debordements(p); d1.length ? faute("débordement : " + d1) : ok("rien ne déborde");
+    // « Revoir ma partie » rejoue les coups puis rend la fenêtre de victoire
+    if (await p.$('#fenetre [data-a="revoir"]')) {
+      await p.tap('#fenetre [data-a="revoir"]'); await p.waitForTimeout(400);
+      const pendant = await p.isVisible("#voile");
+      await p.waitForTimeout(3500);
+      !pendant && (await p.isVisible('#fenetre [data-a="revoir"]')) ? ok("« Revoir ma partie » rejoue puis revient à la victoire") : faute("« Revoir ma partie » ne rejoue pas ou ne revient pas");
+    } else faute("pas de bouton « Revoir ma partie »");
 
     // les mondes 3 à 6 mènent à la boutique
     await p.tap('#fenetre [data-a="menu"]'); await p.waitForTimeout(500);
