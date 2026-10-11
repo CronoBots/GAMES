@@ -175,6 +175,7 @@ a.bouton{text-decoration:none;color:inherit}
    référence : sa taille (--cube) est la hauteur que le plateau laisse, calculée par redimJeu() */
 .jcube{display:grid;justify-items:center;gap:0;min-width:0;padding-top:14px}
 #mini{width:var(--cube,96px);height:var(--cube,96px);display:block;cursor:grab;touch-action:none}#mini:active{cursor:grabbing}
+#but{width:clamp(66px,24vw,104px);height:clamp(66px,24vw,104px);display:block}
 .jinfo .stat{align-self:start;padding-top:6px}.jinfo .jetoiles{margin-top:8px}.jinfo .jetoiles svg{width:18px;height:18px}
 .coupgeant{position:absolute;right:14px;top:4px;font-family:var(--f-math);font-size:44px;color:var(--lilas);line-height:1;pointer-events:none;text-shadow:0 0 24px rgba(165,139,255,.5)}
 .fenetre .serie{color:var(--or);font-family:var(--f-chiffre);font-size:13px;margin:4px 0 0}
@@ -528,7 +529,7 @@ body.sobre #plateau{transition:none}
     </div>
     <div class="jinfo">
       <div class="stat">Coups<b id="jCoups">0</b><div class="jetoiles" id="jEt" aria-label="Étoiles possibles"></div></div>
-      <div class="jcube"><canvas id="mini" aria-label="Cube en perspective, glissez pour le faire pivoter"></canvas></div>
+      <div class="jcube"><canvas id="mini" aria-label="Cube en perspective, glissez pour le faire pivoter"></canvas><canvas id="but" hidden aria-label="Motif à atteindre"></canvas></div>
       <div class="stat d">Temps<b id="jTemps">0:00</b><div class="jetoiles d" id="jEtT" aria-label="Étoiles de temps"></div></div>
     </div>
     <div class="plateau" id="zonePlateau">
@@ -694,6 +695,8 @@ function perm(a,L,q){var k=a+","+L+","+q;if(PERM[k])return PERM[k];var m={};
   return PERM[k]=m;}
 function appliquer(col,mv){var m=perm(mv.a,mv.L,mv.q),nc=col.slice();for(var k in m)nc[m[k]]=col[+k];return nc;}
 function estResolu(col){var g={};for(var i=0;i<54;i++){var k=S[i].a+","+S[i].s;if(g[k]===undefined)g[k]=col[i];else if(g[k]!==col[i])return false;}return true;}
+// égalité exacte de coloriage : la victoire du mode Motifs vise une image précise, pas des faces unies
+function egalCol(a,b){for(var i=0;i<54;i++)if(a[i]!==b[i])return false;return true;}
 var MV={R:[0,1,-1],M:[0,0,1],L:[0,-1,1],U:[1,1,-1],E:[1,0,1],D:[1,-1,1],F:[2,1,-1],S:[2,0,-1],B:[2,-1,1]};
 var TOUS=["U","D","L","R","F","B","M","E","S"];
 var NOM_ANNEAU={};Object.keys(MV).forEach(function(k){NOM_ANNEAU[MV[k][0]+","+MV[k][1]]=k;});
@@ -1138,6 +1141,11 @@ function dessinerMini(){if(!PROG.options.cube)return;var w=mini.clientWidth||84,
     if(!PROG.tips.vue){PROG.tips.vue=1;sauver();}var bu=document.getElementById("bulle");if(!bu.hidden&&bu.dataset.tip==="vue")cacherBulle();}
   mini.addEventListener("pointerup",lacher);mini.addEventListener("pointercancel",lacher);})();
 JeuP.apres=function(){dessinerMini();};
+// Mode Motifs : la cible s'affiche en vue plateau (même représentation que le jeu), dans le slot central,
+// indépendamment de l'option « cube en perspective ».
+var ButP=new Plateau(document.getElementById("but"),{etiquettes:false});ButP.permis=null;
+function butActif(){return !!(J&&J.def&&J.def.but);}
+function majBut(){var el=document.getElementById("but");if(!butActif()){el.hidden=true;return;}el.hidden=false;ButP.col=J.def.but.slice();var w=el.clientWidth;if(w)ButP.dimension(w);}
 setInterval(function(){if(ECRAN==="accueil")rafraichirAccueil();},60000);
 // le chrono avance tout seul dès le premier contact avec le plateau, en miroir du compteur de coups
 function majTemps(){if(!J)return;var ms=J.t0?(J.fini?J.tFin:J.enPause?J.tPause-J.t0:performance.now()-J.t0):0,par=J.def.par,e=etoilesTempsPour(ms,par);
@@ -1153,7 +1161,7 @@ function redimJeu(){var jeu=document.getElementById("jeu"),z=document.getElement
       autres=jeu.querySelector(".jtete").offsetHeight+jeu.querySelector(".jbas").offsetHeight+30,
       c=paysage?96:Math.max(64,Math.min(150,jeu.clientHeight-autres-Math.min(jeu.clientWidth-28,560)-12));
     jeu.style.setProperty("--cube",Math.round(c)+"px");}
-  var r=z.getBoundingClientRect();if(!r.width)return;JeuP.dimension(Math.min(r.width-28,r.height-8));dessinerMini();
+  var r=z.getBoundingClientRect();if(!r.width)return;JeuP.dimension(Math.min(r.width-28,r.height-8));dessinerMini();majBut();
   // le cube se centre verticalement entre le titre et le haut du grand cercle (décalage visuel seulement)
   mini.style.transform="";if(PROG.options.cube&&getComputedStyle(jeu).display!=="grid"){var h=jeu.querySelector(".jtete").getBoundingClientRect().bottom,
     c=JeuP.cv.getBoundingClientRect().top+JeuP.OY-(ECART+RAY[2])*JeuP.ECH,m=mini.getBoundingClientRect(),dy=(h+c)/2-(m.top+m.height/2);
@@ -1165,7 +1173,8 @@ ro.observe(document.querySelector(".logoboite"));
 
 function lancer(def){document.getElementById("zonePlateau").classList.add("brouille");document.getElementById("jeu").classList.add("brouille");accent(def.mode==="campagne"?def.w:null);document.body.classList.toggle("zen",!!(PROG.options.zen||def.relax));
 J={def:def,hist:[],t0:0,fini:false,indice:false,pret:false,tranches:{}};
-  JeuP.col=resoluCol();JeuP.anim=null;JeuP.file=[];JeuP.indice=null;JeuP.survol=null;
+  JeuP.col=(def.base?def.base.slice():resoluCol());JeuP.anim=null;JeuP.file=[];JeuP.indice=null;JeuP.survol=null;
+  document.getElementById("mini").hidden=def.but?true:!PROG.options.cube;majBut();
   if(def.anneaux.length===9)JeuP.permis=null;else{JeuP.permis={};def.anneaux.forEach(function(b){JeuP.permis[MV[b][0]+","+MV[b][1]]=true;});}
   document.getElementById("jTitre").textContent=def.titre;document.getElementById("jSous").textContent=def.sous+" · par "+def.par;
   document.getElementById("plateau").removeAttribute("data-indice");
@@ -1175,16 +1184,16 @@ J={def:def,hist:[],t0:0,fini:false,indice:false,pret:false,tranches:{}};
   var jeton=J,z=document.getElementById("zonePlateau"),ecran=document.getElementById("jeu"),voile=CALME?0:420,tenue=CALME?0:900;
   setTimeout(function(){if(J!==jeton)return;z.classList.add("brouille");ecran.classList.add("brouille");
     for(var k=0;k<6;k++)bip(300+k*40,.04,"sine",.03,k*.06);
-    setTimeout(function(){if(J!==jeton)return;var col=resoluCol();def.melange.forEach(function(mv){col=appliquer(col,mv);});JeuP.col=col;JeuP.dessiner();dessinerMini();
+    setTimeout(function(){if(J!==jeton)return;var col=(def.base?def.base.slice():resoluCol());def.melange.forEach(function(mv){col=appliquer(col,mv);});JeuP.col=col;JeuP.dessiner();dessinerMini();
       z.classList.remove("brouille");ecran.classList.remove("brouille");document.getElementById("melangeTxt").hidden=true;
       setTimeout(function(){if(J!==jeton)return;J.pret=true;document.getElementById("melangeTxt").hidden=true;majJeu();tutoriel();},voile);},tenue);},150);}
-function recommencer(){if(!J||!J.pret)return;JeuP.file=[];JeuP.anim=null;JeuP.col=resoluCol();J.def.melange.forEach(function(mv){JeuP.col=appliquer(JeuP.col,mv);});
+function recommencer(){if(!J||!J.pret)return;JeuP.file=[];JeuP.anim=null;JeuP.col=(J.def.base?J.def.base.slice():resoluCol());J.def.melange.forEach(function(mv){JeuP.col=appliquer(JeuP.col,mv);});
   J.hist=[];J.t0=0;J.fini=false;J.eTPrec=0;JeuP.indice=null;majJeu();majTemps();Ticker.reveiller();}
 function jouerCoup(mv){if(!J||!J.pret||J.fini||JeuP.occupe()||!JeuP.permisA(cleA(mv)))return;
   JeuP.indice=null;sonTour(mv);vibrer(8);JeuP.jouer(mv,300*PROG.options.vitesse,function(ok){if(ok)apresCoup(mv);},"rebond");}
 function apresCoup(mv){J.hist.push(mv);if(!J.t0){J.t0=performance.now();}PROG.stats.tours+=mv.d||1;avancerMissions(function(m){return m.id==="tours"?mv.d||1:0;});if(mv.L===0){PROG.stats.tranches++;J.tranches[mv.a]=1;}
   if(!document.getElementById("bulle").hidden&&document.getElementById("bulle").dataset.tip==="geste")cacherBulle();
-  majJeu();if(estResolu(JeuP.col))victoire();else if(PROG.stats.tours%25===0)sauver();}
+  majJeu();if(J.def.but?egalCol(JeuP.col,J.def.but):estResolu(JeuP.col))victoire();else if(PROG.stats.tours%25===0)sauver();}
 function annuler(){if(!J||!J.pret||J.fini||JeuP.occupe()||!J.hist.length)return;var mv=J.hist.pop();sonTour(mv);JeuP.indice=null;
   if(mv.d===2)JeuP.jouer(inverse(mv),170*PROG.options.vitesse,null,"doux");
   JeuP.jouer(inverse(mv),240*PROG.options.vitesse,function(){majJeu();},"rebond");majJeu();}
@@ -1231,6 +1240,7 @@ function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length
   else if(d.mode==="semaine"){PROG.semaines=PROG.semaines||{};av=PROG.semaines[d.id];record=!av||temps<av.temps;if(!av){gagnerAmpoule();gagnerAmpoule();}
     PROG.semaines[d.id]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),etoiles:Math.max(av.etoiles,e)}:{coups:n,temps:temps,etoiles:e};}
   else if(d.mode==="relax"){}
+  else if(d.mode==="motif"){}
   else if(d.mode==="sansfin"){record=d.etape>(PROG.stats.sansFin||0);PROG.stats.sansFin=Math.max(PROG.stats.sansFin||0,d.etape);}
   else{av=PROG.stats.meilleur[d.n];record=!av||temps<av.temps;PROG.stats.meilleur[d.n]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps)}:{coups:n,temps:temps};}
   if(J.tranches[0]&&J.tranches[1]&&J.tranches[2])PROG.tips.troisTranches=1;
@@ -1260,6 +1270,7 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
     (d.mode==="jour"?'<p class="serie">Série : '+PROG.serie+' · record : '+Math.max(PROG.serieMax||0,PROG.serie)+'</p>':"")+'<div class="menu">';
   if(suiv)html+='<button class="bouton principal" data-a="suivant" type="button"><span>'+(suiv.w!==d.w?"Monde "+(suiv.w+1):"Niveau suivant")+'</span></button>';
   if(d.mode==="libre")html+='<button class="bouton principal" data-a="encore" type="button"><span>Nouveau mélange</span></button>';
+  if(d.mode==="motif")html+='<button class="bouton principal" data-a="encore" type="button"><span>Nouveau motif</span></button>';
   if(d.mode==="sansfin")html+='<button class="bouton principal" data-a="etape" type="button"><span>Étape suivante</span></button>';
   if(d.mode==="jour"||d.mode==="semaine")html+='<button class="bouton principal" data-a="partager" type="button"><span>Partager mon résultat</span></button>';
   if((d.mode==="jour"||d.mode==="semaine"||d.mode==="sansfin")&&classementsDispo()&&idClassement(d.mode))html+='<button class="bouton" data-a="classement" type="button" style="justify-content:center">Voir le classement</button>';
@@ -1267,7 +1278,7 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
     (J.hist.length?'<button class="bouton" data-a="revoir" type="button" style="justify-content:center;min-height:46px;font-size:14px;color:var(--pale)">Revoir ma partie</button>':"")+'</div>';
   ouvrirFenetre(html,function(a){if(a==="partager"){partager(e,n,temps);return;}if(a==="classement"){sonClic();NATIF.classementsAfficher(idClassement(d.mode));return;}fermerFenetre();if(a==="revoir"){revoir(e,n,temps);return;}
     if(a==="etape"){var k=d.etape+1;if(k>5&&!complet())ouvrirBoutique("libre");else lancer(sansFinDef(k));return;}if(a==="suivant"){if(mondePaye(suiv.w))ouvrirBoutique("monde");else lancer(niveauDef(suiv.w,suiv.i));}
-    else if(a==="encore")lancer(libreDef(d.n));else if(a==="rejouer")lancer(d.mode==="libre"?libreDef(d.n):d.mode==="sansfin"?sansFinDef(d.etape):d);
+    else if(a==="encore")lancer(d.mode==="motif"?motifDef():libreDef(d.n));else if(a==="rejouer")lancer(d.mode==="libre"?libreDef(d.n):d.mode==="sansfin"?sansFinDef(d.etape):d);
     else if(d.mode==="campagne")ouvrirMonde(d.w);else montrer("accueil");},"menu");
   document.querySelectorAll("#fenetre .gros-et svg").forEach(function(s,k){setTimeout(function(){s.classList.add("vu");if(k<e)sonEtoile(k);},250+k*260);});}
 // Partager le défi du jour, comme on partage une grille de mots : un résumé sans aucune donnée personnelle
@@ -1279,7 +1290,7 @@ function partager(e,n,temps){var d=J.def,eT=etoilesTempsPour(temps,d.par),url=CF
 function sansFinDef(k){var n=Math.min(25,k+2);return{mode:"sansfin",id:"sansfin-"+k,etape:k,n:n,anneaux:TOUS,par:n,
   melange:genererMelange(Math.random,TOUS,n),titre:"Sans fin",sous:"Étape "+k};}
 // Revoir ma partie : le mélange revient, puis les coups du joueur sont rejoués en accéléré, et la fenêtre revient.
-function revoir(e,n,temps){var jeton=J,col=resoluCol(),dur=300*PROG.options.vitesse,coups=[];J.revoit=true;
+function revoir(e,n,temps){var jeton=J,col=(J.def.base?J.def.base.slice():resoluCol()),dur=300*PROG.options.vitesse,coups=[];J.revoit=true;
   J.def.melange.forEach(function(mv){col=appliquer(col,mv);});JeuP.col=col;JeuP.anim=null;JeuP.file=[];JeuP.indice=null;JeuP.dessiner();dessinerMini();
   J.hist.forEach(function(m){coups.push(m);if(m.d===2)coups.push(m);});
   setTimeout(function(){if(J!==jeton)return;coups.forEach(function(mv,i){JeuP.jouer({a:mv.a,L:mv.L,q:mv.q},dur,function(){if(J!==jeton)return;sonTour(mv);
@@ -1448,7 +1459,7 @@ function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)
     b.classList.toggle("on",COUL===PALETTES[v]);b.classList.toggle("verrou",!ouv);
     if(!ouv&&!c){c=document.createElement("span");c.className="cad notrad"+(APP_TEMPS[v]?" t":"");c.textContent="★ "+APPARENCES[v];b.appendChild(c);}else if(ouv&&c)c.remove();});
   if(CIELS)appliquerCiel();
-  mini.hidden=!o.cube;document.getElementById("pave").hidden=!o.pave;
+  mini.hidden=butActif()?true:!o.cube;majBut();document.getElementById("pave").hidden=!o.pave;
   document.getElementById("btnPaveT").classList.toggle("on",o.pave);
   if(ECRAN==="jeu")requestAnimationFrame(redimJeu);Logo.dessiner();JeuP.dessiner();dessinerMini();}
 function opt(k,v){PROG.options[k]=v;PROG.options.maj=Date.now();sauver();appliquerOptions();}
@@ -1471,8 +1482,9 @@ document.getElementById("btnLibre").addEventListener("click",function(){audio();
   ouvrirFenetre('<h3>Partie libre</h3><p>Les neuf cercles, un mélange au hasard, le chrono tourne.</p><div class="menu">'+LIBRES.map(function(l){var m=PROG.stats.meilleur[l.n];
     var ok=libreOuvert(l.n);return '<button class="bouton" data-a="'+l.n+'" type="button"><span>'+l.nom+' · '+l.n+' coups</span><span class="droite">'+(ok?(m?"record "+fmt(m.temps):""):"jeu complet")+'</span></button>';}).join("")+
     '<button class="bouton" data-a="relax" type="button"><span>Relax · sans chrono</span><span class="droite">8 coups</span></button>'+
+    '<button class="bouton" data-a="motifs" type="button"><span>Motifs</span><span class="droite">une image à refaire</span></button>'+
     '<button class="bouton or" data-a="sansfin" type="button"><span>Sans fin</span><span class="droite">'+(PROG.stats.sansFin?"record étape "+PROG.stats.sansFin:"nouveau")+'</span></button>'+
-    '<button class="bouton" data-a="x" type="button" style="justify-content:center;color:var(--pale)">Fermer</button></div>',function(a){fermerFenetre();if(a==="sansfin"){lancer(sansFinDef(1));return;}if(a==="relax"){lancer(relaxDef());return;}if(a&&a!=="x"){if(libreOuvert(+a))lancer(libreDef(+a));else ouvrirBoutique("libre");}},"x");});
+    '<button class="bouton" data-a="x" type="button" style="justify-content:center;color:var(--pale)">Fermer</button></div>',function(a){fermerFenetre();if(a==="sansfin"){lancer(sansFinDef(1));return;}if(a==="relax"){lancer(relaxDef());return;}if(a==="motifs"){lancer(motifDef());return;}if(a&&a!=="x"){if(libreOuvert(+a))lancer(libreDef(+a));else ouvrirBoutique("libre");}},"x");});
 document.getElementById("btnSucces").addEventListener("click",function(){sonClic();montrer("succes");});
 document.getElementById("btnSuccesStore").addEventListener("click",function(){sonClic();NATIF.succesAfficher();});
 document.getElementById("btnOptions").addEventListener("click",function(){sonClic();montrer("options");});
@@ -1595,6 +1607,18 @@ function cleSemaine(d){d=new Date(d||Date.now());d.setHours(0,0,0,0);d.setDate(d
 function semaineDef(){var k=cleSemaine();return{mode:"semaine",id:k,anneaux:TOUS,par:14,melange:genererMelange(graine("semaine-"+k),TOUS,14),titre:"Défi de la semaine",sous:"Semaine "+(+k.slice(-2))};}
 // relax : un mélange court, sans chrono, sans compteur, sans étoiles ; pour quelques minutes
 function relaxDef(){return{mode:"relax",relax:true,id:"relax",n:8,anneaux:TOUS,par:8,melange:genererMelange(Math.random,TOUS,8),titre:"Relax",sous:"sans chrono ni étoiles"};}
+// Mode Motifs : au lieu de faces unies, on vise une IMAGE cible (un motif). Le moteur étant un puzzle de
+// permutation, la cible « but » est un coloriage valide atteint depuis le cube résolu ; le mélange, les
+// indices et « revoir » restent relatifs à cette base et fonctionnent sans changement. parNom ne connaît pas
+// la notation « 2 » : un demi-tour s'écrit donc en doublant la lettre.
+var MOTIFS=[
+  {id:"points",nom:"Points",coups:["M","M","E","E","S","S"]},
+  {id:"croix", nom:"Croix", coups:["U","U","D","D","F","F","B","B","L","L","R","R"]},
+  {id:"bandes",nom:"Bandes",coups:["U","U","D","D","M","M"]}];
+function motifCible(coups){var col=resoluCol();coups.forEach(function(nm){col=appliquer(col,parNom(nm));});return col;}
+function motifDef(k){if(k==null)k=Math.floor(Math.random()*MOTIFS.length);var m=MOTIFS[k],but=motifCible(m.coups),par=8,mel,start,t=0;
+  do{mel=genererMelange(Math.random,TOUS,par);start=but;mel.forEach(function(mv){start=appliquer(start,mv);});}while(egalCol(start,but)&&++t<20);
+  return{mode:"motif",motif:m.id,id:"motif-"+m.id,anneaux:TOUS,par:par,base:but,but:but,melange:mel,titre:m.nom,sous:"atteindre le motif"};}
 function ouvrirDefis(){var j=PROG.jours[cleJour()],w=(PROG.semaines||{})[cleSemaine()];
   ouvrirFenetre('<h3>Défis</h3><p>Le même mélange pour tout le monde.</p><div class="menu">'+
     '<button class="bouton or" data-a="jour" type="button"><span>Défi du jour</span><span class="droite">'+(j?"réussi":PROG.serie>1&&estHier(PROG.dernierJour)?"série de "+PROG.serie:"nouveau")+'</span></button>'+
