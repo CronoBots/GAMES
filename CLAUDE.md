@@ -59,8 +59,11 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 - **Seul le plateau se manipule, et seulement en glissant** (le client, le 11/10/2026) : un simple appui
   sur un cercle ne tourne rien (il ne tournait que dans un sens), et le cube en perspective est une
   image fixe qui suit les tours (`pointer-events:none`). Le parcours de test vérifie l'appui à vide.
-- **Apparences** (`APPARENCES`) : Classique et Contraste ouvertes, Pastel à 45 ★ et Néon à 90 ★ de
-  campagne ; une apparence choisie puis reperdue (progression effacée) retombe sur Classique.
+- **Deux sortes d'étoiles** (le client, le 11/10/2026) : de coups (`etoilesPour`) et de temps
+  (`etoilesTempsPour`, objectif `(par×4+6) s`, trois sous l'objectif, deux sous le double). Le chrono part
+  au premier contact avec le plateau et avance seul (`majTemps`, toutes les 250 ms).
+- **Apparences** (`APPARENCES`, `APP_TEMPS`) : Classique et Contraste ouvertes, Pastel à 45 ★ de coups,
+  Néon à 45 ★ de temps ; une apparence choisie puis reperdue (progression effacée) retombe sur Classique.
 - **Fin de niveau** : les six faces s'illuminent l'une après l'autre et le cube fait un tour sur
   lui-même (`PIVOT` n'est animé que là) ; « Revoir ma partie » rejoue le mélange puis les coups (`revoir()`).
 - **Couleur d'accent par monde** (`ACCENTS`, `accent(w)`) : variable CSS `--acc` (triplet r,g,b) et
