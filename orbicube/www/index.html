@@ -380,6 +380,10 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
 .puce-or svg{width:16px;height:16px;stroke:var(--or);fill:none;stroke-width:2;stroke-linejoin:round}
 .puce-or span:last-child{font-family:var(--f-chiffre);color:var(--or);font-size:12.5px}
 #accueil .menu{gap:12px}
+
+.sous-jouer{margin:-4px 0 0;text-align:center;font-size:12.5px;color:rgb(var(--acc));display:flex;justify-content:center;gap:6px}
+.sous-jouer[hidden]{display:none}
+#logo{cursor:pointer;touch-action:manipulation}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
@@ -407,6 +411,7 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
           <button class="bouton principal" id="btnJouer" type="button">
             <svg viewBox="0 0 24 24"><path d="M7 4l12 8-12 8z" fill="currentColor" stroke="none"/></svg>
             <span id="jouerTxt">Jouer</span><span class="droite" id="jouerSous"></span></button>
+          <p class="sous-jouer" id="jouerMonde" hidden></p>
           <div class="trio">
           <button class="bouton or bloc" id="btnJour" type="button">
             <i class="pastille"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15.5" r="2"/></svg></i>
@@ -611,6 +616,7 @@ function inter(c1,r1,c2,r2){var dx=c2[0]-c1[0],dy=c2[1]-c1[1],d=Math.hypot(dx,dy
 S.forEach(function(s){var b=(s.a+1)%3,c=(s.a+2)%3,pts=inter(CEN[b],RAY[s.p[b]+1],CEN[c],RAY[s.p[c]+1]);
   var d=function(q){return Math.hypot(q[0]-CEN[s.a][0],q[1]-CEN[s.a][1]);};pts.sort(function(u,v){return d(u)-d(v);});s.xy=s.s>0?pts[0]:pts[1];});
 var CENTRE_FACE={},CLE_CENTRE={};S.forEach(function(s,i){if(s.p[(s.a+1)%3]===0&&s.p[(s.a+2)%3]===0){CENTRE_FACE[s.a+","+s.s]=s.xy;CLE_CENTRE[s.a+","+s.s]=i;}});
+var RAYON_FACE=0;S.forEach(function(s){var c=CENTRE_FACE[s.a+","+s.s];RAYON_FACE=Math.max(RAYON_FACE,Math.hypot(s.xy[0]-c[0],s.xy[1]-c[1]));});RAYON_FACE+=.09;
 function angle(pt,c){return Math.atan2(pt[1]-c[1],pt[0]-c[0]);}
 function normA(d){while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;return d;}
 // Déplacement angulaire de chaque pastille pour un tour, dans le sens réel du cercle.
@@ -694,6 +700,10 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
       for(i=0;i<tp.length;i++){if(!tp[i].m)continue;q=this.vers(tp[i].xy);cx.beginPath();cx.arc(q[0],q[1],rp*(.5+.4*fr),0,Math.PI*2);cx.fillStyle=COUL[tp[i].c];cx.fill();}}
     cx.globalAlpha=1;}
   else this.trace.length=0;
+  // une face terminée reçoit un halo discret de sa couleur sous ses neuf pastilles : la progression se lit d'un coup d'œil
+  if(this.opts.eclats&&!this.anim){var fu=facesUnies(this.col);for(var fk in fu){var fc=this.vers(CENTRE_FACE[fk]);
+    cx.beginPath();cx.arc(fc[0],fc[1],RAYON_FACE*E,0,Math.PI*2);cx.fillStyle=COUL[fu[fk]];cx.globalAlpha=.07;cx.fill();
+    cx.strokeStyle=COUL[fu[fk]];cx.globalAlpha=.4;cx.lineWidth=Math.max(1.5,E*.014);cx.stroke();cx.globalAlpha=1;}}
   for(i=0;i<pos.length;i++){q=this.vers(pos[i].xy);var r=rp,pk=this.pops[i];
     if(pk!==undefined){var e=(now-pk)/280;if(e>=1)delete this.pops[i];else if(e>0)r=rp*(1+.32*Math.sin(e*Math.PI));}
     if(pos[i].m&&!CALME){cx.beginPath();cx.arc(q[0],q[1],r*1.9,0,Math.PI*2);cx.globalAlpha=.16;cx.fillStyle=COUL[pos[i].c];cx.fill();cx.globalAlpha=1;}
@@ -820,7 +830,7 @@ function fusion(a,b){if(!b||typeof b!=="object")return a;var r=JSON.parse(JSON.s
   Object.keys(b.niveaux||{}).forEach(function(k){var x=r.niveaux[k],y=b.niveaux[k];if(!x){r.niveaux[k]=y;return;}
     r.niveaux[k]={etoiles:Math.max(x.etoiles||0,y.etoiles||0),chrono:Math.max(x.chrono||0,y.chrono||0),coups:Math.min(x.coups||1e9,y.coups||1e9),temps:Math.min(x.temps||1e12,y.temps||1e12),sansIndice:!!(x.sansIndice||y.sansIndice)};});
   ["tips","succes"].forEach(function(f){Object.keys(b[f]||{}).forEach(function(k){if(!r[f][k])r[f][k]=b[f][k];});});
-  var sa=r.stats,sb=b.stats||{};["tours","tranches","resolus","indices"].forEach(function(f){sa[f]=Math.max(sa[f]||0,sb[f]||0);});
+  var sa=r.stats,sb=b.stats||{};["tours","tranches","resolus","indices","sansFin"].forEach(function(f){sa[f]=Math.max(sa[f]||0,sb[f]||0);});
   Object.keys(sb.meilleur||{}).forEach(function(k){var x=sa.meilleur[k],y=sb.meilleur[k];sa.meilleur[k]=!x?y:{coups:Math.min(x.coups,y.coups),temps:Math.min(x.temps,y.temps)};});
   Object.keys(b.jours||{}).forEach(function(k){var x=r.jours[k],y=b.jours[k];r.jours[k]=!x?y:{coups:Math.min(x.coups,y.coups),temps:Math.min(x.temps,y.temps),etoiles:Math.max(x.etoiles||0,y.etoiles||0)};});
   if((b.dernierJour||"")>(r.dernierJour||"")){r.dernierJour=b.dernierJour;r.serie=b.serie||0;}else if(b.dernierJour===r.dernierJour)r.serie=Math.max(r.serie||0,b.serie||0);r.serieMax=Math.max(r.serieMax||0,b.serieMax||0,r.serie||0);
@@ -874,6 +884,9 @@ Logo.apres=function(now){if(this.occupe()||now<this.prochain)return;this.prochai
   if((this.pile.length<5&&Math.random()<.8)||!this.pile.length){var b=TOUS[Math.floor(Math.random()*9)],m=MV[b],mv={a:m[0],L:m[1],q:Math.random()<.5?1:-1};this.pile.push(mv);this.jouer(mv,520);}
   else this.jouer(inverse(this.pile.pop()),520);};
 // la taille vient de la boîte qui l'entoure : la place que le menu laisse, sans dépasser 74 % de la largeur ni 310 px
+// toucher l'orbicube de l'accueil le fait tourner d'un cran : un petit jouet avant d'entrer
+document.getElementById("logo").addEventListener("pointerdown",function(){if(Logo.occupe())return;audio();var b=TOUS[Math.floor(Math.random()*9)],m=MV[b],mv={a:m[0],L:m[1],q:Math.random()<.5?1:-1};
+  Logo.pile.push(mv);Logo.prochain=performance.now()+1400;Logo.jouer(mv,300,null,"rebond");sonTour(mv);vibrer(8);});
 Logo.demarrer=function(){var b=this.cv.parentNode.getBoundingClientRect(),w=Math.min(b.height,innerWidth*.74,310);if(w>0)this.dimension(w);};
 function etoilesTotal(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t+=PROG.niveaux[k].etoiles||0;});return t;}
 function prochainNiveau(){for(var w=0;w<MONDES.length;w++)for(var i=0;i<MONDES[w].coups.length;i++)if(!PROG.niveaux[(w+1)+"-"+(i+1)])return{w:w,i:i};return null;}
@@ -881,7 +894,13 @@ function estHier(k){var d=new Date();d.setDate(d.getDate()-1);return k===cleJour
 function rafraichirAccueil(){var pn=prochainNiveau(),fait=Object.keys(PROG.niveaux).length;
   document.getElementById("jouerTxt").textContent=fait?"Continuer":"Jouer";
   document.getElementById("jouerSous").textContent=pn?"niveau "+(pn.w+1)+"-"+(pn.i+1):"★ "+etoilesTotal();
-  var j=PROG.jours[cleJour()];document.getElementById("jourSous").textContent=j?"réussi · "+"★".repeat(j.etoiles||1):(PROG.serie>1&&estHier(PROG.dernierJour)?"série de "+PROG.serie:"nouveau");
+  // défi du jour : réussi, il dit dans combien de temps vient le suivant ; sinon la série en cours, sinon « nouveau »
+  var j=PROG.jours[cleJour()],dem=new Date();dem.setHours(24,0,0,0);var reste=dem-Date.now(),h=Math.floor(reste/3600000);
+  document.getElementById("jourSous").textContent=j?(h>=1?"dans "+h+" h":"dans "+Math.max(1,Math.ceil(reste/60000))+" min"):
+    (PROG.serie>1&&estHier(PROG.dernierJour)?"série de "+PROG.serie:"nouveau");
+  // sous « Continuer » : le monde en cours et ses étoiles, dans sa couleur
+  var jm=document.getElementById("jouerMonde");if(pn&&fait){var M=MONDES[pn.w];jm.style.setProperty("--acc",ACCENTS[pn.w]);
+    jm.innerHTML='<span>'+M.nom+'</span><span class="notrad">· ★ '+etoilesMonde(pn.w)+'/'+M.coups.length*3+'</span>';jm.hidden=false;}else jm.hidden=true;
   document.getElementById("succesSous").textContent=Object.keys(PROG.succes).length+"/"+SUCCES.length;// pied de l'accueil : les deux sortes d'étoiles, côte à côte (les succès sont déjà sur leur tuile)
   document.getElementById("piedTxt").innerHTML='<span class="notrad">'+SVG_ET+etoilesTotal()+'<small> / '+NB_NIV*3+'</small></span><span class="notrad">'+SVG_ETT+etoilesChrono()+'<small> / '+NB_NIV*3+'</small></span>';if(typeof majAchat==="function")majAchat();}
 
@@ -927,6 +946,7 @@ var mini=document.getElementById("mini"),miniC=mini.getContext("2d"),PIVOT=null,
 function dessinerMini(){if(!PROG.options.cube)return;var w=mini.clientWidth||84,px=Math.round(w*DPR);if(mini.width!==px){mini.width=px;mini.height=px;miniC.setTransform(DPR,0,0,DPR,0,0);}
   dessinerCube(miniC,w,JeuP.col,JeuP.anim,PIVOT);}
 JeuP.apres=function(){dessinerMini();};
+setInterval(function(){if(ECRAN==="accueil")rafraichirAccueil();},60000);
 // le chrono avance tout seul dès le premier contact avec le plateau, en miroir du compteur de coups
 function majTemps(){if(!J)return;var ms=J.t0?(J.fini?J.tFin:J.enPause?J.tPause-J.t0:performance.now()-J.t0):0,par=J.def.par,e=etoilesTempsPour(ms,par);
   document.getElementById("jTemps").innerHTML='<span>'+fmt(ms)+'</span><small> / '+fmt(objectifTemps(par))+'</small>';
@@ -998,6 +1018,7 @@ function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length
     if(n>=3&&temps<10000)PROG.tips.eclair=1;}
   else if(d.mode==="jour"){av=PROG.jours[d.id];record=!av;PROG.jours[d.id]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),etoiles:Math.max(av.etoiles,e)}:{coups:n,temps:temps,etoiles:e};
     if(PROG.dernierJour!==d.id){PROG.serie=estHier(PROG.dernierJour)?PROG.serie+1:1;PROG.dernierJour=d.id;}PROG.serieMax=Math.max(PROG.serieMax||0,PROG.serie);}
+  else if(d.mode==="sansfin"){record=d.etape>(PROG.stats.sansFin||0);PROG.stats.sansFin=Math.max(PROG.stats.sansFin||0,d.etape);}
   else{av=PROG.stats.meilleur[d.n];record=!av||temps<av.temps;PROG.stats.meilleur[d.n]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps)}:{coups:n,temps:temps};}
   if(J.tranches[0]&&J.tranches[1]&&J.tranches[2])PROG.tips.troisTranches=1;
   sauver();majJeu();var jeton=J,t0=performance.now();
@@ -1019,12 +1040,23 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
     (d.mode==="jour"?'<p class="serie">Série : '+PROG.serie+' · record : '+Math.max(PROG.serieMax||0,PROG.serie)+'</p>':"")+'<div class="menu">';
   if(suiv)html+='<button class="bouton principal" data-a="suivant" type="button"><span>'+(suiv.w!==d.w?"Monde "+(suiv.w+1):"Niveau suivant")+'</span></button>';
   if(d.mode==="libre")html+='<button class="bouton principal" data-a="encore" type="button"><span>Nouveau mélange</span></button>';
+  if(d.mode==="sansfin")html+='<button class="bouton principal" data-a="etape" type="button"><span>Étape suivante</span></button>';
+  if(d.mode==="jour")html+='<button class="bouton principal" data-a="partager" type="button"><span>Partager mon résultat</span></button>';
   html+='<div class="rangee2"><button class="bouton" data-a="rejouer" type="button">Rejouer</button><button class="bouton" data-a="menu" type="button">'+(d.mode==="campagne"?"Niveaux":"Accueil")+'</button></div>'+
     (J.hist.length?'<button class="bouton" data-a="revoir" type="button" style="justify-content:center;min-height:46px;font-size:14px;color:var(--pale)">Revoir ma partie</button>':"")+'</div>';
-  ouvrirFenetre(html,function(a){fermerFenetre();if(a==="revoir"){revoir(e,n,temps);return;}if(a==="suivant"){if(mondePaye(suiv.w))ouvrirBoutique("monde");else lancer(niveauDef(suiv.w,suiv.i));}
-    else if(a==="encore")lancer(libreDef(d.n));else if(a==="rejouer")lancer(d.mode==="libre"?libreDef(d.n):d);
+  ouvrirFenetre(html,function(a){if(a==="partager"){partager(e,n,temps);return;}fermerFenetre();if(a==="revoir"){revoir(e,n,temps);return;}
+    if(a==="etape"){var k=d.etape+1;if(k>5&&!complet())ouvrirBoutique("libre");else lancer(sansFinDef(k));return;}if(a==="suivant"){if(mondePaye(suiv.w))ouvrirBoutique("monde");else lancer(niveauDef(suiv.w,suiv.i));}
+    else if(a==="encore")lancer(libreDef(d.n));else if(a==="rejouer")lancer(d.mode==="libre"?libreDef(d.n):d.mode==="sansfin"?sansFinDef(d.etape):d);
     else if(d.mode==="campagne")ouvrirMonde(d.w);else montrer("accueil");},"menu");
   document.querySelectorAll("#fenetre .gros-et svg").forEach(function(s,k){setTimeout(function(){s.classList.add("vu");if(k<e)sonEtoile(k);},250+k*260);});}
+// Partager le défi du jour, comme on partage une grille de mots : un résumé sans aucune donnée personnelle
+function partager(e,n,temps){var d=J.def,eT=etoilesTempsPour(temps,d.par),url=CFG.liens.appStore||CFG.liens.googlePlay||"https://cronobots.github.io/GAMES/",
+    txt="Orbicube · "+d.sous+"\n"+n+" coups "+"★".repeat(e)+"☆".repeat(3-e)+" · "+fmt(temps)+" "+"★".repeat(eT)+"☆".repeat(3-eT)+"\n"+url;
+  if(navigator.share){navigator.share({text:txt}).catch(function(){});return;}
+  try{navigator.clipboard.writeText(txt).then(function(){toast("Partager mon résultat","Résultat copié");});}catch(er){}}
+// Sans fin : chaque victoire relance un mélange d'un coup plus long (de 3 à 25 coups)
+function sansFinDef(k){var n=Math.min(25,k+2);return{mode:"sansfin",id:"sansfin-"+k,etape:k,n:n,anneaux:TOUS,par:n,
+  melange:genererMelange(Math.random,TOUS,n),titre:"Sans fin",sous:"Étape "+k};}
 // Revoir ma partie : le mélange revient, puis les coups du joueur sont rejoués en accéléré, et la fenêtre revient.
 function revoir(e,n,temps){var jeton=J,col=resoluCol(),dur=300*PROG.options.vitesse,coups=[];J.revoit=true;
   J.def.melange.forEach(function(mv){col=appliquer(col,mv);});JeuP.col=col;JeuP.anim=null;JeuP.file=[];JeuP.indice=null;JeuP.dessiner();dessinerMini();
@@ -1192,7 +1224,8 @@ document.getElementById("btnJour").addEventListener("click",function(){audio();s
 document.getElementById("btnLibre").addEventListener("click",function(){audio();sonClic();
   ouvrirFenetre('<h3>Partie libre</h3><p>Les neuf cercles, un mélange au hasard, le chrono tourne.</p><div class="menu">'+LIBRES.map(function(l){var m=PROG.stats.meilleur[l.n];
     var ok=libreOuvert(l.n);return '<button class="bouton" data-a="'+l.n+'" type="button"><span>'+l.nom+' · '+l.n+' coups</span><span class="droite">'+(ok?(m?"record "+fmt(m.temps):""):"jeu complet")+'</span></button>';}).join("")+
-    '<button class="bouton" data-a="x" type="button" style="justify-content:center;color:var(--pale)">Fermer</button></div>',function(a){fermerFenetre();if(a&&a!=="x"){if(libreOuvert(+a))lancer(libreDef(+a));else ouvrirBoutique("libre");}},"x");});
+    '<button class="bouton or" data-a="sansfin" type="button"><span>Sans fin</span><span class="droite">'+(PROG.stats.sansFin?"record "+PROG.stats.sansFin:"étape 1")+'</span></button>'+
+    '<button class="bouton" data-a="x" type="button" style="justify-content:center;color:var(--pale)">Fermer</button></div>',function(a){fermerFenetre();if(a==="sansfin"){lancer(sansFinDef(1));return;}if(a&&a!=="x"){if(libreOuvert(+a))lancer(libreDef(+a));else ouvrirBoutique("libre");}},"x");});
 document.getElementById("btnSucces").addEventListener("click",function(){sonClic();montrer("succes");});
 document.getElementById("btnSuccesStore").addEventListener("click",function(){sonClic();NATIF.succesAfficher();});
 document.getElementById("btnOptions").addEventListener("click",function(){sonClic();montrer("options");});

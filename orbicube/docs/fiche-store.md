@@ -28,7 +28,8 @@ elles. Regroupez chaque couleur pour gagner.
 • Un tutoriel intégré : on comprend en jouant
 • Trois étoiles en un minimum de coups
 • Un défi du jour, le même pour tout le monde
-• Une partie libre chronométrée, de facile à expert
+• Une partie libre chronométrée, de facile à expert, et un mode sans fin
+• Des étoiles de coups et des étoiles de temps, chacune avec ses récompenses
 • 14 succès, aussi dans Game Center et Google Play Jeux
 • En français, anglais, néerlandais, allemand et espagnol
 • Des gestes faits pour le pouce : glisser, lancer, enchaîner les tours sans lever le doigt
@@ -68,7 +69,8 @@ twelve dots turn, and the 3D cube turns with them. Group every colour to win.
 • A built-in tutorial: you learn by playing
 • Three stars for the fewest moves
 • A daily challenge, the same for everyone
-• Timed free play, from easy to expert
+• Timed free play, from easy to expert, and an endless mode
+• Move stars and time stars, each with its own rewards
 • 14 achievements, also in Game Center and Google Play Games
 • In English, French, Dutch, German and Spanish
 • Gestures made for your thumb: swipe, flick, chain turns without lifting your finger
