@@ -269,3 +269,11 @@ l'adresse de contact** dans la page avant de la publier.
 - **Les mises à jour qui comptent** : de nouveaux mondes (un pack de 20 niveaux peut devenir un
   second achat), un classement du défi du jour dans Game Center et Google Play Jeux (le module de
   succès est la bonne base pour l'ajouter).
+
+## 9. À faire plus tard
+
+- **Succès liés aux étoiles de temps** (demandé par le client le 11/10/2026, reporté à après le
+  lancement) : par exemple « Contre-la-montre » (60 étoiles de temps) et « Éclair absolu » (180).
+  Chacun demande les mêmes étapes que les 14 premiers : sa ligne dans `SUCCES` (`www/index.html`),
+  son identifiant dans `config.js` > `succesStores` (iOS et Android), sa fiche dans App Store Connect
+  et la Play Console (section 3 bis), son image (`npm run icones`), et ses traductions.
