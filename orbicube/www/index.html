@@ -844,7 +844,7 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
     else if(this.survol&&k===this.survol){var ps=.6+.4*Math.sin(now/320);halo(cx,ACC,.55+.35*ps,Math.max(2.5,E*.032));cx.strokeStyle="rgba("+ACC_CLAIR+","+(.7+.3*ps)+")";cx.lineWidth=Math.max(2.5,E*.028);}
     else{var go=cx.createLinearGradient(c[0],c[1]-RAY[L+1]*E,c[0],c[1]+RAY[L+1]*E);
       // orbites : anneaux d'énergie teintés de la couleur du monde, éclairés par le haut (dégradé le long du tracé = profondeur)
-      go.addColorStop(0,"rgba("+ACC_CLAIR+",.62)");go.addColorStop(.5,"rgba("+ACC+",.34)");go.addColorStop(1,"rgba(44,44,68,.45)");cx.strokeStyle=go;cx.lineWidth=this.permis?2.2:2;}
+      go.addColorStop(0,"rgba("+ACC_CLAIR+",.72)");go.addColorStop(.5,"rgba("+ACC+",.5)");go.addColorStop(1,"rgba("+ACC+",.34)");cx.strokeStyle=go;cx.lineWidth=this.permis?2.2:2;}
     cx.stroke();
     if(vg>=0){var dk=(vg-ordre*75)/450;if(dk>0&&dk<1){cx.beginPath();cx.arc(c[0],c[1],RAY[L+1]*E,0,Math.PI*2);cx.setLineDash([]);
       halo(cx,ACC,Math.sin(dk*Math.PI),Math.max(3,E*.045));cx.strokeStyle="rgba("+ACC_CLAIR+","+Math.sin(dk*Math.PI)+")";cx.lineWidth=Math.max(3,E*.045);cx.stroke();}}
