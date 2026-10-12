@@ -492,9 +492,17 @@ body{background:
 #parcoursDefile{position:absolute;inset:0;padding:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .chemin{position:relative;width:100%;max-width:none;margin:0 auto;overflow:hidden}
 .chemin .trail{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
+/* transition de monde : un filet lumineux traverse la carte au seuil de chaque monde */
+.parc-sep{position:absolute;left:7%;right:7%;top:0;transform:translateY(-50%);height:1.5px;z-index:2;border-radius:2px;
+  background:linear-gradient(90deg,transparent,rgba(var(--pa),.65) 22%,rgba(255,255,255,.75) 50%,rgba(var(--pa),.65) 78%,transparent);
+  box-shadow:0 0 12px rgba(var(--pa),.55)}
 .parc-sect{position:absolute;left:50%;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:9px;white-space:nowrap;
-  padding:7px 16px;border-radius:999px;border:1px solid rgba(var(--pa),.45);background:linear-gradient(180deg,rgba(var(--pa),.18),rgba(var(--pa),.04)),rgba(12,12,20,.82);
-  font-family:var(--f-titre);font-weight:700;font-size:13px;letter-spacing:.03em;color:#fff;z-index:3;box-shadow:0 10px 26px -14px rgba(0,0,0,.95)}
+  padding:8px 16px;border-radius:999px;border:1px solid rgba(var(--pa),.55);background:linear-gradient(180deg,rgba(var(--pa),.24),rgba(var(--pa),.05)),rgba(12,12,20,.88);
+  font-family:var(--f-titre);font-weight:700;font-size:13px;letter-spacing:.03em;color:#fff;z-index:3;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 0 22px -6px rgba(var(--pa),.7),0 10px 26px -14px rgba(0,0,0,.95)}
+.parc-sect .parc-et{display:inline-flex;align-items:center;gap:3px;font-family:var(--f-chiffre);font-weight:600;font-size:11px;color:rgba(255,255,255,.82);
+  padding-left:9px;margin-left:2px;border-left:1px solid rgba(255,255,255,.18)}
+.parc-sect .parc-et svg{width:12px;height:12px;fill:var(--or)}
 .parc-sect small{font-family:var(--f-chiffre);font-weight:500;font-size:10.5px;color:rgba(255,255,255,.62);letter-spacing:.12em;text-transform:uppercase}
 .parc-niv{position:absolute;transform:translate(-50%,-50%) scale(.66);opacity:0;width:56px;height:56px;border-radius:50%;z-index:1;cursor:pointer;padding:0;
   display:grid;place-items:center;border:1px solid rgba(255,255,255,.14);background:var(--verre),rgba(14,14,24,.72);
@@ -1214,12 +1222,15 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
   // (teintée par hue-rotate pour les couleurs sans nébuleuse dédiée) + starfield superposé en "screen".
   // Bords masqués pour fondre entre mondes ; les bandes extrêmes débordent du cadre pour que le fondu reste
   // hors écran (sinon du noir apparaît en haut et en bas). Aucun décor ajouté (demande du client).
-  var NEB=[["purple",0],["blue",0],["purple",28],["blue",152],["green",0],["green",300]],far="",mid="",near="",LAST=MONDES.length-1;
+  var NEB=[["purple",0],["blue",0],["purple",22],["blue",178],["green",0],["green",308]],far="",mid="",near="",LAST=MONDES.length-1;
   wreg.forEach(function(r){var nb=NEB[r.w%NEB.length],bt=r.w===LAST?-120:H-r.y1-34,bb=r.w===0?H+120:H-r.y0+34;
     far+='<div class="parc-neb-img" style="top:'+bt+'px;height:'+(bb-bt)+'px;background-image:url(img/nebula-'+nb[0]+'.webp);filter:hue-rotate('+nb[1]+'deg)"></div>';});
   pts.forEach(function(p,j){d+=(j?"L":"M")+p[0].toFixed(1)+" "+(H-p[1])+" ";});
   items.forEach(function(it){var fy=H-it.y;
-    if(it.t==="s"){var pa=mondePaye(it.w);sects+='<div class="parc-sect'+(pa?" paye":"")+'" style="--pa:'+it.acc+';top:'+fy+'px"><b>Monde '+(it.w+1)+'</b><small>'+it.nom+'</small>'+(pa?'<svg class="pscad" viewBox="0 0 24 24">'+CAD+'</svg>':'')+'</div>';}
+    if(it.t==="s"){var pa=mondePaye(it.w),etM=etoilesMonde(it.w),maxM=MONDES[it.w].coups.length*3;
+      sects+='<div class="parc-sep" style="--pa:'+it.acc+';top:'+fy+'px"></div>'
+        +'<div class="parc-sect'+(pa?" paye":"")+'" style="--pa:'+it.acc+';top:'+fy+'px"><b>Monde '+(it.w+1)+'</b><small>'+it.nom+'</small>'
+        +(pa?'<svg class="pscad" viewBox="0 0 24 24">'+CAD+'</svg>':'<span class="parc-et"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etM+'/'+maxM+'</span>')+'</div>';}
     else{var cls="parc-niv"+(it.r?" fait":"")+(!it.ouv?" verrou":"")+(it.paye?" paye":"")+(it.cur?" courant":""),
       inner=it.ouv?('<b>'+(it.i+1)+'</b><span class="pet">'+[0,1,2].map(function(j){return it.r&&it.r.etoiles>j?SVG_ET:SVG_ET_OFF;}).join("")+'</span>'):('<svg class="pcad" viewBox="0 0 24 24">'+CAD+'</svg>');
       nodes+='<button type="button" class="'+cls+'" style="--pa:'+it.acc+';left:'+it.x.toFixed(1)+'px;top:'+fy+'px" data-w="'+it.w+'" data-i="'+it.i+'" aria-label="Monde '+(it.w+1)+' Niveau '+(it.i+1)+'">'+inner+'</button>';}});

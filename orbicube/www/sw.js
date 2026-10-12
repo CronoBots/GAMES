@@ -1,6 +1,6 @@
 // Version web (PWA) : tout le jeu est mis en cache pour se jouer hors ligne.
 // Incrémenter V à chaque publication, sinon les joueurs gardent l'ancienne version.
-var V = "orbicube-v64";
+var V = "orbicube-v65";
 var FICHIERS = ["./", "index.html", "config.js", "natif.js", "langues.js", "manifest.webmanifest", "confidentialite.html", "logo-titre.png",
   "img/nebula-purple.webp", "img/nebula-blue.webp", "img/nebula-green.webp", "img/starfield.webp",
   "icones/favicon.png", "icones/apple-touch-icon.png", "icones/icon-192.png", "icones/icon-512.png", "icones/icon-maskable-512.png",
