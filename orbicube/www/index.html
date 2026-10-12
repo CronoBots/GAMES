@@ -503,6 +503,9 @@ body{background:
 .parc-sect .parc-et{display:inline-flex;align-items:center;gap:3px;font-family:var(--f-chiffre);font-weight:600;font-size:11px;color:rgba(255,255,255,.82);
   padding-left:9px;margin-left:2px;border-left:1px solid rgba(255,255,255,.18)}
 .parc-sect .parc-et svg{width:12px;height:12px;fill:var(--or)}
+/* description du monde (la difficulté), sous la bannière, comme l'ancien écran */
+.parc-desc{position:absolute;left:50%;transform:translateX(-50%);width:min(84%,420px);text-align:center;z-index:3;pointer-events:none;
+  font-family:var(--f-texte);font-size:12.5px;line-height:1.4;color:rgba(255,255,255,.82);text-shadow:0 1px 8px rgba(0,0,0,.95)}
 .parc-sect small{font-family:var(--f-chiffre);font-weight:500;font-size:10.5px;color:rgba(255,255,255,.62);letter-spacing:.12em;text-transform:uppercase}
 .parc-niv{position:absolute;transform:translate(-50%,-50%) scale(.66);opacity:0;width:56px;height:56px;border-radius:50%;z-index:1;cursor:pointer;padding:0;
   display:grid;place-items:center;border:1px solid rgba(255,255,255,.14);background:var(--verre),rgba(14,14,24,.72);
@@ -592,28 +595,6 @@ body.sobre #plateau{transition:none}
         
       </div>
     </div>
-  </section>
-
-  <section class="ecran" id="mondes" aria-label="Campagne">
-    <div class="tete">
-      <button class="ico" data-retour="accueil" type="button" aria-label="Retour"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
-      <h2>Campagne</h2>
-      <span class="puce"><svg viewBox="0 0 24 24" class="etoile"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg><span id="mondesEt">0</span><svg viewBox="0 0 24 24" class="etoile temps" style="margin-left:4px"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg><span id="mondesEtT" class="notrad">0</span></span>
-    </div>
-    <div class="defile"><div class="centre mondes cascade" id="listeMondes"></div></div>
-  </section>
-
-  <section class="ecran" id="niveaux" aria-label="Niveaux">
-    <div class="tete">
-      <button class="ico" data-retour="mondes" type="button" aria-label="Retour"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
-      <h2 id="nivTitre">Monde</h2>
-      <span class="puce"><svg viewBox="0 0 24 24" class="etoile"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg><span id="nivEt">0</span></span>
-    </div>
-    <div class="defile"><div class="centre">
-      <canvas id="nivApercu" aria-hidden="true"></canvas>
-      <p class="niv-intro" id="nivIntro"></p>
-      <div class="niveaux cascade" id="grilleNiv"></div>
-    </div></div>
   </section>
 
   <section class="ecran" id="parcours" aria-label="Campagne">
@@ -1143,13 +1124,13 @@ function vibrer(ms){if(!PROG.options.vib)return;if(NATIF.vibrer(Array.isArray(ms
 /* ========== 8. NAVIGATION ========== */
 var ECRAN="accueil";
 // sens : +1 on avance (l'écran arrive de la droite), −1 on revient (il arrive de la gauche)
-function montrer(id,sens){if(id==="accueil"||id==="mondes")accent(null);sens=sens||1;document.querySelectorAll(".ecran").forEach(function(e){
+function montrer(id,sens){if(id==="accueil")accent(null);sens=sens||1;document.querySelectorAll(".ecran").forEach(function(e){
     if(e.id===id){e.style.transition="none";e.style.setProperty("--dx",(sens*28)+"px");void e.offsetWidth;e.style.transition="";e.classList.add("actif");}
     else{if(e.classList.contains("actif"))e.style.setProperty("--dx",(-sens*28)+"px");e.classList.remove("actif");}});ECRAN=id;
   numeroter(document.getElementById(id));
   Logo.visible=id==="accueil";AideP.visible=id==="aide";JeuP.visible=id==="jeu";
   if(id==="accueil"){rafraichirAccueil();majRang();Logo.demarrer();}
-  if(id==="mondes")rafraichirMondes();if(id==="succes")rafraichirSucces();if(id==="profil")rafraichirProfil();if(id==="aide")redimAide();if(id==="jeu")redimJeu();
+  if(id==="succes")rafraichirSucces();if(id==="profil")rafraichirProfil();if(id==="aide")redimAide();if(id==="jeu")redimJeu();
   Ticker.reveiller();}
 var OPT_DEPUIS_JEU=false;
 document.querySelectorAll("[data-retour]").forEach(function(b){b.addEventListener("click",function(){sonClic();
@@ -1230,7 +1211,8 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
     if(it.t==="s"){var pa=mondePaye(it.w),etM=etoilesMonde(it.w),maxM=MONDES[it.w].coups.length*3;
       sects+='<div class="parc-sep" style="--pa:'+it.acc+';top:'+fy+'px"></div>'
         +'<div class="parc-sect'+(pa?" paye":"")+'" style="--pa:'+it.acc+';top:'+fy+'px"><b>Monde '+(it.w+1)+'</b><small>'+it.nom+'</small>'
-        +(pa?'<svg class="pscad" viewBox="0 0 24 24">'+CAD+'</svg>':'<span class="parc-et"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etM+'/'+maxM+'</span>')+'</div>';}
+        +(pa?'<svg class="pscad" viewBox="0 0 24 24">'+CAD+'</svg>':'<span class="parc-et"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etM+'/'+maxM+'</span>')+'</div>'
+        +'<div class="parc-desc" style="top:'+(fy+30)+'px">'+MONDES[it.w].desc+'</div>';}
     else{var cls="parc-niv"+(it.r?" fait":"")+(!it.ouv?" verrou":"")+(it.paye?" paye":"")+(it.cur?" courant":""),
       inner=it.ouv?('<b>'+(it.i+1)+'</b><span class="pet">'+[0,1,2].map(function(j){return it.r&&it.r.etoiles>j?SVG_ET:SVG_ET_OFF;}).join("")+'</span>'):('<svg class="pcad" viewBox="0 0 24 24">'+CAD+'</svg>');
       nodes+='<button type="button" class="'+cls+'" style="--pa:'+it.acc+';left:'+it.x.toFixed(1)+'px;top:'+fy+'px" data-w="'+it.w+'" data-i="'+it.i+'" aria-label="Monde '+(it.w+1)+' Niveau '+(it.i+1)+'">'+inner+'</button>';}});
@@ -1263,30 +1245,7 @@ document.getElementById("chemin").addEventListener("click",function(e){
   if(b.classList.contains("paye")){sonClic();ouvrirBoutique("monde");return;}
   if(b.classList.contains("verrou")){vibrer(20);return;}sonClic();lancer(niveauDef(+b.dataset.w,+b.dataset.i));});
 document.getElementById("parcoursDefile").addEventListener("scroll",function(){if(!parcAnim)parcParallax();},{passive:true});
-function rafraichirMondes(){document.getElementById("mondesEt").textContent=etoilesTotal();document.getElementById("mondesEtT").textContent=etoilesChrono();var l=document.getElementById("listeMondes");l.innerHTML="";
-  MONDES.forEach(function(M,w){var ouvert=mondeOuvert(w),et=etoilesMonde(w),max=M.coups.length*3,b=document.createElement("button");b.type="button";b.className="monde"+(ouvert?"":" verrou")+(mondePaye(w)?" paye":"");b.style.setProperty("--acc",ACCENTS[w]);
-    b.innerHTML='<canvas></canvas><div><div class="num">Monde '+(w+1)+'</div><h3>'+M.nom+'</h3><p>'+(ouvert?M.desc:mondePaye(w)?"Inclus dans le jeu complet.":"Terminez le monde "+w+" pour l’ouvrir.")+'</p><div class="barre"><i style="width:'+(et/max*100)+'%"></i></div><div class="compte"><span>'+et+' / '+max+' ★</span><span>'+M.anneaux.join(" ")+'</span></div></div>'+(ouvert?"":'<svg class="cadenas" viewBox="0 0 24 24">'+CAD+'</svg>');
-    b.addEventListener("click",function(){if(mondePaye(w)){sonClic();ouvrirBoutique("monde");return;}if(!ouvert){vibrer(20);avertir("Verrouillé","Terminez d’abord le monde "+w+".");return;}sonClic();envol(b,w);});
-    l.appendChild(b);vignetteMonde(b.querySelector("canvas"),M.anneaux,ouvert);});}
-function envol(carte,w){if(CALME){ouvrirMonde(w);return;}var r=carte.getBoundingClientRect(),v=document.createElement("div");v.className="envol";
-  v.style.setProperty("--acc",ACCENTS[w]);v.style.left=r.left+"px";v.style.top=r.top+"px";v.style.width=r.width+"px";v.style.height=r.height+"px";document.body.appendChild(v);
-  v.getBoundingClientRect();v.style.left="0px";v.style.top="0px";v.style.width=innerWidth+"px";v.style.height=innerHeight+"px";v.style.borderRadius="0px";
-  setTimeout(function(){ouvrirMonde(w);v.style.transition="opacity .35s ease";v.style.opacity="0";setTimeout(function(){v.remove();},400);},380);}
-function vignetteMonde(cv,anneaux,ouvert){var p=new Plateau(cv,{etiquettes:false});p.permis={};anneaux.forEach(function(b){p.permis[MV[b][0]+","+MV[b][1]]=true;});
-  if(!ouvert)p.col=p.col.map(function(){return 3;});p.dimension(56);}
-function ouvrirMonde(w){var M=MONDES[w];accent(w);document.getElementById("nivTitre").textContent=M.nom;document.getElementById("nivEt").textContent=etoilesMonde(w)+"/"+M.coups.length*3;
-  document.getElementById("nivIntro").textContent=M.desc+" Cercles : "+M.anneaux.join(" · ")+".";
-  var g=document.getElementById("grilleNiv");g.innerHTML="";var pn=prochainNiveau();
-  M.coups.forEach(function(par,i){var r=PROG.niveaux[(w+1)+"-"+(i+1)],ouvert=niveauOuvert(w,i),b=document.createElement("button");b.type="button";
-    b.className="niveau"+(r?" fait":"")+(ouvert?"":" verrou")+(pn&&pn.w===w&&pn.i===i?" courant":"");
-    b.setAttribute("aria-label","Niveau "+(i+1)+(r?", "+r.etoiles+" étoiles":"")+(ouvert?"":", verrouillé"));
-    b.innerHTML=ouvert?'<b>'+(i+1)+'</b><span class="et">'+[0,1,2].map(function(k){return r&&r.etoiles>k?SVG_ET:SVG_ET_OFF;}).join("")+'</span><span class="et">'+[0,1,2].map(function(k){return r&&(r.chrono||0)>k?SVG_ETT:SVG_ET_OFF;}).join("")+'</span>':'<svg viewBox="0 0 24 24" class="cad">'+CAD+'</svg>';
-    b.addEventListener("click",function(){if(!ouvert){vibrer(20);return;}sonClic();lancer(niveauDef(w,i));});g.appendChild(b);});
-  montrer("niveaux");
-  // aperçu du monde : ses cercles en trait plein, les autres en pointillé, le cube résolu
-  NivP.col=resoluCol();if(M.anneaux.length===9)NivP.permis=null;else{NivP.permis={};M.anneaux.forEach(function(b){NivP.permis[MV[b][0]+","+MV[b][1]]=true;});}
-  requestAnimationFrame(function(){var w=document.getElementById("nivApercu").getBoundingClientRect().width;if(w)NivP.dimension(w);});}
-var NivP=new Plateau(document.getElementById("nivApercu"),{etiquettes:false});
+// (ancien écran de sélection #mondes/#niveaux retiré : la carte de campagne #parcours le remplace)
 
 /* ========== 11. LA PARTIE ========== */
 var JeuP=new Plateau(document.getElementById("plateau"),{eclats:true});Ticker.actifs.push(JeuP);
@@ -1681,7 +1640,7 @@ function opt(k,v){PROG.options[k]=v;PROG.options.maj=Date.now();sauver();appliqu
 [["Son","son"],["Vib","vib"],["Cube","cube"],["Pave","pave"],["Zen","zen"],["Musique","musique"],["Anims","anims"]].forEach(function(c){
   document.getElementById("opt"+c[0]).addEventListener("change",function(){opt(c[1],this.checked);if(c[1]==="musique"&&this.checked){contexteAudio();Musique.lancer();}if(c[1]==="son"&&this.checked)sonClic();if(c[1]==="vib")vibrer(15);});});
 document.getElementById("optVitesse").addEventListener("click",function(e){var b=e.target.closest("button");if(b){opt("vitesse",+b.dataset.v);sonClic();}});
-document.getElementById("optForme").addEventListener("click",function(e){var b=e.target.closest("button");if(b){opt("forme",b.dataset.v);sonClic();rafraichirMondes&&document.getElementById("listeMondes").children.length&&rafraichirMondes();}});
+document.getElementById("optForme").addEventListener("click",function(e){var b=e.target.closest("button");if(b){opt("forme",b.dataset.v);sonClic();}});
 document.getElementById("optVolMusique").addEventListener("click",function(e){var b=e.target.closest("button");if(b){opt("volMusique",+b.dataset.v);sonClic();}});
 document.getElementById("optPalette").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;
   if(!apparenceOuverte(b.dataset.v)){vibrer(20);toast(b.dataset.v==="neon"?"Néon":"Pastel",(APP_TEMPS[b.dataset.v]?"Débloqué à {0} étoiles de temps":"Débloqué à {0} étoiles de coups").replace("{0}",APPARENCES[b.dataset.v]));return;}opt("palette",b.dataset.v);sonClic();});
@@ -1747,7 +1706,7 @@ function ouvrirBoutique(raison){var web=!NATIF.natif,li=CFG.liens||{};
   ouvrirFenetre(html,function(a){if(a==="acheter")acheter();else if(a==="restaurer")restaurer();else fermerFenetre();},"x");}
 function attente(oui){document.querySelectorAll("#fenetre [data-a]").forEach(function(b){b.disabled=oui;b.style.opacity=oui?.5:"";});}
 function debloque(){PROG.achat=true;sauver();majAchat();rafraichirAccueil();fermerFenetre();sonVictoire();vibrer([20,40,20]);confettis();
-  toast("Merci !","Tout Orbicube est débloqué.");if(ECRAN==="mondes")rafraichirMondes();if(ECRAN==="parcours")buildParcours();}
+  toast("Merci !","Tout Orbicube est débloqué.");if(ECRAN==="parcours")buildParcours();}
 function acheter(){attente(true);NATIF.acheter().then(function(r){attente(false);if(r.ok)debloque();else if(!r.annule)avertir("Achat",r.erreur==="indisponible"?"Le store ne répond pas. Réessayez plus tard.":"L’achat n’a pas abouti.");});}
 function restaurer(){attente(true);NATIF.restaurer().then(function(r){attente(false);if(r.ok)debloque();else avertir("Restaurer",r.erreur==="indisponible"?"Le store ne répond pas. Réessayez plus tard.":"Aucun achat à restaurer sur ce compte.");});}
 document.getElementById("btnBoutique").addEventListener("click",function(){sonClic();ouvrirBoutique("accueil");});
@@ -1757,7 +1716,7 @@ if(CFG.liens&&CFG.liens.confidentialite)document.getElementById("lienConf").href
 // bouton retour d'Android : ferme la fenêtre, met en pause, remonte d'un écran, puis quitte
 NATIF.surRetour(function(){if(!document.getElementById("voile").hidden){if(FEN.esc)FEN.esc();return;}
   if(ECRAN==="options"&&OPT_DEPUIS_JEU){document.querySelector("#options [data-retour]").click();return;}
-  if(ECRAN==="jeu"){pause();return;}if(ECRAN==="niveaux"){montrer("mondes",-1);return;}if(ECRAN!=="accueil"){montrer("accueil",-1);return;}NATIF.quitter();});
+  if(ECRAN==="jeu"){pause();return;}if(ECRAN!=="accueil"){montrer("accueil",-1);return;}NATIF.quitter();});
 
 /* ========== 15 quinquies. LE RANG, LES MISSIONS, LES CIELS, LES DÉFIS ==========
    Le jeu se joue cinq minutes (un défi, trois missions) ou des semaines (les rangs, les ciels, les mondes).
