@@ -514,9 +514,13 @@ body{background:
 .parc-sect.paye{border-color:rgba(255,207,74,.5);cursor:pointer}
 .parc-sect .pscad{width:14px;height:14px;stroke:var(--or);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;margin-left:2px}
 /* décor cosmique par monde EN COUCHES (parallaxe) : fond teinté, nébuleuses lointaines, planètes+anneaux, orbites, étincelles */
-.parc-fond{position:absolute;inset:0;z-index:0;pointer-events:none}
+.parc-fond{position:absolute;inset:0;z-index:0;pointer-events:none;background:#06060c}
 .parc-layer{position:absolute;inset:0;z-index:0;pointer-events:none;will-change:transform}
 .parc-layer.near{z-index:2}
+/* fond-images (pack CC0) : bande de nébuleuse peinte par monde + starfield superposé en screen */
+.parc-neb-img{position:absolute;left:-3%;right:-3%;z-index:0;background-size:cover;background-position:center;background-repeat:no-repeat;
+  -webkit-mask-image:linear-gradient(to bottom,transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 9%,#000 91%,transparent)}
+.parc-layer.stars{z-index:0;background:url(img/starfield.webp);background-size:340px;background-repeat:repeat;mix-blend-mode:screen;opacity:.5}
 .parc-neb{position:absolute;transform:translate(-50%,-50%);max-width:94vw;border-radius:50%;pointer-events:none;
   background:radial-gradient(closest-side,rgba(var(--pa),.24),rgba(var(--pa),.07) 54%,rgba(var(--pa),0) 75%)}
 .parc-planete{position:absolute;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;pointer-events:none;opacity:.6;
@@ -1205,17 +1209,15 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
       pts.push([x,y]);y+=GAP;k++;}
     wreg.push({w:w,acc:acc,y0:y0,y1:y});y+=18;}
   var H=y+20,nodes="",sects="",d="";
-  // fond cosmique qui change de couleur selon le monde (thème par monde) + décor par monde dans sa teinte
-  // fond : chaque monde garde sa couleur sur toute sa bande (transition nette aux frontières, pas de mélange boueux)
-  var seg=[];wreg.forEach(function(r){seg.push({pct:+((H-r.y1)/H*100).toFixed(2),acc:r.acc},{pct:+((H-r.y0)/H*100).toFixed(2),acc:r.acc});});
-  seg.sort(function(a,b){return a.pct-b.pct;});
-  var grad="linear-gradient(to bottom,"+seg.map(function(s){return "rgba("+s.acc+",.16) "+s.pct+"%";}).join(",")+")",far="",mid="",near="";
-  // décor en COUCHES (parallaxe) : une nébuleuse lointaine + une planète/anneau + une orbite + des étincelles par monde, dans sa couleur
-  wreg.forEach(function(r){var cyf=H-(r.y0+r.y1)/2,hh=r.y1-r.y0,side=r.w%2?1:-1;
-    far+='<div class="parc-neb drift" style="--pa:'+r.acc+';top:'+cyf+'px;left:'+(50+side*40)+'%;width:300px;height:270px"></div>';
+  // FOND IMAGES (pack CC0 Screaming Brain Studios) : une bande de nébuleuse peinte par monde (teintée par
+  // hue-rotate pour les couleurs sans nébuleuse dédiée) ; starfield superposé en "screen" pour la profondeur ;
+  // planètes/orbites/étincelles par-dessus. Chaque bande est masquée aux bords pour fondre entre mondes.
+  var NEB=[["purple",0],["blue",0],["purple",28],["blue",152],["green",0],["green",300]],far="",mid="",near="";
+  wreg.forEach(function(r){var top=H-r.y1,hh=r.y1-r.y0,cyf=H-(r.y0+r.y1)/2,side=r.w%2?1:-1,nb=NEB[r.w%NEB.length];
+    far+='<div class="parc-neb-img" style="top:'+(top-34)+'px;height:'+(hh+68)+'px;background-image:url(img/nebula-'+nb[0]+'.webp);filter:hue-rotate('+nb[1]+'deg)"></div>';
     mid+='<div class="parc-planete" style="--pa:'+r.acc+';top:'+(cyf+hh*.12)+'px;left:'+(50-side*35)+'%"><i class="pring"></i></div>';
     mid+='<div class="parc-ring spin" style="--pa:'+r.acc+';top:'+(cyf-hh*.3)+'px;left:'+(50+side*22)+'%"></div>';
-    for(var sp=0;sp<6;sp++)near+='<i class="parc-sparc tw" style="top:'+(H-(r.y0+hh*(sp+.5)/6)).toFixed(0)+'px;left:'+(8+((r.w*53+sp*71)%84))+'%;animation-delay:'+(sp*.5).toFixed(1)+'s"></i>';});
+    for(var sp=0;sp<2;sp++)near+='<i class="parc-sparc tw" style="top:'+(H-(r.y0+hh*(sp+.5)/2)).toFixed(0)+'px;left:'+(10+((r.w*53+sp*71)%80))+'%;animation-delay:'+(sp*.5).toFixed(1)+'s"></i>';});
   pts.forEach(function(p,j){d+=(j?"L":"M")+p[0].toFixed(1)+" "+(H-p[1])+" ";});
   items.forEach(function(it){var fy=H-it.y;
     if(it.t==="s"){var pa=mondePaye(it.w);sects+='<div class="parc-sect'+(pa?" paye":"")+'" style="--pa:'+it.acc+';top:'+fy+'px"><b>Monde '+(it.w+1)+'</b><small>'+it.nom+'</small>'+(pa?'<svg class="pscad" viewBox="0 0 24 24">'+CAD+'</svg>':'')+'</div>';}
@@ -1223,18 +1225,18 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
       inner=it.ouv?('<b>'+(it.i+1)+'</b><span class="pet">'+[0,1,2].map(function(j){return it.r&&it.r.etoiles>j?SVG_ET:SVG_ET_OFF;}).join("")+'</span>'):('<svg class="pcad" viewBox="0 0 24 24">'+CAD+'</svg>');
       nodes+='<button type="button" class="'+cls+'" style="--pa:'+it.acc+';left:'+it.x.toFixed(1)+'px;top:'+fy+'px" data-w="'+it.w+'" data-i="'+it.i+'" aria-label="Monde '+(it.w+1)+' Niveau '+(it.i+1)+'">'+inner+'</button>';}});
   ch.style.height=H+"px";
-  ch.innerHTML='<div class="parc-fond" style="background:'+grad+'"></div>'
-    +'<div class="parc-layer far">'+far+'</div><div class="parc-layer mid">'+mid+'</div>'
+  ch.innerHTML='<div class="parc-fond"></div>'
+    +'<div class="parc-layer far">'+far+'</div><div class="parc-layer stars"></div><div class="parc-layer mid">'+mid+'</div>'
     +'<svg class="trail" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" preserveAspectRatio="none"><path d="'+d+'" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 11"/></svg>'
     +sects+nodes+'<div class="parc-layer near">'+near+'</div>';
-  parcPx={f:0,m:0,n:0};parcRevele(ch);parcParallax();}
+  parcPx={f:0,st:0,m:0,n:0};parcRevele(ch);parcParallax();}
 // parallaxe lissée : les couches suivent le scroll avec une légère inertie (easing), à des vitesses différentes
-var parcPx={f:0,m:0,n:0},parcAnim=0;
+var parcPx={f:0,st:0,m:0,n:0},parcAnim=0;
 function parcParallax(){var pd=document.getElementById("parcoursDefile");if(!pd)return;
-  var s=pd.scrollTop,tf=CALME?s*.1:s*.36,tm=CALME?s*.05:s*.17,tn=CALME?0:-s*.17,e=CALME?1:.16;
-  parcPx.f+=(tf-parcPx.f)*e;parcPx.m+=(tm-parcPx.m)*e;parcPx.n+=(tn-parcPx.n)*e;
-  var f=pd.querySelector(".parc-layer.far"),m=pd.querySelector(".parc-layer.mid"),n=pd.querySelector(".parc-layer.near");
-  if(f)f.style.transform="translateY("+parcPx.f.toFixed(1)+"px)";if(m)m.style.transform="translateY("+parcPx.m.toFixed(1)+"px)";if(n)n.style.transform="translateY("+parcPx.n.toFixed(1)+"px)";
+  var s=pd.scrollTop,tf=CALME?s*.02:s*.07,tst=CALME?s*.06:s*.28,tm=CALME?s*.04:s*.13,tn=CALME?0:-s*.15,e=CALME?1:.16;
+  parcPx.f+=(tf-parcPx.f)*e;parcPx.st+=(tst-parcPx.st)*e;parcPx.m+=(tm-parcPx.m)*e;parcPx.n+=(tn-parcPx.n)*e;
+  var f=pd.querySelector(".parc-layer.far"),st=pd.querySelector(".parc-layer.stars"),m=pd.querySelector(".parc-layer.mid"),n=pd.querySelector(".parc-layer.near");
+  if(f)f.style.transform="translateY("+parcPx.f.toFixed(1)+"px)";if(st)st.style.transform="translateY("+parcPx.st.toFixed(1)+"px)";if(m)m.style.transform="translateY("+parcPx.m.toFixed(1)+"px)";if(n)n.style.transform="translateY("+parcPx.n.toFixed(1)+"px)";
   parcAnim=(Math.abs(tf-parcPx.f)>.4||Math.abs(tn-parcPx.n)>.4)?requestAnimationFrame(parcParallax):0;}
 // révélation : les nœuds apparaissent (fondu + pop) quand ils entrent dans la fenêtre pendant qu'on monte
 var parcIO=null;function parcRevele(ch){var root=document.getElementById("parcoursDefile");
