@@ -711,6 +711,7 @@ var APPARENCES={classique:0,contraste:0,pastel:45,neon:45},APP_TEMPS={neon:true}
 // Pastel se gagne avec les étoiles de coups, Néon avec les étoiles de temps
 function apparenceOuverte(v){return(APP_TEMPS[v]?etoilesChrono():etoilesTotal())>=(APPARENCES[v]||0);}
 var COUL=PALETTES.classique;
+function hexRGB(h){h=h.replace("#","");return parseInt(h.substr(0,2),16)+","+parseInt(h.substr(2,2),16)+","+parseInt(h.substr(4,2),16);}
 function faceDe(n){return n[0]>0?0:n[0]<0?1:n[1]>0?2:n[1]<0?3:n[2]>0?4:5;}
 var S=[],CLE={};
 for(var x=-1;x<=1;x++)for(var y=-1;y<=1;y++)for(var z=-1;z<=1;z++){var p=[x,y,z];
@@ -867,10 +868,12 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
       for(i=0;i<tp.length;i++){if(!tp[i].m)continue;q=this.vers(tp[i].xy);cx.beginPath();cx.arc(q[0],q[1],rp*(.5+.4*fr),0,Math.PI*2);cx.fillStyle=COUL[tp[i].c];cx.fill();}}
     cx.globalAlpha=1;}
   else this.trace.length=0;
-  // une face terminée reçoit un halo discret de sa couleur sous ses neuf pastilles : la progression se lit d'un coup d'œil
-  if(this.opts.eclats&&!this.anim){var fu=facesUnies(this.col);for(var fk in fu){var fc=this.vers(CENTRE_FACE[fk]);
-    cx.beginPath();cx.arc(fc[0],fc[1],RAYON_FACE*E,0,Math.PI*2);cx.fillStyle=COUL[fu[fk]];cx.globalAlpha=.12;cx.fill();
-    cx.strokeStyle=COUL[fu[fk]];cx.globalAlpha=.5;cx.lineWidth=Math.max(1.5,E*.014);cx.stroke();cx.globalAlpha=1;}}
+  // une face terminée s'illumine : un halo doux de sa couleur rayonne AUTOUR de ses neuf pastilles
+  // (plus de cercle qui l'entoure — demandé par le client). Un seul dégradé radial par face (bon marché).
+  if(this.opts.eclats&&!this.anim){var fu=facesUnies(this.col);for(var fk in fu){var fc=this.vers(CENTRE_FACE[fk]),rr=RAYON_FACE*E*1.55,rgb=hexRGB(COUL[fu[fk]]);
+    var gh=cx.createRadialGradient(fc[0],fc[1],rr*.3,fc[0],fc[1],rr);
+    gh.addColorStop(0,"rgba("+rgb+",.42)");gh.addColorStop(.55,"rgba("+rgb+",.24)");gh.addColorStop(1,"rgba("+rgb+",0)");
+    cx.fillStyle=gh;cx.beginPath();cx.arc(fc[0],fc[1],rr,0,Math.PI*2);cx.fill();}}
   for(i=0;i<pos.length;i++){q=this.vers(pos[i].xy);var r=rp,pk=this.pops[i];
     if(pk!==undefined){var e=(now-pk)/280;if(e>=1)delete this.pops[i];else if(e>0)r=rp*(1+.32*Math.sin(e*Math.PI));}
     if(pos[i].m&&!CALME){cx.beginPath();cx.arc(q[0],q[1],r*1.9,0,Math.PI*2);cx.globalAlpha=.16;cx.fillStyle=COUL[pos[i].c];cx.fill();cx.globalAlpha=1;}
