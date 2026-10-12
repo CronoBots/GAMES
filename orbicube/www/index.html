@@ -870,9 +870,9 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
   else this.trace.length=0;
   // une face terminée s'illumine : un halo doux de sa couleur rayonne AUTOUR de ses neuf pastilles
   // (plus de cercle qui l'entoure — demandé par le client). Un seul dégradé radial par face (bon marché).
-  if(this.opts.eclats&&!this.anim){var fu=facesUnies(this.col);for(var fk in fu){var fc=this.vers(CENTRE_FACE[fk]),rr=RAYON_FACE*E*1.55,rgb=hexRGB(COUL[fu[fk]]);
+  if(this.opts.eclats&&!this.anim){var fu=facesUnies(this.col);for(var fk in fu){var fc=this.vers(CENTRE_FACE[fk]),rr=RAYON_FACE*E*1.28,rgb=hexRGB(COUL[fu[fk]]);
     var gh=cx.createRadialGradient(fc[0],fc[1],rr*.3,fc[0],fc[1],rr);
-    gh.addColorStop(0,"rgba("+rgb+",.42)");gh.addColorStop(.55,"rgba("+rgb+",.24)");gh.addColorStop(1,"rgba("+rgb+",0)");
+    gh.addColorStop(0,"rgba("+rgb+",.26)");gh.addColorStop(.55,"rgba("+rgb+",.14)");gh.addColorStop(1,"rgba("+rgb+",0)");
     cx.fillStyle=gh;cx.beginPath();cx.arc(fc[0],fc[1],rr,0,Math.PI*2);cx.fill();}}
   for(i=0;i<pos.length;i++){q=this.vers(pos[i].xy);var r=rp,pk=this.pops[i];
     if(pk!==undefined){var e=(now-pk)/280;if(e>=1)delete this.pops[i];else if(e>0)r=rp*(1+.32*Math.sin(e*Math.PI));}
