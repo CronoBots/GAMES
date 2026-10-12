@@ -709,7 +709,7 @@ body.sobre #plateau{transition:none}
 (function(){
 "use strict";
 /* ========== 1. LE CUBE : 54 facettes, 9 tranches ========== */
-var PALETTES={classique:["#FF6A00","#D7192C","#FFD500","#F5F5F0","#00A651","#0B5FD6"],
+var PALETTES={classique:["#FF7A14","#EC1F38","#FFE11A","#FAFAF2","#06C563","#1E6DF5"],
   contraste:["#E69F00","#CC79A7","#F0E442","#FFFFFF","#009E73","#0072B2"],
   pastel:["#FFB27A","#F28B9B","#FFE38A","#F4F1EA","#8FD9A8","#8DB8F2"],
   neon:["#FF7A00","#FF2E63","#F5F500","#E8FFFF","#00FF9C","#00C8FF"]};
@@ -822,8 +822,12 @@ function facette(cx,q,f,h,coul){var U=[f.u[0]*h,-f.u[1]*h],V=[f.v[0]*h,-f.v[1]*h
   var k=.24;cx.beginPath();for(var n=0;n<4;n++){var A=P[(n+3)%4],B=P[n],C=P[(n+1)%4],a1=[B[0]+(A[0]-B[0])*k,B[1]+(A[1]-B[1])*k],c1=[B[0]+(C[0]-B[0])*k,B[1]+(C[1]-B[1])*k];
     if(!n)cx.moveTo(a1[0],a1[1]);else cx.lineTo(a1[0],a1[1]);cx.quadraticCurveTo(B[0],B[1],c1[0],c1[1]);}cx.closePath();
   cx.fillStyle=coul;cx.fill();cx.lineWidth=Math.max(1,h*.16);cx.strokeStyle="rgba(0,0,0,.5)";cx.stroke();
+  // Phase 2 : facette « verre » comme les cubes du logo — sheen diagonal plus net, biseau clair sur le bord
+  // haut-gauche, point spéculaire sur le coin du haut. Pas de dégradé radial (coût) : le point est un arc.
   if(h>4){var hi=P.reduce(function(m,p){return p[1]<m[1]?p:m;}),g=cx.createLinearGradient(hi[0],hi[1],q[0]+(q[0]-hi[0])*.6,q[1]+(q[1]-hi[1])*.6);
-    g.addColorStop(0,"rgba(255,255,255,.32)");g.addColorStop(.55,"rgba(255,255,255,0)");g.addColorStop(1,"rgba(0,0,0,.12)");cx.fillStyle=g;cx.fill();}}
+    g.addColorStop(0,"rgba(255,255,255,.42)");g.addColorStop(.42,"rgba(255,255,255,0)");g.addColorStop(1,"rgba(0,0,0,.18)");cx.fillStyle=g;cx.fill();
+    cx.lineWidth=Math.max(.8,h*.07);cx.strokeStyle="rgba(255,255,255,.18)";cx.stroke();
+    cx.beginPath();cx.arc(q[0]+(hi[0]-q[0])*.52,q[1]+(hi[1]-q[1])*.52,h*.26,0,6.283);cx.fillStyle="rgba(255,255,255,.4)";cx.fill();}}
 Plateau.prototype.positions=function(){return this.positionsA(this.anim?this.anim.t:0);};
 Plateau.prototype.permisA=function(k){return !this.permis||!!this.permis[k];};
 Plateau.prototype.vivant=function(now){if(this.anim||this.indice||this.continu||this.eclats.length)return true;
@@ -877,7 +881,9 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
     if(PROG.options.forme==="perles"){
     cx.beginPath();cx.arc(q[0],q[1],r,0,Math.PI*2);cx.fillStyle=COUL[pos[i].c];cx.fill();
     cx.lineWidth=Math.max(1,r*.2);cx.strokeStyle="rgba(0,0,0,.45)";cx.stroke();
-    if(r>5){cx.beginPath();cx.arc(q[0]-r*.3,q[1]-r*.32,r*.32,0,Math.PI*2);cx.fillStyle="rgba(255,255,255,.3)";cx.fill();}}
+    // Phase 2 : bille de verre — un spéculaire doux en haut-gauche + un petit éclat net (arcs, pas de dégradé)
+    if(r>5){cx.beginPath();cx.arc(q[0]-r*.28,q[1]-r*.3,r*.36,0,6.283);cx.fillStyle="rgba(255,255,255,.34)";cx.fill();
+      cx.beginPath();cx.arc(q[0]-r*.34,q[1]-r*.36,r*.15,0,6.283);cx.fillStyle="rgba(255,255,255,.7)";cx.fill();}}
     else facette(cx,q,formeA(pos[i],i),r*1.2,COUL[pos[i].c]);}
   // ondes des faces complétées
   if(this.eclats.length)this.eclats=this.eclats.filter(function(ec){var e=(now-ec.t0)/800;if(e>=1)return false;var c=self.vers(ec.xy);
