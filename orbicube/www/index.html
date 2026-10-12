@@ -494,8 +494,8 @@ body{background:
 /* plein écran : la carte remplit tout l'écran (bords + haut), l'en-tête flotte par-dessus avec un dégradé de lisibilité */
 #parcours{top:0;bottom:0;left:0;right:0}
 #parcours .tete{position:absolute;top:0;left:0;right:0;z-index:5;padding-top:env(safe-area-inset-top,0px);background:linear-gradient(180deg,rgba(8,8,14,.92),rgba(8,8,14,.55) 62%,rgba(8,8,14,0))}
-/* fond opaque sous le défilement : à l'overscroll (haut/bas) on voit cette couleur, jamais le fond fixe du jeu */
-#parcoursDefile{position:absolute;inset:0;padding:0;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#06060c}
+/* fond opaque sous le défilement + pas de rebond : on ne scrolle jamais plus haut/bas que la carte */
+#parcoursDefile{position:absolute;inset:0;padding:0;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#06060c;overscroll-behavior:none}
 .chemin{position:relative;width:100%;max-width:none;margin:0 auto;overflow:hidden}
 .chemin .trail{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
 /* transition de monde : un filet lumineux traverse la carte au seuil de chaque monde */
