@@ -20,7 +20,7 @@ Les jeux de CronoBots, un dossier par jeu. Le premier : `orbicube/`.
 | une version publiée | même numéro dans `package.json` et `www/config.js` ; `V` incrémenté dans `www/sw.js` |
 | un texte affiché | sa ligne dans `www/langues.js`, en cinq langues : `npm run tester` signale toute phrase affichée sans traduction |
 | un succès | sa clé dans `www/config.js` > `succesStores` (iOS et Android), sa ligne dans `docs/lancement.md` 3 bis, son image (`npm run icones`) |
-| l'aspect du jeu | `npm run captures` si les captures des stores ne le montrent plus |
+| l'aspect du jeu | **ne pas** régénérer les captures en passant : `npm run captures` et le montage se font seulement quand le client valide **définitivement** le design, et sur sa demande |
 
 Un contrôle qui ne peut pas échouer ne contrôle rien : chaque contrôle du vérificateur a été
 éprouvé en sabotant une copie (marque, clé secrète, police hors cache, pont périmé, pastille à
