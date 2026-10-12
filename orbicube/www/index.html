@@ -488,7 +488,7 @@ body{background:
    Nœuds-planètes le long d'une traînée en pointillés, une section par monde, « vous êtes ici » sur le niveau courant. */
 /* plein écran : la carte remplit tout l'écran (bords + haut), l'en-tête flotte par-dessus avec un dégradé de lisibilité */
 #parcours .tete{position:absolute;top:0;left:0;right:0;z-index:5;background:linear-gradient(180deg,rgba(8,8,14,.9),rgba(8,8,14,.5) 55%,rgba(8,8,14,0))}
-#parcoursDefile{position:absolute;inset:0;padding:0 0 48px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#parcoursDefile{position:absolute;inset:0;padding:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .chemin{position:relative;width:100%;max-width:none;margin:0 auto;overflow:hidden}
 .chemin .trail{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
 .parc-sect{position:absolute;left:50%;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:9px;white-space:nowrap;
@@ -1209,15 +1209,13 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
       pts.push([x,y]);y+=GAP;k++;}
     wreg.push({w:w,acc:acc,y0:y0,y1:y});y+=18;}
   var H=y+20,nodes="",sects="",d="";
-  // FOND IMAGES (pack CC0 Screaming Brain Studios) : une bande de nébuleuse peinte par monde (teintée par
-  // hue-rotate pour les couleurs sans nébuleuse dédiée) ; starfield superposé en "screen" pour la profondeur ;
-  // planètes/orbites/étincelles par-dessus. Chaque bande est masquée aux bords pour fondre entre mondes.
-  var NEB=[["purple",0],["blue",0],["purple",28],["blue",152],["green",0],["green",300]],far="",mid="",near="";
-  wreg.forEach(function(r){var top=H-r.y1,hh=r.y1-r.y0,cyf=H-(r.y0+r.y1)/2,side=r.w%2?1:-1,nb=NEB[r.w%NEB.length];
-    far+='<div class="parc-neb-img" style="top:'+(top-34)+'px;height:'+(hh+68)+'px;background-image:url(img/nebula-'+nb[0]+'.webp);filter:hue-rotate('+nb[1]+'deg)"></div>';
-    mid+='<div class="parc-planete" style="--pa:'+r.acc+';top:'+(cyf+hh*.12)+'px;left:'+(50-side*35)+'%"><i class="pring"></i></div>';
-    mid+='<div class="parc-ring spin" style="--pa:'+r.acc+';top:'+(cyf-hh*.3)+'px;left:'+(50+side*22)+'%"></div>';
-    for(var sp=0;sp<2;sp++)near+='<i class="parc-sparc tw" style="top:'+(H-(r.y0+hh*(sp+.5)/2)).toFixed(0)+'px;left:'+(10+((r.w*53+sp*71)%80))+'%;animation-delay:'+(sp*.5).toFixed(1)+'s"></i>';});
+  // FOND IMAGES (pack CC0 Screaming Brain Studios) UNIQUEMENT : une bande de nébuleuse peinte par monde
+  // (teintée par hue-rotate pour les couleurs sans nébuleuse dédiée) + starfield superposé en "screen".
+  // Bords masqués pour fondre entre mondes ; les bandes extrêmes débordent du cadre pour que le fondu reste
+  // hors écran (sinon du noir apparaît en haut et en bas). Aucun décor ajouté (demande du client).
+  var NEB=[["purple",0],["blue",0],["purple",28],["blue",152],["green",0],["green",300]],far="",mid="",near="",LAST=MONDES.length-1;
+  wreg.forEach(function(r){var nb=NEB[r.w%NEB.length],bt=r.w===LAST?-120:H-r.y1-34,bb=r.w===0?H+120:H-r.y0+34;
+    far+='<div class="parc-neb-img" style="top:'+bt+'px;height:'+(bb-bt)+'px;background-image:url(img/nebula-'+nb[0]+'.webp);filter:hue-rotate('+nb[1]+'deg)"></div>';});
   pts.forEach(function(p,j){d+=(j?"L":"M")+p[0].toFixed(1)+" "+(H-p[1])+" ";});
   items.forEach(function(it){var fy=H-it.y;
     if(it.t==="s"){var pa=mondePaye(it.w);sects+='<div class="parc-sect'+(pa?" paye":"")+'" style="--pa:'+it.acc+';top:'+fy+'px"><b>Monde '+(it.w+1)+'</b><small>'+it.nom+'</small>'+(pa?'<svg class="pscad" viewBox="0 0 24 24">'+CAD+'</svg>':'')+'</div>';}
