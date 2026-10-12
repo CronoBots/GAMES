@@ -841,10 +841,11 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
     if(k===act){halo(cx,ACC,.9,Math.max(2,E*.022));cx.strokeStyle="rgba("+ACC_CLAIR+",.5)";cx.lineWidth=Math.max(2,E*.022);}
     else if(k===ind){var pl=.5+.5*Math.sin(now/220);halo(cx,"255,207,74",.5+.5*pl,Math.max(2.5,E*.03));cx.strokeStyle="rgba(255,207,74,"+(.45+.5*pl)+")";cx.lineWidth=Math.max(2.5,E*.03);}
     else if(!ok){cx.strokeStyle="rgba(70,70,96,.4)";cx.lineWidth=1.2;cx.setLineDash([3,6]);}
-    else if(this.survol&&k===this.survol){var ps=.6+.4*Math.sin(now/320);halo(cx,ACC,.55+.35*ps,Math.max(2.5,E*.032));cx.strokeStyle="rgba("+ACC_CLAIR+","+(.7+.3*ps)+")";cx.lineWidth=Math.max(2.5,E*.028);}
-    else{var go=cx.createLinearGradient(c[0],c[1]-RAY[L+1]*E,c[0],c[1]+RAY[L+1]*E);
-      // orbites : anneaux d'énergie teintés de la couleur du monde, éclairés par le haut (dégradé le long du tracé = profondeur)
-      go.addColorStop(0,"rgba("+ACC_CLAIR+",.72)");go.addColorStop(.5,"rgba("+ACC+",.5)");go.addColorStop(1,"rgba("+ACC+",.34)");cx.strokeStyle=go;cx.lineWidth=this.permis?2.2:2;}
+    else if(this.survol&&k===this.survol){var ps=.6+.4*Math.sin(now/320);halo(cx,ACC,.8+.2*ps,Math.max(3,E*.04));cx.strokeStyle="rgba(255,255,255,"+(.75+.25*ps)+")";cx.lineWidth=Math.max(3,E*.032);}
+    else{
+      // vraies orbites : un anneau lumineux uniforme (halo translucide + trait net), même éclat tout
+      // autour — pas de dégradé qui assombrissait le bas des cercles
+      halo(cx,ACC,.45,Math.max(1.8,E*.02));cx.strokeStyle="rgba("+ACC_CLAIR+",.5)";cx.lineWidth=this.permis?1.8:1.6;}
     cx.stroke();
     if(vg>=0){var dk=(vg-ordre*75)/450;if(dk>0&&dk<1){cx.beginPath();cx.arc(c[0],c[1],RAY[L+1]*E,0,Math.PI*2);cx.setLineDash([]);
       halo(cx,ACC,Math.sin(dk*Math.PI),Math.max(3,E*.045));cx.strokeStyle="rgba("+ACC_CLAIR+","+Math.sin(dk*Math.PI)+")";cx.lineWidth=Math.max(3,E*.045);cx.stroke();}}
@@ -1433,7 +1434,10 @@ function lacher(){if(!G)return;var g=G;G=null;
 function finirGeste(g,net){var n=((net%4)+4)%4;if(!J||J.fini)return;if(!n){majJeu();return;}
   var mv={a:g.choisi.a,L:g.choisi.L,q:n===3?-1:1};if(n===2)mv.d=2;apresCoup(mv);}
 cvJ.addEventListener("pointerup",lacher);cvJ.addEventListener("pointercancel",lacher);
-cvJ.addEventListener("pointerleave",function(){if(!G&&JeuP.survol){JeuP.survol=null;JeuP.dessiner();}});
+// souris seulement : quitter le plateau efface le survol. Au tactile, lever le doigt déclenche aussi
+// pointerleave — on ne doit PAS effacer alors, sinon la sélection ne tient jamais (le cercle reste
+// sélectionné jusqu'à un appui ailleurs, demandé par le client).
+cvJ.addEventListener("pointerleave",function(e){if(e.pointerType==="mouse"&&!G&&JeuP.survol){JeuP.survol=null;JeuP.dessiner();}});
 cvJ.addEventListener("contextmenu",function(e){e.preventDefault();});
 
 document.getElementById("btnPause").addEventListener("click",function(){sonClic();pause();});
