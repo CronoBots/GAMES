@@ -711,11 +711,6 @@ var APPARENCES={classique:0,contraste:0,pastel:45,neon:45},APP_TEMPS={neon:true}
 // Pastel se gagne avec les étoiles de coups, Néon avec les étoiles de temps
 function apparenceOuverte(v){return(APP_TEMPS[v]?etoilesChrono():etoilesTotal())>=(APPARENCES[v]||0);}
 var COUL=PALETTES.classique;
-// Teinte sombre de chaque couleur (pour le volume des pièces : un bas assombri DANS la teinte, pas du noir qui ternit)
-function hexRGB(h){h=h.replace("#","");return[parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];}
-var COUL_SOMBRE=[];
-function majCoulSombre(){COUL_SOMBRE=COUL.map(function(c){var r=hexRGB(c);return Math.round(r[0]*.42)+","+Math.round(r[1]*.42)+","+Math.round(r[2]*.42);});}
-majCoulSombre();
 function faceDe(n){return n[0]>0?0:n[0]<0?1:n[1]>0?2:n[1]<0?3:n[2]>0?4:5;}
 var S=[],CLE={};
 for(var x=-1;x<=1;x++)for(var y=-1;y<=1;y++)for(var z=-1;z<=1;z++){var p=[x,y,z];
@@ -815,18 +810,17 @@ function formeA(p,i){if(!p.m)return FORME[i];
   var auF=A0[0]+p.rotF,c1=auF+demi(A1[0]-auF),c2=auF+demi(A1[0]+A1[1]-auF),ch1=Math.abs(c1-auF)+Math.abs(A1[1]-d0),ch2=Math.abs(c2-auF)+Math.abs(Math.PI-A1[1]-d0);
   var au1=ch1<=ch2?c1:c2,d1=ch1<=ch2?A1[1]:Math.PI-A1[1],e=p.t,au=au0+(au1-auF)*e,d=d0+(d1-d0)*e;
   return{u:[Math.cos(au),Math.sin(au)],v:[Math.cos(au+d),Math.sin(au+d)]};}
-function facette(cx,q,f,h,coul,sombre){var U=[f.u[0]*h,-f.u[1]*h],V=[f.v[0]*h,-f.v[1]*h],P=[[1,1],[1,-1],[-1,-1],[-1,1]].map(function(k){return[q[0]+k[0]*U[0]+k[1]*V[0],q[1]+k[0]*U[1]+k[1]*V[1]];});
-  // coins arrondis par des courbes posées sur les côtés eux-mêmes : rien ne peut sortir du losange
-  var k=.24;cx.beginPath();for(var n=0;n<4;n++){var A=P[(n+3)%4],B=P[n],C=P[(n+1)%4],a1=[B[0]+(A[0]-B[0])*k,B[1]+(A[1]-B[1])*k],c1=[B[0]+(C[0]-B[0])*k,B[1]+(C[1]-B[1])*k];
-    if(!n)cx.moveTo(a1[0],a1[1]);else cx.lineTo(a1[0],a1[1]);cx.quadraticCurveTo(B[0],B[1],c1[0],c1[1]);}cx.closePath();
-  cx.fillStyle=coul;cx.fill();cx.lineWidth=Math.max(1,h*.16);cx.strokeStyle="rgba(0,0,0,.5)";cx.stroke();
-  // Phase 2 : facette « verre » comme les cubes du logo — sheen diagonal plus net, biseau clair sur le bord
-  // haut-gauche, point spéculaire sur le coin du haut. Pas de dégradé radial (coût) : le point est un arc.
-  if(h>4){var hi=P.reduce(function(m,p){return p[1]<m[1]?p:m;}),g=cx.createLinearGradient(hi[0],hi[1],q[0]+(q[0]-hi[0])*.6,q[1]+(q[1]-hi[1])*.6);
-    // pass joaillerie : spéculaire net en haut, et bas assombri DANS la teinte de la pièce (volume « joyau », pas de noir qui ternit)
-    g.addColorStop(0,"rgba(255,255,255,.46)");g.addColorStop(.40,"rgba(255,255,255,0)");g.addColorStop(1,"rgba("+(sombre||"0,0,0")+",.6)");cx.fillStyle=g;cx.fill();
-    cx.lineWidth=Math.max(.8,h*.07);cx.strokeStyle="rgba(255,255,255,.2)";cx.stroke();
-    cx.beginPath();cx.arc(q[0]+(hi[0]-q[0])*.52,q[1]+(hi[1]-q[1])*.52,h*.26,0,6.283);cx.fillStyle="rgba(255,255,255,.42)";cx.fill();}}
+function facette(cx,q,f,h,coul){var U=[f.u[0]*h,-f.u[1]*h],V=[f.v[0]*h,-f.v[1]*h];
+  // Style « cube de compétition », identique au mini-cube : autocollant coloré encastré sur un corps noir
+  // (le liseré entre les pièces), coins arrondis par des courbes posées sur les côtés (robuste même très aigu).
+  function tracer(s){var k=.24,P=[[1,1],[1,-1],[-1,-1],[-1,1]].map(function(m){return[q[0]+(m[0]*U[0]+m[1]*V[0])*s,q[1]+(m[0]*U[1]+m[1]*V[1])*s];});
+    cx.beginPath();for(var n=0;n<4;n++){var A=P[(n+3)%4],B=P[n],C=P[(n+1)%4],a1=[B[0]+(A[0]-B[0])*k,B[1]+(A[1]-B[1])*k],c1=[B[0]+(C[0]-B[0])*k,B[1]+(C[1]-B[1])*k];
+      if(!n)cx.moveTo(a1[0],a1[1]);else cx.lineTo(a1[0],a1[1]);cx.quadraticCurveTo(B[0],B[1],c1[0],c1[1]);}cx.closePath();return P;}
+  tracer(1);cx.fillStyle="#0b0b0e";cx.fill();cx.lineWidth=Math.max(1,h*.14);cx.strokeStyle="#0b0b0e";cx.lineJoin="round";cx.stroke();
+  var sp=tracer(.84);cx.fillStyle=coul;cx.fill();
+  // reflet exact du cube : coin à coin, blanc en haut puis léger noir en bas
+  if(h>4){var g=cx.createLinearGradient(sp[0][0],sp[0][1],sp[2][0],sp[2][1]);
+    g.addColorStop(0,"rgba(255,255,255,.28)");g.addColorStop(.45,"rgba(255,255,255,0)");g.addColorStop(1,"rgba(0,0,0,.14)");cx.fillStyle=g;cx.fill();}}
 Plateau.prototype.positions=function(){return this.positionsA(this.anim?this.anim.t:0);};
 Plateau.prototype.permisA=function(k){return !this.permis||!!this.permis[k];};
 Plateau.prototype.vivant=function(now){if(this.anim||this.indice||this.continu||this.eclats.length)return true;
@@ -885,7 +879,7 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
     // Phase 2 : bille de verre — un spéculaire doux en haut-gauche + un petit éclat net (arcs, pas de dégradé)
     if(r>5){cx.beginPath();cx.arc(q[0]-r*.28,q[1]-r*.3,r*.36,0,6.283);cx.fillStyle="rgba(255,255,255,.34)";cx.fill();
       cx.beginPath();cx.arc(q[0]-r*.34,q[1]-r*.36,r*.15,0,6.283);cx.fillStyle="rgba(255,255,255,.7)";cx.fill();}}
-    else facette(cx,q,formeA(pos[i],i),r*1.2,COUL[pos[i].c],COUL_SOMBRE[pos[i].c]);}
+    else facette(cx,q,formeA(pos[i],i),r*1.2,COUL[pos[i].c]);}
   // ondes des faces complétées
   if(this.eclats.length)this.eclats=this.eclats.filter(function(ec){var e=(now-ec.t0)/800;if(e>=1)return false;var c=self.vers(ec.xy);
     cx.save();cx.beginPath();cx.arc(c[0],c[1],rp*2+E*.42*ease(e),0,Math.PI*2);cx.strokeStyle=COUL[ec.c];cx.globalAlpha=1-e;
@@ -1524,7 +1518,7 @@ function rafraichirSucces(){document.getElementById("sucCompte").textContent=Obj
     return '<div class="suc'+(ok?" ok":"")+'"><div class="med"><svg viewBox="0 0 24 24">'+(ok?'<path d="M5 12.5l4.5 4.5L19 7.5"/>':'<rect x="6" y="11" width="12" height="9" rx="2"/><path d="M9 11V8.5a3 3 0 0 1 6 0V11"/>')+'</svg></div><div><b>'+s.nom+'</b><span>'+s.desc+'</span></div></div>';}).join("");}
 
 /* ========== 14. OPTIONS ========== */
-function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)&&PALETTES[o.palette])||PALETTES.classique;majCoulSombre();
+function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)&&PALETTES[o.palette])||PALETTES.classique;
   // « Animations » décoché = calme forcé, en plus du réglage système prefers-reduced-motion
   CALME=!!((window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)||o.anims===false);
   document.body.classList.toggle("sobre",o.anims===false);
