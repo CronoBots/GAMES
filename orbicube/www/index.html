@@ -486,16 +486,19 @@ body{background:
 #chargement svg{filter:drop-shadow(0 0 9px rgba(165,139,255,.45)) drop-shadow(0 0 16px rgba(76,201,240,.22))}
 /* ===== Parcours de campagne : carte verticale scrollable façon Candy Crush, dans le thème orbital.
    Nœuds-planètes le long d'une traînée en pointillés, une section par monde, « vous êtes ici » sur le niveau courant. */
-#parcoursDefile{padding:0 14px 48px}
-.chemin{position:relative;width:100%;max-width:520px;margin:0 auto;overflow:hidden}
+/* plein écran : la carte remplit tout l'écran (bords + haut), l'en-tête flotte par-dessus avec un dégradé de lisibilité */
+#parcours .tete{position:absolute;top:0;left:0;right:0;z-index:5;background:linear-gradient(180deg,rgba(8,8,14,.9),rgba(8,8,14,.5) 55%,rgba(8,8,14,0))}
+#parcoursDefile{position:absolute;inset:0;padding:0 0 48px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.chemin{position:relative;width:100%;max-width:none;margin:0 auto;overflow:hidden}
 .chemin .trail{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
 .parc-sect{position:absolute;left:50%;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:9px;white-space:nowrap;
   padding:7px 16px;border-radius:999px;border:1px solid rgba(var(--pa),.45);background:linear-gradient(180deg,rgba(var(--pa),.18),rgba(var(--pa),.04)),rgba(12,12,20,.82);
   font-family:var(--f-titre);font-weight:700;font-size:13px;letter-spacing:.03em;color:#fff;z-index:3;box-shadow:0 10px 26px -14px rgba(0,0,0,.95)}
 .parc-sect small{font-family:var(--f-chiffre);font-weight:500;font-size:10.5px;color:rgba(255,255,255,.62);letter-spacing:.12em;text-transform:uppercase}
-.parc-niv{position:absolute;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;z-index:1;cursor:pointer;padding:0;
+.parc-niv{position:absolute;transform:translate(-50%,-50%) scale(.66);opacity:0;width:56px;height:56px;border-radius:50%;z-index:1;cursor:pointer;padding:0;
   display:grid;place-items:center;border:1px solid rgba(255,255,255,.14);background:var(--verre),rgba(14,14,24,.72);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 10px 24px -14px rgba(0,0,0,.9);transition:transform .12s}
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 10px 24px -14px rgba(0,0,0,.9);transition:transform .38s var(--ease),opacity .45s ease}
+.parc-niv.vu{transform:translate(-50%,-50%) scale(1);opacity:1}
 .parc-niv:not(.verrou):active{transform:translate(-50%,-50%) scale(.92)}
 .parc-niv b{font-family:var(--f-titre);font-weight:800;font-size:19px;color:#fff;line-height:1}
 .parc-niv .pet{display:flex;gap:1px;position:absolute;bottom:-8px;background:rgba(9,9,16,.9);border-radius:999px;padding:1.5px 4px;box-shadow:0 2px 6px rgba(0,0,0,.6)}
@@ -1224,12 +1227,21 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
     +'<div class="parc-layer far">'+far+'</div><div class="parc-layer mid">'+mid+'</div>'
     +'<svg class="trail" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" preserveAspectRatio="none"><path d="'+d+'" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 11"/></svg>'
     +sects+nodes+'<div class="parc-layer near">'+near+'</div>';
-  parcParallax();}
-// parallaxe : les couches bougent à des vitesses différentes du contenu quand on scrolle la carte
-var parcRaf=0;function parcParallax(){var pd=document.getElementById("parcoursDefile");if(!pd)return;var s=pd.scrollTop,
-  f=pd.querySelector(".parc-layer.far"),m=pd.querySelector(".parc-layer.mid"),n=pd.querySelector(".parc-layer.near"),fo=pd.querySelector(".parc-fond");
-  if(f)f.style.transform="translateY("+(s*.22).toFixed(1)+"px)";if(m)m.style.transform="translateY("+(s*.1).toFixed(1)+"px)";
-  if(n)n.style.transform="translateY("+(-s*.12).toFixed(1)+"px)";}
+  parcPx={f:0,m:0,n:0};parcRevele(ch);parcParallax();}
+// parallaxe lissée : les couches suivent le scroll avec une légère inertie (easing), à des vitesses différentes
+var parcPx={f:0,m:0,n:0},parcAnim=0;
+function parcParallax(){var pd=document.getElementById("parcoursDefile");if(!pd)return;
+  var s=pd.scrollTop,tf=CALME?s*.1:s*.36,tm=CALME?s*.05:s*.17,tn=CALME?0:-s*.17,e=CALME?1:.16;
+  parcPx.f+=(tf-parcPx.f)*e;parcPx.m+=(tm-parcPx.m)*e;parcPx.n+=(tn-parcPx.n)*e;
+  var f=pd.querySelector(".parc-layer.far"),m=pd.querySelector(".parc-layer.mid"),n=pd.querySelector(".parc-layer.near");
+  if(f)f.style.transform="translateY("+parcPx.f.toFixed(1)+"px)";if(m)m.style.transform="translateY("+parcPx.m.toFixed(1)+"px)";if(n)n.style.transform="translateY("+parcPx.n.toFixed(1)+"px)";
+  parcAnim=(Math.abs(tf-parcPx.f)>.4||Math.abs(tn-parcPx.n)>.4)?requestAnimationFrame(parcParallax):0;}
+// révélation : les nœuds apparaissent (fondu + pop) quand ils entrent dans la fenêtre pendant qu'on monte
+var parcIO=null;function parcRevele(ch){var root=document.getElementById("parcoursDefile");
+  if(CALME||!("IntersectionObserver" in window)){[].forEach.call(ch.querySelectorAll(".parc-niv"),function(n){n.classList.add("vu");});return;}
+  if(parcIO)parcIO.disconnect();
+  parcIO=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add("vu");parcIO.unobserve(en.target);}});},{root:root,rootMargin:"60px 0px"});
+  [].forEach.call(ch.querySelectorAll(".parc-niv"),function(n){parcIO.observe(n);});}
 function ouvrirParcours(){accent(null);montrer("parcours");requestAnimationFrame(function(){buildParcours();
   var c=document.querySelector(".parc-niv.courant")||document.querySelector(".parc-niv:not(.verrou)"),dd=document.getElementById("parcoursDefile");
   if(c&&dd)dd.scrollTop=Math.max(0,c.offsetTop-dd.clientHeight*.55);});}
@@ -1238,7 +1250,7 @@ document.getElementById("chemin").addEventListener("click",function(e){
   var b=e.target.closest(".parc-niv");if(!b)return;
   if(b.classList.contains("paye")){sonClic();ouvrirBoutique("monde");return;}
   if(b.classList.contains("verrou")){vibrer(20);return;}sonClic();lancer(niveauDef(+b.dataset.w,+b.dataset.i));});
-document.getElementById("parcoursDefile").addEventListener("scroll",function(){if(parcRaf)return;parcRaf=requestAnimationFrame(function(){parcRaf=0;parcParallax();});},{passive:true});
+document.getElementById("parcoursDefile").addEventListener("scroll",function(){if(!parcAnim)parcParallax();},{passive:true});
 function rafraichirMondes(){document.getElementById("mondesEt").textContent=etoilesTotal();document.getElementById("mondesEtT").textContent=etoilesChrono();var l=document.getElementById("listeMondes");l.innerHTML="";
   MONDES.forEach(function(M,w){var ouvert=mondeOuvert(w),et=etoilesMonde(w),max=M.coups.length*3,b=document.createElement("button");b.type="button";b.className="monde"+(ouvert?"":" verrou")+(mondePaye(w)?" paye":"");b.style.setProperty("--acc",ACCENTS[w]);
     b.innerHTML='<canvas></canvas><div><div class="num">Monde '+(w+1)+'</div><h3>'+M.nom+'</h3><p>'+(ouvert?M.desc:mondePaye(w)?"Inclus dans le jeu complet.":"Terminez le monde "+w+" pour l’ouvrir.")+'</p><div class="barre"><i style="width:'+(et/max*100)+'%"></i></div><div class="compte"><span>'+et+' / '+max+' ★</span><span>'+M.anneaux.join(" ")+'</span></div></div>'+(ouvert?"":'<svg class="cadenas" viewBox="0 0 24 24">'+CAD+'</svg>');
