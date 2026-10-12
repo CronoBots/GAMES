@@ -823,7 +823,7 @@ function facette(cx,q,f,h,coul){var U=[f.u[0]*h,-f.u[1]*h],V=[f.v[0]*h,-f.v[1]*h
     g.addColorStop(0,"rgba(255,255,255,.28)");g.addColorStop(.45,"rgba(255,255,255,0)");g.addColorStop(1,"rgba(0,0,0,.14)");cx.fillStyle=g;cx.fill();}}
 Plateau.prototype.positions=function(){return this.positionsA(this.anim?this.anim.t:0);};
 Plateau.prototype.permisA=function(k){return !this.permis||!!this.permis[k];};
-Plateau.prototype.vivant=function(now){if(this.anim||this.indice||this.continu||this.eclats.length)return true;
+Plateau.prototype.vivant=function(now){if(this.anim||this.indice||this.continu||this.eclats.length||this.survol)return true;
   if(this.vague&&now-this.vague<1700)return true;for(var k in this.pops)if(now-this.pops[k]<300)return true;return false;};
 // arrivée d'un tour : les pastilles posées rebondissent, une face qui devient unie lance une onde
 Plateau.prototype.arrivee=function(mv,avant){var now=performance.now(),m=perm(mv.a,mv.L,mv.q);for(var k in m)this.pops[m[k]]=now;
@@ -841,10 +841,10 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
     if(k===act){halo(cx,ACC,.9,Math.max(2,E*.022));cx.strokeStyle="rgba("+ACC_CLAIR+",.5)";cx.lineWidth=Math.max(2,E*.022);}
     else if(k===ind){var pl=.5+.5*Math.sin(now/220);halo(cx,"255,207,74",.5+.5*pl,Math.max(2.5,E*.03));cx.strokeStyle="rgba(255,207,74,"+(.45+.5*pl)+")";cx.lineWidth=Math.max(2.5,E*.03);}
     else if(!ok){cx.strokeStyle="rgba(70,70,96,.4)";cx.lineWidth=1.2;cx.setLineDash([3,6]);}
-    else if(this.survol&&k===this.survol){cx.strokeStyle="rgba("+ACC+",.9)";cx.lineWidth=Math.max(2,E*.024);}
+    else if(this.survol&&k===this.survol){var ps=.6+.4*Math.sin(now/320);halo(cx,ACC,.55+.35*ps,Math.max(2.5,E*.032));cx.strokeStyle="rgba("+ACC_CLAIR+","+(.7+.3*ps)+")";cx.lineWidth=Math.max(2.5,E*.028);}
     else{var go=cx.createLinearGradient(c[0],c[1]-RAY[L+1]*E,c[0],c[1]+RAY[L+1]*E);
-      // orbites lisibles : un anneau éclairé par le haut (dégradé le long du tracé) — vraie profondeur, même quand tous les cercles sont permis
-      go.addColorStop(0,"rgba(152,148,205,.85)");go.addColorStop(.5,"rgba(110,106,162,.6)");go.addColorStop(1,"rgba(58,56,88,.5)");cx.strokeStyle=go;cx.lineWidth=this.permis?2.1:2;}
+      // orbites : anneaux d'énergie teintés de la couleur du monde, éclairés par le haut (dégradé le long du tracé = profondeur)
+      go.addColorStop(0,"rgba("+ACC_CLAIR+",.62)");go.addColorStop(.5,"rgba("+ACC+",.34)");go.addColorStop(1,"rgba(44,44,68,.45)");cx.strokeStyle=go;cx.lineWidth=this.permis?2.2:2;}
     cx.stroke();
     if(vg>=0){var dk=(vg-ordre*75)/450;if(dk>0&&dk<1){cx.beginPath();cx.arc(c[0],c[1],RAY[L+1]*E,0,Math.PI*2);cx.setLineDash([]);
       halo(cx,ACC,Math.sin(dk*Math.PI),Math.max(3,E*.045));cx.strokeStyle="rgba("+ACC_CLAIR+","+Math.sin(dk*Math.PI)+")";cx.lineWidth=Math.max(3,E*.045);cx.stroke();}}
@@ -1392,10 +1392,12 @@ document.getElementById("bulleOk").addEventListener("click",function(){sonClic()
 // Gestes sur le plateau : le doigt choisit le cercle qui suit son mouvement
 var cvJ=document.getElementById("plateau"),G=null;
 function pt(e){var r=cvJ.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top];}
-cvJ.addEventListener("pointerdown",function(e){if(!J||!J.pret||J.fini||JeuP.occupe()||e.button===2)return;if(!J.t0){J.t0=performance.now();majTemps();}var p=pt(e),cand=JeuP.anneauxSous(p[0],p[1]);if(!cand.length)return;
+cvJ.addEventListener("pointerdown",function(e){if(!J||!J.pret||J.fini||JeuP.occupe()||e.button===2)return;if(!J.t0){J.t0=performance.now();majTemps();}var p=pt(e),cand=JeuP.anneauxSous(p[0],p[1]);
+  // appui en dehors de tout cercle : on désélectionne le cercle en surbrillance (demandé par le client)
+  if(!cand.length){if(JeuP.survol){JeuP.survol=null;JeuP.dessiner();}return;}
   e.preventDefault();try{cvJ.setPointerCapture(e.pointerId);}catch(er){}G={p0:p,cand:cand,choisi:null,der:0,cumul:0,trace:[],cran:false,net:0};JeuP.survol=cleA(cand[0]);audio();Ticker.reveiller();});
 cvJ.addEventListener("pointermove",function(e){var p=pt(e);
-  if(!G){if(e.pointerType==="mouse"&&J&&J.pret&&!JeuP.occupe()){var c=JeuP.anneauxSous(p[0],p[1]),k=c.length?cleA(c[0]):null;if(k!==JeuP.survol){JeuP.survol=k;cvJ.style.cursor=k?"grab":"default";JeuP.dessiner();}}return;}
+  if(!G){if(e.pointerType==="mouse"&&J&&J.pret&&!JeuP.occupe()){var c=JeuP.anneauxSous(p[0],p[1]),k=c.length?cleA(c[0]):null;if(k!==JeuP.survol){JeuP.survol=k;cvJ.style.cursor=k?"grab":"default";JeuP.dessiner();if(k)Ticker.reveiller();}}return;}
   var dx=p[0]-G.p0[0],dy=p[1]-G.p0[1];
   if(!G.choisi){if(Math.hypot(dx,dy)<8)return;var m0=JeuP.depuis(G.p0[0],G.p0[1]),best=null,bs=-1;
     G.cand.forEach(function(c){var ce=CEN[c.a],rx=m0[0]-ce[0],ry=m0[1]-ce[1],rl=Math.hypot(rx,ry),tx=-ry/rl,ty=rx/rl,sc=Math.abs(tx*dx-ty*dy)/Math.hypot(dx,dy)-c.d*.01;
@@ -1414,9 +1416,11 @@ cvJ.addEventListener("pointermove",function(e){var p=pt(e);
   // un léger clic chaque fois que les pastilles franchissent un cran (trois crans par quart de tour), comme un vrai cube
   var tiers=Math.floor(Math.abs(prog)*3+1e-6);if(tiers!==G.tiers){if(G.tiers!==undefined&&tiers>0&&tiers<3){vibrer(3);bip(700+tiers*90,.018,"sine",.018);}G.tiers=tiers;}
   JeuP.anim={mv:{a:G.choisi.a,L:G.choisi.L,q:q},t:Math.abs(prog),libre:true};JeuP.indice=null;JeuP.dessiner();dessinerMini();});
-function lacher(){if(!G)return;var g=G;G=null;JeuP.survol=null;
-  // un simple appui ne tourne rien (le client, le 11/10/2026) : le sens se choisit en glissant
-  if(!g.choisi)return;
+function lacher(){if(!G)return;var g=G;G=null;
+  // un simple appui ne tourne rien (le client, le 11/10/2026) : le sens se choisit en glissant.
+  // Le cercle touché reste sélectionné (surbrillance) ; un appui ailleurs le désélectionne.
+  if(!g.choisi){JeuP.dessiner();Ticker.reveiller();return;}
+  JeuP.survol=null;
   var an=JeuP.anim;if(!an||!an.libre){finirGeste(g,g.net);Ticker.reveiller();return;}
   // vitesse du doigt sur les 110 dernières ms, en quarts de tour par seconde, dans le sens du tour en cours
   var tr=g.trace,v=0;if(tr.length>1){var dt=tr[tr.length-1][0]-tr[0][0];if(dt>0)v=(tr[tr.length-1][1]-tr[0][1])/dt*1000/PAS[g.choisi.a][g.choisi.L+1];}
