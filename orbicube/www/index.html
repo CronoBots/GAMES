@@ -530,12 +530,11 @@ body{background:
 .parc-layer{position:absolute;inset:0;z-index:0;pointer-events:none;will-change:transform}
 .parc-layer.near{z-index:2}
 /* fond-images (pack CC0) : bande de nébuleuse peinte par monde + starfield superposé en screen */
-.parc-bg{position:absolute;left:-3%;right:-3%;z-index:0;background-size:cover;background-position:center;background-repeat:no-repeat;
-  -webkit-mask-image:linear-gradient(to bottom,transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 9%,#000 91%,transparent)}
-.parc-planets{position:absolute;left:-3%;right:-3%;z-index:0;background-size:100% auto;background-position:center;background-repeat:no-repeat;
-  -webkit-mask-image:linear-gradient(to bottom,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 14%,#000 86%,transparent)}
-.parc-layer.stars{z-index:0;background:url(img/stars.webp) repeat-y;background-size:100% auto}
-.parc-layer.near{background:url(img/meteors.webp) repeat-y;background-size:100% auto}
+/* chaque monde a ses 4 couches (BG/Planets/Stars/Meteors), bandes transparentes masquées aux bords ;
+   chacune translate à sa propre vitesse (parallaxe par bande) */
+.parc-bg,.parc-planets,.parc-starsb,.parc-meteorsb{position:absolute;left:-3%;right:-3%;z-index:0;will-change:transform;
+  background-size:cover;background-position:center;background-repeat:no-repeat;
+  -webkit-mask-image:linear-gradient(to bottom,transparent,#000 10%,#000 90%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 10%,#000 90%,transparent)}
 .parc-neb{position:absolute;transform:translate(-50%,-50%);max-width:94vw;border-radius:50%;pointer-events:none;
   background:radial-gradient(closest-side,rgba(var(--pa),.24),rgba(var(--pa),.07) 54%,rgba(var(--pa),0) 75%)}
 .parc-planete{position:absolute;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;pointer-events:none;opacity:.6;
@@ -1205,10 +1204,13 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
   // FONDS CRAFTPIX (Space Vertical Game Backgrounds, 4 thèmes cyclés par monde), en COUCHES parallaxe :
   // BG (nébuleuse, lointain) + Planets (milieu) par monde ; Stars et Meteors tuilés en global (premier plan).
   // Bords des bandes masqués pour fondre entre mondes ; bandes extrêmes débordant du cadre (plus de noir).
-  var far="",mid="",near="",LAST=MONDES.length-1;
-  wreg.forEach(function(r){var t=(r.w%4)+1,bt=r.w===LAST?-140:H-r.y1-34,bb=r.w===0?H+140:H-r.y0+34,hh=bb-bt;
-    far+='<div class="parc-bg" style="top:'+bt+'px;height:'+hh+'px;background-image:url(img/bg-'+t+'.webp)"></div>';
-    mid+='<div class="parc-planets" style="top:'+bt+'px;height:'+hh+'px;background-image:url(img/planets-'+t+'.webp)"></div>';});
+  var lbg="",lpl="",lst="",lme="",LAST=MONDES.length-1;
+  wreg.forEach(function(r){var t=(r.w%4)+1,bt=r.w===LAST?-160:H-r.y1-40,bb=r.w===0?H+160:H-r.y0+40,hh=bb-bt,cy=(H-(r.y0+r.y1)/2).toFixed(0),
+    st='" data-cy="'+cy+'" style="top:'+bt+'px;height:'+hh+'px;background-image:url(img/';
+    lbg+='<div class="parc-bg'+st+'bg-'+t+'.webp)"></div>';
+    lpl+='<div class="parc-planets'+st+'planets-'+t+'.webp)"></div>';
+    lst+='<div class="parc-starsb'+st+'stars-'+t+'.webp)"></div>';
+    lme+='<div class="parc-meteorsb'+st+'meteors-'+t+'.webp)"></div>';});
   pts.forEach(function(p,j){d+=(j?"L":"M")+p[0].toFixed(1)+" "+(H-p[1])+" ";});
   items.forEach(function(it){var fy=H-it.y;
     if(it.t==="s"){var pa=mondePaye(it.w),etM=etoilesMonde(it.w),maxM=MONDES[it.w].coups.length*3;
@@ -1221,18 +1223,18 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
       nodes+='<button type="button" class="'+cls+'" style="--pa:'+it.acc+';left:'+it.x.toFixed(1)+'px;top:'+fy+'px" data-w="'+it.w+'" data-i="'+it.i+'" aria-label="Monde '+(it.w+1)+' Niveau '+(it.i+1)+'">'+inner+'</button>';}});
   ch.style.height=H+"px";
   ch.innerHTML='<div class="parc-fond"></div>'
-    +'<div class="parc-layer far">'+far+'</div><div class="parc-layer stars"></div><div class="parc-layer mid">'+mid+'</div>'
+    +'<div class="parc-layer l-bg">'+lbg+'</div><div class="parc-layer l-planets">'+lpl+'</div>'
+    +'<div class="parc-layer l-stars">'+lst+'</div><div class="parc-layer l-meteors">'+lme+'</div>'
     +'<svg class="trail" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" preserveAspectRatio="none"><path d="'+d+'" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 11"/></svg>'
-    +sects+nodes+'<div class="parc-layer near">'+near+'</div>';
-  parcPx={f:0,st:0,m:0,n:0};parcRevele(ch);parcParallax();}
-// parallaxe lissée : les couches suivent le scroll avec une légère inertie (easing), à des vitesses différentes
-var parcPx={f:0,st:0,m:0,n:0},parcAnim=0;
-function parcParallax(){var pd=document.getElementById("parcoursDefile");if(!pd)return;
-  var s=pd.scrollTop,tf=CALME?0:s*.03,tst=CALME?0:-s*.12,tm=CALME?0:s*.03,tn=CALME?0:-s*.28,e=CALME?1:.16;
-  parcPx.f+=(tf-parcPx.f)*e;parcPx.st+=(tst-parcPx.st)*e;parcPx.m+=(tm-parcPx.m)*e;parcPx.n+=(tn-parcPx.n)*e;
-  var f=pd.querySelector(".parc-layer.far"),st=pd.querySelector(".parc-layer.stars"),m=pd.querySelector(".parc-layer.mid"),n=pd.querySelector(".parc-layer.near");
-  if(f)f.style.transform="translateY("+parcPx.f.toFixed(1)+"px)";if(st)st.style.transform="translateY("+parcPx.st.toFixed(1)+"px)";if(m)m.style.transform="translateY("+parcPx.m.toFixed(1)+"px)";if(n)n.style.transform="translateY("+parcPx.n.toFixed(1)+"px)";
-  parcAnim=(Math.abs(tf-parcPx.f)>.4||Math.abs(tn-parcPx.n)>.4)?requestAnimationFrame(parcParallax):0;}
+    +sects+nodes;
+  parcRevele(ch);parcParallax();}
+// parallaxe PAR BANDE : chaque bande (BG/Planets/Stars/Meteors de son monde) se décale selon sa distance au
+// centre de la fenêtre × la vitesse de sa couche. Centrée => décalage 0 (position native du monde) ; le décalage
+// est borné (±vh/2×vitesse) donc la bande reste dans son monde — 4 vitesses = 4 profondeurs, sans dérive.
+var parcRaf=0;
+function parcParallax(){var pd=document.getElementById("parcoursDefile");if(!pd)return;var sc=pd.scrollTop+pd.clientHeight/2,C=CALME;
+  function co(sel,sp){[].forEach.call(pd.querySelectorAll(sel),function(el){el.style.transform=C?"":"translateY("+((el._cy||(el._cy=+el.dataset.cy))-sc)*sp+"px)";});}
+  co(".parc-bg",C?0:-.18);co(".parc-planets",C?0:-.09);co(".parc-starsb",C?0:-.02);co(".parc-meteorsb",C?0:.09);}
 // révélation : les nœuds apparaissent (fondu + pop) quand ils entrent dans la fenêtre pendant qu'on monte
 var parcIO=null;function parcRevele(ch){var root=document.getElementById("parcoursDefile");
   if(CALME||!("IntersectionObserver" in window)){[].forEach.call(ch.querySelectorAll(".parc-niv"),function(n){n.classList.add("vu");});return;}
@@ -1247,7 +1249,7 @@ document.getElementById("chemin").addEventListener("click",function(e){
   var b=e.target.closest(".parc-niv");if(!b)return;
   if(b.classList.contains("paye")){sonClic();ouvrirBoutique("monde");return;}
   if(b.classList.contains("verrou")){vibrer(20);return;}sonClic();lancer(niveauDef(+b.dataset.w,+b.dataset.i));});
-document.getElementById("parcoursDefile").addEventListener("scroll",function(){if(!parcAnim)parcParallax();},{passive:true});
+document.getElementById("parcoursDefile").addEventListener("scroll",function(){if(parcRaf)return;parcRaf=requestAnimationFrame(function(){parcRaf=0;parcParallax();});},{passive:true});
 // (ancien écran de sélection #mondes/#niveaux retiré : la carte de campagne #parcours le remplace)
 
 /* ========== 11. LA PARTIE ========== */
