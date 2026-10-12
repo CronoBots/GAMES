@@ -711,6 +711,11 @@ var APPARENCES={classique:0,contraste:0,pastel:45,neon:45},APP_TEMPS={neon:true}
 // Pastel se gagne avec les étoiles de coups, Néon avec les étoiles de temps
 function apparenceOuverte(v){return(APP_TEMPS[v]?etoilesChrono():etoilesTotal())>=(APPARENCES[v]||0);}
 var COUL=PALETTES.classique;
+// Teinte sombre de chaque couleur (pour le volume des pièces : un bas assombri DANS la teinte, pas du noir qui ternit)
+function hexRGB(h){h=h.replace("#","");return[parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];}
+var COUL_SOMBRE=[];
+function majCoulSombre(){COUL_SOMBRE=COUL.map(function(c){var r=hexRGB(c);return Math.round(r[0]*.42)+","+Math.round(r[1]*.42)+","+Math.round(r[2]*.42);});}
+majCoulSombre();
 function faceDe(n){return n[0]>0?0:n[0]<0?1:n[1]>0?2:n[1]<0?3:n[2]>0?4:5;}
 var S=[],CLE={};
 for(var x=-1;x<=1;x++)for(var y=-1;y<=1;y++)for(var z=-1;z<=1;z++){var p=[x,y,z];
@@ -810,7 +815,7 @@ function formeA(p,i){if(!p.m)return FORME[i];
   var auF=A0[0]+p.rotF,c1=auF+demi(A1[0]-auF),c2=auF+demi(A1[0]+A1[1]-auF),ch1=Math.abs(c1-auF)+Math.abs(A1[1]-d0),ch2=Math.abs(c2-auF)+Math.abs(Math.PI-A1[1]-d0);
   var au1=ch1<=ch2?c1:c2,d1=ch1<=ch2?A1[1]:Math.PI-A1[1],e=p.t,au=au0+(au1-auF)*e,d=d0+(d1-d0)*e;
   return{u:[Math.cos(au),Math.sin(au)],v:[Math.cos(au+d),Math.sin(au+d)]};}
-function facette(cx,q,f,h,coul){var U=[f.u[0]*h,-f.u[1]*h],V=[f.v[0]*h,-f.v[1]*h],P=[[1,1],[1,-1],[-1,-1],[-1,1]].map(function(k){return[q[0]+k[0]*U[0]+k[1]*V[0],q[1]+k[0]*U[1]+k[1]*V[1]];});
+function facette(cx,q,f,h,coul,sombre){var U=[f.u[0]*h,-f.u[1]*h],V=[f.v[0]*h,-f.v[1]*h],P=[[1,1],[1,-1],[-1,-1],[-1,1]].map(function(k){return[q[0]+k[0]*U[0]+k[1]*V[0],q[1]+k[0]*U[1]+k[1]*V[1]];});
   // coins arrondis par des courbes posées sur les côtés eux-mêmes : rien ne peut sortir du losange
   var k=.24;cx.beginPath();for(var n=0;n<4;n++){var A=P[(n+3)%4],B=P[n],C=P[(n+1)%4],a1=[B[0]+(A[0]-B[0])*k,B[1]+(A[1]-B[1])*k],c1=[B[0]+(C[0]-B[0])*k,B[1]+(C[1]-B[1])*k];
     if(!n)cx.moveTo(a1[0],a1[1]);else cx.lineTo(a1[0],a1[1]);cx.quadraticCurveTo(B[0],B[1],c1[0],c1[1]);}cx.closePath();
@@ -818,9 +823,10 @@ function facette(cx,q,f,h,coul){var U=[f.u[0]*h,-f.u[1]*h],V=[f.v[0]*h,-f.v[1]*h
   // Phase 2 : facette « verre » comme les cubes du logo — sheen diagonal plus net, biseau clair sur le bord
   // haut-gauche, point spéculaire sur le coin du haut. Pas de dégradé radial (coût) : le point est un arc.
   if(h>4){var hi=P.reduce(function(m,p){return p[1]<m[1]?p:m;}),g=cx.createLinearGradient(hi[0],hi[1],q[0]+(q[0]-hi[0])*.6,q[1]+(q[1]-hi[1])*.6);
-    g.addColorStop(0,"rgba(255,255,255,.42)");g.addColorStop(.42,"rgba(255,255,255,0)");g.addColorStop(1,"rgba(0,0,0,.18)");cx.fillStyle=g;cx.fill();
-    cx.lineWidth=Math.max(.8,h*.07);cx.strokeStyle="rgba(255,255,255,.18)";cx.stroke();
-    cx.beginPath();cx.arc(q[0]+(hi[0]-q[0])*.52,q[1]+(hi[1]-q[1])*.52,h*.26,0,6.283);cx.fillStyle="rgba(255,255,255,.4)";cx.fill();}}
+    // pass joaillerie : spéculaire net en haut, et bas assombri DANS la teinte de la pièce (volume « joyau », pas de noir qui ternit)
+    g.addColorStop(0,"rgba(255,255,255,.46)");g.addColorStop(.40,"rgba(255,255,255,0)");g.addColorStop(1,"rgba("+(sombre||"0,0,0")+",.6)");cx.fillStyle=g;cx.fill();
+    cx.lineWidth=Math.max(.8,h*.07);cx.strokeStyle="rgba(255,255,255,.2)";cx.stroke();
+    cx.beginPath();cx.arc(q[0]+(hi[0]-q[0])*.52,q[1]+(hi[1]-q[1])*.52,h*.26,0,6.283);cx.fillStyle="rgba(255,255,255,.42)";cx.fill();}}
 Plateau.prototype.positions=function(){return this.positionsA(this.anim?this.anim.t:0);};
 Plateau.prototype.permisA=function(k){return !this.permis||!!this.permis[k];};
 Plateau.prototype.vivant=function(now){if(this.anim||this.indice||this.continu||this.eclats.length)return true;
@@ -842,7 +848,9 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
     else if(k===ind){var pl=.5+.5*Math.sin(now/220);halo(cx,"255,207,74",.5+.5*pl,Math.max(2.5,E*.03));cx.strokeStyle="rgba(255,207,74,"+(.45+.5*pl)+")";cx.lineWidth=Math.max(2.5,E*.03);}
     else if(!ok){cx.strokeStyle="rgba(70,70,96,.4)";cx.lineWidth=1.2;cx.setLineDash([3,6]);}
     else if(this.survol&&k===this.survol){cx.strokeStyle="rgba("+ACC+",.9)";cx.lineWidth=Math.max(2,E*.024);}
-    else{cx.strokeStyle=this.permis?"#55527e":"#34344a";cx.lineWidth=this.permis?2:1.6;}
+    else{var go=cx.createLinearGradient(c[0],c[1]-RAY[L+1]*E,c[0],c[1]+RAY[L+1]*E);
+      // orbites lisibles : un anneau éclairé par le haut (dégradé le long du tracé) — vraie profondeur, même quand tous les cercles sont permis
+      go.addColorStop(0,"rgba(152,148,205,.85)");go.addColorStop(.5,"rgba(110,106,162,.6)");go.addColorStop(1,"rgba(58,56,88,.5)");cx.strokeStyle=go;cx.lineWidth=this.permis?2.1:2;}
     cx.stroke();
     if(vg>=0){var dk=(vg-ordre*75)/450;if(dk>0&&dk<1){cx.beginPath();cx.arc(c[0],c[1],RAY[L+1]*E,0,Math.PI*2);cx.setLineDash([]);
       halo(cx,ACC,Math.sin(dk*Math.PI),Math.max(3,E*.045));cx.strokeStyle="rgba("+ACC_CLAIR+","+Math.sin(dk*Math.PI)+")";cx.lineWidth=Math.max(3,E*.045);cx.stroke();}}
@@ -850,7 +858,7 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
   if(vg>1700)this.vague=0;
   if(this.opts.comete&&!CALME)this.comete(now);
   if(this.indice&&!this.anim)this.fleche(this.indice,now);
-  var t=this.anim?this.anim.t:0,pos=this.positionsA(t),rp=Math.max(3,E*.056),i,q;
+  var t=this.anim?this.anim.t:0,pos=this.positionsA(t),rp=Math.max(3,E*.060),i,q;
   if(this.anim&&!CALME){
     // arcs de couleur qui glissent sur le cercle actif
     var mvA=this.anim.mv,cA=this.vers(CEN[mvA.a]),rA=RAY[mvA.L+1]*E;
@@ -866,8 +874,8 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
   else this.trace.length=0;
   // une face terminée reçoit un halo discret de sa couleur sous ses neuf pastilles : la progression se lit d'un coup d'œil
   if(this.opts.eclats&&!this.anim){var fu=facesUnies(this.col);for(var fk in fu){var fc=this.vers(CENTRE_FACE[fk]);
-    cx.beginPath();cx.arc(fc[0],fc[1],RAYON_FACE*E,0,Math.PI*2);cx.fillStyle=COUL[fu[fk]];cx.globalAlpha=.07;cx.fill();
-    cx.strokeStyle=COUL[fu[fk]];cx.globalAlpha=.4;cx.lineWidth=Math.max(1.5,E*.014);cx.stroke();cx.globalAlpha=1;}}
+    cx.beginPath();cx.arc(fc[0],fc[1],RAYON_FACE*E,0,Math.PI*2);cx.fillStyle=COUL[fu[fk]];cx.globalAlpha=.12;cx.fill();
+    cx.strokeStyle=COUL[fu[fk]];cx.globalAlpha=.5;cx.lineWidth=Math.max(1.5,E*.014);cx.stroke();cx.globalAlpha=1;}}
   for(i=0;i<pos.length;i++){q=this.vers(pos[i].xy);var r=rp,pk=this.pops[i];
     if(pk!==undefined){var e=(now-pk)/280;if(e>=1)delete this.pops[i];else if(e>0)r=rp*(1+.32*Math.sin(e*Math.PI));}
     if(pos[i].m&&!CALME){cx.beginPath();cx.arc(q[0],q[1],r*1.9,0,Math.PI*2);cx.globalAlpha=.16;cx.fillStyle=COUL[pos[i].c];cx.fill();cx.globalAlpha=1;}
@@ -877,7 +885,7 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
     // Phase 2 : bille de verre — un spéculaire doux en haut-gauche + un petit éclat net (arcs, pas de dégradé)
     if(r>5){cx.beginPath();cx.arc(q[0]-r*.28,q[1]-r*.3,r*.36,0,6.283);cx.fillStyle="rgba(255,255,255,.34)";cx.fill();
       cx.beginPath();cx.arc(q[0]-r*.34,q[1]-r*.36,r*.15,0,6.283);cx.fillStyle="rgba(255,255,255,.7)";cx.fill();}}
-    else facette(cx,q,formeA(pos[i],i),r*1.2,COUL[pos[i].c]);}
+    else facette(cx,q,formeA(pos[i],i),r*1.2,COUL[pos[i].c],COUL_SOMBRE[pos[i].c]);}
   // ondes des faces complétées
   if(this.eclats.length)this.eclats=this.eclats.filter(function(ec){var e=(now-ec.t0)/800;if(e>=1)return false;var c=self.vers(ec.xy);
     cx.save();cx.beginPath();cx.arc(c[0],c[1],rp*2+E*.42*ease(e),0,Math.PI*2);cx.strokeStyle=COUL[ec.c];cx.globalAlpha=1-e;
@@ -1516,7 +1524,7 @@ function rafraichirSucces(){document.getElementById("sucCompte").textContent=Obj
     return '<div class="suc'+(ok?" ok":"")+'"><div class="med"><svg viewBox="0 0 24 24">'+(ok?'<path d="M5 12.5l4.5 4.5L19 7.5"/>':'<rect x="6" y="11" width="12" height="9" rx="2"/><path d="M9 11V8.5a3 3 0 0 1 6 0V11"/>')+'</svg></div><div><b>'+s.nom+'</b><span>'+s.desc+'</span></div></div>';}).join("");}
 
 /* ========== 14. OPTIONS ========== */
-function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)&&PALETTES[o.palette])||PALETTES.classique;
+function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)&&PALETTES[o.palette])||PALETTES.classique;majCoulSombre();
   // « Animations » décoché = calme forcé, en plus du réglage système prefers-reduced-motion
   CALME=!!((window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)||o.anims===false);
   document.body.classList.toggle("sobre",o.anims===false);
