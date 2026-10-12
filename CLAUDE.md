@@ -73,6 +73,13 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   lui-même (`PIVOT` n'est animé que là) ; « Revoir ma partie » rejoue le mélange puis les coups (`revoir()`).
 - **Couleur d'accent par monde** (`ACCENTS`, `accent(w)`) : variable CSS `--acc` (triplet r,g,b) et
   `ACC` pour le canevas (cercle saisi, vague de victoire). Accueil, défi et partie libre : le lilas.
+  **Les orbites du plateau** (trait fin + halo léger, au repos comme à la sélection/au tour) prennent cette
+  couleur d'accent (`ACC` pour le halo, `ACC_CLAIR` pour le trait) — décision client 12/10/2026, remplace
+  l'ancien trait blanc. L'indice reste doré, l'orbite interdite grise.
+- **Décor en image (thèmes CraftPix)** : menu et jeu ont un fond fixe plein écran (`#fondMonde`, composites
+  `img/fond-1…4.webp`, cover, étoiles animées `#ciel` par-dessus) comme la campagne. Menu = thème aléatoire
+  (`FOND_ACC`), jeu = thème du monde courant (`J.fond`, `themeFond(w)=(w%4)+1`, `poserFond`). La campagne
+  (`#parcours`) garde ses fonds en couches parallaxe par-dessus.
 - **Sans fin** (`sansFinDef(k)`, depuis Partie libre) : étape k = mélange de k+2 coups (25 au plus), record
   `PROG.stats.sansFin` ; au-delà de l'étape 5, le jeu complet. **Partager** le défi du jour : `partager()`,
   un résumé texte (coups, temps, étoiles) par la feuille de partage du téléphone ou le presse-papiers.
@@ -81,7 +88,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   résolu (`xpVictoire` : longueur puis étoiles ; défis en plus la première fois ; campagne rejouée à moitié) ; chaque
   rang donne une ampoule. **Trois missions du jour** tirées de la date (`MISSIONS`, `missionsDuJour`,
   `avancerMissions`), +30 XP chacune, une ampoule pour les trois. **Ciels** (`CIELS`, `appliquerCiel`, classes
-  `ciel-…` sur `body`) ouverts par rang. La tuile **Défis** ouvre le défi du jour et celui de la **semaine**
+  `ciel-…` sur `body`) ouverts par rang : **désactivés depuis le décor CraftPix** (le fond image masque le body) —
+  sélecteur des options masqué, code encore présent, à nettoyer. La tuile **Défis** ouvre le défi du jour et celui de la **semaine**
   (`semaineDef`, 14 coups, deux ampoules la première fois). **Relax** (`relaxDef`, depuis Partie libre) : 8 coups,
   sans chrono, compteur ni étoiles. Écran **Profil** par la puce du rang, au centre de la barre du haut de l'accueil
   (anneau d'expérience, titre, trois points de missions). Les joueurs d'avant le rang reçoivent une fois l'expérience

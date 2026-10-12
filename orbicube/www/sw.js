@@ -1,7 +1,8 @@
 // Version web (PWA) : tout le jeu est mis en cache pour se jouer hors ligne.
 // Incrémenter V à chaque publication, sinon les joueurs gardent l'ancienne version.
-var V = "orbicube-v68";
+var V = "orbicube-v69";
 var FICHIERS = ["./", "index.html", "config.js", "natif.js", "langues.js", "manifest.webmanifest", "confidentialite.html", "logo-titre.png",
+  "img/fond-1.webp", "img/fond-2.webp", "img/fond-3.webp", "img/fond-4.webp",
   "img/bg-1.webp", "img/bg-2.webp", "img/bg-3.webp", "img/bg-4.webp",
   "img/planets-1.webp", "img/planets-2.webp", "img/planets-3.webp", "img/planets-4.webp",
   "img/stars-1.webp", "img/stars-2.webp", "img/stars-3.webp", "img/stars-4.webp",
