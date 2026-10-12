@@ -909,7 +909,7 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
     else{
       // orbites : un trait fin + halo TRÈS léger À LA COULEUR DU THÈME (accent du monde courant).
       // Le halo devient fort à la sélection et pendant le tour (branches act/survol), même teinte.
-      halo(cx,ACC,.09,Math.max(1,E*.008));cx.strokeStyle="rgba("+ACC_CLAIR+",.46)";cx.lineWidth=this.permis?1.3:1.2;}
+      halo(cx,ACC,.12,Math.max(1,E*.01));cx.strokeStyle="rgba("+ACC+",.55)";cx.lineWidth=this.permis?1.4:1.3;}
     cx.stroke();
     if(vg>=0){var dk=(vg-ordre*75)/450;if(dk>0&&dk<1){cx.beginPath();cx.arc(c[0],c[1],RAY[L+1]*E,0,Math.PI*2);cx.setLineDash([]);
       halo(cx,ACC,Math.sin(dk*Math.PI),Math.max(3,E*.045));cx.strokeStyle="rgba("+ACC_CLAIR+","+Math.sin(dk*Math.PI)+")";cx.lineWidth=Math.max(3,E*.045);cx.stroke();}}
@@ -1040,6 +1040,10 @@ function accent(w){ACC=w==null?"165,139,255":ACCENTS[w%ACCENTS.length];ACC_CLAIR
 var FOND_ACC=0;
 function themeFond(w){return (w%4)+1;}
 function poserFond(t){var el=document.getElementById("fondMonde");if(el)el.style.backgroundImage="url(img/fond-"+t+".webp)";}
+// une teinte d'accent par thème CraftPix (vert / bleu / rouge / violet) : porte les ORBITES et leurs halos
+// (repos comme sélection) et la vague de victoire, pour que le plateau s'accorde au fond du thème.
+var THEME_ACC=["80,226,150","92,180,255","255,110,120","178,130,255"];
+function accentTheme(t){ACC=THEME_ACC[(((t-1)%4)+4)%4];ACC_CLAIR=eclaircir(ACC,.65);document.documentElement.style.setProperty("--acc",ACC);}
 var MONDES=[
   {nom:"Premier cercle",desc:"Deux cercles, U et R. Le geste s’apprend ici.",anneaux:["U","R"],coups:[1,1,2,2,2,3,3,3,4,4]},
   {nom:"Trois faces",desc:"U, R et F se croisent : chaque pastille hésite entre deux chemins.",anneaux:["U","R","F"],coups:[2,2,3,3,3,4,4,4,5,5]},
@@ -1138,12 +1142,12 @@ function vibrer(ms){if(!PROG.options.vib)return;if(NATIF.vibrer(Array.isArray(ms
 /* ========== 8. NAVIGATION ========== */
 var ECRAN="accueil";
 // sens : +1 on avance (l'écran arrive de la droite), −1 on revient (il arrive de la gauche)
-function montrer(id,sens){var prevEcran=ECRAN;if(id==="accueil")accent(null);sens=sens||1;document.querySelectorAll(".ecran").forEach(function(e){
+function montrer(id,sens){var prevEcran=ECRAN;sens=sens||1;document.querySelectorAll(".ecran").forEach(function(e){
     if(e.id===id){e.style.transition="none";e.style.setProperty("--dx",(sens*28)+"px");void e.offsetWidth;e.style.transition="";e.classList.add("actif");}
     else{if(e.classList.contains("actif"))e.style.setProperty("--dx",(-sens*28)+"px");e.classList.remove("actif");}});ECRAN=id;
   numeroter(document.getElementById(id));
   Logo.visible=id==="accueil";AideP.visible=id==="aide";JeuP.visible=id==="jeu";
-  if(id==="accueil"){if(!FOND_ACC||prevEcran==="jeu"||prevEcran==="parcours")FOND_ACC=1+Math.floor(Math.random()*4);poserFond(FOND_ACC);rafraichirAccueil();majRang();Logo.demarrer();}
+  if(id==="accueil"){if(!FOND_ACC||prevEcran==="jeu"||prevEcran==="parcours")FOND_ACC=1+Math.floor(Math.random()*4);poserFond(FOND_ACC);accentTheme(FOND_ACC);rafraichirAccueil();majRang();Logo.demarrer();}
   if(id==="succes")rafraichirSucces();if(id==="profil")rafraichirProfil();if(id==="aide")redimAide();if(id==="jeu"){poserFond((J&&J.fond)||FOND_ACC||1);redimJeu();}
   Ticker.reveiller();}
 var OPT_DEPUIS_JEU=false;
@@ -1207,7 +1211,7 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
   // on empile du niveau 1 au dernier ; les y sont ensuite retournés pour que la progression MONTE (bas -> haut, façon Candy Crush)
   var wreg=[];
   for(var w=0;w<MONDES.length;w++){var M=MONDES[w],acc=ACCENTS[w%ACCENTS.length],y0=y;
-    y+=28;items.push({t:"s",acc:acc,w:w,nom:M.nom,y:y});y+=46;
+    y+=28;items.push({t:"s",acc:acc,w:w,nom:M.nom,y:y});y+=74;
     for(var i=0;i<M.coups.length;i++){var x=cx+Math.sin(k*.66)*amp,r=PROG.niveaux[(w+1)+"-"+(i+1)];
       items.push({t:"n",x:x,y:y,w:w,i:i,r:r,ouv:niveauOuvert(w,i),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===i),acc:acc});
       pts.push([x,y]);y+=GAP;k++;}
@@ -1323,8 +1327,9 @@ var ro=new ResizeObserver(function(){if(ECRAN==="jeu")redimJeu();if(ECRAN==="acc
 ["zonePlateau","logo","aideCanvas","parcoursDefile"].forEach(function(id){ro.observe(document.getElementById(id));});
 ro.observe(document.querySelector(".logoboite"));
 
-function lancer(def){document.getElementById("zonePlateau").classList.add("brouille");document.getElementById("jeu").classList.add("brouille");accent(def.mode==="campagne"?def.w:null);document.body.classList.toggle("zen",!!(PROG.options.zen||def.relax));
-J={def:def,fond:themeFond(def.w!=null?def.w:Math.floor(Math.random()*4)),hist:[],t0:0,fini:false,indice:false,pret:false,tranches:{}};
+function lancer(def){document.getElementById("zonePlateau").classList.add("brouille");document.getElementById("jeu").classList.add("brouille");
+var ft=themeFond(def.w!=null?def.w:Math.floor(Math.random()*4));accentTheme(ft);document.body.classList.toggle("zen",!!(PROG.options.zen||def.relax));
+J={def:def,fond:ft,hist:[],t0:0,fini:false,indice:false,pret:false,tranches:{}};
   JeuP.col=(def.base?def.base.slice():resoluCol());JeuP.anim=null;JeuP.file=[];JeuP.indice=null;JeuP.survol=null;
   document.getElementById("mini").hidden=def.but?true:!PROG.options.cube;majBut();
   if(def.anneaux.length===9)JeuP.permis=null;else{JeuP.permis={};def.anneaux.forEach(function(b){JeuP.permis[MV[b][0]+","+MV[b][1]]=true;});}
