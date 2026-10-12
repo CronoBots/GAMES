@@ -127,6 +127,9 @@ async function resoudre(p) {
     const p = await ctx.newPage();
     p.setDefaultTimeout(8000);
     await p.goto(URL); await p.waitForTimeout(1000);
+    // la partie libre est réservée au jeu complet : on débloque pour tester les gestes sur les neuf cercles
+    await p.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k) || "{}"); v.achat = true; localStorage.setItem(k, JSON.stringify(v)); });
+    await p.reload(); await p.waitForTimeout(1200);
     await p.click("#btnLibre"); await p.waitForTimeout(300); await p.click('#fenetre [data-a="5"]'); await p.waitForTimeout(2600);
     const bx = await (await p.$("#plateau")).boundingBox(), E = bx.width / 3.2, ox = bx.x + bx.width / 2, oy = bx.y + bx.width / 2 + 0.133 * E;
     const C = [0, 0.5336], R = 1.0835, pt = (a) => [ox + (C[0] + R * Math.cos(a)) * E, oy - (C[1] + R * Math.sin(a)) * E];
@@ -220,7 +223,7 @@ async function resoudre(p) {
     await mesurer("parcours"); await go(".parc-sect.paye"); await mesurer("boutique"); await fermer();
     await go("#parcours [data-retour]"); await go("#btnLibre"); await mesurer("partie libre"); await go('#fenetre [data-a="25"]'); await fermer();
     await go("#btnJour"); await mesurer("défis"); await go('#fenetre [data-a="semaine"]', 2500); await mesurer("défi de la semaine"); await go("#btnPause"); await go('#fenetre [data-a="accueil"]');
-    await go("#btnLibre"); await go('#fenetre [data-a="relax"]', 2500); await mesurer("relax"); await go("#btnPause"); await go('#fenetre [data-a="accueil"]');
+    await go("#btnLibre"); await go('#fenetre [data-a="relax"]'); await mesurer("boutique partie libre"); await fermer();
     await go("#btnRang"); await mesurer("profil"); await go("#profil [data-retour]");
     await go("#btnSucces"); await mesurer("succès"); await go("#succes [data-retour]"); await go("#btnAide"); await mesurer("aide"); await go("#aide [data-retour]");
     await p.waitForTimeout(3200);
