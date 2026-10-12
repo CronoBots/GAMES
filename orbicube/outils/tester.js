@@ -16,6 +16,8 @@ const faute = (m) => { console.log("  ✗ " + m); fautes++; };
 
 async function debordements(p) {
   return p.evaluate(() => [...document.querySelectorAll(".ecran.actif *")].filter((e) => {
+    // le décor de la carte (nébuleuses, anneaux, planètes…) déborde volontairement du cadre et n'est pas interactif
+    if (e.closest(".parc-layer") || e.classList.contains("parc-fond")) return false;
     const r = e.getBoundingClientRect(); return r.width && r.right > innerWidth + 1;
   }).map((e) => e.id || e.className).slice(0, 3));
 }
@@ -78,18 +80,17 @@ async function resoudre(p) {
     const xp = await p.evaluate(() => JSON.parse(localStorage.getItem("orbicube-v1")).xp || 0);
     xp > 0 ? ok("le cube résolu rapporte " + xp + " XP") : faute("aucune expérience gagnée");
 
-    // les mondes 3 à 6 mènent à la boutique
-    await p.tap('#fenetre [data-a="menu"]'); await p.waitForTimeout(500);
-    await p.tap("#niveaux [data-retour]"); await p.waitForTimeout(500);
-    const payes = await p.$$eval(".monde.paye", (l) => l.length);
+    // la carte de campagne : les mondes 3 à 6 (sections payantes) mènent à la boutique
+    await p.tap('#fenetre [data-a="menu"]'); await p.waitForTimeout(600);
+    const payes = await p.$$eval(".parc-sect.paye", (l) => l.length);
     payes === 4 ? ok("4 mondes réservés au jeu complet") : faute(payes + " mondes réservés au lieu de 4");
-    await p.tap(".monde.paye"); await p.waitForTimeout(400);
+    await p.tap(".parc-sect.paye"); await p.waitForTimeout(400);
     (await p.textContent("#fenetre")).includes("Orbicube complet") ? ok("un monde réservé ouvre la boutique") : faute("la boutique ne s'ouvre pas");
     (await p.textContent("#fenetre")).includes("dans l’application") ? ok("version web : l'achat renvoie vers l'application") : faute("texte web de la boutique absent");
     await p.tap('#fenetre [data-a="x"]'); await p.waitForTimeout(300);
 
     // partie libre « Moyen » réservée, « Facile » ouverte
-    await p.tap("#mondes [data-retour]"); await p.waitForTimeout(400);
+    await p.tap("#parcours [data-retour]"); await p.waitForTimeout(400);
     await p.tap("#btnLibre"); await p.waitForTimeout(300);
     await p.tap('#fenetre [data-a="10"]'); await p.waitForTimeout(400);
     (await p.textContent("#fenetre")).includes("partie libre fait partie") ? ok("partie libre « Moyen » réservée") : faute("« Moyen » n'est pas réservé");
@@ -105,14 +106,14 @@ async function resoudre(p) {
     await p.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); v.achat = true; localStorage.setItem(k, JSON.stringify(v)); });
     await p.reload(); await p.waitForTimeout(1200);
     (await p.isHidden("#btnBoutique")) ? ok("jeu complet : le bouton d'achat disparaît") : faute("bouton d'achat toujours là");
-    await p.tap("#btnJouer"); await p.waitForTimeout(500);
-    const restants = await p.$$eval(".monde.paye", (l) => l.length);
+    await p.tap("#btnJouer"); await p.waitForTimeout(600);
+    const restants = await p.$$eval(".parc-sect.paye", (l) => l.length);
     restants === 0 ? ok("jeu complet : plus aucun monde réservé, progression gardée") : faute(restants + " mondes encore réservés");
 
     // paysage
     if (appareil === "iPhone 13") {
       await p.setViewportSize({ width: 844, height: 390 });
-      await p.tap("#mondes [data-retour]"); await p.waitForTimeout(400);
+      await p.tap("#parcours [data-retour]"); await p.waitForTimeout(400);
       await p.tap("#btnJour"); await p.waitForTimeout(300); await p.tap('#fenetre [data-a="jour"]'); await p.waitForTimeout(2200);
       const d3 = await debordements(p); d3.length ? faute("débordement en paysage : " + d3) : ok("défi du jour en paysage, sans débordement");
     }
@@ -183,11 +184,11 @@ async function resoudre(p) {
     await p.click("#btnSuccesStore"); await p.waitForTimeout(200);
     (await p.evaluate(() => window.__affiche)) ? ok("le bouton ouvre la liste de Game Center") : faute("le bouton n'ouvre rien");
     await p.click("#succes [data-retour]"); await p.waitForTimeout(400);
-    await p.click("#btnJouer"); await p.waitForTimeout(600); await p.click(".monde.paye"); await p.waitForTimeout(400);
+    await p.click("#btnJouer"); await p.waitForTimeout(700); await p.click(".parc-sect.paye"); await p.waitForTimeout(400);
     (await p.textContent("#fenetre")).includes("3,49 €") ? ok("la boutique affiche le prix du store") : faute("prix absent de la boutique");
     await p.click('#fenetre [data-a="acheter"]'); await p.waitForTimeout(1400);
     (await p.isHidden("#btnBoutique")) ? ok("achat réussi : le jeu complet est débloqué") : faute("l'achat ne débloque rien");
-    (await p.$$eval(".monde.paye", (l) => l.length)) === 0 ? ok("après l'achat, plus aucun monde réservé") : faute("des mondes restent réservés après l'achat");
+    (await p.$$eval(".parc-sect.paye", (l) => l.length)) === 0 ? ok("après l'achat, plus aucun monde réservé") : faute("des mondes restent réservés après l'achat");
     erreurs.length ? faute("erreurs : " + erreurs.join(" | ")) : ok("aucune erreur de script");
     await ctx.close();
   }
@@ -204,7 +205,7 @@ async function resoudre(p) {
     await p.waitForTimeout(1000);
     const debord = new Set();
     const mesurer = async (ou) => (await p.evaluate(() => [...document.querySelectorAll(".ecran.actif *, #fenetre *, #toast *")].filter((e) => {
-      const r = e.getBoundingClientRect(); if (!r.width || getComputedStyle(e).visibility === "hidden" || e.classList.contains("onde")) return false;
+      const r = e.getBoundingClientRect(); if (!r.width || getComputedStyle(e).visibility === "hidden" || e.classList.contains("onde") || e.closest(".parc-layer") || e.classList.contains("parc-fond")) return false;
       return r.right > innerWidth + 1 || (e.matches("button,.bouton,.action,h2,h3,b,span,select") && e.scrollWidth > e.clientWidth + 2 && getComputedStyle(e).overflow !== "hidden" && !e.closest(".notation"));
     }).map((e) => (e.id || e.className || e.tagName) + " « " + (e.textContent || "").trim().slice(0, 30) + " »"))).forEach((x) => debord.add(ou + " : " + x));
     const go = async (sel, t = 450) => { const el = await p.$(sel); if (el && await el.isVisible()) { await el.click(); await p.waitForTimeout(t); return true; } return false; };
@@ -216,8 +217,8 @@ async function resoudre(p) {
     for (const m of await p.evaluate(() => window.__orbicube.solution())) { await p.keyboard.press(m.length > 1 ? "Shift+" + m[0] : m[0]); await p.waitForTimeout(450); }
     await p.waitForTimeout(2200); await mesurer("victoire"); await go('#fenetre [data-a="suivant"]', 2000);
     await go("#btnIndice", 400); await mesurer("indice"); await go('#fenetre [data-a="oui"]'); await go("#btnPause"); await go('#fenetre [data-a="niveaux"]', 600); await mesurer("niveaux");
-    await go("#niveaux [data-retour]"); await mesurer("mondes"); await go(".monde.paye"); await mesurer("boutique"); await fermer();
-    await go("#mondes [data-retour]"); await go("#btnLibre"); await mesurer("partie libre"); await go('#fenetre [data-a="25"]'); await fermer();
+    await mesurer("parcours"); await go(".parc-sect.paye"); await mesurer("boutique"); await fermer();
+    await go("#parcours [data-retour]"); await go("#btnLibre"); await mesurer("partie libre"); await go('#fenetre [data-a="25"]'); await fermer();
     await go("#btnJour"); await mesurer("défis"); await go('#fenetre [data-a="semaine"]', 2500); await mesurer("défi de la semaine"); await go("#btnPause"); await go('#fenetre [data-a="accueil"]');
     await go("#btnLibre"); await go('#fenetre [data-a="relax"]', 2500); await mesurer("relax"); await go("#btnPause"); await go('#fenetre [data-a="accueil"]');
     await go("#btnRang"); await mesurer("profil"); await go("#profil [data-retour]");

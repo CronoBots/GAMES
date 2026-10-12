@@ -185,7 +185,6 @@ a.bouton{text-decoration:none;color:inherit}
 #mini{width:var(--cube,96px);height:var(--cube,96px);display:block;cursor:grab;touch-action:none}#mini:active{cursor:grabbing}
 #but{width:clamp(66px,24vw,104px);height:clamp(66px,24vw,104px);display:block}
 .jinfo .stat{align-self:start;padding-top:6px}.jinfo .jetoiles{margin-top:8px}.jinfo .jetoiles svg{width:18px;height:18px}
-.coupgeant{position:absolute;right:14px;top:4px;font-family:var(--f-math);font-size:44px;color:var(--lilas);line-height:1;pointer-events:none;text-shadow:0 0 24px rgba(165,139,255,.5)}
 .fenetre .serie{color:var(--or);font-family:var(--f-chiffre);font-size:13px;margin:4px 0 0}
 .fenetre{animation:pop .45s cubic-bezier(.3,1.4,.5,1)!important}
 .bulle{position:relative;background:rgba(27,27,41,.97);border:1px solid var(--lilas);border-radius:14px;padding:12px 14px;
@@ -485,6 +484,52 @@ body{background:
   radial-gradient(40% 30% at 50% 45%,rgba(165,139,255,.30),rgba(165,139,255,0) 70%),
   radial-gradient(60% 45% at 50% 45%,#15122a,#07070c 78%)}
 #chargement svg{filter:drop-shadow(0 0 9px rgba(165,139,255,.45)) drop-shadow(0 0 16px rgba(76,201,240,.22))}
+/* ===== Parcours de campagne : carte verticale scrollable façon Candy Crush, dans le thème orbital.
+   Nœuds-planètes le long d'une traînée en pointillés, une section par monde, « vous êtes ici » sur le niveau courant. */
+#parcoursDefile{padding:0 14px 48px}
+.chemin{position:relative;width:100%;max-width:520px;margin:0 auto;overflow:hidden}
+.chemin .trail{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
+.parc-sect{position:absolute;left:50%;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:9px;white-space:nowrap;
+  padding:7px 16px;border-radius:999px;border:1px solid rgba(var(--pa),.45);background:linear-gradient(180deg,rgba(var(--pa),.18),rgba(var(--pa),.04)),rgba(12,12,20,.82);
+  font-family:var(--f-titre);font-weight:700;font-size:13px;letter-spacing:.03em;color:#fff;z-index:3;box-shadow:0 10px 26px -14px rgba(0,0,0,.95)}
+.parc-sect small{font-family:var(--f-chiffre);font-weight:500;font-size:10.5px;color:rgba(255,255,255,.62);letter-spacing:.12em;text-transform:uppercase}
+.parc-niv{position:absolute;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;z-index:1;cursor:pointer;padding:0;
+  display:grid;place-items:center;border:1px solid rgba(255,255,255,.14);background:var(--verre),rgba(14,14,24,.72);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 10px 24px -14px rgba(0,0,0,.9);transition:transform .12s}
+.parc-niv:not(.verrou):active{transform:translate(-50%,-50%) scale(.92)}
+.parc-niv b{font-family:var(--f-titre);font-weight:800;font-size:19px;color:#fff;line-height:1}
+.parc-niv .pet{display:flex;gap:1px;position:absolute;bottom:-8px;background:rgba(9,9,16,.9);border-radius:999px;padding:1.5px 4px;box-shadow:0 2px 6px rgba(0,0,0,.6)}
+.parc-niv .pet svg{width:9px;height:9px}
+.parc-niv.fait{background:radial-gradient(120% 120% at 30% 22%,rgba(var(--pa),.5),rgba(var(--pa),.12) 70%),rgba(14,14,24,.72);border-color:rgba(var(--pa),.6)}
+.parc-niv.courant{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.5),0 0 26px -2px rgba(var(--pa),.9),inset 0 1px 0 rgba(255,255,255,.3);animation:parc-pulse 2.2s ease-in-out infinite}
+@keyframes parc-pulse{50%{box-shadow:0 0 0 3px rgba(255,255,255,.75),0 0 38px 0 rgba(var(--pa),1),inset 0 1px 0 rgba(255,255,255,.3)}}
+.parc-niv.courant::after{content:"";position:absolute;top:-15px;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#fff}
+.parc-niv.verrou{opacity:.42;cursor:default;border-color:rgba(255,255,255,.08)}
+.parc-niv.verrou b{display:none}
+.parc-niv .pcad{width:20px;height:20px;stroke:rgba(255,255,255,.6);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.parc-niv.paye{opacity:.85}.parc-niv.paye .pcad{stroke:var(--or)}
+.parc-sect.paye{border-color:rgba(255,207,74,.5);cursor:pointer}
+.parc-sect .pscad{width:14px;height:14px;stroke:var(--or);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;margin-left:2px}
+/* décor cosmique par monde EN COUCHES (parallaxe) : fond teinté, nébuleuses lointaines, planètes+anneaux, orbites, étincelles */
+.parc-fond{position:absolute;inset:0;z-index:0;pointer-events:none}
+.parc-layer{position:absolute;inset:0;z-index:0;pointer-events:none;will-change:transform}
+.parc-layer.near{z-index:2}
+.parc-neb{position:absolute;transform:translate(-50%,-50%);max-width:94vw;border-radius:50%;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(var(--pa),.24),rgba(var(--pa),.07) 54%,rgba(var(--pa),0) 75%)}
+.parc-planete{position:absolute;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;pointer-events:none;opacity:.6;
+  background:radial-gradient(circle at 34% 28%,rgba(var(--pa),.95),rgba(var(--pa),.3) 58%,rgba(6,6,14,.82));
+  box-shadow:inset -6px -6px 13px rgba(0,0,0,.55),0 0 26px -6px rgba(var(--pa),.7)}
+.parc-planete .pring{position:absolute;inset:-9px -24px;border-radius:50%;border:2px solid rgba(var(--pa),.45);border-left-color:transparent;border-right-color:transparent;transform:rotate(-24deg)}
+.parc-ring{position:absolute;transform:translate(-50%,-50%);width:150px;height:150px;border-radius:50%;border:1px solid rgba(var(--pa),.16);box-shadow:0 0 0 10px rgba(var(--pa),.03),inset 0 0 0 7px rgba(var(--pa),.05);opacity:.7}
+.parc-sparc{position:absolute;width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.85);box-shadow:0 0 7px rgba(255,255,255,.55);pointer-events:none}
+@keyframes parc-drift{50%{transform:translate(-50%,-50%) translate(16px,-20px) scale(1.07)}}
+@keyframes parc-drift2{50%{transform:translate(-50%,-50%) translate(-14px,14px) scale(1.05)}}
+@keyframes parc-tw{0%,100%{opacity:.85}50%{opacity:.18}}
+@keyframes parc-spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.parc-neb.drift{animation:parc-drift 15s ease-in-out infinite}
+.parc-neb.drift2{animation:parc-drift2 19s ease-in-out infinite}
+.parc-sparc.tw{animation:parc-tw 3.4s ease-in-out infinite}
+.parc-ring.spin{animation:parc-spin 70s linear infinite}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 /* réglage « Animations » décoché : même neutralisation, à la demande du joueur (en plus du réglage système) */
 body.sobre *,body.sobre *::before,body.sobre *::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
@@ -555,6 +600,15 @@ body.sobre #plateau{transition:none}
     </div></div>
   </section>
 
+  <section class="ecran" id="parcours" aria-label="Campagne">
+    <div class="tete">
+      <button class="ico" data-retour="accueil" type="button" aria-label="Retour"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2>Campagne</h2>
+      <span class="puce"><svg viewBox="0 0 24 24" class="etoile"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg><span id="parcEt">0</span></span>
+    </div>
+    <div class="defile" id="parcoursDefile"><div class="chemin" id="chemin"></div></div>
+  </section>
+
   <section class="ecran" id="jeu" aria-label="Partie">
     <div class="jtete">
       <button class="ico" id="btnPause" type="button" aria-label="Pause"><svg viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg></button>
@@ -568,7 +622,6 @@ body.sobre #plateau{transition:none}
     </div>
     <div class="plateau" id="zonePlateau">
       <canvas id="plateau" aria-label="Plateau de cercles"></canvas>
-      <div class="coupgeant" id="coupGeant"></div>
       <div class="melange anneaux" id="melangeTxt" hidden><svg viewBox="-60 -60 120 120"><g fill="none" stroke-width="3" stroke-linecap="round">
   <circle r="34" cx="0" cy="-12" stroke="#a58bff" stroke-dasharray="150 64"/><circle r="34" cx="-10.4" cy="6" stroke="#4cc9f0" stroke-dasharray="150 64"/>
   <circle r="34" cx="10.4" cy="6" stroke="#ff6b9d" stroke-dasharray="150 64"/></g></svg><b>MÉLANGE…</b></div>
@@ -1135,6 +1188,57 @@ function mondePaye(w){return !complet()&&w>=CFG.mondesGratuits;}
 function mondeOuvert(w){return !mondePaye(w)&&(w===0||!!PROG.niveaux[w+"-"+MONDES[w-1].coups.length]);}
 function niveauOuvert(w,i){return mondeOuvert(w)&&(i===0||!!PROG.niveaux[(w+1)+"-"+i]);}
 function etoilesMonde(w){var t=0;for(var i=0;i<MONDES[w].coups.length;i++){var r=PROG.niveaux[(w+1)+"-"+(i+1)];if(r)t+=r.etoiles;}return t;}
+// ===== Carte de campagne : parcours vertical scrollable (façon Candy Crush), nœuds le long d'une traînée orbitale =====
+function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
+  document.getElementById("parcEt").textContent=etoilesTotal();
+  var W=Math.min(ch.clientWidth||(document.getElementById("parcoursDefile").clientWidth-28)||340,492),
+    cx=W/2,amp=Math.min(W*.3,118),GAP=96,pn=prochainNiveau(),y=26,k=0,items=[],pts=[];
+  // on empile du niveau 1 au dernier ; les y sont ensuite retournés pour que la progression MONTE (bas -> haut, façon Candy Crush)
+  var wreg=[];
+  for(var w=0;w<MONDES.length;w++){var M=MONDES[w],acc=ACCENTS[w%ACCENTS.length],y0=y;
+    y+=28;items.push({t:"s",acc:acc,w:w,nom:M.nom,y:y});y+=46;
+    for(var i=0;i<M.coups.length;i++){var x=cx+Math.sin(k*.66)*amp,r=PROG.niveaux[(w+1)+"-"+(i+1)];
+      items.push({t:"n",x:x,y:y,w:w,i:i,r:r,ouv:niveauOuvert(w,i),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===i),acc:acc});
+      pts.push([x,y]);y+=GAP;k++;}
+    wreg.push({w:w,acc:acc,y0:y0,y1:y});y+=18;}
+  var H=y+20,nodes="",sects="",d="";
+  // fond cosmique qui change de couleur selon le monde (thème par monde) + décor par monde dans sa teinte
+  // fond : chaque monde garde sa couleur sur toute sa bande (transition nette aux frontières, pas de mélange boueux)
+  var seg=[];wreg.forEach(function(r){seg.push({pct:+((H-r.y1)/H*100).toFixed(2),acc:r.acc},{pct:+((H-r.y0)/H*100).toFixed(2),acc:r.acc});});
+  seg.sort(function(a,b){return a.pct-b.pct;});
+  var grad="linear-gradient(to bottom,"+seg.map(function(s){return "rgba("+s.acc+",.16) "+s.pct+"%";}).join(",")+")",far="",mid="",near="";
+  // décor en COUCHES (parallaxe) : une nébuleuse lointaine + une planète/anneau + une orbite + des étincelles par monde, dans sa couleur
+  wreg.forEach(function(r){var cyf=H-(r.y0+r.y1)/2,hh=r.y1-r.y0,side=r.w%2?1:-1;
+    far+='<div class="parc-neb drift" style="--pa:'+r.acc+';top:'+cyf+'px;left:'+(50+side*40)+'%;width:300px;height:270px"></div>';
+    mid+='<div class="parc-planete" style="--pa:'+r.acc+';top:'+(cyf+hh*.12)+'px;left:'+(50-side*35)+'%"><i class="pring"></i></div>';
+    mid+='<div class="parc-ring spin" style="--pa:'+r.acc+';top:'+(cyf-hh*.3)+'px;left:'+(50+side*22)+'%"></div>';
+    for(var sp=0;sp<6;sp++)near+='<i class="parc-sparc tw" style="top:'+(H-(r.y0+hh*(sp+.5)/6)).toFixed(0)+'px;left:'+(8+((r.w*53+sp*71)%84))+'%;animation-delay:'+(sp*.5).toFixed(1)+'s"></i>';});
+  pts.forEach(function(p,j){d+=(j?"L":"M")+p[0].toFixed(1)+" "+(H-p[1])+" ";});
+  items.forEach(function(it){var fy=H-it.y;
+    if(it.t==="s"){var pa=mondePaye(it.w);sects+='<div class="parc-sect'+(pa?" paye":"")+'" style="--pa:'+it.acc+';top:'+fy+'px"><b>Monde '+(it.w+1)+'</b><small>'+it.nom+'</small>'+(pa?'<svg class="pscad" viewBox="0 0 24 24">'+CAD+'</svg>':'')+'</div>';}
+    else{var cls="parc-niv"+(it.r?" fait":"")+(!it.ouv?" verrou":"")+(it.paye?" paye":"")+(it.cur?" courant":""),
+      inner=it.ouv?('<b>'+(it.i+1)+'</b><span class="pet">'+[0,1,2].map(function(j){return it.r&&it.r.etoiles>j?SVG_ET:SVG_ET_OFF;}).join("")+'</span>'):('<svg class="pcad" viewBox="0 0 24 24">'+CAD+'</svg>');
+      nodes+='<button type="button" class="'+cls+'" style="--pa:'+it.acc+';left:'+it.x.toFixed(1)+'px;top:'+fy+'px" data-w="'+it.w+'" data-i="'+it.i+'" aria-label="Monde '+(it.w+1)+' Niveau '+(it.i+1)+'">'+inner+'</button>';}});
+  ch.style.height=H+"px";
+  ch.innerHTML='<div class="parc-fond" style="background:'+grad+'"></div>'
+    +'<div class="parc-layer far">'+far+'</div><div class="parc-layer mid">'+mid+'</div>'
+    +'<svg class="trail" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" preserveAspectRatio="none"><path d="'+d+'" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 11"/></svg>'
+    +sects+nodes+'<div class="parc-layer near">'+near+'</div>';
+  parcParallax();}
+// parallaxe : les couches bougent à des vitesses différentes du contenu quand on scrolle la carte
+var parcRaf=0;function parcParallax(){var pd=document.getElementById("parcoursDefile");if(!pd)return;var s=pd.scrollTop,
+  f=pd.querySelector(".parc-layer.far"),m=pd.querySelector(".parc-layer.mid"),n=pd.querySelector(".parc-layer.near"),fo=pd.querySelector(".parc-fond");
+  if(f)f.style.transform="translateY("+(s*.22).toFixed(1)+"px)";if(m)m.style.transform="translateY("+(s*.1).toFixed(1)+"px)";
+  if(n)n.style.transform="translateY("+(-s*.12).toFixed(1)+"px)";}
+function ouvrirParcours(){accent(null);montrer("parcours");requestAnimationFrame(function(){buildParcours();
+  var c=document.querySelector(".parc-niv.courant")||document.querySelector(".parc-niv:not(.verrou)"),dd=document.getElementById("parcoursDefile");
+  if(c&&dd)dd.scrollTop=Math.max(0,c.offsetTop-dd.clientHeight*.55);});}
+document.getElementById("chemin").addEventListener("click",function(e){
+  var sec=e.target.closest(".parc-sect.paye");if(sec){sonClic();ouvrirBoutique("monde");return;}
+  var b=e.target.closest(".parc-niv");if(!b)return;
+  if(b.classList.contains("paye")){sonClic();ouvrirBoutique("monde");return;}
+  if(b.classList.contains("verrou")){vibrer(20);return;}sonClic();lancer(niveauDef(+b.dataset.w,+b.dataset.i));});
+document.getElementById("parcoursDefile").addEventListener("scroll",function(){if(parcRaf)return;parcRaf=requestAnimationFrame(function(){parcRaf=0;parcParallax();});},{passive:true});
 function rafraichirMondes(){document.getElementById("mondesEt").textContent=etoilesTotal();document.getElementById("mondesEtT").textContent=etoilesChrono();var l=document.getElementById("listeMondes");l.innerHTML="";
   MONDES.forEach(function(M,w){var ouvert=mondeOuvert(w),et=etoilesMonde(w),max=M.coups.length*3,b=document.createElement("button");b.type="button";b.className="monde"+(ouvert?"":" verrou")+(mondePaye(w)?" paye":"");b.style.setProperty("--acc",ACCENTS[w]);
     b.innerHTML='<canvas></canvas><div><div class="num">Monde '+(w+1)+'</div><h3>'+M.nom+'</h3><p>'+(ouvert?M.desc:mondePaye(w)?"Inclus dans le jeu complet.":"Terminez le monde "+w+" pour l’ouvrir.")+'</p><div class="barre"><i style="width:'+(et/max*100)+'%"></i></div><div class="compte"><span>'+et+' / '+max+' ★</span><span>'+M.anneaux.join(" ")+'</span></div></div>'+(ouvert?"":'<svg class="cadenas" viewBox="0 0 24 24">'+CAD+'</svg>');
@@ -1215,8 +1319,8 @@ function redimJeu(){var jeu=document.getElementById("jeu"),z=document.getElement
     c=JeuP.cv.getBoundingClientRect().top+JeuP.OY-(ECART+RAY[2])*JeuP.ECH,m=mini.getBoundingClientRect(),dy=(h+c)/2-(m.top+m.height/2);
     if(Math.abs(dy)>1)mini.style.transform="translateY("+Math.round(dy)+"px)";}}
 function redimAide(){var w=document.getElementById("aideCanvas").getBoundingClientRect().width;if(w)AideP.dimension(w);}
-var ro=new ResizeObserver(function(){if(ECRAN==="jeu")redimJeu();if(ECRAN==="accueil")Logo.demarrer();if(ECRAN==="aide")redimAide();});
-["zonePlateau","logo","aideCanvas"].forEach(function(id){ro.observe(document.getElementById(id));});
+var ro=new ResizeObserver(function(){if(ECRAN==="jeu")redimJeu();if(ECRAN==="accueil")Logo.demarrer();if(ECRAN==="aide")redimAide();if(ECRAN==="parcours")buildParcours();});
+["zonePlateau","logo","aideCanvas","parcoursDefile"].forEach(function(id){ro.observe(document.getElementById(id));});
 ro.observe(document.querySelector(".logoboite"));
 
 function lancer(def){document.getElementById("zonePlateau").classList.add("brouille");document.getElementById("jeu").classList.add("brouille");accent(def.mode==="campagne"?def.w:null);document.body.classList.toggle("zen",!!(PROG.options.zen||def.relax));
@@ -1253,7 +1357,6 @@ function majJeu(){if(!J)return;var n=J.hist.length,par=J.def.par;
   var nt=document.getElementById("notation");
   if(!n)nt.innerHTML='<span class="vide">'+(J.pret?"Glissez le long d’un cercle":"")+'</span>';
   else{nt.innerHTML=J.hist.map(function(m,i){return i===n-1?'<span class="der">'+nomDe(m)+'</span>':nomDe(m);}).join(" ");nt.scrollLeft=nt.scrollWidth;}
-  document.getElementById("coupGeant").textContent=n?nomDe(J.hist[n-1]):"";
   document.getElementById("btnAnnuler").disabled=!n;document.getElementById("btnIndice").classList.toggle("off",J.indice);}
 function cheminSolution(){var tout=J.def.melange.slice(),ch=[];J.hist.forEach(function(m){tout.push(m);if(m.d===2)tout.push(m);});for(var i=tout.length-1;i>=0;i--)ch.push(inverse(tout[i]));
   var change=true;while(change){change=false;
@@ -1329,7 +1432,7 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
   ouvrirFenetre(html,function(a){if(a==="partager"){partager(e,n,temps);return;}if(a==="classement"){sonClic();NATIF.classementsAfficher(idClassement(d.mode));return;}fermerFenetre();if(a==="revoir"){revoir(e,n,temps);return;}
     if(a==="etape"){var k=d.etape+1;if(k>5&&!complet())ouvrirBoutique("libre");else lancer(sansFinDef(k));return;}if(a==="suivant"){if(mondePaye(suiv.w))ouvrirBoutique("monde");else lancer(niveauDef(suiv.w,suiv.i));}
     else if(a==="encore")lancer(d.mode==="motif"?motifDef():libreDef(d.n));else if(a==="rejouer")lancer(d.mode==="libre"?libreDef(d.n):d.mode==="sansfin"?sansFinDef(d.etape):d);
-    else if(d.mode==="campagne")ouvrirMonde(d.w);else montrer("accueil");},"menu");
+    else if(d.mode==="campagne")ouvrirParcours();else montrer("accueil");},"menu");
   document.querySelectorAll("#fenetre .gros-et svg").forEach(function(s,k){setTimeout(function(){s.classList.add("vu");if(k<e)sonEtoile(k);},250+k*260);});}
 // Partager le défi du jour, comme on partage une grille de mots : un résumé sans aucune donnée personnelle
 // Une étoile dessinée sur le canvas de la carte (pleine = gagnée, creuse = manquée)
@@ -1385,7 +1488,7 @@ function pause(){if(!J||!document.getElementById("voile").hidden)return;var t=J.
       // options pendant la partie : le chrono reste arrêté, et le retour rend la pause là où on l'a laissée
       if(a==="options"){if(t)J.t0+=performance.now()-t;J.optT=performance.now();OPT_DEPUIS_JEU=true;montrer("options");return;}J.enPause=false;
       if(t)J.t0+=performance.now()-t;
-      if(a==="recommencer")recommencer();else if(a==="niveaux")ouvrirMonde(J.def.w);else if(a==="accueil")montrer("accueil");},"reprendre");}
+      if(a==="recommencer")recommencer();else if(a==="niveaux")ouvrirParcours();else if(a==="accueil")montrer("accueil");},"reprendre");}
 
 var TUTOS={"1-1":["geste","Glissez le long du cercle qui brille, dans le sens de la flèche, pour remettre le cube en ordre."],
   "1-2":["toucher","Glissez dans un sens ou dans l’autre : le cercle suit votre doigt et ne compte qu’au lâcher."],
@@ -1564,7 +1667,7 @@ document.getElementById("btnEffacer").addEventListener("click",function(){ouvrir
 /* ========== 15. AIDE ET ACCUEIL ========== */
 var AideP=new Plateau(document.getElementById("aideCanvas"));AideP.continu=true;AideP.lent=true;AideP.prochain=0;AideP.etape=0;Ticker.actifs.push(AideP);
 AideP.apres=function(now){if(this.occupe()||now<this.prochain)return;this.prochain=now+900;var noms=["U","U'","R","R'","F","F'","M","M'"];this.jouer(parNom(noms[this.etape%noms.length]),700);this.etape++;};
-document.getElementById("btnJouer").addEventListener("click",function(){audio();sonClic();if(!Object.keys(PROG.niveaux).length)lancer(niveauDef(0,0));else montrer("mondes");});
+document.getElementById("btnJouer").addEventListener("click",function(){audio();sonClic();if(!Object.keys(PROG.niveaux).length)lancer(niveauDef(0,0));else ouvrirParcours();});
 document.getElementById("btnJour").addEventListener("click",function(){audio();sonClic();ouvrirDefis();});
 document.getElementById("btnLibre").addEventListener("click",function(){audio();sonClic();
   ouvrirFenetre('<h3>Partie libre</h3><p>Les neuf cercles, un mélange au hasard, le chrono tourne.</p><div class="menu">'+LIBRES.map(function(l){var m=PROG.stats.meilleur[l.n];
@@ -1620,7 +1723,7 @@ function ouvrirBoutique(raison){var web=!NATIF.natif,li=CFG.liens||{};
   ouvrirFenetre(html,function(a){if(a==="acheter")acheter();else if(a==="restaurer")restaurer();else fermerFenetre();},"x");}
 function attente(oui){document.querySelectorAll("#fenetre [data-a]").forEach(function(b){b.disabled=oui;b.style.opacity=oui?.5:"";});}
 function debloque(){PROG.achat=true;sauver();majAchat();rafraichirAccueil();fermerFenetre();sonVictoire();vibrer([20,40,20]);confettis();
-  toast("Merci !","Tout Orbicube est débloqué.");if(ECRAN==="mondes")rafraichirMondes();}
+  toast("Merci !","Tout Orbicube est débloqué.");if(ECRAN==="mondes")rafraichirMondes();if(ECRAN==="parcours")buildParcours();}
 function acheter(){attente(true);NATIF.acheter().then(function(r){attente(false);if(r.ok)debloque();else if(!r.annule)avertir("Achat",r.erreur==="indisponible"?"Le store ne répond pas. Réessayez plus tard.":"L’achat n’a pas abouti.");});}
 function restaurer(){attente(true);NATIF.restaurer().then(function(r){attente(false);if(r.ok)debloque();else avertir("Restaurer",r.erreur==="indisponible"?"Le store ne répond pas. Réessayez plus tard.":"Aucun achat à restaurer sur ce compte.");});}
 document.getElementById("btnBoutique").addEventListener("click",function(){sonClic();ouvrirBoutique("accueil");});
@@ -1771,7 +1874,7 @@ document.getElementById("optLangue").addEventListener("change",function(){PROG.o
   (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(function(){setTimeout(retirer,Math.max(0,1500-(performance.now()-t0)));});
   setTimeout(retirer,2400);})();
 // accès réservé aux outils de captures (npm run captures), actif seulement avec ?capture dans l'adresse
-if(/[?&]capture\b/.test(location.search))window.__orbicube={solution:function(){return J&&J.pret?cheminSolution().map(function(m){return nomDe(m).replace("′","'");}):[];},vus:function(){return Object.keys(VUS);},manques:function(){return Object.keys(MANQUES);}};
+if(/[?&]capture\b/.test(location.search))window.__orbicube={solution:function(){return J&&J.pret?cheminSolution().map(function(m){return nomDe(m).replace("′","'");}):[];},vus:function(){return Object.keys(VUS);},manques:function(){return Object.keys(MANQUES);},parcours:function(){ouvrirParcours();}};
 // le rang est né après les premiers joueurs : leurs niveaux déjà finis lui donnent son expérience, une fois
 function rattraperXp(){if(PROG.xpInit)return;var x=0;Object.keys(PROG.niveaux).forEach(function(k){var w=+k.split("-")[0]-1,i=+k.split("-")[1]-1,r=PROG.niveaux[k];
     if(MONDES[w]&&MONDES[w].coups[i]!=null)x+=Math.min(70,10+4*MONDES[w].coups[i])+5*(r.etoiles||0)+5*(r.chrono||0);});
