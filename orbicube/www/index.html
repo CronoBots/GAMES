@@ -487,7 +487,8 @@ body{background:
 /* ===== Parcours de campagne : carte verticale scrollable façon Candy Crush, dans le thème orbital.
    Nœuds-planètes le long d'une traînée en pointillés, une section par monde, « vous êtes ici » sur le niveau courant. */
 /* plein écran : la carte remplit tout l'écran (bords + haut), l'en-tête flotte par-dessus avec un dégradé de lisibilité */
-#parcours .tete{position:absolute;top:0;left:0;right:0;z-index:5;background:linear-gradient(180deg,rgba(8,8,14,.9),rgba(8,8,14,.5) 55%,rgba(8,8,14,0))}
+#parcours{top:0;bottom:0;left:0;right:0}
+#parcours .tete{position:absolute;top:0;left:0;right:0;z-index:5;padding-top:env(safe-area-inset-top,0px);background:linear-gradient(180deg,rgba(8,8,14,.92),rgba(8,8,14,.55) 62%,rgba(8,8,14,0))}
 #parcoursDefile{position:absolute;inset:0;padding:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .chemin{position:relative;width:100%;max-width:none;margin:0 auto;overflow:hidden}
 .chemin .trail{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
@@ -1199,7 +1200,7 @@ function etoilesMonde(w){var t=0;for(var i=0;i<MONDES[w].coups.length;i++){var r
 function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
   document.getElementById("parcEt").textContent=etoilesTotal();
   var W=Math.min(ch.clientWidth||(document.getElementById("parcoursDefile").clientWidth-28)||340,492),
-    cx=W/2,amp=Math.min(W*.3,118),GAP=96,pn=prochainNiveau(),y=26,k=0,items=[],pts=[];
+    cx=W/2,amp=Math.min(W*.3,118),GAP=96,pn=prochainNiveau(),y=54,k=0,items=[],pts=[];
   // on empile du niveau 1 au dernier ; les y sont ensuite retournés pour que la progression MONTE (bas -> haut, façon Candy Crush)
   var wreg=[];
   for(var w=0;w<MONDES.length;w++){var M=MONDES[w],acc=ACCENTS[w%ACCENTS.length],y0=y;
@@ -1208,7 +1209,7 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
       items.push({t:"n",x:x,y:y,w:w,i:i,r:r,ouv:niveauOuvert(w,i),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===i),acc:acc});
       pts.push([x,y]);y+=GAP;k++;}
     wreg.push({w:w,acc:acc,y0:y0,y1:y});y+=18;}
-  var H=y+20,nodes="",sects="",d="";
+  var H=y+60,nodes="",sects="",d="";
   // FOND IMAGES (pack CC0 Screaming Brain Studios) UNIQUEMENT : une bande de nébuleuse peinte par monde
   // (teintée par hue-rotate pour les couleurs sans nébuleuse dédiée) + starfield superposé en "screen".
   // Bords masqués pour fondre entre mondes ; les bandes extrêmes débordent du cadre pour que le fondu reste
