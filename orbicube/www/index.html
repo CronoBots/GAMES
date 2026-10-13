@@ -104,8 +104,13 @@ body{background:
 #accueil .defile>:first-child{margin-top:auto}#accueil .defile>:last-child{margin-bottom:auto}
 /* le logo prend la hauteur que le menu laisse, mesurée par la mise en page elle-même (et non estimée) :
    l'accueil tient sur un écran quelles que soient la police et la taille du texte du téléphone */
-.logoboite{flex:1 1 0;min-height:110px;max-height:360px;width:100%;display:grid;place-items:center;overflow:hidden}
-#logo{width:min(74vw,310px,36vh);aspect-ratio:1/1;display:block}
+.logoboite{flex:1 1 0;min-height:150px;max-height:360px;width:100%;display:grid;place-items:center;overflow:hidden}
+/* le menu ressemble à une partie en cours : le cube en perspective, au-dessus des orbites, rejoue les
+   tours que le logo joue tout seul. L'ensemble est rétréci pour ne pas surcharger. Cube décoratif :
+   pointer-events:none, les touchers tombent sur les orbites (qui tournent au clic). */
+.logo-scene{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;height:100%}
+#logoCube{width:min(30vw,116px,15vh);aspect-ratio:1/1;display:block;pointer-events:none}
+#logo{width:min(60vw,250px,30vh);aspect-ratio:1/1;display:block}
 @media (max-height:700px){#accueil .menu{gap:8px}#accueil .bouton{min-height:50px}#accueil .defile{gap:8px}}
 .marque{font-family:var(--f-titre);font-weight:800;font-size:clamp(34px,11vw,52px);letter-spacing:.08em;margin:0;line-height:1;
   background:linear-gradient(100deg,#fff 0%,#d9ceff 40%,var(--lilas) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -519,7 +524,7 @@ body.sobre #plateau{transition:none}
       <div class="entete">
         <h1 class="titre-img"><img class="logo-titre notrad" src="logo-titre.webp" alt="Orbicube" width="760" height="304"></h1>
       </div>
-      <div class="logoboite"><canvas id="logo" aria-hidden="true"></canvas></div>
+      <div class="logoboite"><div class="logo-scene"><canvas id="logoCube" aria-hidden="true"></canvas><canvas id="logo" aria-hidden="true"></canvas></div></div>
       <div style="display:grid;justify-items:center;gap:10px">
         <div class="menu cascade">
           <button class="bouton principal" id="btnJouer" type="button">
@@ -1098,14 +1103,20 @@ document.addEventListener("pointerdown",function(e){if(CALME)return;var b=e.targ
 
 /* ========== 9. ACCUEIL : le logo vivant ========== */
 var Logo=new Plateau(document.getElementById("logo"),{etiquettes:false,comete:true});Logo.continu=true;Logo.lent=true;Logo.pile=[];Logo.prochain=0;Ticker.actifs.push(Logo);
-Logo.apres=function(now){if(this.occupe()||now<this.prochain)return;this.prochain=now+650;
+// le cube en perspective de l'accueil reflète l'état du logo (ses tours automatiques), exactement comme
+// #mini reflète le plateau pendant une partie : le menu a ainsi l'allure d'une partie en cours
+var logoCube=document.getElementById("logoCube"),logoCubeC=logoCube.getContext("2d"),PIVOT_LOGO={y:.6,x:.32};
+function dessinerLogoCube(){var w=logoCube.clientWidth||100,px=Math.round(w*DPR);if(logoCube.width!==px){logoCube.width=px;logoCube.height=px;logoCubeC.setTransform(DPR,0,0,DPR,0,0);}
+  var an=Logo.anim,cle=w+"|"+COUL[0]+"|"+Logo.col.join("")+"|"+(an?cleA(an.mv)+an.mv.q+":"+an.t.toFixed(4):"");
+  if(cle===dessinerLogoCube.cle)return;dessinerLogoCube.cle=cle;dessinerCube(logoCubeC,w,Logo.col,an,PIVOT_LOGO);}
+Logo.apres=function(now){dessinerLogoCube();if(this.occupe()||now<this.prochain)return;this.prochain=now+650;
   if((this.pile.length<5&&Math.random()<.8)||!this.pile.length){var b=TOUS[Math.floor(Math.random()*9)],m=MV[b],mv={a:m[0],L:m[1],q:Math.random()<.5?1:-1};this.pile.push(mv);this.jouer(mv,520);}
   else this.jouer(inverse(this.pile.pop()),520);};
 // la taille vient de la boîte qui l'entoure : la place que le menu laisse, sans dépasser 74 % de la largeur ni 310 px
 // toucher l'orbicube de l'accueil le fait tourner d'un cran : un petit jouet avant d'entrer
 document.getElementById("logo").addEventListener("pointerdown",function(){if(Logo.occupe())return;audio();var b=TOUS[Math.floor(Math.random()*9)],m=MV[b],mv={a:m[0],L:m[1],q:Math.random()<.5?1:-1};
   Logo.pile.push(mv);Logo.prochain=performance.now()+1400;Logo.jouer(mv,300,null,"rebond");sonTour(mv);vibrer(8);});
-Logo.demarrer=function(){var b=this.cv.parentNode.getBoundingClientRect(),w=Math.min(b.height,innerWidth*.82,360);if(w>0)this.dimension(w);};
+Logo.demarrer=function(){var box=this.cv.parentNode.parentNode.getBoundingClientRect(),cube=logoCube.offsetHeight||0,w=Math.min(box.height-cube-10,innerWidth*.72,290);if(w>0)this.dimension(w);dessinerLogoCube();};
 function etoilesTotal(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t+=PROG.niveaux[k].etoiles||0;});return t;}
 function prochainNiveau(){for(var w=0;w<MONDES.length;w++)for(var i=0;i<MONDES[w].coups.length;i++)if(!PROG.niveaux[(w+1)+"-"+(i+1)])return{w:w,i:i};return null;}
 function estHier(k){var d=new Date();d.setDate(d.getDate()-1);return k===cleJour(d);}
@@ -1583,7 +1594,7 @@ function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)
     if(!ouv&&!c){c=document.createElement("span");c.className="cad notrad"+(APP_TEMPS[v]?" t":"");c.textContent="★ "+APPARENCES[v];b.appendChild(c);}else if(ouv&&c)c.remove();});
   mini.hidden=!o.cube;document.getElementById("pave").hidden=!o.pave;
   document.getElementById("btnPaveT").classList.toggle("on",o.pave);
-  if(ECRAN==="jeu")requestAnimationFrame(redimJeu);Logo.dessiner();JeuP.dessiner();dessinerMini();}
+  if(ECRAN==="jeu")requestAnimationFrame(redimJeu);Logo.dessiner();JeuP.dessiner();dessinerMini();dessinerLogoCube();}
 function opt(k,v){PROG.options[k]=v;PROG.options.maj=Date.now();sauver();appliquerOptions();}
 [["Son","son"],["Vib","vib"],["Cube","cube"],["Pave","pave"],["Zen","zen"],["Musique","musique"],["Anims","anims"]].forEach(function(c){
   document.getElementById("opt"+c[0]).addEventListener("change",function(){opt(c[1],this.checked);if(c[1]==="musique"&&this.checked){contexteAudio();Musique.lancer();}if(c[1]==="son"&&this.checked)sonClic();if(c[1]==="vib")vibrer(15);});});
