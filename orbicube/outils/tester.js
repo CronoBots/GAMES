@@ -83,7 +83,8 @@ async function resoudre(p) {
     // la carte de campagne : les mondes 3 à 6 (sections payantes) mènent à la boutique
     await p.tap('#fenetre [data-a="menu"]'); await p.waitForTimeout(600);
     const payes = await p.$$eval(".parc-sect.paye", (l) => l.length);
-    payes === 4 ? ok("4 mondes réservés au jeu complet") : faute(payes + " mondes réservés au lieu de 4");
+    const reserves = 6 - (await p.evaluate(() => (window.ORBICUBE_CONFIG || {}).mondesGratuits || 2));
+    payes === reserves ? ok(reserves + " mondes réservés au jeu complet") : faute(payes + " mondes réservés au lieu de " + reserves);
     await p.tap(".parc-sect.paye"); await p.waitForTimeout(400);
     (await p.textContent("#fenetre")).includes("Orbicube complet") ? ok("un monde réservé ouvre la boutique") : faute("la boutique ne s'ouvre pas");
     (await p.textContent("#fenetre")).includes("dans l’application") ? ok("version web : l'achat renvoie vers l'application") : faute("texte web de la boutique absent");
