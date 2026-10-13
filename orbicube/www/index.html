@@ -188,7 +188,7 @@ a.bouton{text-decoration:none;color:inherit}
 .notation::-webkit-scrollbar{display:none}
 .notation .der{color:var(--lilas)}
 .notation .vide{color:var(--sourd);font-family:var(--f-texte);font-size:13px;letter-spacing:0}
-.actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:8px}
 .action{min-height:50px;border-radius:14px;border:1px solid var(--trait);background:var(--carte);display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-weight:600;font-size:14px}
 .action svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .action:active{transform:scale(.96)}
@@ -570,6 +570,7 @@ body.sobre #plateau{transition:none}
 
   <section class="ecran" id="jeu" aria-label="Partie">
     <div class="jtete">
+      <button class="ico" id="btnAccueilJeu" type="button" aria-label="Accueil"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M6 10v10h12V10"/></svg></button>
       <button class="ico" id="btnPause" type="button" aria-label="Pause"><svg viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg></button>
       <div class="jtitre"><b id="jTitre">Niveau</b><span id="jSous"></span></div>
       <button class="ico indice" id="btnIndice" type="button" aria-label="Indice"><span class="badge notrad" id="ampNb">3</span><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg></button>
@@ -795,8 +796,10 @@ var DPR=Math.min(window.devicePixelRatio||1,2.5);
 function Plateau(canvas,opts){this.cv=canvas;this.cx=canvas.getContext("2d");this.col=resoluCol();this.anim=null;this.file=[];
   this.permis=null;this.survol=null;this.indice=null;this.opts=opts||{};this.taille=0;this.visible=false;
   this.pops={};this.eclats=[];this.trace=[];this.vague=0;}
-Plateau.prototype.dimension=function(px){px=Math.max(40,Math.floor(px));this.taille=px;var c=this.cv;c.style.width=px+"px";c.style.height=px+"px";
-  c.width=Math.round(px*DPR);c.height=Math.round(px*DPR);this.cx.setTransform(DPR,0,0,DPR,0,0);this.ECH=px/3.2;this.OX=px/2;this.OY=px/2+0.133*this.ECH;this.dessiner();};
+// hpx (optionnel) : hauteur du canvas, >= px. Le plateau du jeu l'utilise pour prendre toute la hauteur
+// dispo, afin que le HALO des faces complétées (qui déborde un peu) ne soit plus coupé par le bord du canvas.
+Plateau.prototype.dimension=function(px,hpx){px=Math.max(40,Math.floor(px));hpx=Math.max(px,Math.floor(hpx||px));this.taille=px;this.hauteur=hpx;var c=this.cv;c.style.width=px+"px";c.style.height=hpx+"px";
+  c.width=Math.round(px*DPR);c.height=Math.round(hpx*DPR);this.cx.setTransform(DPR,0,0,DPR,0,0);this.ECH=px/3.2;this.OX=px/2;this.OY=hpx/2+0.133*this.ECH;this.dessiner();};
 Plateau.prototype.vers=function(pt){return[this.OX+pt[0]*this.ECH,this.OY-pt[1]*this.ECH];};
 Plateau.prototype.depuis=function(px,py){return[(px-this.OX)/this.ECH,-(py-this.OY)/this.ECH];};
 // t est déjà la progression affichée (courbe appliquée par pas()) ; il peut dépasser 1 pendant le rebond
@@ -850,7 +853,7 @@ Plateau.prototype.comete=function(now){var cx=this.cx,E=this.ECH,per=3800,n=Math
   for(var i=0;i<18;i++){var aa=a0-dir*i*.04,p=this.vers([c[0]+r*Math.cos(aa),c[1]+r*Math.sin(aa)]);cx.beginPath();
     cx.arc(p[0],p[1],Math.max(.8,E*.032*(1-i/18)),0,Math.PI*2);cx.fillStyle="rgba(222,214,255,"+(al*(1-i/18)*.9)+")";cx.fill();}};
 Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH,self=this;if(!W)return;now=now||performance.now();
-  cx.clearRect(0,0,W,W);
+  cx.clearRect(0,0,W,this.hauteur||W);
   var act=this.anim?cleA(this.anim.mv):null,ind=this.indice?cleA(this.indice):null,vg=this.vague?now-this.vague:-1,ordre=0;
   for(var a=0;a<3;a++)for(var L=-1;L<=1;L++){var k=a+","+L,c=this.vers(CEN[a]),ok=this.permisA(k);
     cx.save();cx.beginPath();cx.arc(c[0],c[1],RAY[L+1]*E,0,Math.PI*2);
@@ -908,7 +911,7 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
 Plateau.prototype.etiquette=function(k,nm,orx){var cx=this.cx,W=this.taille,ab=k.split(",").map(Number),cen=CEN[ab[0]],u=Math.hypot(cen[0],cen[1]),r=RAY[ab[1]+1];
   var pt=this.vers([cen[0]+cen[0]/u*r,cen[1]+cen[1]/u*r]),px=pt[0]+cen[0]/u*20,py=pt[1]-cen[1]/u*20;
   var fs=Math.round(Math.max(15,this.ECH*.14));cx.font='400 '+fs+'px "STIX Two Text",Georgia,serif';
-  var tw=cx.measureText(nm).width+16,th=fs+10;px=Math.min(Math.max(px,tw/2+2),W-tw/2-2);py=Math.min(Math.max(py,th/2+2),W-th/2-2);
+  var tw=cx.measureText(nm).width+16,th=fs+10;px=Math.min(Math.max(px,tw/2+2),W-tw/2-2);py=Math.min(Math.max(py,th/2+2),(this.hauteur||W)-th/2-2);
   cx.fillStyle="rgba(17,17,27,.92)";cx.strokeStyle=orx?"#ffcf4a":"#5a5680";cx.lineWidth=1;cx.beginPath();
   if(cx.roundRect)cx.roundRect(px-tw/2,py-th/2,tw,th,7);else cx.rect(px-tw/2,py-th/2,tw,th);cx.fill();cx.stroke();
   cx.fillStyle=orx?"#ffcf4a":"#eeedf5";cx.textAlign="center";cx.textBaseline="middle";cx.fillText(nm,px,py+1);};
@@ -1283,7 +1286,7 @@ function redimJeu(){var jeu=document.getElementById("jeu"),z=document.getElement
       autres=jeu.querySelector(".jtete").offsetHeight+jeu.querySelector(".jbas").offsetHeight+30,
       c=paysage?96:Math.max(64,Math.min(150,jeu.clientHeight-autres-Math.min(jeu.clientWidth-28,560)-12));
     jeu.style.setProperty("--cube",Math.round(c)+"px");}
-  var r=z.getBoundingClientRect();if(!r.width)return;JeuP.dimension(Math.min(r.width-28,r.height-8));dessinerMini();
+  var r=z.getBoundingClientRect();if(!r.width)return;JeuP.dimension(Math.min(r.width-28,r.height-8),r.height-8);dessinerMini();
   // le cube se centre verticalement entre le titre et le haut du grand cercle (décalage visuel seulement)
   mini.style.transform="";if(PROG.options.cube&&getComputedStyle(jeu).display!=="grid"){var h=jeu.querySelector(".jtete").getBoundingClientRect().bottom,
     c=JeuP.cv.getBoundingClientRect().top+JeuP.OY-(ECART+RAY[2])*JeuP.ECH,m=mini.getBoundingClientRect(),dy=(h+c)/2-(m.top+m.height/2);
@@ -1520,6 +1523,7 @@ cvJ.addEventListener("pointerleave",function(e){if(e.pointerType==="mouse"&&!G&&
 cvJ.addEventListener("contextmenu",function(e){e.preventDefault();});
 
 document.getElementById("btnPause").addEventListener("click",function(){sonClic();pause();});
+document.getElementById("btnAccueilJeu").addEventListener("click",function(){sonClic();montrer("accueil");});  // retour direct au menu
 document.getElementById("btnIndice").addEventListener("click",function(){sonClic();if(!J||!J.pret||J.fini||JeuP.occupe())return;
   if(JeuP.indice)return;   // l'indice est déjà affiché : rien à payer de plus
   if(!ampoules()){vibrer(20);plusDAmpoules();return;}
@@ -1529,7 +1533,8 @@ document.getElementById("btnIndice").addEventListener("click",function(){sonClic
       function(a){fermerFenetre();if(a==="oui")montrer();},"non");}else montrer();});
 document.getElementById("btnAnnuler").addEventListener("click",annuler);
 document.getElementById("btnRecommencer").addEventListener("click",function(){sonClic();recommencer();});
-document.getElementById("btnPaveT").addEventListener("click",function(){sonClic();opt("pave",!PROG.options.pave);});
+// le bouton Notation (visible seulement si « Pavé de notation » est activé dans les options) montre/cache le pavé
+document.getElementById("btnPaveT").addEventListener("click",function(){sonClic();var p=document.getElementById("pave");p.hidden=!p.hidden;this.classList.toggle("on",!p.hidden);});
 function construirePave(){var pv=document.getElementById("pave");pv.innerHTML="";if(!J)return;var an=TOUS.filter(function(b){return J.def.anneaux.indexOf(b)>=0;}),liste;
   if(an.length>4){liste=an.concat(an.map(function(b){return b+"'";}));pv.style.setProperty("--n",an.length);}
   else{liste=an.reduce(function(r,b){return r.concat([b,b+"'"]);},[]);pv.style.setProperty("--n",liste.length);}
@@ -1619,7 +1624,7 @@ function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)
     b.classList.toggle("on",COUL===PALETTES[v]);b.classList.toggle("verrou",!ouv);
     if(!ouv&&!c){c=document.createElement("span");c.className="cad notrad"+(APP_TEMPS[v]?" t":"");c.textContent="★ "+APPARENCES[v];b.appendChild(c);}else if(ouv&&c)c.remove();});
   mini.hidden=!o.cube;document.getElementById("pave").hidden=!o.pave;
-  document.getElementById("btnPaveT").classList.toggle("on",o.pave);
+  document.getElementById("btnPaveT").hidden=!o.pave;document.getElementById("btnPaveT").classList.toggle("on",o.pave);
   if(ECRAN==="jeu")requestAnimationFrame(redimJeu);Logo.dessiner();JeuP.dessiner();dessinerMini();dessinerLogoCube();}
 function opt(k,v){PROG.options[k]=v;PROG.options.maj=Date.now();sauver();appliquerOptions();}
 [["Son","son"],["Vib","vib"],["Cube","cube"],["Pave","pave"],["Zen","zen"],["Musique","musique"],["Anims","anims"]].forEach(function(c){
