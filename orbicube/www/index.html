@@ -165,7 +165,7 @@ a.bouton{text-decoration:none;color:inherit}
 #plateau{display:block;touch-action:none;max-width:100%;transition:filter .38s ease,transform .38s ease,opacity .38s ease}
 /* le mélange ne se montre pas : vu coup par coup, il suffirait de le rejouer à l'envers */
 .plateau.brouille #plateau{filter:blur(12px);opacity:.3;transform:scale(.9) rotate(-30deg)}
-#jeu.brouille .jcube{opacity:0;transition:opacity .2s}
+#jeu .jcube{transition:opacity .35s ease}#jeu.brouille .jcube{opacity:0;transition:opacity .2s}
 @media (prefers-reduced-motion:reduce){#plateau{transition:none}}
 /* le cube en perspective trône au centre, entre les coups et le temps, comme dans la visualisation de
    référence : sa taille (--cube) est la hauteur que le plateau laisse, calculée par redimJeu() */
@@ -380,7 +380,8 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
 .puce-rang:active{transform:scale(.96)}
 .puce-rang .anneau-rang{width:34px;height:34px;font-size:13px}
 .puce-rang b{font-size:13.5px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:42vw}
-.puce-rang .rb-mis{gap:4px}.puce-rang .rb-mis i{width:6px;height:6px}
+.puce-rang .rb-mis{gap:4px;padding-left:10px;border-left:1px solid rgba(255,255,255,.14)}
+.rb-mis svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2}.rb-mis.fini{color:var(--or)}
 #accueil .defile{padding-top:62px}
 .deuxl{display:grid;gap:2px;min-width:0;text-align:left}
 .deuxl small{font-family:var(--f-texte);font-weight:500;font-size:12.5px;letter-spacing:0;opacity:.82;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -1336,7 +1337,10 @@ var ro=new ResizeObserver(function(){if(ECRAN==="jeu")redimJeu();if(ECRAN==="acc
 ["zonePlateau","logo","aideCanvas","parcoursDefile"].forEach(function(id){ro.observe(document.getElementById(id));});
 ro.observe(document.querySelector(".logoboite"));
 
-function lancer(def){document.getElementById("zonePlateau").classList.add("brouille");document.getElementById("jeu").classList.add("brouille");
+// le plateau arrive DÉJÀ troublé : sans transition, sinon on le voyait net (avec le cube) le temps qu'il se floute
+function lancer(def){var pl=document.getElementById("plateau"),jc=document.querySelector("#jeu .jcube");pl.style.transition=jc.style.transition="none";
+  document.getElementById("zonePlateau").classList.add("brouille");document.getElementById("jeu").classList.add("brouille");
+  void pl.offsetWidth;pl.style.transition=jc.style.transition="";
 var ft=themeFond(def.w!=null?def.w:Math.floor(Math.random()*4));accentTheme(ft);document.body.classList.toggle("zen",!!(PROG.options.zen||def.relax));
 J={def:def,fond:ft,hist:[],t0:0,fini:false,indice:false,pret:false,tranches:{}};
   JeuP.col=(def.base?def.base.slice():resoluCol());JeuP.anim=null;JeuP.file=[];JeuP.indice=null;JeuP.survol=null;
@@ -1796,7 +1800,9 @@ function missionsVictoire(d,e,eT,temps){avancerMissions(function(m){return{cubes
   avancerMissions(function(m){return m.id==="sansfin"&&d.mode==="sansfin"?d.etape:m.id==="vite"&&temps<=m.but*1000?m.but:0;},true);}
 function majRang(){var R=rangDe(PROG.xp),M=missionsDuJour();document.getElementById("rangAnneau").innerHTML=anneauRang(PROG.xp);
   document.getElementById("rangTitre").textContent=titreRang(R.r);
-  document.getElementById("rangMissions").innerHTML=M.l.map(function(m){return '<i class="'+(missionFinie(m)?"ok":"")+'"></i>';}).join("");}
+  // les missions du jour : une cible et « 1/3 » (les trois points seuls ne disaient pas ce qu'ils comptaient), dorés à 3/3
+  var nm=M.l.filter(missionFinie).length,rm=document.getElementById("rangMissions");rm.classList.toggle("fini",nm===M.l.length);
+  rm.innerHTML='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg>'+nm+'/'+M.l.length;}
 function rafraichirProfil(){var R=rangDe(PROG.xp),M=missionsDuJour();
   document.getElementById("rangCarte").innerHTML='<span class="anneau-rang notrad">'+anneauRang(PROG.xp,2.4)+'</span><h3>'+titreRang(R.r)+'</h3>'+
     '<span class="xp notrad">'+R.xp+' / '+R.besoin+' XP</span><span class="rc-et notrad">'+SVG_ET+etoilesTotal()+' '+SVG_ETT+etoilesChrono()+'</span>';

@@ -92,7 +92,7 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   sélecteur des options masqué, code encore présent, à nettoyer. La tuile **Défis** ouvre le défi du jour et celui de la **semaine**
   (`semaineDef`, 14 coups, deux ampoules la première fois). **Relax** (`relaxDef`, depuis Partie libre) : 8 coups,
   sans chrono, compteur ni étoiles. Écran **Profil** par la puce du rang, au centre de la barre du haut de l'accueil
-  (anneau d'expérience, titre, trois points de missions). Les joueurs d'avant le rang reçoivent une fois l'expérience
+  (anneau d'expérience, titre, puis une cible et « 1/3 » pour les missions du jour, dorés à 3/3). Les joueurs d'avant le rang reçoivent une fois l'expérience
   de leurs niveaux déjà finis (`rattraperXp`, `PROG.xpInit`). Le bouton principal porte deux lignes (l'action, puis
   où l'on en est) et le total d'étoiles à droite : plus de phrase sous le bouton ni de bande du rang.
 - **Faces terminées** : halo discret de leur couleur sous leurs neuf pastilles (`RAYON_FACE`), sur le plateau de jeu.
@@ -121,7 +121,7 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   premier niveau, la pastille « Jeu complet » n'apparaît qu'après dix niveaux. Quand la suite de la campagne est payante, le bouton
   principal dit « Campagne » (et non « Continuer ») et la ligne dessous le dit.
 - **Le mélange ne se montre jamais** (le client, le 11/10/2026) : au lancement, le plateau se trouble en tournant
-  (`.brouille`, flou), les couleurs changent hors de vue puis il se dévoile. Animer les coups un par un permettait
+  (`.brouille`, flou, posé SANS transition dans `lancer()` : sinon le plateau et le cube se voyaient nets puis disparaissaient), les couleurs changent hors de vue puis il se dévoile. Animer les coups un par un permettait
   de les rejouer à l'envers. Seul « Revoir ma partie », après la victoire, rejoue le mélange.
 - Les niveaux de campagne sont tirés d'une graine fixe (`orbicube-<monde>-<niveau>`) : changer
   `genererMelange()` change tous les niveaux des joueurs. Ne le faire qu'avec une nouvelle graine.
