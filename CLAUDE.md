@@ -104,6 +104,10 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   un indice coûte une ampoule (`ampoules()`, `depenserAmpoule()`), 3 au départ ; +1 au défi du jour réussi,
   +1 par monde terminé, +1 à la première fois 3★ de coups et 3★ de temps sur un niveau ; le jeu complet en
   offre une par jour ; à zéro, une revient après 10 min (`RECHARGE_AMP`). Fusion par `ampMaj`.
+- **Accueil** (le client, le 13/10/2026) : titre « ORBICUBE » en capitales fines très espacées (Jost 300,
+  `.marque`, lueur d'accent ; plus d'Unbounded ni d'ellipse sur le titre). **Le cube au cœur des orbites** : un seul
+  visuel, le plateau prend la place libre et le petit cube se pose dans son vide central (`CUBE_LOGO` × `ECH`,
+  décalé de 0,133 unité comme `OY`) ; les pastilles les plus proches du centre sont à 0,298 unité : ne pas grossir le cube.
 - **Logo** : les trois anneaux de l'écran de chargement (`ANNEAUX` dans `outils/icones.py`) pour l'icône et
   le démarrage natif ; les médailles des succès gardent le plateau. Accueil : la devise disparaît après le
   premier niveau, la pastille « Jeu complet » n'apparaît qu'après dix niveaux. Quand la suite de la campagne est payante, le bouton
