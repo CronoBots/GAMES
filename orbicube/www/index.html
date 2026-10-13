@@ -1200,13 +1200,13 @@ function etoilesMonde(w){var t=0;for(var i=0;i<MONDES[w].coups.length;i++){var r
 function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
   document.getElementById("parcEt").textContent=etoilesTotal();
   var W=Math.min(ch.clientWidth||(document.getElementById("parcoursDefile").clientWidth-28)||340,492),
-    cx=W/2,amp=Math.min(W*.3,118),GAP=96,pn=prochainNiveau(),y=150,k=0,items=[],pts=[];
+    cx=W/2,amp=Math.min(W*.3,118),GAP=96,pn=prochainNiveau(),y=72,k=0,items=[],pts=[];
   // on empile du niveau 1 au dernier ; les y sont ensuite retournés pour que la progression MONTE (bas -> haut, façon Candy Crush)
   var wreg=[];
   for(var w=0;w<MONDES.length;w++){var M=MONDES[w],acc=ACCENTS[w%ACCENTS.length],y0=y;
     y+=28;items.push({t:"s",acc:acc,w:w,nom:M.nom,y:y});y+=74;
     for(var i=0;i<M.coups.length;i++){var x=cx+Math.sin(k*.66)*amp,r=PROG.niveaux[(w+1)+"-"+(i+1)];
-      items.push({t:"n",x:x,y:y,w:w,i:i,r:r,ouv:niveauOuvert(w,i),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===i),acc:acc});
+      items.push({t:"n",x:x,y:y,w:w,i:i,num:k+1,r:r,ouv:niveauOuvert(w,i),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===i),acc:acc});
       pts.push([x,y]);y+=GAP;k++;}
     wreg.push({w:w,acc:acc,y0:y0,y1:y});y+=18;}
   var H=y+60,nodes="",sects="",d="";
@@ -1228,7 +1228,7 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
         +(pa?'<svg class="pscad" viewBox="0 0 24 24">'+CAD+'</svg>':'<span class="parc-et"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etM+'/'+maxM+'</span>')+'</div>'
         +'<div class="parc-desc" style="top:'+(fy+30)+'px">'+MONDES[it.w].desc+'</div>';}
     else{var cls="parc-niv"+(it.r?" fait":"")+(!it.ouv?" verrou":"")+(it.paye?" paye":"")+(it.cur?" courant":""),
-      inner=it.ouv?('<b>'+(it.i+1)+'</b><span class="pet">'+[0,1,2].map(function(j){return it.r&&it.r.etoiles>j?SVG_ET:SVG_ET_OFF;}).join("")+'</span>'):('<svg class="pcad" viewBox="0 0 24 24">'+CAD+'</svg>');
+      inner=it.ouv?('<b>'+it.num+'</b><span class="pet">'+[0,1,2].map(function(j){return it.r&&it.r.etoiles>j?SVG_ET:SVG_ET_OFF;}).join("")+'</span>'):('<svg class="pcad" viewBox="0 0 24 24">'+CAD+'</svg>');
       nodes+='<button type="button" class="'+cls+'" style="--pa:'+it.acc+';left:'+it.x.toFixed(1)+'px;top:'+fy+'px" data-w="'+it.w+'" data-i="'+it.i+'" aria-label="Monde '+(it.w+1)+' Niveau '+(it.i+1)+'">'+inner+'</button>';}});
   ch.style.height=H+"px";
   ch.innerHTML='<div class="parc-fond"></div>'
@@ -1252,7 +1252,13 @@ var parcIO=null;function parcRevele(ch){var root=document.getElementById("parcou
   [].forEach.call(ch.querySelectorAll(".parc-niv"),function(n){parcIO.observe(n);});}
 function ouvrirParcours(){accent(null);montrer("parcours");requestAnimationFrame(function(){buildParcours();
   var c=document.querySelector(".parc-niv.courant")||document.querySelector(".parc-niv:not(.verrou)"),dd=document.getElementById("parcoursDefile");
-  if(c&&dd)dd.scrollTop=Math.max(0,c.offsetTop-dd.clientHeight*.55);});}
+  if(!c||!dd)return;var cible=Math.max(0,c.offsetTop-dd.clientHeight*.55);
+  if(CALME){dd.scrollTop=cible;return;}
+  // ouverture : on part du bas de la campagne (Monde 1) et on remonte doucement jusqu'au monde en cours
+  var depart=dd.scrollHeight-dd.clientHeight;dd.scrollTop=depart;
+  var t0=performance.now(),dur=850;
+  (function pas(now){var e=1-Math.pow(1-Math.min(1,(now-t0)/dur),3);dd.scrollTop=depart+(cible-depart)*e;
+    if((now-t0)<dur)requestAnimationFrame(pas);})(t0);});}
 document.getElementById("chemin").addEventListener("click",function(e){
   var sec=e.target.closest(".parc-sect.paye");if(sec){sonClic();ouvrirBoutique("monde");return;}
   var b=e.target.closest(".parc-niv");if(!b)return;
