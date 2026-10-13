@@ -881,7 +881,7 @@ function Plateau(canvas,opts){this.cv=canvas;this.cx=canvas.getContext("2d");thi
 // hpx (optionnel) : hauteur du canvas, >= px. Le plateau du jeu l'utilise pour prendre toute la hauteur
 // dispo, afin que le HALO des faces complétées (qui déborde un peu) ne soit plus coupé par le bord du canvas.
 Plateau.prototype.dimension=function(px,hpx){px=Math.max(40,Math.floor(px));hpx=Math.max(px,Math.floor(hpx||px));this.taille=px;this.hauteur=hpx;var c=this.cv;c.style.width=px+"px";c.style.height=hpx+"px";
-  c.width=Math.round(px*DPR);c.height=Math.round(hpx*DPR);this.cx.setTransform(DPR,0,0,DPR,0,0);this.ECH=px/3.2;this.OX=px/2;this.OY=hpx/2+0.133*this.ECH;this.dessiner();};
+  c.width=Math.round(px*DPR);c.height=Math.round(hpx*DPR);this.cx.setTransform(DPR,0,0,DPR,0,0);this.ECH=px/3.2;this.OX=px/2;this.OY=px/2+0.133*this.ECH+(hpx-px)*(this.haut!=null?this.haut:.5);this.dessiner();};
 Plateau.prototype.vers=function(pt){return[this.OX+pt[0]*this.ECH,this.OY-pt[1]*this.ECH];};
 Plateau.prototype.depuis=function(px,py){return[(px-this.OX)/this.ECH,-(py-this.OY)/this.ECH];};
 // t est déjà la progression affichée (courbe appliquée par pas()) ; il peut dépasser 1 pendant le rebond
@@ -1340,7 +1340,9 @@ document.getElementById("parcoursDefile").addEventListener("scroll",function(){i
 // (ancien écran de sélection #mondes/#niveaux retiré : la carte de campagne #parcours le remplace)
 
 /* ========== 11. LA PARTIE ========== */
-var JeuP=new Plateau(document.getElementById("plateau"),{eclats:true});Ticker.actifs.push(JeuP);
+// le vide vertical en trop (le plateau est limité par la largeur) va pour un tiers au-dessus, deux tiers en dessous :
+// le plateau se rapproche du petit cube et forme un bloc avec lui (le client, le 13/10/2026)
+var JeuP=new Plateau(document.getElementById("plateau"),{eclats:true});JeuP.haut=1/3;Ticker.actifs.push(JeuP);
 JeuP.onFace=function(n){if(!J||!J.pret||J.fini)return;bip(1047,.28,"sine",.07);bip(1568,.32,"sine",.05,.07);
   // le retour grandit avec le nombre de faces finies d'un même coup : une double arrivée est un plus grand moment
   if(n>1){bip(2093,.34,"sine",.045,.12);vibrer(16);}else vibrer(12);};
@@ -1381,7 +1383,7 @@ function fmt(ms){var s=Math.floor(ms/1000);return Math.floor(s/60)+":"+String(s%
 function redimJeu(){var jeu=document.getElementById("jeu"),z=document.getElementById("zonePlateau");if(!jeu.clientWidth)return;
   if(PROG.options.cube){var paysage=getComputedStyle(jeu).display==="grid",
       autres=jeu.querySelector(".jtete").offsetHeight+jeu.querySelector(".jbas").offsetHeight+30,
-      c=paysage?96:Math.max(64,Math.min(150,jeu.clientHeight-autres-Math.min(jeu.clientWidth-28,560)-12));
+      c=paysage?96:Math.max(64,Math.min(110,jeu.clientHeight-autres-Math.min(jeu.clientWidth-28,560)-12));
     jeu.style.setProperty("--cube",Math.round(c)+"px");}
   var r=z.getBoundingClientRect();if(!r.width)return;JeuP.dimension(Math.min(r.width-28,r.height-8),r.height-8);dessinerMini();
   // le cube se centre verticalement entre le titre et le haut du grand cercle (décalage visuel seulement)

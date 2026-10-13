@@ -54,7 +54,9 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   `outils/icones.py` et `outils/tester.js` (geste le long de U) : les changer aux trois endroits.
 - **Le cube en perspective est au centre de la ligne des coups et du temps** (le client, le 11/10/2026,
   « l'endroit optimal ») : le plateau prend d'abord la largeur moins 14 px de chaque côté, et `redimJeu()` donne au cube la
-  hauteur qui reste (`--cube`, de 64 à 150 px). Pas en filigrane : des couleurs derrière les pastilles
+  hauteur qui reste (`--cube`, de 64 à 110 px depuis le 13/10/2026 : à 150 il volait la vedette au plateau). Le vide
+  vertical en trop (plateau limité par la largeur) va pour un tiers au-dessus du plateau, deux tiers en dessous
+  (`JeuP.haut=1/3`, dans `Plateau.dimension`) : cube et plateau forment un bloc. `outils/tester.js` recopie ce tiers. Pas en filigrane : des couleurs derrière les pastilles
   se confondraient avec elles.
 - **Le plateau se manipule en glissant** : un simple appui sur un cercle ne tourne rien (le parcours de test
   le vérifie). **Le cube en perspective pivote au doigt** (redemandé par le client le 11/10/2026) : gauche/droite
