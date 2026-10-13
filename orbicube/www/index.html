@@ -333,12 +333,17 @@ a.bouton{text-decoration:none;color:inherit}
 /* écran de chargement : trois cercles qui tournent, puis tout se dissout dans l'accueil (n'arrête jamais le doigt) */
 #chargement{position:fixed;inset:0;z-index:60;display:grid;place-content:center;justify-items:center;gap:18px;pointer-events:none;
   background:radial-gradient(60% 45% at 50% 45%,#15122a,#07070c 75%);transition:opacity .55s ease,visibility 0s .55s}
-#chargement svg{width:120px;height:120px}
+/* les neuf orbites du plateau, à la place qu'elles prennent à l'accueil : un éclat de couleur parcourt chacune, à sa
+   vitesse (le client, le 13/10/2026). Le chargement se dissout ensuite sur le vrai plateau. */
+#chargement svg{width:min(78vw,300px);height:min(78vw,300px)}
+.orbites .rails{stroke:rgba(165,139,255,.32)}
+.orbites .arcs circle{transform-box:fill-box;transform-origin:center;animation:orbite 2.4s linear infinite}
+.orbites .a00{animation-duration:2.2s}.orbites .a01{animation-duration:2.8s}.orbites .a02{animation-duration:3.3s}.orbites .a10{animation-duration:2.5s;animation-direction:reverse}.orbites .a11{animation-duration:3.0s;animation-direction:reverse}.orbites .a12{animation-duration:3.6s;animation-direction:reverse}.orbites .a20{animation-duration:2.8s}.orbites .a21{animation-duration:3.4s}.orbites .a22{animation-duration:3.9s}
 .anneaux circle{transform-box:fill-box;transform-origin:center;animation:orbite 1.6s linear infinite}
 .anneaux circle:nth-child(2){animation-duration:2.1s;animation-direction:reverse}
 .anneaux circle:nth-child(3){animation-duration:2.6s}
 @keyframes orbite{to{transform:rotate(360deg)}}
-#chargement b{font-family:var(--f-titre);font-weight:800;letter-spacing:.3em;font-size:15px;color:#d9ceff;opacity:.85}
+#chargement b{font-family:"Jost",var(--f-texte);font-weight:300;letter-spacing:.32em;padding-left:.32em;font-size:22px;color:#eef3ff;text-shadow:0 0 18px rgba(165,139,255,.6)}
 #chargement.fini{opacity:0;visibility:hidden}
 /* mode zen : la partie sans chiffres */
 body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
@@ -448,11 +453,11 @@ body{background:
   linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.02) 42%),rgba(12,13,22,.74);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.14),var(--ombre)}
 .pastille{background:linear-gradient(180deg,rgba(var(--acc),.3),rgba(var(--acc),.12));box-shadow:inset 0 1px 0 rgba(255,255,255,.22)}
-/* écran de chargement : les trois anneaux baignent dans une lumière orbitale (uniquement au démarrage) */
+/* écran de chargement : les orbites baignent dans une lumière orbitale (uniquement au démarrage) */
 #chargement{background:
   radial-gradient(40% 30% at 50% 45%,rgba(165,139,255,.30),rgba(165,139,255,0) 70%),
   radial-gradient(60% 45% at 50% 45%,#15122a,#07070c 78%)}
-#chargement svg{filter:drop-shadow(0 0 9px rgba(165,139,255,.45)) drop-shadow(0 0 16px rgba(76,201,240,.22))}
+/* pas de filtre sur le SVG animé : il serait recalculé à chaque image sur téléphone */
 /* ===== Parcours de campagne : carte verticale scrollable façon Candy Crush, dans le thème orbital.
    Nœuds-planètes le long d'une traînée en pointillés, une section par monde, « vous êtes ici » sur le niveau courant. */
 /* plein écran : la carte remplit tout l'écran (bords + haut), l'en-tête flotte par-dessus avec un dégradé de lisibilité */
@@ -531,9 +536,8 @@ body.sobre #plateau{transition:none}
 
 <div id="fondMonde" aria-hidden="true"></div>
 <canvas id="ciel" aria-hidden="true"></canvas>
-<div id="chargement" class="anneaux" aria-hidden="true"><svg viewBox="-60 -60 120 120"><g fill="none" stroke-width="3" stroke-linecap="round">
-  <circle r="34" cx="0" cy="-12" stroke="#a58bff" stroke-dasharray="150 64"/><circle r="34" cx="-10.4" cy="6" stroke="#4cc9f0" stroke-dasharray="150 64"/>
-  <circle r="34" cx="10.4" cy="6" stroke="#ff6b9d" stroke-dasharray="150 64"/></g></svg><b class="notrad">ORBICUBE</b></div>
+<div id="chargement" class="orbites" aria-hidden="true"><svg viewBox="-60 -60 120 120"><g fill="none" stroke-linecap="round"><g class="rails" stroke-width="1"><circle r="26.27" cx="16.64" cy="9.60"/><circle r="32.54" cx="16.64" cy="9.60"/><circle r="39.01" cx="16.64" cy="9.60"/><circle r="26.27" cx="0.00" cy="-19.21"/><circle r="32.54" cx="0.00" cy="-19.21"/><circle r="39.01" cx="0.00" cy="-19.21"/><circle r="26.27" cx="-16.64" cy="9.60"/><circle r="32.54" cx="-16.64" cy="9.60"/><circle r="39.01" cx="-16.64" cy="9.60"/></g>
+  <g class="arcs" stroke-width="2.6"><circle class="a00" r="26.27" cx="16.64" cy="9.60" stroke="#4cc9f0" pathLength="100" stroke-dasharray="22 78" stroke-dashoffset="0"/><circle class="a01" r="32.54" cx="16.64" cy="9.60" stroke="#4cc9f0" pathLength="100" stroke-dasharray="22 78" stroke-dashoffset="61"/><circle class="a02" r="39.01" cx="16.64" cy="9.60" stroke="#4cc9f0" pathLength="100" stroke-dasharray="22 78" stroke-dashoffset="22"/><circle class="a10" r="26.27" cx="0.00" cy="-19.21" stroke="#a58bff" pathLength="100" stroke-dasharray="22 78" stroke-dashoffset="37"/><circle class="a11" r="32.54" cx="0.00" cy="-19.21" stroke="#a58bff" pathLength="100" stroke-dasharray="22 78" stroke-dashoffset="98"/><circle class="a12" r="39.01" cx="0.00" cy="-19.21" stroke="#a58bff" pathLength="100" stroke-dasharray="22 78" stroke-dashoffset="59"/><circle class="a20" r="26.27" cx="-16.64" cy="9.60" stroke="#ff6b9d" pathLength="100" stroke-dasharray="22 78" stroke-dashoffset="74"/><circle class="a21" r="32.54" cx="-16.64" cy="9.60" stroke="#ff6b9d" pathLength="100" stroke-dasharray="22 78" stroke-dashoffset="35"/><circle class="a22" r="39.01" cx="-16.64" cy="9.60" stroke="#ff6b9d" pathLength="100" stroke-dasharray="22 78" stroke-dashoffset="96"/></g></g></svg><b class="notrad">ORBICUBE</b></div>
 <div id="app">
 
   <section class="ecran actif" id="accueil" aria-label="Accueil">

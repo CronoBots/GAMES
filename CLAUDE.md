@@ -108,8 +108,9 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   `.marque`, lueur d'accent ; plus d'Unbounded ni d'ellipse sur le titre). **Le cube au cœur des orbites** : un seul
   visuel, le plateau prend la place libre et le petit cube se pose dans son vide central (`CUBE_LOGO` × `ECH`,
   décalé de 0,133 unité comme `OY`) ; les pastilles les plus proches du centre sont à 0,298 unité : ne pas grossir le cube.
-- **Logo** : les trois anneaux de l'écran de chargement (`ANNEAUX` dans `outils/icones.py`) pour l'icône et
-  le démarrage natif ; les médailles des succès gardent le plateau. Accueil : la devise disparaît après le
+- **Logo** : les trois anneaux (`ANNEAUX` dans `outils/icones.py`) pour l'icône, le démarrage natif et le logo du
+  mélange (`.anneaux`). **L'écran de chargement web montre les neuf orbites du plateau** (`.orbites`, SVG, un éclat de
+  couleur par orbite, sans filtre CSS) puis se dissout sur l'accueil (le client, le 13/10/2026) ; les médailles des succès gardent le plateau. Accueil : la devise disparaît après le
   premier niveau, la pastille « Jeu complet » n'apparaît qu'après dix niveaux. Quand la suite de la campagne est payante, le bouton
   principal dit « Campagne » (et non « Continuer ») et la ligne dessous le dit.
 - **Le mélange ne se montre jamais** (le client, le 11/10/2026) : au lancement, le plateau se trouble en tournant
@@ -122,8 +123,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 - **Cadence** (mesuré le 11/10/2026, processeur ralenti ×4) : un plateau qui ne fait que pulser (indice) et les
   plateaux décoratifs (`lent` : logo de l'accueil, aide) se redessinent à 30 images/s ; un tour, un glisser ou un effet
   gardent la pleine cadence (`Ticker.tic`). Le petit cube n'est redessiné que s'il change (`dessinerMini.cle`).
-  Occupation du fil : jeu avec indice 73 % → 32 %, accueil 45 % → 26 %. Pendant le mélange, le logo animé du
-  chargement (`.anneaux`) tourne sur le plateau troublé.
+  Occupation du fil : jeu avec indice 73 % → 32 %, accueil 45 % → 26 %. Pendant le mélange, le logo des trois
+  anneaux (`.anneaux`) tourne sur le plateau troublé.
 - Pas d'effet `shadowBlur` du canvas sur le plateau : trop lent sur téléphone, il figeait le jeu.
   Les halos sont des traits translucides superposés (`halo()`).
 - **Les langues** : le français est la source. Un observateur traduit tout texte qui apparaît à
