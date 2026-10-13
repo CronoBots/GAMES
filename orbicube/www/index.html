@@ -22,7 +22,9 @@
 :root{
   --nuit:#07070c; --carte:#14141f; --carte2:#1b1b29; --trait:#2a2a3c; --trait-vif:#454560;
   --encre:#eeedf5; --pale:#a09fb6; --sourd:#6e6d86;
-  --lilas:#a58bff; --lilas-fonce:#7a5cf0; --lilas-doux:#251f42; --sur-lilas:#130e26;
+  /* l'accent de l'UI suit le thème du fond parallax (--acc, réglé par accentTheme) ; sa valeur par défaut
+     165,139,255 EST #a58bff, donc le rendu hors thème est identique à avant */
+  --lilas:rgb(var(--acc)); --lilas-fonce:#7a5cf0; --lilas-doux:#251f42; --sur-lilas:#130e26;
   --or:#ffcf4a; --or-doux:#3a2f12; --rouge:#ff6b6b;
   --f-titre:"Unbounded","Arial Black",system-ui,sans-serif;
   --f-math:"STIX Two Text","Cambria Math",Georgia,serif;
@@ -419,9 +421,9 @@ body{background:
    Les reflets sont des couches de dégradé dans le background (pas de pseudo qui recouvrirait le texte) */
 .bouton.principal{background:
   linear-gradient(180deg,rgba(255,255,255,.30),rgba(255,255,255,0) 46%),
-  linear-gradient(135deg,#b79dff 0%,#7b57ff 52%,#5a37ea 100%);
+  linear-gradient(135deg,color-mix(in srgb,rgb(var(--acc)),#fff 12%) 0%,color-mix(in srgb,rgb(var(--acc)),#000 28%) 52%,color-mix(in srgb,rgb(var(--acc)),#120a2e 56%) 100%);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -10px 22px -12px rgba(30,8,70,.9),
-  0 0 0 1px rgba(165,139,255,.32),0 16px 36px -12px rgba(123,87,255,.85)}
+  0 0 0 1px rgba(var(--acc),.32),0 16px 36px -12px rgba(var(--acc),.8)}
 .bouton.bloc,.tuile,.trio .bouton.bloc{background:
   linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.02) 42%),rgba(14,14,24,.55);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.16),var(--ombre)}
@@ -1086,7 +1088,7 @@ function montrer(id,sens){var prevEcran=ECRAN;sens=sens||1;document.querySelecto
     else{if(e.classList.contains("actif"))e.style.setProperty("--dx",(-sens*28)+"px");e.classList.remove("actif");}});ECRAN=id;
   numeroter(document.getElementById(id));
   Logo.visible=id==="accueil";AideP.visible=id==="aide";JeuP.visible=id==="jeu";
-  if(id==="accueil"){if(!FOND_ACC||prevEcran==="jeu"||prevEcran==="parcours")FOND_ACC=1+Math.floor(Math.random()*4);poserFond(FOND_ACC);accentTheme(FOND_ACC);rafraichirAccueil();majRang();Logo.demarrer();}
+  if(id==="accueil"){FOND_ACC=2;poserFond(FOND_ACC);accentTheme(FOND_ACC);rafraichirAccueil();majRang();Logo.demarrer();}  // accueil toujours en thème bleu
   if(id==="succes")rafraichirSucces();if(id==="profil")rafraichirProfil();if(id==="aide")redimAide();if(id==="jeu"){poserFond((J&&J.fond)||FOND_ACC||1);redimJeu();}
   Ticker.reveiller();}
 var OPT_DEPUIS_JEU=false;
@@ -1102,7 +1104,7 @@ document.addEventListener("pointerdown",function(e){if(CALME)return;var b=e.targ
   o.style.width=o.style.height=d+"px";o.style.left=(e.clientX-r.left)+"px";o.style.top=(e.clientY-r.top)+"px";b.appendChild(o);setTimeout(function(){o.remove();},650);},{passive:true});
 
 /* ========== 9. ACCUEIL : le logo vivant ========== */
-var Logo=new Plateau(document.getElementById("logo"),{etiquettes:false,comete:true});Logo.continu=true;Logo.lent=true;Logo.pile=[];Logo.prochain=0;Ticker.actifs.push(Logo);
+var Logo=new Plateau(document.getElementById("logo"),{etiquettes:false,comete:true});Logo.continu=true;Logo.lent=true;Logo.sol=[];Logo.prochain=0;Ticker.actifs.push(Logo);
 // le cube en perspective de l'accueil reflète l'état du logo (ses tours automatiques), exactement comme
 // #mini reflète le plateau pendant une partie : le menu a ainsi l'allure d'une partie en cours
 // même inclinaison qu'en jeu : #mini démarre à PIVOT {y:0,x:0} (vue isométrique, trois faces)
@@ -1110,18 +1112,26 @@ var logoCube=document.getElementById("logoCube"),logoCubeC=logoCube.getContext("
 function dessinerLogoCube(){var w=logoCube.clientWidth||100,px=Math.round(w*DPR);if(logoCube.width!==px){logoCube.width=px;logoCube.height=px;logoCubeC.setTransform(DPR,0,0,DPR,0,0);}
   var an=Logo.anim,cle=w+"|"+COUL[0]+"|"+Logo.col.join("")+"|"+(an?cleA(an.mv)+an.mv.q+":"+an.t.toFixed(4):"");
   if(cle===dessinerLogoCube.cle)return;dessinerLogoCube.cle=cle;dessinerCube(logoCubeC,w,Logo.col,an,PIVOT_LOGO);}
-Logo.apres=function(now){dessinerLogoCube();if(this.occupe()||now<this.prochain)return;this.prochain=now+650;
-  if((this.pile.length<5&&Math.random()<.8)||!this.pile.length){var b=TOUS[Math.floor(Math.random()*9)],m=MV[b],mv={a:m[0],L:m[1],q:Math.random()<.5?1:-1};this.pile.push(mv);this.jouer(mv,520);}
-  else this.jouer(inverse(this.pile.pop()),520);};
+// l'accueil montre une RÉSOLUTION : le cube part d'une position aléatoire (saut instantané vers un mélange),
+// puis joue les coups qui le résolvent — la résolution est ce mélange inversé, joué à l'envers.
+function melangerLogo(){var mel=genererMelange(Math.random,TOUS,7+Math.floor(Math.random()*4));if(!mel)return;
+  var col=resoluCol();mel.forEach(function(mv){col=appliquer(col,mv);});Logo.col=col;Logo.anim=null;Logo.file=[];
+  Logo.sol=mel.slice().reverse().map(inverse);}
+Logo.apres=function(now){dessinerLogoCube();if(this.occupe()||now<this.prochain)return;
+  if(!this.sol.length){                       // cube résolu : une pause sur le résultat, puis une nouvelle position
+    if(!this.pause){this.pause=1;this.prochain=now+900;return;}
+    this.pause=0;melangerLogo();this.prochain=now+650;this.dessiner();return;}
+  this.prochain=now+230;this.jouer(this.sol.shift(),500);};   // un coup de la résolution, à cadence régulière
 // la taille vient de la boîte qui l'entoure : la place que le menu laisse, sans dépasser 74 % de la largeur ni 310 px
 // toucher l'orbicube de l'accueil le fait tourner d'un cran : un petit jouet avant d'entrer
 document.getElementById("logo").addEventListener("pointerdown",function(){if(Logo.occupe())return;audio();var b=TOUS[Math.floor(Math.random()*9)],m=MV[b],mv={a:m[0],L:m[1],q:Math.random()<.5?1:-1};
-  Logo.pile.push(mv);Logo.prochain=performance.now()+1400;Logo.jouer(mv,300,null,"rebond");sonTour(mv);vibrer(8);});
+  Logo.sol.unshift(inverse(mv));Logo.pause=0;Logo.prochain=performance.now()+1200;Logo.jouer(mv,300,null,"rebond");sonTour(mv);vibrer(8);});
 // cube et orbites dimensionnés ENSEMBLE, en proportion, dans la hauteur que le menu laisse : le cube fait
 // ~0,54× l'orbite et chevauche un peu vers le bas, pour que les deux forment un seul bloc (comme en jeu)
 Logo.demarrer=function(){var box=this.cv.parentNode.parentNode.getBoundingClientRect(),
   budget=Math.min(box.height,innerWidth*.84,350),orbit=Math.round(budget*.60);if(orbit<=0)return;
-  this.dimension(orbit);logoCube.style.width=Math.round(orbit*.54)+"px";logoCube.style.marginBottom=-Math.round(orbit*.10)+"px";dessinerLogoCube();};
+  this.dimension(orbit);logoCube.style.width=Math.round(orbit*.54)+"px";logoCube.style.marginBottom=-Math.round(orbit*.10)+"px";
+  if(!this.sol.length&&!this.pause)melangerLogo();dessinerLogoCube();};
 function etoilesTotal(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t+=PROG.niveaux[k].etoiles||0;});return t;}
 function prochainNiveau(){for(var w=0;w<MONDES.length;w++)for(var i=0;i<MONDES[w].coups.length;i++)if(!PROG.niveaux[(w+1)+"-"+(i+1)])return{w:w,i:i};return null;}
 function estHier(k){var d=new Date();d.setDate(d.getDate()-1);return k===cleJour(d);}
