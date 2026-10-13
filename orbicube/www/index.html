@@ -102,7 +102,11 @@ body{background:
 
 /* vignette de l'accueil : calme le fond parallax (chargé) pour que le titre, le cube et les boutons
    ressortent nettement, tout en laissant le décor respirer sur les bords. Derrière le contenu. */
-#accueil::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+/* insets NÉGATIFs : la vignette déborde des safe-areas (encoche, barre d'accueil) pour couvrir tout
+   l'écran — sinon une bande non assombrie restait en haut et en bas (couture visible) */
+#accueil::before{content:"";position:absolute;z-index:-1;pointer-events:none;
+  top:calc(-1*env(safe-area-inset-top,0px));bottom:calc(-1*env(safe-area-inset-bottom,0px));
+  left:calc(-1*env(safe-area-inset-left,0px));right:calc(-1*env(safe-area-inset-right,0px));
   background:radial-gradient(130% 72% at 50% 40%,rgba(3,5,12,.12) 0%,rgba(3,5,12,.5) 74%,rgba(3,5,12,.68) 100%)}
 #accueil .defile{display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:12px}
 /* l'accueil descend un peu dans la zone de la barre d'accueil de l'iPhone (le client, le 11/10/2026) */
@@ -391,11 +395,11 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
 .mission.ok b{color:var(--pale)}
 .mission-bonus{margin:0;padding:10px 16px 14px;font-size:12.5px;color:var(--pale);border-top:1px solid #20202f}
 .xp-gain{display:inline-flex;align-items:center;gap:6px;margin:2px auto 0;padding:5px 12px;border-radius:99px;background:rgba(var(--acc),.14);color:var(--lilas);font-family:var(--f-chiffre);font-size:12.5px}
-.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.trio .bouton.bloc{align-items:center;text-align:center;justify-content:center;gap:5px;min-height:80px;padding:9px 6px}
-.trio .bouton.bloc>span:not(.droite){font-size:13.5px;line-height:1.15;hyphens:auto;-webkit-hyphens:auto}
-.trio .bouton.bloc .droite{margin:0;font-size:10px}
-.trio .pastille{width:34px;height:34px;border-radius:11px}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.trio .bouton.bloc{align-items:center;text-align:center;justify-content:center;gap:4px;min-height:66px;padding:8px 6px}
+.trio .bouton.bloc>span:not(.droite){font-size:13px;line-height:1.1;hyphens:auto;-webkit-hyphens:auto}
+.trio .bouton.bloc .droite{margin:0;font-size:9.5px}
+.trio .pastille{width:29px;height:29px;border-radius:9px}.trio .pastille svg{width:16px!important;height:16px!important}
 .puce-or{justify-self:center;display:inline-flex;align-items:center;gap:8px;margin-top:2px;padding:8px 14px;border-radius:99px;cursor:pointer;
   background:linear-gradient(135deg,rgba(255,207,74,.14),rgba(255,207,74,.04));border:1px solid rgba(255,207,74,.35);color:var(--encre);font-size:13.5px;font-weight:600}
 .puce-or svg{width:16px;height:16px;stroke:var(--or);fill:none;stroke-width:2;stroke-linejoin:round}
@@ -739,6 +743,8 @@ function appliquer(col,mv){var m=perm(mv.a,mv.L,mv.q),nc=col.slice();for(var k i
 function estResolu(col){var g={};for(var i=0;i<54;i++){var k=S[i].a+","+S[i].s;if(g[k]===undefined)g[k]=col[i];else if(g[k]!==col[i])return false;}return true;}
 var MV={R:[0,1,-1],M:[0,0,1],L:[0,-1,1],U:[1,1,-1],E:[1,0,1],D:[1,-1,1],F:[2,1,-1],S:[2,0,-1],B:[2,-1,1]};
 var TOUS=["U","D","L","R","F","B","M","E","S"];
+// les six faces, SANS les tranches médianes M/E/S : jeu des défis gratuits (le 9-anneaux reste l'avantage du payant)
+var SIXFACES=["U","D","L","R","F","B"];
 var NOM_ANNEAU={};Object.keys(MV).forEach(function(k){NOM_ANNEAU[MV[k][0]+","+MV[k][1]]=k;});
 function nomDe(mv){var b=NOM_ANNEAU[mv.a+","+mv.L];if(mv.d===2)return b+"2";return MV[b][2]===mv.q?b:b+"′";}
 function parNom(t){var b=t.charAt(0),m=MV[b];return{a:m[0],L:m[1],q:t.length>1?-m[2]:m[2]};}
@@ -879,9 +885,9 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
   else this.trace.length=0;
   // une face terminée s'illumine : un halo doux de sa couleur rayonne AUTOUR de ses neuf pastilles
   // (plus de cercle qui l'entoure — demandé par le client). Un seul dégradé radial par face (bon marché).
-  if(this.opts.eclats&&!this.anim){var fu=facesUnies(this.col);for(var fk in fu){var fc=this.vers(CENTRE_FACE[fk]),rr=RAYON_FACE*E*1.28,rgb=hexRGB(COUL[fu[fk]]);
+  if(this.opts.eclats&&!this.anim){var fu=facesUnies(this.col);for(var fk in fu){var fc=this.vers(CENTRE_FACE[fk]),rr=RAYON_FACE*E*1.33,rgb=hexRGB(COUL[fu[fk]]);
     var gh=cx.createRadialGradient(fc[0],fc[1],rr*.3,fc[0],fc[1],rr);
-    gh.addColorStop(0,"rgba("+rgb+",.26)");gh.addColorStop(.55,"rgba("+rgb+",.14)");gh.addColorStop(1,"rgba("+rgb+",0)");
+    gh.addColorStop(0,"rgba("+rgb+",.30)");gh.addColorStop(.55,"rgba("+rgb+",.17)");gh.addColorStop(1,"rgba("+rgb+",0)");
     cx.fillStyle=gh;cx.beginPath();cx.arc(fc[0],fc[1],rr,0,Math.PI*2);cx.fill();}}
   for(i=0;i<pos.length;i++){q=this.vers(pos[i].xy);var r=rp,pk=this.pops[i];
     if(pk!==undefined){var e=(now-pk)/280;if(e>=1)delete this.pops[i];else if(e>0)r=rp*(1+.32*Math.sin(e*Math.PI));}
@@ -1007,7 +1013,7 @@ function genererMelange(rnd,anneaux,n){var out=[];for(var essai=0;essai<50;essai
 function niveauDef(w,i){var M=MONDES[w];return{mode:"campagne",w:w,i:i,id:(w+1)+"-"+(i+1),anneaux:M.anneaux,par:M.coups[i],
   melange:genererMelange(graine("orbicube-"+w+"-"+i),M.anneaux,M.coups[i]),titre:"Monde "+(w+1)+" · Niveau "+(i+1),sous:M.nom};}
 function cleJour(d){d=d||new Date();return d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0");}
-function jourDef(){var k=cleJour(),d=new Date();return{mode:"jour",id:k,anneaux:TOUS,par:8,melange:genererMelange(graine("jour-"+k),TOUS,8),
+function jourDef(){var k=cleJour(),d=new Date();return{mode:"jour",id:k,anneaux:SIXFACES,par:8,melange:genererMelange(graine("jour-"+k),SIXFACES,8),
   titre:"Défi du jour",sous:d.toLocaleDateString(locale(),{weekday:"long",day:"numeric",month:"long"})};}
 var LIBRES=[{n:5,nom:"Facile"},{n:10,nom:"Moyen"},{n:15,nom:"Difficile"},{n:25,nom:"Expert"}];
 function libreDef(n){var nm=LIBRES.filter(function(l){return l.n===n;})[0];return{mode:"libre",id:"libre-"+n,n:n,anneaux:TOUS,par:n,
@@ -1751,7 +1757,7 @@ document.getElementById("btnRang").addEventListener("click",function(){sonClic()
 // le défi de la semaine : un long mélange, le même pour tous du lundi au dimanche
 function cleSemaine(d){d=new Date(d||Date.now());d.setHours(0,0,0,0);d.setDate(d.getDate()+3-(d.getDay()+6)%7);var a=new Date(d.getFullYear(),0,4);
   return d.getFullYear()+"-S"+String(1+Math.round(((d-a)/864e5-3+(a.getDay()+6)%7)/7)).padStart(2,"0");}
-function semaineDef(){var k=cleSemaine();return{mode:"semaine",id:k,anneaux:TOUS,par:14,melange:genererMelange(graine("semaine-"+k),TOUS,14),titre:"Défi de la semaine",sous:"Semaine "+(+k.slice(-2))};}
+function semaineDef(){var k=cleSemaine();return{mode:"semaine",id:k,anneaux:SIXFACES,par:14,melange:genererMelange(graine("semaine-"+k),SIXFACES,14),titre:"Défi de la semaine",sous:"Semaine "+(+k.slice(-2))};}
 // relax : un mélange court, sans chrono, sans compteur, sans étoiles ; pour quelques minutes
 function relaxDef(){return{mode:"relax",relax:true,id:"relax",n:8,anneaux:TOUS,par:8,melange:genererMelange(Math.random,TOUS,8),titre:"Relax",sous:"sans chrono ni étoiles"};}
 function ouvrirDefis(){var j=PROG.jours[cleJour()],w=(PROG.semaines||{})[cleSemaine()];
