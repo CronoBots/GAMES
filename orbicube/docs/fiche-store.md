@@ -37,7 +37,7 @@ elles. Regroupez chaque couleur pour gagner.
 • Une palette lisible par les daltoniens
 • Hors ligne, sans publicité, sans compte, sans collecte de données
 
-Les deux premiers mondes sont gratuits. Un achat unique débloque tout le jeu, pour toujours.
+Les trois premiers mondes sont gratuits. Un achat unique débloque tout le jeu, pour toujours. Des packs de styles, facultatifs, habillent le plateau : palettes, formes, effets.
 
 **Mots-clés App Store** (100, séparés par des virgules, sans espace) :
 casse-tête,cube,3x3,cercles,puzzle,logique,permutation,réflexion,cerveau,défi,maths
@@ -78,7 +78,7 @@ twelve dots turn, and the 3D cube turns with them. Group every colour to win.
 • A colour-blind friendly palette
 • Offline, no ads, no account, no data collection
 
-The first two worlds are free. A single purchase unlocks the whole game, forever.
+The first three worlds are free. A single purchase unlocks the whole game, forever. Optional style packs dress up the board: palettes, shapes, effects.
 
 **App Store keywords**: puzzle,cube,3x3,circles,logic,permutation,brain,daily,challenge,math,twisty
 
@@ -110,7 +110,7 @@ twaalf bolletjes draaien, en de 3D-kubus draait mee. Breng elke kleur samen om t
 • Een palet voor kleurenblinden · in 5 talen
 • Offline, zonder reclame, zonder account, zonder gegevensverzameling
 
-De eerste twee werelden zijn gratis. Eén aankoop ontgrendelt het hele spel, voor altijd.
+De eerste drie werelden zijn gratis. Eén aankoop ontgrendelt het hele spel, voor altijd. Optionele stijlpakketten kleden het bord aan: paletten, vormen, effecten.
 
 **Trefwoorden**: puzzel,kubus,3x3,cirkels,logica,denkspel,breinbreker,uitdaging,wiskunde
 
@@ -141,7 +141,7 @@ um zu gewinnen.
 • Eine Palette für Farbenblinde · in 5 Sprachen
 • Offline, ohne Werbung, ohne Konto, ohne Datensammlung
 
-Die ersten beiden Welten sind kostenlos. Ein einziger Kauf schaltet das ganze Spiel frei, für immer.
+Die ersten drei Welten sind kostenlos. Ein einziger Kauf schaltet das ganze Spiel frei, für immer. Optionale Stilpakete schmücken das Brett: Paletten, Formen, Effekte.
 
 **Schlüsselwörter**: puzzle,würfel,3x3,kreise,logik,denkspiel,knobeln,rätsel,mathe
 
@@ -171,7 +171,7 @@ círculo: giran doce bolitas, y el cubo en 3D gira con ellas. Reúne cada color 
 • Una paleta apta para daltónicos · en 5 idiomas
 • Sin conexión, sin anuncios, sin cuenta, sin recogida de datos
 
-Los dos primeros mundos son gratis. Una sola compra desbloquea todo el juego, para siempre.
+Los tres primeros mundos son gratis. Una sola compra desbloquea todo el juego, para siempre. Packs de estilos opcionales visten el tablero: paletas, formas, efectos.
 
 **Palabras clave**: puzle,cubo,3x3,círculos,lógica,ingenio,reto,diario,matemáticas
 

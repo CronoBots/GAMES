@@ -14,7 +14,7 @@ Ils changent : vérifiez-les sur les pages officielles au moment de vous inscrir
 
 | | Gratuit | Orbicube complet (achat unique) |
 |---|---|---|
-| Mondes | 1 et 2 (20 niveaux) | les 6 (60 niveaux) |
+| Mondes | 1 à 3 (30 niveaux) | les 6 (60 niveaux) |
 | Défi du jour | oui | oui |
 | Partie libre | Facile | Facile, Moyen, Difficile, Expert |
 | Publicité | aucune | aucune |
@@ -23,6 +23,9 @@ Ils changent : vérifiez-les sur les pages officielles au moment de vous inscrir
   le prix dans sa devise : il vient du store.
 - **Pas de publicité** : l'application ne collecte aucune donnée personnelle. Pas de bandeau de
   consentement RGPD, une fiche de confidentialité courte, de meilleures notes.
+- **La boutique** (le client, le 13/10/2026) vend aussi, en option, des **packs de styles** (couleurs, formes
+  des pastilles, effets), deux éditions groupées, des **ampoules** et un **pack soutien** : voir 3 quater. Les
+  styles ne changent rien au jeu ; une partie se gagne aussi en jouant (étoiles, rang).
 - **Changer de modèle** ne demande aucun code : `www/config.js`.
   - `modele: "complet"` : tout est ouvert. Choisissez ce réglage pour vendre l'application payante
     sur le store (par exemple 3,99 €), sans achat intégré.
@@ -189,6 +192,28 @@ les deux stores, avec les textes de [`fiche-store.md`](fiche-store.md).
 
 ---
 
+## 3 quater. Les produits de la boutique **[vous]**
+
+Mêmes outils que pour `orbicube_complet` (App Store Connect, Google Play Console, RevenueCat). Les identifiants
+sont ceux de `PACKS` dans `www/index.html` ; les prix affichés en attendant le store, ceux de `www/config.js` >
+`prixPacks`.
+
+| Produit (même identifiant sur les deux stores) | Type | Prix conseillé | Droits RevenueCat (entitlements) |
+|---|---|---|---|
+| `orbicube_pack_couleurs` « Palettes cosmiques » | Non consommable | 1,99 € | `pack_couleurs` |
+| `orbicube_pack_formes` « Formes précieuses » | Non consommable | 1,99 € | `pack_formes` |
+| `orbicube_pack_effets` « Effets stellaires » | Non consommable | 1,99 € | `pack_effets` |
+| `orbicube_collection` « Collection complète » | Non consommable | 3,99 € | `pack_couleurs`, `pack_formes`, `pack_effets` |
+| `orbicube_integrale` « Édition intégrale » | Non consommable | 7,99 € | `complet`, `pack_couleurs`, `pack_formes`, `pack_effets` |
+| `orbicube_soutien` « Soutenir Orbicube » | Non consommable | 2,99 € | `soutien` |
+| `orbicube_ampoules_10` « 10 ampoules » | **Consommable** | 0,99 € | aucun : le jeu crédite les ampoules |
+| `orbicube_ampoules_30` « 30 ampoules » | **Consommable** | 1,99 € | aucun |
+
+- Dans RevenueCat, **attachez chaque produit à ses droits** : un produit groupé à plusieurs droits. C'est ce qui
+  ouvre tout d'un coup avec l'Édition intégrale. Les produits n'ont pas besoin d'être dans l'*offering*.
+- Les consommables ne se restaurent pas (règle des stores) : c'est normal.
+- Captures pour la vérification d'Apple : une par produit, depuis l'écran Boutique.
+
 ## 4. Construire l'application
 
 Sur votre ordinateur, avec Node 20 ou plus récent. Pour iOS, il faut un **Mac avec Xcode**.
@@ -235,7 +260,10 @@ Après chaque modification du jeu : `npm run cap:sync`, puis reconstruire.
   3. désinstaller, réinstaller, puis *Options > Restaurer* : tout revient ;
   4. le mode avion : le jeu se joue, la boutique dit que le store ne répond pas ;
   5. le bouton retour d'Android : il ferme les fenêtres, met en pause, remonte, puis quitte ;
-  6. les retours haptiques sur iPhone.
+  6. les retours haptiques sur iPhone ;
+  7. la boutique : prix de chaque pack dans la devise du store, achat d'un pack (ses styles s'ouvrent), Édition
+     intégrale (tout s'ouvre, mondes compris), 10 ampoules (créditées), puis *Restaurer* après réinstallation (les
+     packs reviennent, pas les ampoules).
 
 ---
 

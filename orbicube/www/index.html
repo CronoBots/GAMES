@@ -503,6 +503,7 @@ body{background:
 .dock .or .rond{border-color:rgba(255,207,74,.42);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 10px 22px -10px rgba(0,0,0,.9),0 0 16px -8px rgba(255,207,74,.45)}
 .dock .or svg{stroke:var(--or)}.dock .or .sous{color:var(--or);font-family:var(--f-chiffre)}
 .dock .item[hidden]{display:none}
+#stylesAccueil{font-family:var(--f-texte)}
 @media (max-height:700px){#accueil .bouton.principal{min-height:56px}#accueil .bouton.principal svg{width:38px;height:38px;padding:11px 10px 11px 12px}.dock{margin-top:4px}.dock .item{gap:4px}}
 .bouton.bloc,.tuile{background:
   linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.02) 42%),rgba(12,13,22,.74);
@@ -608,6 +609,77 @@ body.sobre #plateau{transition:none}
   top:calc(-1*env(safe-area-inset-top,0px));background:linear-gradient(180deg,rgba(6,7,14,.94),rgba(6,7,14,.72) 62%,rgba(6,7,14,0))}
 .ecran:not(#parcours)>.tete+.defile{margin-top:calc(-1*env(safe-area-inset-top,0px));margin-bottom:calc(-1*env(safe-area-inset-bottom,0px));
   padding-top:calc(env(safe-area-inset-top,0px) + 66px);padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+/* ===== Boutique (le client, le 13/10/2026) : vitrine premium. Offre phare dorée, aperçu en direct sur un vrai plateau,
+   rayons de styles en vignettes, ampoules, soutien. Verre sombre et liserés d'accent comme le reste du jeu ; le doré est
+   réservé à ce qui s'achète. ===== */
+.bouton.petit{min-height:40px;padding:0 18px;border-radius:999px;font-size:14px;flex:none;margin-left:auto}
+.bout{display:grid;gap:14px;width:100%;max-width:460px;margin:0 auto}
+.bout-reserve svg{stroke:var(--or);fill:none;stroke-width:2}
+.bout-hero{position:relative;overflow:hidden;border-radius:24px;padding:18px 18px 16px;border:1px solid rgba(255,207,74,.42);
+  background:radial-gradient(120% 90% at 88% 0%,rgba(255,207,74,.22),rgba(255,207,74,0) 60%),linear-gradient(160deg,rgba(42,34,74,.96),rgba(14,14,26,.96));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 18px 40px -18px rgba(0,0,0,.9),0 0 40px -18px rgba(255,207,74,.5)}
+.bout-hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.12) 50%,transparent 65%);
+  transform:translateX(-120%);animation:reflet 6s ease-in-out 1s infinite}
+.bout-hero .etiq{display:inline-block;font:700 10.5px var(--f-titre);letter-spacing:.16em;text-transform:uppercase;color:#1b1406;background:var(--or);border-radius:99px;padding:3px 10px}
+.bout-hero h3{margin:10px 0 4px;font-family:var(--f-titre);font-size:23px;font-weight:600;letter-spacing:.02em}
+.bout-hero p{margin:0 0 12px;color:var(--pale);font-size:13.5px;line-height:1.45}
+.bout-hero ul{list-style:none;margin:0 0 16px;padding:0;display:grid;gap:7px;font-size:13.5px}
+.bout-hero li{display:flex;gap:9px;align-items:flex-start;line-height:1.35}
+.bout-hero li svg{width:17px;height:17px;flex:none;stroke:var(--or);fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;margin-top:1px}
+.bout-hero.merci{border-color:rgba(var(--acc),.4);background:linear-gradient(160deg,rgba(30,34,70,.95),rgba(14,14,26,.95));box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
+.btn-or{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:52px;padding:0 20px;border-radius:999px;border:0;cursor:pointer;
+  font:600 16px var(--f-titre);letter-spacing:.03em;color:#1b1406;background:linear-gradient(180deg,#ffe28e,#f0b623);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.65),inset 0 -1px 0 rgba(120,70,0,.3),0 12px 26px -12px rgba(255,190,40,.85)}
+.btn-or:active{transform:scale(.97)}.btn-or[disabled]{opacity:.5}
+.btn-or .px{font-family:var(--f-chiffre);font-weight:700}
+.bout .btn-or span{display:inline;color:#1b1406;margin:0;font-size:inherit}
+.bout-ligne{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;border:1px solid rgba(255,207,74,.3);
+  background:linear-gradient(135deg,rgba(255,207,74,.1),rgba(255,207,74,.02)),rgba(12,13,28,.88);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.bout-ligne .lt{flex:1;min-width:0}.bout-ligne b{display:block;font:600 15px var(--f-titre);letter-spacing:.01em}
+.bout-ligne span{display:block;color:var(--pale);font-size:12.5px;margin-top:2px;line-height:1.35}
+.bout-ligne .lt,.style b,.bout-hero{overflow-wrap:anywhere;hyphens:auto;-webkit-hyphens:auto}
+.bout-ligne .btn-or{width:auto;min-height:40px;font-size:14px;padding:0 16px;flex:none}
+.bout-ligne .ic{width:38px;height:38px;flex:none;display:grid;place-items:center;border-radius:50%;background:rgba(255,207,74,.12)}
+.bout-ligne .ic svg{width:20px;height:20px;stroke:var(--or);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.bout-ligne.acquis{border-color:rgba(var(--acc),.28);background:rgba(12,13,28,.72)}
+.bout-ligne.appel{animation:appel 1.2s ease-in-out 2}
+@keyframes appel{50%{box-shadow:0 0 0 2px var(--or),0 0 30px -4px rgba(255,207,74,.8)}}
+.bout-acquis{color:rgb(var(--acc));font:600 13px var(--f-titre);flex:none;display:flex;gap:6px;align-items:center}
+.bout-acquis svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.6}
+.bout-apercu{position:sticky;top:calc(env(safe-area-inset-top,0px) + 62px);z-index:2;border-radius:24px;border:1px solid rgba(var(--acc),.3);overflow:hidden;display:grid;justify-items:center;padding:8px 0 12px;
+  background:radial-gradient(70% 65% at 50% 42%,rgba(var(--acc),.16),rgba(8,9,20,.94) 72%),#0b0c1c;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+#apercu{display:block}
+.bout-apercu .nom{font:600 12px var(--f-titre);letter-spacing:.16em;text-transform:uppercase;color:var(--pale)}
+.bout-rayons{width:100%}.bout-rayons button{flex:1}
+.bout-sous{margin:6px 2px -4px;font:600 11px var(--f-titre);letter-spacing:.18em;text-transform:uppercase;color:rgb(var(--acc))}
+.bout-grille{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.style{position:relative;display:grid;justify-items:center;gap:5px;padding:10px 4px;border-radius:18px;cursor:pointer;color:var(--encre);font:inherit;
+  border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.01) 55%),rgba(11,13,30,.86);transition:transform .12s,border-color .2s}
+.style:active{transform:scale(.95)}
+.style canvas{width:64px;height:64px;display:block}
+.style b{font:600 12.5px var(--f-titre);line-height:1.15;text-align:center;letter-spacing:.01em}
+.style small{font-size:11px;color:var(--pale);line-height:1.1;display:flex;gap:3px;align-items:center}
+.style small svg{width:11px;height:11px}
+.style.porte{border-color:rgb(var(--acc));box-shadow:0 0 0 1px rgb(var(--acc)),0 0 22px -8px rgba(var(--acc),.85)}
+.style.porte small{color:rgb(var(--acc));font-weight:600}
+.style.vu:not(.porte){border-color:rgba(255,255,255,.45)}
+.style.ferme canvas{opacity:.5;filter:saturate(.7)}
+.style.ferme small{color:var(--or)}
+.style .cad{position:absolute;top:7px;right:7px;width:15px;height:15px;fill:none;stroke:var(--or);stroke-width:2;stroke-linecap:round}
+.bout-amp{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bout-carte{position:relative;display:grid;justify-items:center;gap:6px;padding:16px 10px 14px;border-radius:20px;border:1px solid rgba(255,207,74,.3);cursor:pointer;color:var(--encre);font:inherit;
+  background:radial-gradient(90% 70% at 50% 0%,rgba(255,207,74,.14),rgba(255,207,74,0) 70%),rgba(12,13,28,.88);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.bout-carte:active{transform:scale(.96)}
+.bout-carte svg{width:34px;height:34px;stroke:var(--or);fill:rgba(255,207,74,.12);stroke-width:1.7}
+.bout-carte b{font:600 16px var(--f-titre)}.bout-carte .px{font:700 14px var(--f-chiffre);color:var(--or)}
+.bout-carte .eco{position:absolute;top:-9px;font:700 9.5px var(--f-titre);letter-spacing:.12em;text-transform:uppercase;color:#1b1406;background:var(--or);border-radius:99px;padding:3px 9px;white-space:nowrap}
+.bout-lien{background:none;border:0;color:var(--pale);font:500 13px var(--f-texte);text-decoration:underline;text-underline-offset:3px;cursor:pointer;justify-self:center;padding:6px 10px}
+.bout-pied{margin:0;text-align:center;color:var(--sourd);font-size:12px;line-height:1.45}
+#boutique.attente .bout button{pointer-events:none;opacity:.6}
+/* le pack soutien : un liseré doré sur la puce du rang et la carte du profil */
+.puce-rang.mecene{box-shadow:0 0 0 1px rgba(255,207,74,.7),0 0 18px -6px rgba(255,207,74,.7)}
+.rang-carte.mecene{box-shadow:0 0 0 1px rgba(255,207,74,.6),0 0 30px -10px rgba(255,207,74,.6)}
+.mecene-titre{display:inline-block;margin-top:4px;font:600 11px var(--f-titre);letter-spacing:.14em;text-transform:uppercase;color:var(--or)}
 </style>
 </head>
 <body>
@@ -644,8 +716,8 @@ body.sobre #plateau{transition:none}
             <span class="nom">Partie libre</span><span class="sous">chrono</span></button>
           <button class="item" id="btnSucces" type="button"><i class="rond"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M8.5 14l-1.5 7 5-3 5 3-1.5-7"/></svg></i>
             <span class="nom">Succès</span><span class="sous notrad" id="succesSous"></span></button>
-          <button class="item or" id="btnBoutique" type="button" hidden><i class="rond"><svg viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg></i>
-            <span class="nom">Jeu complet</span><span class="sous notrad" id="prixAccueil"></span></button>
+          <button class="item or" id="btnBoutique" type="button" hidden><i class="rond"><svg viewBox="0 0 24 24"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/></svg></i>
+            <span class="nom">Boutique</span><span class="sous notrad" id="prixAccueil"></span><span class="sous" id="stylesAccueil" hidden>Styles</span></button>
           </nav>
         </div>
         
@@ -698,6 +770,25 @@ body.sobre #plateau{transition:none}
     </div>
   </section>
 
+  <section class="ecran" id="boutique" aria-label="Boutique">
+    <div class="tete">
+      <button class="ico" data-retour="accueil" type="button" aria-label="Retour" id="boutRetour"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2>Boutique</h2>
+      <span class="puce bout-reserve" aria-label="Ampoules"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg><span class="notrad" id="boutAmpNb">3</span></span>
+    </div>
+    <div class="defile"><div class="bout">
+      <div id="boutHero"></div>
+      <div class="segment bout-rayons" id="boutRayons"><button type="button" data-r="palette" class="on">Couleurs</button><button type="button" data-r="forme">Formes</button><button type="button" data-r="effets">Effets</button></div>
+      <div class="bout"><div class="bout-apercu"><canvas id="apercu" aria-label="Aperçu du style"></canvas><div class="nom" id="apercuNom"></div></div>
+      <div class="bout" id="boutRayon"></div></div>
+      <div class="bout-sous">Ampoules</div>
+      <div class="bout-amp" id="boutAmpoules"></div>
+      <div id="boutSoutien"></div>
+      <button class="bout-lien" id="boutRestaurer" type="button">Restaurer mes achats</button>
+      <p class="bout-pied">Achats uniques, sans abonnement ni publicité. Les styles ne changent rien au jeu : ils l’habillent.</p>
+    </div></div>
+  </section>
+
   <section class="ecran" id="profil" aria-label="Profil">
     <div class="tete">
       <button class="ico" data-retour="accueil" type="button" aria-label="Retour"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
@@ -737,10 +828,8 @@ body.sobre #plateau{transition:none}
       <div class="groupe"><h4>Plateau</h4>
         <div class="ligne empile"><div class="lt"><b>Vitesse des rotations</b></div>
           <div class="segment" id="optVitesse"><button type="button" data-v="1.5">Lente</button><button type="button" data-v="1">Normale</button><button type="button" data-v="0.6">Rapide</button></div></div>
-        <div class="ligne empile"><div class="lt"><b>Couleurs</b><span>« Daltonien » : des couleurs distinctes pour tous. Pastel se gagne avec les étoiles de coups, Néon avec celles de temps.</span></div>
-          <div class="segment grille2" id="optPalette"><button type="button" data-v="classique">Classique</button><button type="button" data-v="contraste">Daltonien</button><button type="button" data-v="pastel">Pastel</button><button type="button" data-v="neon">Néon</button></div></div>
-        <div class="ligne empile"><div class="lt"><b>Pastilles</b><span>Des facettes qui suivent les cercles, ou des perles.</span></div>
-          <div class="segment" id="optForme"><button type="button" data-v="facettes">Facettes</button><button type="button" data-v="perles">Perles</button></div></div>
+        <div class="ligne"><div class="lt"><b>Styles</b><span>Couleurs, forme des pastilles, traînée, orbites et victoire, à choisir dans la boutique avec un aperçu.</span></div>
+          <button class="bouton petit" id="btnStylesOpt" type="button">Boutique</button></div>
         <div class="ligne"><div class="lt"><b>Cube en perspective</b><span>Au-dessus du plateau : glissez-le pour le faire pivoter.</span></div>
           <label class="interrupteur"><input type="checkbox" id="optCube" role="switch" aria-label="Cube en perspective"><i></i></label></div>
         <div class="ligne"><div class="lt"><b>Mode zen</b><span>Ni chrono, ni compteur, ni étoiles pendant la partie.</span></div>
@@ -821,11 +910,42 @@ body.sobre #plateau{transition:none}
 var PALETTES={classique:["#FF7A1E","#FA3A47","#FBD101","#F4F4F6","#2DCC4B","#0095D5"],
   contraste:["#E69F00","#CC79A7","#F0E442","#FFFFFF","#009E73","#0072B2"],
   pastel:["#FFB27A","#F28B9B","#FFE38A","#F4F1EA","#8FD9A8","#8DB8F2"],
-  neon:["#FF7A00","#FF2E63","#F5F500","#E8FFFF","#00FF9C","#00C8FF"]};
-// apparences du cube : les deux premières sont ouvertes, les autres se gagnent avec les étoiles de la campagne
-var APPARENCES={classique:0,contraste:0,pastel:45,neon:45},APP_TEMPS={neon:true};
-// Pastel se gagne avec les étoiles de coups, Néon avec les étoiles de temps
-function apparenceOuverte(v){return(APP_TEMPS[v]?etoilesChrono():etoilesTotal())>=(APPARENCES[v]||0);}
+  neon:["#FF7A00","#FF2E63","#F5F500","#E8FFFF","#00FF9C","#00C8FF"],
+  // pack « Palettes cosmiques » : six teintes toujours bien distinctes (une par face), dans des ambiances nouvelles
+  aurore:["#FF9E6D","#FF5E8A","#FFD86E","#F7F3FF","#5EF0B4","#7A8CFF"],
+  galaxie:["#FF8A3D","#E0457B","#F2C14E","#E9E4FF","#3FD0C9","#8A63FF"],
+  glace:["#FFB38A","#FF6F91","#FFF3A6","#FFFFFF","#7FE7D6","#5AB8FF"],
+  joyaux:["#E8742C","#D0143A","#E8B923","#EDE6D6","#12A35E","#2457E0"]};
+/* ========== LA BOUTIQUE : packs vendus et styles (le client, le 13/10/2026) ==========
+   Chaque pack est un droit (« entitlement » RevenueCat) vendu par un produit des stores ; une édition groupée active
+   plusieurs droits (réglé dans RevenueCat). Les ampoules sont consommables : le jeu les crédite lui-même.
+   Les styles ne changent rien au jeu : couleurs, forme des pastilles, traînée, orbites, victoire. */
+var PACKS={
+  couleurs:{produit:"orbicube_pack_couleurs",droit:"pack_couleurs",nom:"Palettes cosmiques",desc:"Aurore, Galaxie, Glace et Joyaux."},
+  formes:{produit:"orbicube_pack_formes",droit:"pack_formes",nom:"Formes précieuses",desc:"Gemmes, Étoiles et Cristaux."},
+  effets:{produit:"orbicube_pack_effets",droit:"pack_effets",nom:"Effets stellaires",desc:"Traînée comète, orbites d’argent ou arc-en-ciel, feu d’artifice."},
+  collection:{produit:"orbicube_collection",droits:["pack_couleurs","pack_formes","pack_effets"],nom:"Collection complète",desc:"Les trois packs de styles."},
+  integrale:{produit:"orbicube_integrale",droits:["complet","pack_couleurs","pack_formes","pack_effets"],nom:"Édition intégrale",desc:"Le jeu complet et les trois packs de styles."},
+  soutien:{produit:"orbicube_soutien",droit:"soutien",nom:"Soutenir Orbicube",desc:"Un merci au créateur, et un liseré doré sur votre profil."},
+  amp10:{produit:"orbicube_ampoules_10",ampoules:10,nom:"10 ampoules"},
+  amp30:{produit:"orbicube_ampoules_30",ampoules:30,nom:"30 ampoules"}};
+// ouv : rien (ouvert), {etoiles:n} de coups, {chrono:n} de temps, {rang:n}, ou {pack:clé}
+var STYLES={
+  palette:[{id:"classique",nom:"Classique"},{id:"contraste",nom:"Daltonien"},{id:"pastel",nom:"Pastel",ouv:{etoiles:45}},{id:"neon",nom:"Néon",ouv:{chrono:45}},
+    {id:"aurore",nom:"Aurore",ouv:{pack:"couleurs"}},{id:"galaxie",nom:"Galaxie",ouv:{pack:"couleurs"}},{id:"glace",nom:"Glace",ouv:{pack:"couleurs"}},{id:"joyaux",nom:"Joyaux",ouv:{pack:"couleurs"}}],
+  forme:[{id:"facettes",nom:"Facettes"},{id:"perles",nom:"Perles"},{id:"hexagones",nom:"Hexagones",ouv:{rang:8}},
+    {id:"gemmes",nom:"Gemmes",ouv:{pack:"formes"}},{id:"etoiles",nom:"Étoiles",ouv:{pack:"formes"}},{id:"cristaux",nom:"Cristaux",ouv:{pack:"formes"}}],
+  trainee:[{id:"halo",nom:"Halo"},{id:"poussiere",nom:"Poussière d’étoiles",ouv:{rang:12}},{id:"comete",nom:"Comète",ouv:{pack:"effets"}}],
+  orbite:[{id:"accent",nom:"Couleur du monde"},{id:"argent",nom:"Argent",ouv:{pack:"effets"}},{id:"arcenciel",nom:"Arc-en-ciel",ouv:{pack:"effets"}}],
+  victoire:[{id:"confettis",nom:"Confettis"},{id:"pluie",nom:"Pluie d’étoiles",ouv:{chrono:30}},{id:"feux",nom:"Feu d’artifice",ouv:{pack:"effets"}}]};
+// les styles portés, recalculés par appliquerOptions() (le dessin les lit à chaque image)
+var STY={palette:"classique",forme:"facettes",trainee:"halo",orbite:"accent",victoire:"confettis"};
+function style(k,id){var l=STYLES[k];for(var i=0;i<l.length;i++)if(l[i].id===id)return l[i];return l[0];}
+function aDroit(d){return d==="complet"?complet():!!(PROG.droits&&PROG.droits[d]);}
+function styleOuvert(k,id){var o=style(k,id).ouv;if(!o)return true;if(o.etoiles)return etoilesTotal()>=o.etoiles;if(o.chrono)return etoilesChrono()>=o.chrono;
+  if(o.rang)return rangDe(PROG.xp).r>=o.rang;if(o.pack)return aDroit(PACKS[o.pack].droit);return false;}
+// le style porté (un style reperdu, ou d'un pack pas encore restauré, retombe sur le premier de son rayon)
+function styleActif(k){var v=PROG.options[k];return v&&style(k,v).id===v&&styleOuvert(k,v)?v:STYLES[k][0].id;}
 var COUL=PALETTES.classique;
 function hexRGB(h){h=h.replace("#","");return parseInt(h.substr(0,2),16)+","+parseInt(h.substr(2,2),16)+","+parseInt(h.substr(4,2),16);}
 function faceDe(n){return n[0]>0?0:n[0]<0?1:n[1]>0?2:n[1]<0?3:n[2]>0?4:5;}
@@ -929,6 +1049,24 @@ function formeA(p,i){if(!p.m)return FORME[i];
   var auF=A0[0]+p.rotF,c1=auF+demi(A1[0]-auF),c2=auF+demi(A1[0]+A1[1]-auF),ch1=Math.abs(c1-auF)+Math.abs(A1[1]-d0),ch2=Math.abs(c2-auF)+Math.abs(Math.PI-A1[1]-d0);
   var au1=ch1<=ch2?c1:c2,d1=ch1<=ch2?A1[1]:Math.PI-A1[1],e=p.t,au=au0+(au1-auF)*e,d=d0+(d1-d0)*e;
   return{u:[Math.cos(au),Math.sin(au)],v:[Math.cos(au+d),Math.sin(au+d)]};}
+// couleur des orbites au repos : celle du monde, l'argent, ou une teinte par famille de cercles (arc-en-ciel)
+function couleurOrbite(st,a){return st==="argent"?"214,222,238":st==="arcenciel"?["255,138,150","120,226,170","128,172,255"][a]:ACC;}
+// formes de la boutique : même construction que la facette (corps noir, pastille de couleur encastrée, reflet),
+// orientées sur les tangentes des deux cercles qui se croisent sous la pastille
+function pastille(cx,q,f,h,coul,forme){var U=[f.u[0]*h,-f.u[1]*h],V=[f.v[0]*h,-f.v[1]*h],ang=Math.atan2(U[1],U[0]),pts=[],k,a;
+  if(forme==="hexagones")for(k=0;k<6;k++){a=ang+k*Math.PI/3;pts.push([Math.cos(a)*h*.92,Math.sin(a)*h*.92]);}
+  else if(forme==="etoiles")for(k=0;k<10;k++){a=ang-Math.PI/2+k*Math.PI/5;var rr=k%2?h*.5:h*1.1;pts.push([Math.cos(a)*rr,Math.sin(a)*rr]);}
+  else if(forme==="cristaux")pts=[[U[0]*1.08,U[1]*1.08],[U[0]*.4+V[0]*.8,U[1]*.4+V[1]*.8],[-U[0]*.4+V[0]*.8,-U[1]*.4+V[1]*.8],[-U[0]*1.08,-U[1]*1.08],[-U[0]*.4-V[0]*.8,-U[1]*.4-V[1]*.8],[U[0]*.4-V[0]*.8,U[1]*.4-V[1]*.8]];
+  else pts=[[1,1],[1,-1],[-1,-1],[-1,1]].map(function(m){return[(m[0]*U[0]+m[1]*V[0])*.92,(m[0]*U[1]+m[1]*V[1])*.92];});   // gemmes
+  function tracer(sc){cx.beginPath();pts.forEach(function(p,i){var x=q[0]+p[0]*sc,y=q[1]+p[1]*sc;if(i)cx.lineTo(x,y);else cx.moveTo(x,y);});cx.closePath();}
+  tracer(1);cx.fillStyle="#0b0b0e";cx.fill();cx.lineWidth=Math.max(1,h*.14);cx.strokeStyle="#0b0b0e";cx.lineJoin="round";cx.stroke();
+  tracer(.8);cx.fillStyle=coul;cx.fill();if(h<=4)return;
+  if(forme==="gemmes"||forme==="cristaux"){   // taille de pierre : facettes claires et sombres depuis le centre
+    for(var i=0;i<pts.length;i++){var A=pts[i],B=pts[(i+1)%pts.length];cx.beginPath();cx.moveTo(q[0],q[1]);cx.lineTo(q[0]+A[0]*.8,q[1]+A[1]*.8);cx.lineTo(q[0]+B[0]*.8,q[1]+B[1]*.8);cx.closePath();
+      cx.fillStyle=i%2?"rgba(0,0,0,.16)":"rgba(255,255,255,.22)";cx.fill();}
+    cx.beginPath();cx.arc(q[0]-h*.18,q[1]-h*.2,h*.1,0,6.283);cx.fillStyle="rgba(255,255,255,.75)";cx.fill();}
+  else{var g=cx.createLinearGradient(q[0]-h*.7,q[1]-h*.7,q[0]+h*.7,q[1]+h*.7);g.addColorStop(0,"rgba(255,255,255,.3)");g.addColorStop(.45,"rgba(255,255,255,0)");
+    g.addColorStop(1,"rgba(0,0,0,.14)");tracer(.8);cx.fillStyle=g;cx.fill();}}
 function facette(cx,q,f,h,coul){var U=[f.u[0]*h,-f.u[1]*h],V=[f.v[0]*h,-f.v[1]*h];
   // Style « cube de compétition », identique au mini-cube : autocollant coloré encastré sur un corps noir
   // (le liseré entre les pièces), coins arrondis par des courbes posées sur les côtés (robuste même très aigu).
@@ -958,6 +1096,8 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
   // sobre (logo de l'accueil, le client, le 13/10/2026) : une vitrine, pas une partie. Cercle actif en fin trait d'accent,
   // orbites plus fines, traînées et lueurs des pièces deux fois plus discrètes ; le cube du médaillon reste le point focal
   var SB=this.opts.sobre?.5:1;
+  // styles de la boutique : ceux du joueur (STY), ou ceux qu'un plateau impose (l'aperçu de la boutique)
+  var CL=this.pal||COUL,FO=this.forme||STY.forme,TR=this.trainee||STY.trainee,OR=this.orbite||(this.opts.sobre?"accent":STY.orbite);
   for(var a=0;a<3;a++)for(var L=-1;L<=1;L++){var k=a+","+L,c=this.vers(CEN[a]),ok=this.permisA(k);
     cx.save();cx.beginPath();cx.arc(c[0],c[1],RAY[L+1]*E,0,Math.PI*2);
     if(k===act&&this.opts.sobre){halo(cx,ACC,.22,Math.max(1.2,E*.012));cx.strokeStyle="rgba("+ACC+",.9)";cx.lineWidth=Math.max(1.4,E*.011);}
@@ -968,7 +1108,7 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
     else{
       // orbites : un trait fin + halo TRÈS léger À LA COULEUR DU THÈME (accent du monde courant).
       // Le halo devient fort à la sélection et pendant le tour (branches act/survol), même teinte.
-      halo(cx,ACC,.12*(SB<1?.65:1),Math.max(1,E*.01));cx.strokeStyle="rgba("+ACC+","+(SB<1?.44:.55)+")";cx.lineWidth=this.permis?1.4:(SB<1?1.1:1.3);}
+      var oc=couleurOrbite(OR,a);halo(cx,oc,.12*(SB<1?.65:1),Math.max(1,E*.01));cx.strokeStyle="rgba("+oc+","+(SB<1?.44:.55)+")";cx.lineWidth=this.permis?1.4:(SB<1?1.1:1.3);}
     cx.stroke();
     if(vg>=0){var dk=(vg-ordre*75)/450;if(dk>0&&dk<1){cx.beginPath();cx.arc(c[0],c[1],RAY[L+1]*E,0,Math.PI*2);cx.setLineDash([]);
       halo(cx,ACC,Math.sin(dk*Math.PI),Math.max(3,E*.045));cx.strokeStyle="rgba("+ACC_CLAIR+","+Math.sin(dk*Math.PI)+")";cx.lineWidth=Math.max(3,E*.045);cx.stroke();}}
@@ -982,33 +1122,39 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
     var mvA=this.anim.mv,cA=this.vers(CEN[mvA.a]),rA=RAY[mvA.L+1]*E;
     cx.save();cx.lineCap="round";cx.lineWidth=Math.max(3,E*.042);cx.globalAlpha=.5;
     pos.forEach(function(p){if(!p.m||p.f)return;var qq=self.vers(p.xy),an=Math.atan2(qq[1]-cA[1],qq[0]-cA[0]);
-      cx.beginPath();cx.arc(cA[0],cA[1],rA,an-.17,an+.17);cx.strokeStyle=COUL[p.c];cx.globalAlpha=.16*SB;cx.lineWidth=Math.max(8,E*.1);cx.stroke();cx.globalAlpha=.5*SB;cx.lineWidth=Math.max(3,E*.042);cx.stroke();});
+      cx.beginPath();cx.arc(cA[0],cA[1],rA,an-.17,an+.17);cx.strokeStyle=CL[p.c];cx.globalAlpha=.16*SB;cx.lineWidth=Math.max(8,E*.1);cx.stroke();cx.globalAlpha=.5*SB;cx.lineWidth=Math.max(3,E*.042);cx.stroke();});
     cx.restore();
     // traînée : les positions des images précédentes
-    this.trace.push(t);if(this.trace.length>5)this.trace.shift();
-    for(var h=0;h<this.trace.length-1;h++){var tp=this.positionsA(this.trace[h]),fr=(h+1)/this.trace.length;cx.globalAlpha=fr*.26*SB;
-      for(i=0;i<tp.length;i++){if(!tp[i].m)continue;q=this.vers(tp[i].xy);cx.beginPath();cx.arc(q[0],q[1],rp*(.5+.4*fr),0,Math.PI*2);cx.fillStyle=COUL[tp[i].c];cx.fill();}}
+    // traînée : Halo (les positions des images précédentes), Comète (plus longue, cœur blanc), Poussière d'étoiles (éclats)
+    var lgT=TR==="comete"?10:TR==="poussiere"?7:5;this.trace.push(t);while(this.trace.length>lgT)this.trace.shift();
+    for(var h=0;h<this.trace.length-1;h++){var tp=this.positionsA(this.trace[h]),fr=(h+1)/this.trace.length;
+      for(i=0;i<tp.length;i++){if(!tp[i].m)continue;q=this.vers(tp[i].xy);
+        if(TR==="poussiere"){for(var z=0;z<2;z++){var jx=Math.sin(i*7.1+h*3.3+z*5)*rp*.9,jy=Math.cos(i*4.3+h*5.1+z*3)*rp*.9;
+            cx.globalAlpha=fr*.75*SB;cx.beginPath();cx.arc(q[0]+jx,q[1]+jy,Math.max(.8,rp*.16*fr),0,6.283);cx.fillStyle=z?"#fff":CL[tp[i].c];cx.fill();}}
+        else{cx.globalAlpha=fr*(TR==="comete"?.34:.26)*SB;cx.beginPath();cx.arc(q[0],q[1],rp*(.5+.4*fr),0,Math.PI*2);cx.fillStyle=CL[tp[i].c];cx.fill();
+          if(TR==="comete"){cx.globalAlpha=fr*.5*SB;cx.beginPath();cx.arc(q[0],q[1],rp*.22*fr,0,6.283);cx.fillStyle="#fff";cx.fill();}}}}
     cx.globalAlpha=1;}
   else this.trace.length=0;
   // une face terminée s'illumine : un halo doux de sa couleur rayonne AUTOUR de ses neuf pastilles
   // (plus de cercle qui l'entoure — demandé par le client). Un seul dégradé radial par face (bon marché).
-  if(this.opts.eclats&&!this.anim){var fu=facesUnies(this.col);for(var fk in fu){var fc=this.vers(CENTRE_FACE[fk]),rr=RAYON_FACE*E*1.33,rgb=hexRGB(COUL[fu[fk]]);
+  if(this.opts.eclats&&!this.anim){var fu=facesUnies(this.col);for(var fk in fu){var fc=this.vers(CENTRE_FACE[fk]),rr=RAYON_FACE*E*1.33,rgb=hexRGB(CL[fu[fk]]);
     var gh=cx.createRadialGradient(fc[0],fc[1],rr*.3,fc[0],fc[1],rr);
     gh.addColorStop(0,"rgba("+rgb+",.30)");gh.addColorStop(.55,"rgba("+rgb+",.17)");gh.addColorStop(1,"rgba("+rgb+",0)");
     cx.fillStyle=gh;cx.beginPath();cx.arc(fc[0],fc[1],rr,0,Math.PI*2);cx.fill();}}
   for(i=0;i<pos.length;i++){q=this.vers(pos[i].xy);var r=rp,pk=this.pops[i];
     if(pk!==undefined){var e=(now-pk)/280;if(e>=1)delete this.pops[i];else if(e>0)r=rp*(1+.32*Math.sin(e*Math.PI));}
-    if(pos[i].m&&!CALME){cx.beginPath();cx.arc(q[0],q[1],r*1.9,0,Math.PI*2);cx.globalAlpha=.16*SB;cx.fillStyle=COUL[pos[i].c];cx.fill();cx.globalAlpha=1;}
-    if(PROG.options.forme==="perles"){
-    cx.beginPath();cx.arc(q[0],q[1],r,0,Math.PI*2);cx.fillStyle=COUL[pos[i].c];cx.fill();
+    if(pos[i].m&&!CALME){cx.beginPath();cx.arc(q[0],q[1],r*1.9,0,Math.PI*2);cx.globalAlpha=.16*SB;cx.fillStyle=CL[pos[i].c];cx.fill();cx.globalAlpha=1;}
+    if(FO==="perles"){
+    cx.beginPath();cx.arc(q[0],q[1],r,0,Math.PI*2);cx.fillStyle=CL[pos[i].c];cx.fill();
     cx.lineWidth=Math.max(1,r*.2);cx.strokeStyle="rgba(0,0,0,.45)";cx.stroke();
     // Phase 2 : bille de verre — un spéculaire doux en haut-gauche + un petit éclat net (arcs, pas de dégradé)
     if(r>5){cx.beginPath();cx.arc(q[0]-r*.28,q[1]-r*.3,r*.36,0,6.283);cx.fillStyle="rgba(255,255,255,.34)";cx.fill();
       cx.beginPath();cx.arc(q[0]-r*.34,q[1]-r*.36,r*.15,0,6.283);cx.fillStyle="rgba(255,255,255,.7)";cx.fill();}}
-    else facette(cx,q,formeA(pos[i],i),r*1.2,COUL[pos[i].c]);}
+    else if(FO==="facettes")facette(cx,q,formeA(pos[i],i),r*1.2,CL[pos[i].c]);
+    else pastille(cx,q,formeA(pos[i],i),r*1.2,CL[pos[i].c],FO);}
   // ondes des faces complétées
   if(this.eclats.length)this.eclats=this.eclats.filter(function(ec){var e=(now-ec.t0)/800;if(e>=1)return false;var c=self.vers(ec.xy);
-    cx.save();cx.beginPath();cx.arc(c[0],c[1],rp*2+E*.42*ease(e),0,Math.PI*2);cx.strokeStyle=COUL[ec.c];cx.globalAlpha=1-e;
+    cx.save();cx.beginPath();cx.arc(c[0],c[1],rp*2+E*.42*ease(e),0,Math.PI*2);cx.strokeStyle=CL[ec.c];cx.globalAlpha=1-e;
     var lw=Math.max(2,E*.035)*(1-e*.6);cx.lineWidth=lw*3.5;cx.globalAlpha=(1-e)*.2;cx.stroke();cx.globalAlpha=1-e;cx.lineWidth=lw;cx.stroke();cx.restore();return true;});
   if(this.opts.etiquettes!==false){var lab=act||(this.survol&&this.permisA(this.survol)?this.survol:null)||ind;
     if(lab){var nm=this.anim&&act===lab?nomDe(this.anim.mv):(ind===lab&&!act?nomDe(this.indice):NOM_ANNEAU[lab]);this.etiquette(lab,nm,ind===lab&&!act);}}};
@@ -1136,9 +1282,10 @@ function etoilesChrono(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t
 
 /* ========== 6. LA PROGRESSION (appareil, et compte si connecté) ========== */
 var CLE_LOCALE="orbicube-v1";
-function progVide(){return{v:1,niveaux:{},tips:{},succes:{},stats:{tours:0,tranches:0,resolus:0,indices:0,meilleur:{}},jours:{},serie:0,dernierJour:"",amp:3,ampVide:0,ampJour:"",ampMaj:0,xp:0,semaines:{},missions:null,
+function progVide(){return{v:1,niveaux:{},tips:{},succes:{},stats:{tours:0,tranches:0,resolus:0,indices:0,meilleur:{}},jours:{},serie:0,dernierJour:"",amp:3,ampVide:0,ampJour:"",ampMaj:0,xp:0,semaines:{},missions:null,droits:{},
   options:{musique:true,volMusique:2,son:true,vib:true,anims:true,vitesse:1,palette:"classique",cube:true,pave:false,horaire:true,langue:"auto",maj:0}};}
 function fusion(a,b){if(!b||typeof b!=="object")return a;var r=JSON.parse(JSON.stringify(a));if(b.achat)r.achat=true;
+  r.droits=r.droits||{};Object.keys(b.droits||{}).forEach(function(k){if(b.droits[k])r.droits[k]=true;});   // achats : on n'en perd jamais
   Object.keys(b.niveaux||{}).forEach(function(k){var x=r.niveaux[k],y=b.niveaux[k];if(!x){r.niveaux[k]=y;return;}
     r.niveaux[k]={etoiles:Math.max(x.etoiles||0,y.etoiles||0),chrono:Math.max(x.chrono||0,y.chrono||0),coups:Math.min(x.coups||1e9,y.coups||1e9),temps:Math.min(x.temps||1e12,y.temps||1e12),sansIndice:!!(x.sansIndice||y.sansIndice)};});
   ["tips","succes"].forEach(function(f){Object.keys(b[f]||{}).forEach(function(k){if(!r[f][k])r[f][k]=b[f][k];});});
@@ -1208,7 +1355,7 @@ function montrer(id,sens){var prevEcran=ECRAN;sens=sens||1;document.querySelecto
     if(e.id===id){e.style.transition="none";e.style.setProperty("--dx",(sens*28)+"px");void e.offsetWidth;e.style.transition="";e.classList.add("actif");}
     else{if(e.classList.contains("actif"))e.style.setProperty("--dx",(-sens*28)+"px");e.classList.remove("actif");}});ECRAN=id;
   numeroter(document.getElementById(id));
-  Logo.visible=id==="accueil";AideP.visible=id==="aide";JeuP.visible=id==="jeu";
+  Logo.visible=id==="accueil";AideP.visible=id==="aide";JeuP.visible=id==="jeu";if(typeof ApercuP!=="undefined"){ApercuP.visible=id==="boutique";if(id==="boutique"){redimApercu();rendreBoutique();}}
   if(id==="accueil"){FOND_ACC=2;poserFond(FOND_ACC,true);accentTheme(FOND_ACC);rafraichirAccueil();majRang();Logo.demarrer();}  // accueil toujours en thème bleu
   if(id==="succes")rafraichirSucces();if(id==="profil")rafraichirProfil();if(id==="aide")redimAide();if(id==="jeu"){poserFond((J&&J.fond)||FOND_ACC||1,true);redimJeu();}
   Ticker.reveiller();}
@@ -1470,6 +1617,8 @@ function ampoules(){if(!PROG.amp&&PROG.ampVide&&Date.now()-PROG.ampVide>=RECHARG
   if(complet()&&PROG.ampJour!==cleJour()){PROG.amp=(PROG.amp||0)+1;PROG.ampJour=cleJour();PROG.ampVide=0;PROG.ampMaj=Date.now();sauver();}return PROG.amp||0;}
 function majAmpoules(){var n=ampoules(),b=document.getElementById("ampNb");b.textContent=n;b.classList.toggle("vide",!n);}
 function gagnerAmpoule(){PROG.amp=ampoules()+1;PROG.ampVide=0;PROG.ampMaj=Date.now();majAmpoules();setTimeout(function(){toast("Ampoule gagnée","+1");},900);}
+// ampoules achetées en boutique (consommables) : créditées tout de suite, comme celles qu'on gagne
+function crediterAmpoules(n){PROG.amp=ampoules()+n;PROG.ampVide=0;PROG.ampMaj=Date.now();sauver();majAmpoules();}
 function depenserAmpoule(){PROG.amp=Math.max(0,ampoules()-1);if(!PROG.amp)PROG.ampVide=Date.now();PROG.ampMaj=Date.now();sauver();majAmpoules();}
 function plusDAmpoules(){var reste=Math.max(1,Math.ceil((RECHARGE_AMP-(Date.now()-PROG.ampVide))/60000));
   ouvrirFenetre('<h3>Plus d’ampoules</h3><p>Une ampoule revient dans '+reste+' min.</p><p>Vous en gagnez aussi avec le défi du jour, en terminant un monde ou en faisant trois étoiles de coups et de temps.</p>'+
@@ -1687,11 +1836,21 @@ function toastSuivant(){var t=toastFile.shift();if(!t){toastActif=false;return;}
   var el=document.getElementById("toast");el.classList.add("vu");if(t[0]==="Succès débloqué"){bip(988,.2,"sine",.08);bip(1319,.3,"sine",.07,.1);}
   setTimeout(function(){el.classList.remove("vu");setTimeout(toastSuivant,500);},2600);}
 function avertir(titre,txt){toast(titre,txt);}
-function confettis(){if(CALME)return;var cv=document.getElementById("confettis"),cx=cv.getContext("2d"),W=innerWidth,H=innerHeight;cv.hidden=false;
-  cv.width=W*DPR;cv.height=H*DPR;cx.setTransform(DPR,0,0,DPR,0,0);var ps=[];
-  for(var i=0;i<140;i++)ps.push({x:W/2+(Math.random()-.5)*60,y:H*.42,vx:(Math.random()-.5)*12,vy:-Math.random()*14-4,r:Math.random()*5+3,c:COUL[i%6]});
-  var t0=performance.now();(function f(now){cx.clearRect(0,0,W,H);ps.forEach(function(p){p.vy+=.38;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;cx.fillStyle=p.c;cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);cx.fill();});
-    if(now-t0<2600)requestAnimationFrame(f);else{cx.clearRect(0,0,W,H);cv.hidden=true;}})(t0);}
+// la fête de victoire : Confettis, Pluie d'étoiles (tombe du haut) ou Feu d'artifice (quatre gerbes) ; v force un effet (aperçu)
+function confettis(v){if(CALME)return;v=v||STY.victoire;var cv=document.getElementById("confettis"),cx=cv.getContext("2d"),W=innerWidth,H=innerHeight;cv.hidden=false;
+  cv.width=W*DPR;cv.height=H*DPR;cx.setTransform(DPR,0,0,DPR,0,0);var ps=[],i,k,duree=2600;
+  if(v==="pluie"){for(i=0;i<80;i++)ps.push({x:Math.random()*W,y:-Math.random()*H*.6-10,vx:(Math.random()-.5)*.6,vy:2+Math.random()*3.5,r:Math.random()*5+4,a:Math.random()*6,va:(Math.random()-.5)*.12,
+      c:["#ffcf4a","#fff3c4","#4cc9f0","#ffffff"][i%4],g:.03});duree=3000;}
+  else if(v==="feux"){for(k=0;k<4;k++){var bx=W*(.2+.6*Math.random()),by=H*(.18+.3*Math.random()),t=k*380;
+      for(i=0;i<60;i++){var an=i/60*6.283,sp=3.5+Math.random()*3.5;ps.push({x:bx,y:by,vx:Math.cos(an)*sp,vy:Math.sin(an)*sp,r:3.2,c:COUL[(k+i)%6],g:.06,t:t,fr:.965,fade:1});}}duree=2900;}
+  else for(i=0;i<140;i++)ps.push({x:W/2+(Math.random()-.5)*60,y:H*.42,vx:(Math.random()-.5)*12,vy:-Math.random()*14-4,r:Math.random()*5+3,c:COUL[i%6],g:.38,fr:.99});
+  function etoile(x,y,r,a){cx.beginPath();for(var n=0;n<10;n++){var aa=a+n*Math.PI/5,rr=n%2?r*.45:r;cx.lineTo(x+Math.cos(aa)*rr,y+Math.sin(aa)*rr);}cx.closePath();cx.fill();}
+  var t0=performance.now();(function f(now){var e=now-t0;cx.clearRect(0,0,W,H);
+    ps.forEach(function(p){if(p.t&&e<p.t)return;p.vy+=p.g;if(p.fr){p.vx*=p.fr;p.vy*=p.fr<1&&p.fade?p.fr:1;}p.x+=p.vx;p.y+=p.vy;cx.fillStyle=p.c;
+      if(p.fade)cx.globalAlpha=Math.max(0,1-(e-p.t)/1500);
+      if(v==="pluie"){p.a+=p.va;cx.globalAlpha=Math.min(1,(duree-e)/600);etoile(p.x,p.y,p.r,p.a);}
+      else{cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);cx.fill();}cx.globalAlpha=1;});
+    if(e<duree)requestAnimationFrame(f);else{cx.clearRect(0,0,W,H);cv.hidden=true;}})(t0);}
 
 /* ========== 13. SUCCÈS ========== */
 function nbParfaits(){return Object.keys(PROG.niveaux).filter(function(k){return PROG.niveaux[k].etoiles===3;}).length;}
@@ -1741,7 +1900,7 @@ function rafraichirSucces(){document.getElementById("sucCompte").textContent=Obj
     return '<div class="suc'+(ok?" ok":"")+'"><div class="med"><svg viewBox="0 0 24 24">'+(ok?'<path d="M5 12.5l4.5 4.5L19 7.5"/>':'<rect x="6" y="11" width="12" height="9" rx="2"/><path d="M9 11V8.5a3 3 0 0 1 6 0V11"/>')+'</svg></div><div><b>'+s.nom+'</b><span>'+s.desc+'</span></div></div>';}).join("");}
 
 /* ========== 14. OPTIONS ========== */
-function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)&&PALETTES[o.palette])||PALETTES.classique;
+function appliquerOptions(){var o=PROG.options;Object.keys(STY).forEach(function(k){STY[k]=styleActif(k);});COUL=PALETTES[STY.palette]||PALETTES.classique;
   // « Animations » décoché = calme forcé, en plus du réglage système prefers-reduced-motion
   CALME=!!((window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)||o.anims===false);
   document.body.classList.toggle("sobre",o.anims===false);
@@ -1749,11 +1908,7 @@ function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)
   document.getElementById("optSon").checked=o.son;document.getElementById("optVib").checked=o.vib;document.getElementById("optCube").checked=o.cube;
   document.getElementById("optPave").checked=o.pave;document.getElementById("optZen").checked=!!o.zen;document.getElementById("optMusique").checked=o.musique!==false;document.getElementById("optVolMusique").closest(".ligne").hidden=o.musique===false;
   document.querySelectorAll("#optVolMusique button").forEach(function(b){b.classList.toggle("on",+b.dataset.v===(o.volMusique||2));});Musique.regler();document.body.classList.toggle("zen",!!o.zen||!!(J&&J.def.relax));
-  document.querySelectorAll("#optForme button").forEach(function(b){b.classList.toggle("on",b.dataset.v===(o.forme||"facettes"));});
   document.querySelectorAll("#optVitesse button").forEach(function(b){b.classList.toggle("on",+b.dataset.v===o.vitesse);});
-  document.querySelectorAll("#optPalette button").forEach(function(b){var v=b.dataset.v,ouv=apparenceOuverte(v),c=b.querySelector(".cad");
-    b.classList.toggle("on",COUL===PALETTES[v]);b.classList.toggle("verrou",!ouv);
-    if(!ouv&&!c){c=document.createElement("span");c.className="cad notrad"+(APP_TEMPS[v]?" t":"");c.textContent="★ "+APPARENCES[v];b.appendChild(c);}else if(ouv&&c)c.remove();});
   mini.hidden=!o.cube;document.getElementById("pave").hidden=!o.pave;
   document.getElementById("btnPaveT").hidden=!o.pave;document.getElementById("btnPaveT").classList.toggle("on",o.pave);
   if(ECRAN==="jeu")requestAnimationFrame(redimJeu);Logo.dessiner();JeuP.dessiner();dessinerMini();dessinerLogoCube();}
@@ -1761,12 +1916,9 @@ function opt(k,v){PROG.options[k]=v;PROG.options.maj=Date.now();sauver();appliqu
 [["Son","son"],["Vib","vib"],["Cube","cube"],["Pave","pave"],["Zen","zen"],["Musique","musique"],["Anims","anims"]].forEach(function(c){
   document.getElementById("opt"+c[0]).addEventListener("change",function(){opt(c[1],this.checked);if(c[1]==="musique"&&this.checked){contexteAudio();Musique.lancer();}if(c[1]==="son"&&this.checked)sonClic();if(c[1]==="vib")vibrer(15);});});
 document.getElementById("optVitesse").addEventListener("click",function(e){var b=e.target.closest("button");if(b){opt("vitesse",+b.dataset.v);sonClic();}});
-document.getElementById("optForme").addEventListener("click",function(e){var b=e.target.closest("button");if(b){opt("forme",b.dataset.v);sonClic();}});
 document.getElementById("optVolMusique").addEventListener("click",function(e){var b=e.target.closest("button");if(b){opt("volMusique",+b.dataset.v);sonClic();}});
-document.getElementById("optPalette").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;
-  if(!apparenceOuverte(b.dataset.v)){vibrer(20);toast(b.dataset.v==="neon"?"Néon":"Pastel",(APP_TEMPS[b.dataset.v]?"Débloqué à {0} étoiles de temps":"Débloqué à {0} étoiles de coups").replace("{0}",APPARENCES[b.dataset.v]));return;}opt("palette",b.dataset.v);sonClic();});
-document.getElementById("btnEffacer").addEventListener("click",function(){ouvrirFenetre('<h3>Tout effacer ?</h3><p>Étoiles, succès, records et série seront perdus. Les options sont gardées.</p><div class="menu"><button class="bouton" data-a="non" type="button" style="justify-content:center">Garder ma progression</button><button class="danger" data-a="oui" type="button">Effacer définitivement</button></div>',
-  function(a){fermerFenetre();if(a==="oui"){var o=PROG.options;PROG=progVide();PROG.options=o;sauver();if(Distant.doc)envoyer();rafraichirAccueil();avertir("Progression","Tout a été effacé.");}},"non");});
+document.getElementById("btnEffacer").addEventListener("click",function(){ouvrirFenetre('<h3>Tout effacer ?</h3><p>Étoiles, succès, records et série seront perdus. Les options et les achats sont gardés.</p><div class="menu"><button class="bouton" data-a="non" type="button" style="justify-content:center">Garder ma progression</button><button class="danger" data-a="oui" type="button">Effacer définitivement</button></div>',
+  function(a){fermerFenetre();if(a==="oui"){var o=PROG.options,ach=PROG.achat,dr=PROG.droits;PROG=progVide();PROG.options=o;PROG.achat=ach;PROG.droits=dr||{};sauver();if(Distant.doc)envoyer();rafraichirAccueil();avertir("Progression","Tout a été effacé.");}},"non");});
 
 /* ========== 15. AIDE ET ACCUEIL ========== */
 var AideP=new Plateau(document.getElementById("aideCanvas"));AideP.continu=true;AideP.lent=true;AideP.prochain=0;AideP.etape=0;Ticker.actifs.push(AideP);
@@ -1812,7 +1964,7 @@ NATIF.prix().then(function(p){if(p){PRIX=p;majAchat();}});
 NATIF.etatAchat().then(function(ok){if(ok===true&&!PROG.achat){PROG.achat=true;sauver();majAchat();rafraichirAccueil();}
   else if(ok===false&&PROG.achat){PROG.achat=false;sauver();majAchat();rafraichirAccueil();}});
 // la pastille d'achat n'apparaît qu'une fois le monde 1 fini : avant, elle parle d'un jeu qu'on ne connaît pas encore
-function majAchat(){var c=complet();document.getElementById("btnBoutique").hidden=c||CFG.modele==="complet"||Object.keys(PROG.niveaux).length<10;document.getElementById("prixAccueil").textContent=PRIX;
+function majAchat(){var c=complet();document.getElementById("btnBoutique").hidden=Object.keys(PROG.niveaux).length<10;var vendu=c||CFG.modele==="complet";document.getElementById("prixAccueil").textContent=PRIX;document.getElementById("prixAccueil").hidden=vendu;document.getElementById("stylesAccueil").hidden=!vendu;
   document.getElementById("grpAchat").hidden=CFG.modele==="complet";
   document.getElementById("achatEtat").textContent=c?"Débloqué. Merci pour votre soutien !":"Les 6 mondes, toute la partie libre"+(PRIX?" · "+PRIX:"")+".";
   var b=document.getElementById("btnAchatOpt");b.textContent=c?"Débloqué":"Débloquer";b.disabled=c;
@@ -1827,16 +1979,130 @@ function ouvrirBoutique(raison){var web=!NATIF.natif,li=CFG.liens||{};
       (li.googlePlay?'<a class="bouton principal" href="'+li.googlePlay+'" target="_blank" rel="noopener"><span>Google Play</span></a>':"");}
   else html+='<button class="bouton principal" data-a="acheter" type="button"><span>Débloquer</span><span class="droite">'+PRIX+'</span></button>'+
       '<button class="bouton" data-a="restaurer" type="button" style="justify-content:center">Restaurer mes achats</button>';
-  html+='<button class="bouton" data-a="x" type="button" style="justify-content:center;color:var(--pale)">Plus tard</button></div>';
-  ouvrirFenetre(html,function(a){if(a==="acheter")acheter();else if(a==="restaurer")restaurer();else fermerFenetre();},"x");}
+  html+=(ECRAN!=="jeu"?'<button class="bouton" data-a="magasin" type="button">Toute la boutique</button>':"")+'<button class="bouton" data-a="x" type="button" style="justify-content:center;color:var(--pale)">Plus tard</button></div>';
+  ouvrirFenetre(html,function(a){if(a==="acheter")acheter();else if(a==="restaurer")restaurer();else if(a==="magasin"){fermerFenetre();ouvrirMagasin(ECRAN);}else fermerFenetre();},"x");}
 function attente(oui){document.querySelectorAll("#fenetre [data-a]").forEach(function(b){b.disabled=oui;b.style.opacity=oui?.5:"";});}
 function debloque(){PROG.achat=true;sauver();majAchat();rafraichirAccueil();fermerFenetre();sonVictoire();vibrer([20,40,20]);confettis();
   toast("Merci !","Tout Orbicube est débloqué.");if(ECRAN==="parcours")buildParcours();}
 function acheter(){attente(true);NATIF.acheter().then(function(r){attente(false);if(r.ok)debloque();else if(!r.annule)avertir("Achat",r.erreur==="indisponible"?"Le store ne répond pas. Réessayez plus tard.":"L’achat n’a pas abouti.");});}
-function restaurer(){attente(true);NATIF.restaurer().then(function(r){attente(false);if(r.ok)debloque();else avertir("Restaurer",r.erreur==="indisponible"?"Le store ne répond pas. Réessayez plus tard.":"Aucun achat à restaurer sur ce compte.");});}
-document.getElementById("btnBoutique").addEventListener("click",function(){sonClic();ouvrirBoutique("accueil");});
+function restaurer(){attente(true);document.getElementById("boutique").classList.add("attente");NATIF.restaurer().then(function(r){attente(false);document.getElementById("boutique").classList.remove("attente");
+  var n=(r.droits||[]).length;if(n)appliquerDroits(r.droits);if(ECRAN==="boutique")rendreBoutique();
+  if(r.ok)debloque();else if(n)toast("Achats restaurés","Vos packs sont de retour.");else avertir("Restaurer",r.erreur==="indisponible"?"Le store ne répond pas. Réessayez plus tard.":"Aucun achat à restaurer sur ce compte.");});}
+document.getElementById("btnBoutique").addEventListener("click",function(){sonClic();ouvrirMagasin("accueil");});
 document.getElementById("btnAchatOpt").addEventListener("click",function(){sonClic();ouvrirBoutique("accueil");});
 document.getElementById("btnRestaurer").addEventListener("click",function(){sonClic();if(!NATIF.natif){avertir("Restaurer","Les achats se restaurent dans l’application.");return;}restaurer();});
+/* ========== 15 quater. LA BOUTIQUE (écran) ========== */
+// prix affichés tant que le store n'a pas répondu (config.js > prixPacks) ; le vrai prix vient du store
+var PRIXP=Object.assign({couleurs:"1,99 €",formes:"1,99 €",effets:"1,99 €",collection:"3,99 €",integrale:"7,99 €",soutien:"2,99 €",amp10:"0,99 €",amp30:"1,99 €"},CFG.prixPacks||{});
+var RAYON="palette",VU={},COCHE='<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',CADENAS='<path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z"/>';
+// l'aperçu : un vrai plateau qui joue trois tours puis les défait, habillé du style regardé (sans le porter)
+var ApercuP=new Plateau(document.getElementById("apercu"),{etiquettes:false});ApercuP.continu=true;ApercuP.prochain=0;ApercuP.sol=[];Ticker.actifs.push(ApercuP);
+ApercuP.apres=function(now){if(this.occupe()||now<this.prochain)return;
+  if(!this.sol.length){var mv=[];for(var i=0;i<3;i++){var m=MV[TOUS[Math.floor(Math.random()*9)]];mv.push({a:m[0],L:m[1],q:Math.random()<.5?1:-1});}
+    this.sol=mv.slice().reverse().map(inverse);mv.forEach(function(x){ApercuP.jouer(x,560);});this.prochain=now+900;return;}
+  this.jouer(this.sol.shift(),560);this.prochain=now+(this.sol.length?250:1500);};
+function habillerApercu(){var vu=function(k){return VU[k]||STY[k];};ApercuP.pal=PALETTES[vu("palette")];ApercuP.forme=vu("forme");ApercuP.trainee=vu("trainee");ApercuP.orbite=vu("orbite");
+  var k=RAYON==="effets"?(VU.dernier||"trainee"):RAYON;document.getElementById("apercuNom").textContent=style(k,vu(k)).nom;ApercuP.dessiner();}
+function redimApercu(){var w=document.querySelector("#boutique .bout").clientWidth;if(w)ApercuP.dimension(Math.round(Math.min(w-40,innerHeight<700?170:210)));}
+// vignettes : un petit dessin par style, avec la palette portée (ou celle du style pour les couleurs)
+function vignette(cv,k,id){var d=Math.min(DPR,2.5),W=64;cv.width=W*d;cv.height=W*d;var cx=cv.getContext("2d");cx.setTransform(d,0,0,d,0,0);cx.clearRect(0,0,W,W);
+  var pal=k==="palette"?PALETTES[id]:PALETTES[VU.palette||STY.palette],c=[32,32];
+  if(k==="palette"){var top=[[32,10],[51,21],[32,32],[13,21]],gauche=[[13,21],[32,32],[32,55],[13,44]],droite=[[32,32],[51,21],[51,44],[32,55]];
+    [[top,pal[2]],[gauche,pal[1]],[droite,pal[5]]].forEach(function(f){var P=f[0];for(var a=0;a<3;a++)for(var b=0;b<3;b++){
+      var lerp=function(p,q,t){return[p[0]+(q[0]-p[0])*t,p[1]+(q[1]-p[1])*t];},pt=function(u,v){var A=lerp(P[0],P[1],u),B=lerp(P[3],P[2],u);return lerp(A,B,v);};
+      var m=.12,q=[pt(a/3+m/3,b/3+m/3),pt((a+1)/3-m/3,b/3+m/3),pt((a+1)/3-m/3,(b+1)/3-m/3),pt(a/3+m/3,(b+1)/3-m/3)];
+      cx.beginPath();q.forEach(function(p,i){if(i)cx.lineTo(p[0],p[1]);else cx.moveTo(p[0],p[1]);});cx.closePath();cx.fillStyle=f[1];cx.fill();}});
+    for(var i=0;i<6;i++){cx.beginPath();cx.arc(12+i*8,61,2.6,0,6.283);cx.fillStyle=pal[i];cx.fill();}return;}
+  var f={u:[Math.cos(.5),Math.sin(.5)],v:[Math.cos(2.1),Math.sin(2.1)]};
+  function piece(x,y,h,col,fo){if(fo==="perles"){cx.beginPath();cx.arc(x,y,h*.8,0,6.283);cx.fillStyle=col;cx.fill();cx.lineWidth=h*.16;cx.strokeStyle="rgba(0,0,0,.45)";cx.stroke();
+      cx.beginPath();cx.arc(x-h*.22,y-h*.24,h*.28,0,6.283);cx.fillStyle="rgba(255,255,255,.34)";cx.fill();}
+    else if(fo==="facettes")facette(cx,[x,y],f,h,col);else pastille(cx,[x,y],f,h,col,fo);}
+  if(k==="forme"){piece(21,22,11,pal[0],id);piece(44,24,11,pal[2],id);piece(32,44,11,pal[5],id);return;}
+  if(k==="trainee"){var r=22,a0=-2.3,n=id==="comete"?9:id==="poussiere"?7:5;
+    for(var t=n;t>=1;t--){var aa=a0+t*.2,x=c[0]+Math.cos(aa)*r,y=c[1]+18+Math.sin(aa)*r-18,fr=1-t/(n+1);
+      if(id==="poussiere"){for(var z=0;z<2;z++){cx.globalAlpha=fr;cx.beginPath();cx.arc(x+Math.sin(t*5+z*3)*4,y+Math.cos(t*3+z*5)*4,1.3,0,6.283);cx.fillStyle=z?"#fff":pal[1];cx.fill();}}
+      else{cx.globalAlpha=fr*(id==="comete"?.5:.35);cx.beginPath();cx.arc(x,y,5*fr+2,0,6.283);cx.fillStyle=pal[1];cx.fill();
+        if(id==="comete"){cx.globalAlpha=fr*.8;cx.beginPath();cx.arc(x,y,1.6*fr+.6,0,6.283);cx.fillStyle="#fff";cx.fill();}}}
+    cx.globalAlpha=1;piece(c[0]+Math.cos(a0)*r,c[1]+Math.sin(a0)*r,9,pal[1],STY.forme);return;}
+  if(k==="orbite"){[[32,24],[23,39],[41,39]].forEach(function(p,a){cx.beginPath();cx.arc(p[0],p[1],15,0,6.283);var oc=couleurOrbite(id,a);
+      cx.lineWidth=4;cx.strokeStyle="rgba("+oc+",.18)";cx.stroke();cx.lineWidth=1.6;cx.strokeStyle="rgba("+oc+",.95)";cx.stroke();});return;}
+  if(k==="victoire"){if(id==="feux"){[[22,24,pal[0]],[42,30,pal[5]],[30,46,pal[2]]].forEach(function(b){for(var j=0;j<10;j++){var an=j/10*6.283;cx.beginPath();
+        cx.moveTo(b[0]+Math.cos(an)*3,b[1]+Math.sin(an)*3);cx.lineTo(b[0]+Math.cos(an)*9,b[1]+Math.sin(an)*9);cx.lineWidth=1.6;cx.lineCap="round";cx.strokeStyle=b[2];cx.stroke();}});}
+    else if(id==="pluie"){[[16,14,5],[40,10,4],[28,30,6],[50,34,4],[18,46,4],[42,52,5]].forEach(function(e,j){cx.beginPath();for(var n=0;n<10;n++){var aa=-Math.PI/2+n*Math.PI/5,rr=n%2?e[2]*.45:e[2];
+        cx.lineTo(e[0]+Math.cos(aa)*rr,e[1]+Math.sin(aa)*rr);}cx.closePath();cx.fillStyle=j%2?"#4cc9f0":"#ffcf4a";cx.fill();});}
+    else{for(var j=0;j<16;j++){cx.beginPath();cx.arc(10+((j*37)%46),10+((j*23)%46),2.4+(j%3),0,6.283);cx.fillStyle=pal[j%6];cx.fill();}}}}
+// une condition lisible pour ce qui n'est pas encore ouvert
+function condition(st){var o=st.ouv||{};if(o.etoiles)return'<small class="notrad">'+SVG_ET+o.etoiles+'</small>';if(o.chrono)return'<small class="notrad">'+SVG_ETT+o.chrono+'</small>';
+  if(o.rang)return'<small>Rang '+o.rang+'</small>';return'<small>'+PACKS[o.pack].nom+'</small>';}
+function carteStyle(k,st){var ouv=styleOuvert(k,st.id),porte=STY[k]===st.id,vu=VU[k]===st.id;
+  return'<button class="style'+(porte?" porte":"")+(vu?" vu":"")+(ouv?"":" ferme")+'" type="button" data-k="'+k+'" data-id="'+st.id+'"><canvas></canvas><b>'+st.nom+'</b>'+
+    (porte?'<small>Porté</small>':ouv?'<small>Choisir</small>':condition(st))+(ouv?"":'<svg class="cad" viewBox="0 0 24 24">'+CADENAS+'</svg>')+'</button>';}
+function lignePack(cle,ic){var P=PACKS[cle],a=aDroit(P.droit);
+  return'<div class="bout-ligne'+(a?" acquis":"")+'" id="pack-'+cle+'"><span class="ic"><svg viewBox="0 0 24 24">'+ic+'</svg></span><div class="lt"><b>'+P.nom+'</b><span>'+P.desc+'</span></div>'+
+    (a?'<span class="bout-acquis">'+COCHE+'Acquis</span>':'<button class="btn-or" type="button" data-achat="'+cle+'"><span class="px notrad">'+PRIXP[cle]+'</span></button>')+'</div>';}
+var IC={couleurs:'<circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><circle cx="12" cy="16" r="3"/>',formes:'<path d="M12 3l4 5-4 13-4-13z"/><path d="M8 8h8"/>',
+  effets:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',cœur:'<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>',
+  couronne:'<path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/>'};
+function rendreBoutique(){var c=complet(),tous=["pack_couleurs","pack_formes","pack_effets"].every(aDroit),h="";
+  document.getElementById("boutAmpNb").textContent=ampoules();
+  var puce=function(t){return'<li><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>'+t+'</span></li>';};
+  if(!c&&CFG.modele!=="complet")h='<div class="bout-hero"><span class="etiq">Meilleure offre</span><h3>'+PACKS.integrale.nom+'</h3><p>Tout Orbicube, en un seul achat, pour toujours.</p><ul>'+
+      puce("Les 6 mondes et toute la partie libre")+puce("Une ampoule offerte chaque jour")+puce("Les 3 packs : 4 palettes, 3 formes, 4 effets")+'</ul>'+
+      '<button class="btn-or" type="button" data-achat="integrale"><span>Tout débloquer</span><span class="px notrad">'+PRIXP.integrale+'</span></button></div>'+
+      '<div class="bout-ligne" id="pack-complet"><span class="ic"><svg viewBox="0 0 24 24">'+IC.couronne+'</svg></span><div class="lt"><b>Orbicube complet</b><span>Les 6 mondes, toute la partie libre, une ampoule par jour.</span></div>'+
+      '<button class="btn-or" type="button" data-achat="complet"><span class="px notrad">'+PRIX+'</span></button></div>';
+  else if(!tous)h='<div class="bout-hero"><span class="etiq">Collection</span><h3>'+PACKS.collection.nom+'</h3><p>Les trois packs de styles, en un seul achat.</p><ul>'+
+      puce("4 palettes : Aurore, Galaxie, Glace, Joyaux")+puce("3 formes : Gemmes, Étoiles, Cristaux")+puce("4 effets : comète, argent, arc-en-ciel, feu d’artifice")+'</ul>'+
+      '<button class="btn-or" type="button" data-achat="collection"><span>Tout le style</span><span class="px notrad">'+PRIXP.collection+'</span></button></div>';
+  else h='<div class="bout-hero merci"><span class="etiq">Merci</span><h3>Vous avez tout Orbicube</h3><p>Tous les mondes et tous les styles sont à vous. Bon voyage dans les orbites.</p></div>';
+  document.getElementById("boutHero").innerHTML=h;
+  document.querySelectorAll("#boutRayons button").forEach(function(b){b.classList.toggle("on",b.dataset.r===RAYON);});
+  var r="";
+  if(RAYON==="palette")r=lignePack("couleurs",IC.couleurs)+'<div class="bout-grille">'+STYLES.palette.map(function(st){return carteStyle("palette",st);}).join("")+'</div>';
+  else if(RAYON==="forme")r=lignePack("formes",IC.formes)+'<div class="bout-grille">'+STYLES.forme.map(function(st){return carteStyle("forme",st);}).join("")+'</div>';
+  else r=lignePack("effets",IC.effets)+[["trainee","Traînée"],["orbite","Orbites"],["victoire","Victoire"]].map(function(g){
+      return'<div class="bout-sous">'+g[1]+'</div><div class="bout-grille">'+STYLES[g[0]].map(function(st){return carteStyle(g[0],st);}).join("")+'</div>';}).join("");
+  var el=document.getElementById("boutRayon");el.innerHTML=r;
+  el.querySelectorAll(".style").forEach(function(b){vignette(b.querySelector("canvas"),b.dataset.k,b.dataset.id);});
+  document.getElementById("boutAmpoules").innerHTML=["amp10","amp30"].map(function(k){return'<button class="bout-carte" type="button" data-achat="'+k+'">'+(k==="amp30"?'<span class="eco">Le plus avantageux</span>':"")+
+      '<svg viewBox="0 0 24 24">'+'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/>'+'</svg><b>'+PACKS[k].nom+'</b><span class="px notrad">'+PRIXP[k]+'</span></button>';}).join("");
+  document.getElementById("boutSoutien").innerHTML=aDroit("soutien")?'<div class="bout-ligne acquis"><span class="ic"><svg viewBox="0 0 24 24">'+IC.cœur+'</svg></span><div class="lt"><b>Merci pour votre soutien !</b><span>Votre liseré doré brille sur votre profil.</span></div></div>':lignePack("soutien",IC.cœur);
+  habillerApercu();}
+// les droits que le store confirme (achat, restauration, ouverture) ; P : le pack qu'on vient d'acheter (filet si les droits tardent)
+function appliquerDroits(liste,P){PROG.droits=PROG.droits||{};var avant=complet();
+  (liste||[]).forEach(function(d){if(d===(CFG.droit||"complet"))PROG.achat=true;else PROG.droits[d]=true;});
+  if(P)(P.droits||[P.droit]).forEach(function(d){if(d==="complet")PROG.achat=true;else if(d)PROG.droits[d]=true;});
+  sauver();appliquerOptions();majAchat();majRang();rafraichirAccueil();if(ECRAN==="parcours")buildParcours();return !avant&&complet();}
+function acheterPack(cle){sonClic();
+  if(cle==="complet"){if(!NATIF.natif){ouvrirBoutique("accueil");return;}document.getElementById("boutique").classList.add("attente");
+    NATIF.acheter().then(function(r){document.getElementById("boutique").classList.remove("attente");if(r.ok){debloque();rendreBoutique();}
+      else if(!r.annule)avertir("Achat",r.erreur==="indisponible"?"Le store ne répond pas. Réessayez plus tard.":"L’achat n’a pas abouti.");});return;}
+  var P=PACKS[cle];
+  if(!NATIF.natif||!NATIF.acheterProduit){avertir("Boutique","Les achats se font dans l’application, sur iPhone ou Android.");return;}
+  document.getElementById("boutique").classList.add("attente");
+  NATIF.acheterProduit(P.produit).then(function(r){document.getElementById("boutique").classList.remove("attente");
+    if(!r.ok){if(!r.annule)avertir("Achat",r.erreur==="indisponible"?"Le store ne répond pas. Réessayez plus tard.":"L’achat n’a pas abouti.");return;}
+    if(P.ampoules){crediterAmpoules(P.ampoules);toast("Merci !","+{0} ampoules".replace("{0}",P.ampoules));}
+    else{appliquerDroits(r.droits,P);toast("Merci !",P.nom);confettis();}
+    sonVictoire();vibrer([20,40,20]);rendreBoutique();});}
+function ouvrirMagasin(depuis){document.getElementById("boutRetour").setAttribute("data-retour",depuis||"accueil");VU={};montrer("boutique");}
+document.getElementById("boutRayons").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;sonClic();RAYON=b.dataset.r;rendreBoutique();});
+document.getElementById("boutique").addEventListener("click",function(e){var a=e.target.closest("[data-achat]");if(a){acheterPack(a.dataset.achat);return;}
+  var b=e.target.closest(".style");if(!b)return;var k=b.dataset.k,id=b.dataset.id,st=style(k,id);VU[k]=id;VU.dernier=k;
+  if(k==="victoire")confettis(id);
+  if(styleOuvert(k,id)){if(STY[k]!==id){opt(k,id);vibrer(8);}sonClic();}
+  else{vibrer(20);var o=st.ouv;
+    if(o.pack){var l=document.getElementById("pack-"+o.pack);if(l){l.scrollIntoView({behavior:CALME?"auto":"smooth",block:"center"});l.classList.remove("appel");void l.offsetWidth;l.classList.add("appel");}
+      toast(st.nom,"Dans le pack {0}".replace("{0}",PACKS[o.pack].nom));}
+    else toast(st.nom,o.etoiles?"Se gagne à {0} étoiles de coups".replace("{0}",o.etoiles):o.chrono?"Se gagne à {0} étoiles de temps".replace("{0}",o.chrono):"Se gagne au rang {0}".replace("{0}",o.rang));}
+  rendreBoutique();});
+document.getElementById("boutRestaurer").addEventListener("click",function(){sonClic();if(!NATIF.natif){avertir("Restaurer","Les achats se restaurent dans l’application.");return;}restaurer();});
+document.getElementById("btnStylesOpt").addEventListener("click",function(){sonClic();ouvrirMagasin("options");});
+addEventListener("resize",function(){if(ECRAN==="boutique")redimApercu();});
+// à l'ouverture : les prix des packs dans la devise du joueur, et les droits déjà achetés (autre appareil, réinstallation)
+if(NATIF.prixProduits)NATIF.prixProduits(Object.keys(PACKS).map(function(k){return PACKS[k].produit;})).then(function(m){
+  Object.keys(PACKS).forEach(function(k){if(m&&m[PACKS[k].produit])PRIXP[k]=m[PACKS[k].produit];});if(ECRAN==="boutique")rendreBoutique();});
+if(NATIF.droits)NATIF.droits().then(function(l){if(l&&l.length)appliquerDroits(l);});
 if(CFG.liens&&CFG.liens.confidentialite)document.getElementById("lienConf").href=CFG.liens.confidentialite;
 // bouton retour d'Android : ferme la fenêtre, met en pause, remonte d'un écran, puis quitte
 NATIF.surRetour(function(){if(!document.getElementById("voile").hidden){if(FEN.esc)FEN.esc();return;}
@@ -1880,13 +2146,14 @@ function avancerMissions(v,max){var M=missionsDuJour(),fini=[];
 function missionsVictoire(d,e,eT,temps){avancerMissions(function(m){return{cubes:1,etT:d.relax?0:eT,jour:d.mode==="jour"?1:0,parfait:d.mode==="campagne"&&e===3?1:0,
     libre:d.mode==="libre"||d.mode==="sansfin"||d.relax?1:0}[m.id]||0;});
   avancerMissions(function(m){return m.id==="sansfin"&&d.mode==="sansfin"?d.etape:m.id==="vite"&&temps<=m.but*1000?m.but:0;},true);}
-function majRang(){var R=rangDe(PROG.xp),M=missionsDuJour();document.getElementById("rangAnneau").innerHTML=anneauRang(PROG.xp);
+function majRang(){var R=rangDe(PROG.xp),M=missionsDuJour();document.getElementById("btnRang").classList.toggle("mecene",aDroit("soutien"));document.getElementById("rangAnneau").innerHTML=anneauRang(PROG.xp);
   document.getElementById("rangTitre").textContent=titreRang(R.r);
   // les missions du jour : une cible et « 1/3 » (les trois points seuls ne disaient pas ce qu'ils comptaient), dorés à 3/3
   var nm=M.l.filter(missionFinie).length,rm=document.getElementById("rangMissions");rm.classList.toggle("fini",nm===M.l.length);
   rm.innerHTML='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg>'+nm+'/'+M.l.length;}
 function rafraichirProfil(){var R=rangDe(PROG.xp),M=missionsDuJour();
-  document.getElementById("rangCarte").innerHTML='<span class="anneau-rang notrad">'+anneauRang(PROG.xp,2.4)+'</span><h3>'+titreRang(R.r)+'</h3>'+
+  var rc=document.getElementById("rangCarte");rc.classList.toggle("mecene",aDroit("soutien"));
+  rc.innerHTML='<span class="anneau-rang notrad">'+anneauRang(PROG.xp,2.4)+'</span><h3>'+titreRang(R.r)+'</h3>'+(aDroit("soutien")?'<span class="mecene-titre">Mécène d’Orbicube</span>':"")+
     '<span class="xp notrad">'+R.xp+' / '+R.besoin+' XP</span><span class="rc-et notrad">'+SVG_ET+etoilesTotal()+' '+SVG_ETT+etoilesChrono()+'</span>';
   document.getElementById("listeMissions").innerHTML=M.l.map(function(m){var ok=missionFinie(m);return '<div class="mission'+(ok?" ok":"")+'"><span class="coche">'+(ok?'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>':"")+'</span>'+
     '<div><b>'+texteMission(m)+'</b><i class="mb"><i style="width:'+(100*m.p/m.but).toFixed(0)+'%"></i></i></div><span class="mx notrad">'+(m.id==="vite"||m.id==="sansfin"?(ok?"✓":""):m.p+"/"+m.but)+'</span></div>';}).join("")+

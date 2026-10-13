@@ -10,6 +10,10 @@ window.ORBICUBE_CONFIG = {
 
   // Prix affiché tant que le store n'a pas répondu (le vrai prix vient du store, dans la devise du joueur).
   prixAffiche: "4,99 €",
+  // Boutique : prix des packs affichés tant que le store n'a pas répondu (mêmes clés que PACKS dans index.html).
+  // Les produits et leurs droits RevenueCat sont décrits dans docs/lancement.md, section 3 quater.
+  prixPacks: { couleurs: "1,99 €", formes: "1,99 €", effets: "1,99 €", collection: "3,99 €", integrale: "7,99 €",
+    soutien: "2,99 €", amp10: "0,99 €", amp30: "1,99 €" },
 
   // RevenueCat : clés PUBLIQUES du SDK (elles sont faites pour être dans l'app), à copier depuis
   // app.revenuecat.com > Project settings > API keys. Vides = achats désactivés.

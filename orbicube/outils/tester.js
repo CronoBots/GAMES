@@ -104,10 +104,20 @@ async function resoudre(p) {
     (await p.getAttribute("#lienConf", "href")) === "confidentialite.html" ? ok("lien vers la politique de confidentialité") : faute("lien de confidentialité");
     const d2 = await debordements(p); d2.length ? faute("débordement dans les options : " + d2) : ok("options sans débordement");
 
+    // la boutique, depuis les options : un style ouvert se porte d'un toucher, celui d'un pack non acheté se regarde sans se porter
+    await p.tap("#btnStylesOpt"); await p.waitForTimeout(700);
+    (await p.isVisible("#boutique.actif")) && (await p.$$eval("#boutRayon .style", (l) => l.length)) === 8 ? ok("boutique : huit palettes en vitrine") : faute("boutique : rayon des couleurs absent");
+    await p.tap('.style[data-id="contraste"]'); await p.waitForTimeout(300);
+    (await p.$('.style.porte[data-id="contraste"]')) ? ok("boutique : un style ouvert se porte d'un toucher") : faute("le style choisi n'est pas porté");
+    await p.tap('.style[data-id="aurore"]'); await p.waitForTimeout(500);
+    (await p.$('.style.porte[data-id="contraste"]')) && !(await p.$('.style.porte[data-id="aurore"]')) ? ok("boutique : un style d'un pack non acheté se regarde sans se porter") : faute("un style payant a été porté sans achat");
+    const d3 = await debordements(p); d3.length ? faute("débordement dans la boutique : " + d3) : ok("boutique sans débordement");
+    await p.tap("#boutRetour"); await p.waitForTimeout(400);
+
     // après achat, tout s'ouvre et la progression survit au rechargement
     await p.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); v.achat = true; localStorage.setItem(k, JSON.stringify(v)); });
     await p.reload(); await p.waitForTimeout(1200);
-    (await p.isHidden("#btnBoutique")) ? ok("jeu complet : le bouton d'achat disparaît") : faute("bouton d'achat toujours là");
+    (await p.isHidden("#prixAccueil")) && (await p.textContent("#stylesAccueil")) === "Styles" ? ok("jeu complet : la boutique ne vend plus que les styles") : faute("la boutique affiche encore le prix du jeu");
     await p.tap("#btnJouer"); await p.waitForTimeout(600);
     const restants = await p.$$eval(".parc-sect.paye", (l) => l.length);
     restants === 0 ? ok("jeu complet : plus aucun monde réservé, progression gardée") : faute(restants + " mondes encore réservés");
@@ -161,6 +171,8 @@ async function resoudre(p) {
       window.Natif = { natif: true, plateforme: "ios", vibrer: () => true, lire: () => Promise.resolve(null), ecrire() {}, demarrer() {}, surRetour() {}, quitter() {},
         achatsDisponibles: () => Promise.resolve(true), prix: () => Promise.resolve("3,49 €"), etatAchat: () => Promise.resolve(null),
         acheter: () => new Promise((ok) => setTimeout(() => ok({ ok: true }), 200)), restaurer: () => Promise.resolve({ ok: false, erreur: "aucun" }),
+        prixProduits: () => Promise.resolve({ orbicube_pack_couleurs: "2,29 €" }), droits: () => Promise.resolve(null),
+        acheterProduit: (id) => new Promise((ok) => setTimeout(() => ok({ ok: true, droits: id === "orbicube_pack_couleurs" ? ["pack_couleurs"] : [] }), 150)),
         succesDisponibles: () => true, succesConnecter: () => { window.__connexions++; return Promise.resolve(true); },
         succesDebloquer: (id) => { window.__envoyes.push(id); return Promise.resolve(true); }, succesAfficher: () => { window.__affiche = true; return Promise.resolve(true); },
         classementEnvoyer: (id, v, t) => { window.__scores.push([id, v, t]); return Promise.resolve(true); }, classementsAfficher: (id) => { window.__classement = id; return Promise.resolve(true); } };` }));
@@ -192,8 +204,16 @@ async function resoudre(p) {
     await p.click("#btnJouer"); await p.waitForTimeout(700); await p.click(".parc-sect.paye"); await p.waitForTimeout(400);
     (await p.textContent("#fenetre")).includes("3,49 €") ? ok("la boutique affiche le prix du store") : faute("prix absent de la boutique");
     await p.click('#fenetre [data-a="acheter"]'); await p.waitForTimeout(1400);
-    (await p.isHidden("#btnBoutique")) ? ok("achat réussi : le jeu complet est débloqué") : faute("l'achat ne débloque rien");
+    (await p.isHidden("#prixAccueil")) ? ok("achat réussi : le jeu complet est débloqué") : faute("l'achat ne débloque rien");
     (await p.$$eval(".parc-sect.paye", (l) => l.length)) === 0 ? ok("après l'achat, plus aucun monde réservé") : faute("des mondes restent réservés après l'achat");
+    // boutique : prix d'un pack venu du store, achat d'un pack (ses styles s'ouvrent), achat d'ampoules (créditées)
+    await p.click("#parcours [data-retour]"); await p.waitForTimeout(400);
+    await p.click("#btnOptions"); await p.waitForTimeout(400); await p.click("#btnStylesOpt"); await p.waitForTimeout(700);
+    (await p.textContent("#pack-couleurs")).includes("2,29 €") ? ok("boutique : le prix du pack vient du store (2,29 €)") : faute("prix du pack absent");
+    await p.click("#pack-couleurs [data-achat]"); await p.waitForTimeout(900);
+    !(await p.$('.style.ferme[data-id="aurore"]')) && (await p.textContent("#pack-couleurs")).includes("Acquis") ? ok("pack acheté : ses palettes s'ouvrent") : faute("le pack acheté n'ouvre rien");
+    const amp0 = +(await p.textContent("#boutAmpNb")); await p.click('[data-achat="amp10"]'); await p.waitForTimeout(900);
+    +(await p.textContent("#boutAmpNb")) === amp0 + 10 ? ok("dix ampoules achetées sont créditées") : faute("ampoules non créditées : " + amp0 + " → " + (await p.textContent("#boutAmpNb")));
     erreurs.length ? faute("erreurs : " + erreurs.join(" | ")) : ok("aucune erreur de script");
     await ctx.close();
   }
@@ -216,6 +236,9 @@ async function resoudre(p) {
     const go = async (sel, t = 450) => { const el = await p.$(sel); if (el && await el.isVisible()) { await el.click(); await p.waitForTimeout(t); return true; } return false; };
     const fermer = async () => { for (const a of ["x", "non", "reprendre", "menu"]) if (await go(`#fenetre [data-a="${a}"]`)) return; };
     await go("#btnOptions"); await p.selectOption("#optLangue", langue); await p.waitForTimeout(300); await mesurer("options");
+    await go("#btnStylesOpt", 900); await mesurer("boutique couleurs"); await go('#boutRayons [data-r="forme"]'); await mesurer("boutique formes");
+    await go('#boutRayons [data-r="effets"]'); await mesurer("boutique effets"); await go('.style[data-id="comete"]', 600); await mesurer("boutique, style d'un pack");
+    await go('.style[data-id="poussiere"]', 600); await go("#boutRetour");
     await go("#btnEffacer"); await mesurer("effacer"); await fermer(); await go("#btnRestaurer"); await go("#options [data-retour]");
     await mesurer("accueil");
     await go("#btnJouer", 1800); await mesurer("niveau 1-1"); await go("#bulleOk"); await go("#btnPause"); await mesurer("pause"); await fermer();

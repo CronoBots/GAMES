@@ -119,7 +119,40 @@ window.Natif = {
   },
   restaurer() {
     return configurer()
-      .then((ok) => (ok ? Purchases.restorePurchases().then((r) => ({ ok: droitActif(r.customerInfo) })) : { ok: false, erreur: 'indisponible' }))
+      .then((ok) => (ok ? Purchases.restorePurchases().then((r) => ({ ok: droitActif(r.customerInfo), droits: droitsActifs(r.customerInfo) })) : { ok: false, erreur: 'indisponible' }))
       .catch(() => ({ ok: false, erreur: 'store' }));
   },
+  // Boutique : plusieurs produits (packs de styles, éditions groupées, ampoules). Chaque pack est un « entitlement »
+  // RevenueCat ; une édition groupée en active plusieurs. Les ampoules sont consommables : le jeu les crédite lui-même.
+  // ids → { id: prix dans la devise du joueur } ; {} quand le store ne répond pas
+  prixProduits(ids) {
+    return configurer()
+      .then((ok) => (ok ? produits(ids).then((l) => { const m = {}; l.forEach((p) => { m[p.identifier] = p.priceString; }); return m; }) : {}))
+      .catch(() => ({}));
+  },
+  // les droits actifs (identifiants d'entitlements), ou null quand le store ne répond pas
+  droits() {
+    return configurer()
+      .then((ok) => (ok ? Purchases.getCustomerInfo().then((r) => droitsActifs(r.customerInfo)) : null))
+      .catch(() => null);
+  },
+  acheterProduit(id) {
+    return configurer().then((ok) => {
+      if (!ok) return { ok: false, erreur: 'indisponible' };
+      return produits([id])
+        .then((l) => {
+          const p = l.find((x) => x.identifier === id);
+          if (!p) return { ok: false, erreur: 'produit' };
+          return Purchases.purchaseStoreProduct({ product: p }).then((r) => ({ ok: true, droits: droitsActifs(r.customerInfo) }));
+        })
+        .catch((e) => ({ ok: false, annule: !!(e && e.userCancelled), erreur: 'store' }));
+    });
+  },
 };
+function droitsActifs(info) {
+  return Object.keys((info && info.entitlements && info.entitlements.active) || {});
+}
+function produits(ids) {
+  // NON_SUBSCRIPTION : achats uniques et consommables (Android l'exige ; iOS l'ignore)
+  return Purchases.getProducts({ productIdentifiers: ids, type: 'NON_SUBSCRIPTION' }).then((r) => (r && r.products) || []);
+}
