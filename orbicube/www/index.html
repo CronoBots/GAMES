@@ -183,6 +183,9 @@ a.bouton{text-decoration:none;color:inherit}
 .melange[hidden]{display:none}
 .melange svg{width:92px;height:92px;filter:drop-shadow(0 0 18px rgba(165,139,255,.35))}
 .melange b{font-family:var(--f-titre);letter-spacing:.3em;font-size:12px;color:#d9ceff;font-weight:700}
+/* secousse d'impact à la résolution (déclenchée par .secousse sur #zonePlateau, retirée après) */
+@keyframes secousse{0%,100%{transform:translate(0,0)}12%{transform:translate(-6px,4px)}26%{transform:translate(5px,-5px)}40%{transform:translate(-5px,-3px)}54%{transform:translate(4px,4px)}70%{transform:translate(-3px,2px)}86%{transform:translate(2px,-2px)}}
+.secousse{animation:secousse .46s cubic-bezier(.36,.07,.19,.97)}
 .jbas{padding:4px 12px 10px;display:grid;gap:8px}
 .notation{font-family:var(--f-math);font-size:20px;letter-spacing:.05em;white-space:nowrap;overflow-x:auto;text-align:center;min-height:30px;scrollbar-width:none;padding:0 4px}
 .notation::-webkit-scrollbar{display:none}
@@ -1107,10 +1110,11 @@ document.addEventListener("visibilitychange",function(){if(document.hidden)Musiq
 function bip(freq,dur,type,vol,quand){var ac=audio();if(!ac)return;var t=ac.currentTime+(quand||0),o=ac.createOscillator(),g=ac.createGain();
   o.type=type||"sine";o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol||.12,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
   o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+dur+.02);}
-function sonTour(mv){var base=[330,392,494][mv.L+1]*(1+mv.a*.12);bip(base,.12,"triangle",.09);bip(base*1.5,.09,"sine",.05,.05);}
+// nf = nombre de faces déjà unies : le son monte à mesure qu'on approche de la résolution (tension)
+function sonTour(mv,nf){var base=[330,392,494][mv.L+1]*(1+mv.a*.12)*(1+(nf||0)*.05);bip(base,.12,"triangle",.09);bip(base*1.5,.09,"sine",.05,.05);}
 function sonClic(){bip(660,.05,"sine",.05);}
 function sonEtoile(i){bip(880*Math.pow(1.26,i),.25,"sine",.12);bip(1320*Math.pow(1.26,i),.2,"triangle",.05,.02);}
-function sonVictoire(){[523,659,784,1047].forEach(function(f,i){bip(f,.35,"triangle",.1,i*.09);});}
+function sonVictoire(){bip(131,.6,"sine",.09);[523,659,784,1047,1319].forEach(function(f,i){bip(f,.4,"triangle",.1,i*.08);bip(f*2,.3,"sine",.03,i*.08+.02);});}
 function vibrer(ms){if(!PROG.options.vib)return;if(NATIF.vibrer(Array.isArray(ms)?"succes":ms>=15?"fort":"leger"))return;try{if(navigator.vibrate)navigator.vibrate(ms);}catch(e){}}
 
 /* ========== 8. NAVIGATION ========== */
@@ -1336,7 +1340,7 @@ J={def:def,fond:ft,hist:[],t0:0,fini:false,indice:false,pret:false,tranches:{}};
 function recommencer(){if(!J||!J.pret)return;JeuP.file=[];JeuP.anim=null;JeuP.col=(J.def.base?J.def.base.slice():resoluCol());J.def.melange.forEach(function(mv){JeuP.col=appliquer(JeuP.col,mv);});
   J.hist=[];J.t0=0;J.fini=false;J.eTPrec=0;JeuP.indice=null;majJeu();majTemps();Ticker.reveiller();}
 function jouerCoup(mv){if(!J||!J.pret||J.fini||JeuP.occupe()||!JeuP.permisA(cleA(mv)))return;
-  JeuP.indice=null;sonTour(mv);vibrer(8);JeuP.jouer(mv,300*PROG.options.vitesse,function(ok){if(ok)apresCoup(mv);},"rebond");}
+  JeuP.indice=null;sonTour(mv,Object.keys(facesUnies(appliquer(JeuP.col,mv))).length);vibrer(8);JeuP.jouer(mv,300*PROG.options.vitesse,function(ok){if(ok)apresCoup(mv);},"rebond");}
 function apresCoup(mv){J.hist.push(mv);if(!J.t0){J.t0=performance.now();}PROG.stats.tours+=mv.d||1;avancerMissions(function(m){return m.id==="tours"?mv.d||1:0;});if(mv.L===0){PROG.stats.tranches++;J.tranches[mv.a]=1;}
   if(!document.getElementById("bulle").hidden&&document.getElementById("bulle").dataset.tip==="geste")cacherBulle();
   majJeu();if(estResolu(JeuP.col))victoire();else if(PROG.stats.tours%25===0)sauver();}
@@ -1397,6 +1401,9 @@ function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length
   sauver();majJeu();var jeton=J,t0=performance.now();
   // vague de victoire : les cercles s'allument l'un après l'autre, les pastilles sautent du centre vers le bord
   JeuP.vague=t0;S.forEach(function(s,i){JeuP.pops[i]=t0+250+Math.hypot(s.xy[0],s.xy[1])*380;});Ticker.reveiller();
+  // impact de la résolution : un grave profond + une secousse brève du plateau (juice, respecte CALME)
+  bip(92,.5,"sine",.13);bip(138,.4,"triangle",.05,.02);
+  if(!CALME){var zp=document.getElementById("zonePlateau");zp.classList.remove("secousse");void zp.offsetWidth;zp.classList.add("secousse");setTimeout(function(){zp.classList.remove("secousse");},480);}
   Musique.effacer(3500);[0,1,2,3,4,5].forEach(function(k){bip(392*Math.pow(1.122,k),.12,"sine",.05,k*.075);});
   // les six faces s'illuminent l'une après l'autre, et le cube fait un tour complet sur lui-même
   Object.keys(CENTRE_FACE).forEach(function(k,i){setTimeout(function(){if(J!==jeton)return;JeuP.eclats.push({xy:CENTRE_FACE[k],c:JeuP.col[CLE_CENTRE[k]],t0:performance.now()});Ticker.reveiller();},CALME?0:420+i*110);});
@@ -1511,7 +1518,7 @@ cvJ.addEventListener("pointermove",function(e){var p=pt(e);
   // rotation continue : chaque quart de tour franchi est posé aussitôt sur le plateau, et le doigt continue ;
   // le coup, lui, ne se compte qu'au lâcher (voir finirGeste)
   while(Math.abs(G.cumul)>=pas1){var vis1=G.cumul>0?1:-1,mv1={a:G.choisi.a,L:G.choisi.L,q:qPourSens(G.choisi.a,vis1)},avant=JeuP.col;
-    JeuP.anim=null;JeuP.col=appliquer(JeuP.col,mv1);JeuP.arrivee(mv1,avant);sonTour(mv1);vibrer(12);G.cumul-=vis1*pas1;G.cran=false;G.trace=[[now,G.cumul]];
+    JeuP.anim=null;JeuP.col=appliquer(JeuP.col,mv1);JeuP.arrivee(mv1,avant);sonTour(mv1,Object.keys(facesUnies(JeuP.col)).length);vibrer(12);G.cumul-=vis1*pas1;G.cran=false;G.trace=[[now,G.cumul]];
     G.net+=mv1.q;}
   var prog=G.cumul/pas1,q=qPourSens(G.choisi.a,prog>=0?1:-1);
   // un cran tactile quand on passe la moitié : relâcher maintenant valide le tour
@@ -1530,7 +1537,7 @@ function lacher(){if(!G)return;var g=G;G=null;
   var sens=sensVis(an.mv),vit=v*sens,ok=an.t>.4||(an.t>.06&&vit>2.2);if(vit<-2.2)ok=false;var mv=an.mv;
   an.libre=false;an.deb=performance.now();an.de=an.t;an.vers=ok?1:0;an.courbe="rebond";
   an.duree=((ok?1-an.t:an.t)*240+90)*PROG.options.vitesse/(ok&&vit>3?Math.min(2,vit/3):1);
-  if(ok){sonTour(mv);vibrer(10);}an.fin=function(fait){finirGeste(g,g.net+(fait?mv.q:0));};Ticker.reveiller();}
+  if(ok){sonTour(mv,Object.keys(facesUnies(JeuP.col)).length);vibrer(10);}an.fin=function(fait){finirGeste(g,g.net+(fait?mv.q:0));};Ticker.reveiller();}
 // Un geste vaut au plus un coup, compté au lâcher : revenir au départ ne coûte rien, un quart de tour net vaut
 // un coup (U ou U′), un demi-tour dans le même geste aussi (U2), comme dans la notation du cube.
 function finirGeste(g,net){var n=((net%4)+4)%4;if(!J||J.fini)return;if(!n){majJeu();return;}
