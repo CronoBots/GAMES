@@ -591,6 +591,14 @@ body.sobre #plateau{transition:none}
 #jeu .nav-btn svg{width:40px;height:40px;padding:10px;box-sizing:border-box;border-radius:50%;stroke:rgb(var(--acc));
   background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.015) 55%),rgba(11,13,30,.88);border:1px solid rgba(var(--acc),.3)}
 #jeu .stat{font-family:var(--f-titre);font-weight:600;letter-spacing:.14em}
+/* écrans de menu (profil, options, succès, aide) : le contenu défile DERRIÈRE l'en-tête jusqu'aux bords de l'écran (zones
+   de l'heure et de la barre d'accueil comprises), au lieu d'être coupé net sous le titre ; l'en-tête flotte sur un fondu
+   sombre qui monte jusqu'en haut de l'écran (le client, le 13/10/2026) */
+.ecran:not(#parcours)>.tete{position:absolute;top:0;left:0;right:0;z-index:3}
+.ecran:not(#parcours)>.tete::before{content:"";position:absolute;z-index:-1;pointer-events:none;left:0;right:0;bottom:-18px;
+  top:calc(-1*env(safe-area-inset-top,0px));background:linear-gradient(180deg,rgba(6,7,14,.94),rgba(6,7,14,.72) 62%,rgba(6,7,14,0))}
+.ecran:not(#parcours)>.tete+.defile{margin-top:calc(-1*env(safe-area-inset-top,0px));margin-bottom:calc(-1*env(safe-area-inset-bottom,0px));
+  padding-top:calc(env(safe-area-inset-top,0px) + 66px);padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 </style>
 </head>
 <body>
