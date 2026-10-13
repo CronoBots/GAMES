@@ -96,6 +96,7 @@ body{background:
 .puce{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-chiffre);font-size:13px;font-weight:700;
   background:var(--carte);border:1px solid var(--trait);border-radius:999px;padding:6px 10px;white-space:nowrap}
 .puce svg{width:15px;height:15px}
+#parcours .puce .temps{margin-left:6px}
 .etoile{fill:var(--or)}
 .etoile.eteinte{fill:#34324a}
 .etoile.temps{fill:#4cc9f0}
@@ -275,6 +276,11 @@ a.bouton{text-decoration:none;color:inherit}
 .segment button.verrou{opacity:.55}
 .segment button.on{background:var(--carte2);color:var(--encre);box-shadow:0 0 0 1px var(--trait-vif)}
 .ligne.empile{flex-wrap:wrap}
+/* réglages à plusieurs choix (volume, vitesse, couleurs, pastilles) : le libellé sur sa ligne, puis les choix sur toute
+   la largeur du cadre, à parts égales (ils étaient poussés à droite, décentrés) */
+.ligne.empile .lt{flex-basis:100%}
+.ligne.empile>.segment{margin-left:0;width:100%}
+.ligne.empile>.segment:not(.grille2) button{flex:1}
 .choix{flex:none;max-width:52%;font:600 14px var(--f-texte);color:var(--encre);background:var(--carte2);border:1px solid var(--trait-vif);border-radius:12px;padding:9px 30px 9px 12px;min-height:44px;-webkit-appearance:none;appearance:none;
   background-image:linear-gradient(45deg,transparent 50%,var(--pale) 50%),linear-gradient(135deg,var(--pale) 50%,transparent 50%);background-position:calc(100% - 17px) 50%,calc(100% - 12px) 50%;background-size:5px 5px;background-repeat:no-repeat}
 .danger{color:var(--rouge);border:1px solid #5a2a2e;background:#221216;border-radius:12px;padding:10px 14px;font-weight:600;cursor:pointer;min-height:44px}
@@ -526,7 +532,7 @@ body{background:
   box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 0 22px -6px rgba(var(--pa),.7),0 10px 26px -14px rgba(0,0,0,.95)}
 .parc-sect .parc-et{display:inline-flex;align-items:center;gap:3px;font-family:var(--f-chiffre);font-weight:600;font-size:11px;color:rgba(255,255,255,.82);
   padding-left:9px;margin-left:2px;border-left:1px solid rgba(255,255,255,.18)}
-.parc-sect .parc-et svg{width:12px;height:12px;fill:var(--or)}
+.parc-sect .parc-et svg{width:12px;height:12px;fill:var(--or)}.parc-sect .parc-et svg.t{fill:#4cc9f0;margin-left:6px}
 /* description du monde (la difficulté), sous la bannière, comme l'ancien écran */
 .parc-desc{position:absolute;left:50%;transform:translateX(-50%);width:min(84%,420px);text-align:center;z-index:3;pointer-events:none;
   font-family:var(--f-texte);font-size:12.5px;line-height:1.4;color:rgba(255,255,255,.82);text-shadow:0 1px 8px rgba(0,0,0,.95)}
@@ -539,6 +545,9 @@ body{background:
 .parc-niv b{font-family:var(--f-titre);font-weight:700;font-size:19px;color:#fff;line-height:1}
 .parc-niv .pet{display:flex;gap:1px;position:absolute;bottom:-8px;background:rgba(9,9,16,.9);border-radius:999px;padding:1.5px 4px;box-shadow:0 2px 6px rgba(0,0,0,.6)}
 .parc-niv .pet svg{width:9px;height:9px}
+/* deux rangées sous le numéro : les étoiles de coups (dorées), puis celles de temps (bleues), comme en jeu */
+.parc-niv .pet{flex-direction:column;align-items:center;gap:0;bottom:-15px;padding:1.5px 4px 2px;border-radius:9px}
+.parc-niv .pet i{display:flex;gap:1px;font-style:normal}
 .parc-niv.fait{background:radial-gradient(120% 120% at 30% 22%,rgba(var(--pa),.5),rgba(var(--pa),.12) 70%),rgba(14,14,24,.72);border-color:rgba(var(--pa),.6)}
 .parc-niv.courant{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.5),0 0 26px -2px rgba(var(--pa),.9),inset 0 1px 0 rgba(255,255,255,.3);animation:parc-pulse 2.2s ease-in-out infinite}
 @keyframes parc-pulse{50%{box-shadow:0 0 0 3px rgba(255,255,255,.75),0 0 38px 0 rgba(var(--pa),1),inset 0 1px 0 rgba(255,255,255,.3)}}
@@ -648,7 +657,7 @@ body.sobre #plateau{transition:none}
     <div class="tete">
       <button class="ico" data-retour="accueil" type="button" aria-label="Retour"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
       <h2>Campagne</h2>
-      <span class="puce"><svg viewBox="0 0 24 24" class="etoile"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg><span id="parcEt">0</span></span>
+      <span class="puce"><svg viewBox="0 0 24 24" class="etoile"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg><span id="parcEt">0</span><svg viewBox="0 0 24 24" class="etoile temps"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg><span id="parcEtT">0</span></span>
     </div>
     <div class="defile" id="parcoursDefile"><div class="chemin" id="chemin"></div></div>
   </section>
@@ -1146,7 +1155,7 @@ function fusion(a,b){if(!b||typeof b!=="object")return a;var r=JSON.parse(JSON.s
   return r;}
 var PROG=progVide();
 try{var brut=localStorage.getItem(CLE_LOCALE);if(brut)PROG=fusion(progVide(),JSON.parse(brut));}catch(e){}
-var CFG=window.ORBICUBE_CONFIG||{modele:"essai",mondesGratuits:2,libresGratuits:[5],prixAffiche:"4,99 €",liens:{}};
+var CFG=window.ORBICUBE_CONFIG||{modele:"essai",mondesGratuits:3,libresGratuits:[5],prixAffiche:"4,99 €",liens:{}};
 var NATIF=window.Natif||{natif:false,vibrer:function(){return false;},lire:function(){return Promise.resolve(null);},ecrire:function(){},demarrer:function(){},surRetour:function(){},quitter:function(){},
   achatsDisponibles:function(){return Promise.resolve(false);},prix:function(){return Promise.resolve(null);},etatAchat:function(){return Promise.resolve(null);},
   acheter:function(){return Promise.resolve({ok:false,erreur:"indisponible"});},succesDisponibles:function(){return false;},restaurer:function(){return Promise.resolve({ok:false,erreur:"indisponible"});}};
@@ -1282,10 +1291,11 @@ function complet(){return CFG.modele==="complet"||PROG.achat===true;}
 function mondePaye(w){return !complet()&&w>=CFG.mondesGratuits;}
 function mondeOuvert(w){return !mondePaye(w)&&(w===0||!!PROG.niveaux[w+"-"+MONDES[w-1].coups.length]);}
 function niveauOuvert(w,i){return mondeOuvert(w)&&(i===0||!!PROG.niveaux[(w+1)+"-"+i]);}
+function chronoMonde(w){var t=0;for(var i=0;i<MONDES[w].coups.length;i++){var r=PROG.niveaux[(w+1)+"-"+(i+1)];if(r)t+=r.chrono||0;}return t;}
 function etoilesMonde(w){var t=0;for(var i=0;i<MONDES[w].coups.length;i++){var r=PROG.niveaux[(w+1)+"-"+(i+1)];if(r)t+=r.etoiles;}return t;}
 // ===== Carte de campagne : parcours vertical scrollable (façon Candy Crush), nœuds le long d'une traînée orbitale =====
 function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
-  document.getElementById("parcEt").textContent=etoilesTotal();
+  document.getElementById("parcEt").textContent=etoilesTotal();document.getElementById("parcEtT").textContent=etoilesChrono();
   var W=Math.min(ch.clientWidth||(document.getElementById("parcoursDefile").clientWidth-28)||340,492),
     cx=W/2,amp=Math.min(W*.3,118),GAP=96,pn=prochainNiveau(),y=72,k=0,items=[],pts=[];
   // on empile du niveau 1 au dernier ; les y sont ensuite retournés pour que la progression MONTE (bas -> haut, façon Candy Crush)
@@ -1309,13 +1319,13 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
     lme+='<div class="parc-meteorsb'+st+'meteors-'+t+'.webp)"></div>';});
   pts.forEach(function(p,j){d+=(j?"L":"M")+p[0].toFixed(1)+" "+(H-p[1])+" ";});
   items.forEach(function(it){var fy=H-it.y;
-    if(it.t==="s"){var pa=mondePaye(it.w),etM=etoilesMonde(it.w),maxM=MONDES[it.w].coups.length*3;
+    if(it.t==="s"){var pa=mondePaye(it.w),etM=etoilesMonde(it.w),etTM=chronoMonde(it.w),maxM=MONDES[it.w].coups.length*3;
       sects+='<div class="parc-sep" style="--pa:'+it.acc+';top:'+fy+'px"></div>'
         +'<div class="parc-sect'+(pa?" paye":"")+'" style="--pa:'+it.acc+';top:'+fy+'px"><b>Monde '+(it.w+1)+'</b><small>'+it.nom+'</small>'
-        +(pa?'<svg class="pscad" viewBox="0 0 24 24">'+CAD+'</svg>':'<span class="parc-et"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etM+'/'+maxM+'</span>')+'</div>'
+        +(pa?'<svg class="pscad" viewBox="0 0 24 24">'+CAD+'</svg>':'<span class="parc-et"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etM+'/'+maxM+'<svg class="t" viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etTM+'/'+maxM+'</span>')+'</div>'
         +'<div class="parc-desc" style="top:'+(fy+30)+'px">'+MONDES[it.w].desc+'</div>';}
     else{var cls="parc-niv"+(it.r?" fait":"")+(!it.ouv?" verrou":"")+(it.paye?" paye":"")+(it.cur?" courant":""),
-      inner=it.ouv?('<b>'+it.num+'</b><span class="pet">'+[0,1,2].map(function(j){return it.r&&it.r.etoiles>j?SVG_ET:SVG_ET_OFF;}).join("")+'</span>'):('<svg class="pcad" viewBox="0 0 24 24">'+CAD+'</svg>');
+      inner=it.ouv?('<b>'+it.num+'</b><span class="pet"><i>'+[0,1,2].map(function(j){return it.r&&it.r.etoiles>j?SVG_ET:SVG_ET_OFF;}).join("")+'</i><i class="t">'+[0,1,2].map(function(j){return it.r&&(it.r.chrono||0)>j?SVG_ETT:SVG_ET_OFF;}).join("")+'</i></span>'):('<svg class="pcad" viewBox="0 0 24 24">'+CAD+'</svg>');
       nodes+='<button type="button" class="'+cls+'" style="--pa:'+it.acc+';left:'+it.x.toFixed(1)+'px;top:'+fy+'px" data-w="'+it.w+'" data-i="'+it.i+'" aria-label="Monde '+(it.w+1)+' Niveau '+(it.i+1)+'">'+inner+'</button>';}});
   ch.style.height=H+"px";
   ch.innerHTML='<div class="parc-fond"></div>'

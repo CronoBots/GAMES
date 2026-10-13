@@ -133,6 +133,9 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   secondaires en pilule de verre sombre au contour d'accent, texte centré (`.fenetre .bouton`).
   **Écran de jeu au même langage** : boutons à icône seule (`.ico`, partout) en ronds de verre au contour d'accent,
   Annuler/Rejouer en pilules de verre, Niveaux/Accueil en petits ronds avec leur nom dessous (bloc en fin de feuille de style).
+- **Campagne** : chaque niveau montre deux rangées d'étoiles (coups dorées, temps bleues), l'en-tête de chaque monde
+  et la pastille du haut les deux totaux (`chronoMonde`, `etoilesChrono`). Options : les réglages à plusieurs choix
+  (`.ligne.empile`) prennent toute la largeur du cadre.
 - **Écrans de menu** (profil, options, succès, aide) : le contenu défile derrière l'en-tête jusqu'aux bords de l'écran
   (zones de sécurité comprises) ; l'en-tête flotte sur un fondu sombre (bloc en fin de feuille de style, le client, le 13/10/2026).
 - **Logo** : les trois anneaux (`ANNEAUX` dans `outils/icones.py`) pour l'icône, le démarrage natif et le logo du
