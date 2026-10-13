@@ -116,7 +116,7 @@ body{background:
   top:calc(-1*env(safe-area-inset-top,0px));bottom:calc(-1*env(safe-area-inset-bottom,0px));
   left:calc(-1*env(safe-area-inset-left,0px));right:calc(-1*env(safe-area-inset-right,0px))}
 .astre{position:absolute;display:block;background:center/contain no-repeat;will-change:transform}
-.astre.verte{background-image:url(img/planete-verte.webp);width:min(34vw,160px);aspect-ratio:1;left:max(-15vw,-70px);top:19%;opacity:.8;
+.astre.verte{background-image:url(img/planete-verte.webp);width:min(34vw,160px);aspect-ratio:1;left:max(-18vw,-84px);top:16.5%;opacity:.8;
   animation:derive-verte 46s ease-in-out infinite alternate}
 .astre.rousse{background-image:url(img/planete-rousse.webp);width:min(25vw,118px);aspect-ratio:187/160;right:max(-9vw,-42px);top:31%;opacity:.7;
   animation:derive-rousse 34s ease-in-out infinite alternate}
@@ -451,18 +451,19 @@ body{background:
   radial-gradient(50% 35% at 82% 16%,rgba(255,107,157,.10),rgba(255,107,157,0) 70%),var(--nuit)}
 /* gloss : un éclat spéculaire en haut des surfaces bombées + un filet néon sur le bouton principal.
    Les reflets sont des couches de dégradé dans le background (pas de pseudo qui recouvrirait le texte) */
-.bouton.principal{background:
-  linear-gradient(180deg,rgba(255,255,255,.30),rgba(255,255,255,0) 46%),
-  linear-gradient(135deg,color-mix(in srgb,rgb(var(--acc)),#fff 12%) 0%,color-mix(in srgb,rgb(var(--acc)),#000 28%) 52%,color-mix(in srgb,rgb(var(--acc)),#120a2e 56%) 100%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -10px 22px -12px rgba(30,8,70,.9),
-  0 0 0 1px rgba(var(--acc),.32),0 16px 36px -12px rgba(var(--acc),.8)}
-/* accueil (le client, le 13/10/2026) : le bouton principal en pilule, plus de plastique brillant ; dessous, un dock de
-   raccourcis ronds (icône, nom, état) au lieu des tuiles en boîtes ; « Jeu complet » y prend place en doré */
-#accueil .bouton.principal{min-height:64px;border-radius:999px;padding:0 24px 0 10px;gap:14px;
-  background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,0) 48%),
+.bouton.principal{border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,0) 48%),
     linear-gradient(120deg,color-mix(in srgb,rgb(var(--acc)),#fff 4%) 0%,color-mix(in srgb,rgb(var(--acc)),#0a1440 42%) 58%,color-mix(in srgb,rgb(var(--acc)),#050a26 62%) 100%);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1px 0 rgba(0,0,0,.25),0 0 0 1px rgba(var(--acc),.5),
     0 14px 30px -12px rgba(0,0,0,.9),0 0 30px -10px rgba(var(--acc),.7)}
+/* fenêtres (pause, victoire, boutique…) : mêmes pilules que l'accueil, texte centré ; les boutons secondaires en verre
+   sombre au contour d'accent, comme les ronds du dock (le client, le 13/10/2026) */
+.fenetre .bouton{border-radius:999px;justify-content:center;text-align:center;min-height:52px}
+.fenetre .bouton:not(.principal):not(.or){background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.01) 55%),rgba(11,13,30,.9);
+  border:1px solid rgba(var(--acc),.26);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 10px 22px -12px rgba(0,0,0,.9)}
+.fenetre .bouton .droite{margin-left:12px}
+/* accueil (le client, le 13/10/2026) : le bouton principal en pilule, plus de plastique brillant ; dessous, un dock de
+   raccourcis ronds (icône, nom, état) au lieu des tuiles en boîtes ; « Jeu complet » y prend place en doré */
+#accueil .bouton.principal{min-height:64px;padding:0 24px 0 10px;gap:14px}
 #accueil .bouton.principal small{opacity:.9}
 #accueil .bouton.principal svg{width:44px;height:44px;padding:13px 12px 13px 14px;background:rgba(255,255,255,.2)}
 #accueil #jouerTxt{font-size:19px;letter-spacing:.08em}
@@ -1227,10 +1228,10 @@ function rafraichirAccueil(){var pn=prochainNiveau(),fait=Object.keys(PROG.nivea
   // défi du jour : réussi, il dit dans combien de temps vient le suivant ; sinon la série en cours, sinon « nouveau »
   var j=PROG.jours[cleJour()],dem=new Date();dem.setHours(24,0,0,0);var reste=dem-Date.now(),h=Math.floor(reste/3600000);
   // la série reste visible tant qu'elle est vive (défi du jour fait ou d'hier), pour renforcer l'habitude ;
-  // sinon, le temps avant le prochain défi, sinon « nouveau »
+  // sinon, le temps avant le prochain défi, sinon sa récompense (le point doré dit déjà qu'il est nouveau)
   var serieVive=PROG.serie>1&&(PROG.dernierJour===cleJour()||estHier(PROG.dernierJour));
   document.getElementById("jourSous").textContent=serieVive?"série de "+PROG.serie:
-    j?(h>=1?"dans "+h+" h":"dans "+Math.max(1,Math.ceil(reste/60000))+" min"):"nouveau";
+    j?(h>=1?"dans "+h+" h":"dans "+Math.max(1,Math.ceil(reste/60000))+" min"):"+1 ampoule";
   document.getElementById("jourPoint").hidden=!!j;
   // sous « Continuer » : le monde en cours et ses étoiles, dans sa couleur
   // la seconde ligne du bouton dit où l'on en est, sans phrase en plus sous le bouton

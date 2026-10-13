@@ -120,8 +120,10 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   orbites plus fines, traînées, lueurs des pièces et comète deux fois plus discrètes, plateau à 96 % ; sur l'accueil,
   le ciel animé baisse ses étoiles et n'envoie qu'une étoile filante pâle toutes les 6 à 12 s.
   **Menu du bas** : le bouton principal en pilule (accent, sans gloss plastique), puis un **dock** de raccourcis ronds
-  (`.dock`, icône + nom + état : Défis avec un point doré tant que le défi du jour n'est pas joué, Partie libre, Succès,
+  (`.dock`, icône + nom + état : Défis avec un point doré tant que le défi du jour n'est pas joué, « +1 ampoule » dessous, Partie libre, Succès,
   et « Jeu complet » en doré quand il est proposé). Plus de bouton musique sur l'accueil : il est dans les options.
+  **Le bouton principal en pilule est celui de tout le jeu** (fenêtres de pause, victoire, boutique…), avec des boutons
+  secondaires en pilule de verre sombre au contour d'accent, texte centré (`.fenetre .bouton`).
 - **Logo** : les trois anneaux (`ANNEAUX` dans `outils/icones.py`) pour l'icône, le démarrage natif et le logo du
   mélange (`.anneaux`). **L'écran de chargement web montre les neuf orbites du plateau** (`.orbites`, SVG, un éclat de
   couleur par orbite, sans filtre CSS) puis se dissout sur l'accueil (le client, le 13/10/2026) ; les médailles des succès gardent le plateau. Accueil : la devise disparaît après le
