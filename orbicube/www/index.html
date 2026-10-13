@@ -115,12 +115,14 @@ body{background:
 /* le logo prend la hauteur que le menu laisse, mesurée par la mise en page elle-même (et non estimée) :
    l'accueil tient sur un écran quelles que soient la police et la taille du texte du téléphone */
 .logoboite{flex:1 1 0;min-height:150px;max-height:410px;width:100%;display:grid;place-items:center;overflow:hidden}
-/* le cube au cœur des orbites (le client, le 13/10/2026) : un seul visuel, le cube en perspective posé dans le
-   vide central du plateau, qui rejoue les tours que les orbites jouent toutes seules. Cube décoratif :
-   pointer-events:none, les touchers tombent sur les orbites (qui tournent au clic). */
+/* le cube au sommet de l'orbite du haut (le client, le 13/10/2026) : posé sur le cercle comme une planète sur son
+   orbite, dans un médaillon (disque sombre qui masque le trait, fin anneau d'accent, halo) pour qu'on ne le prenne pas
+   pour une pièce du plateau. Décoratif : pointer-events:none, les touchers tombent sur les orbites. */
 .logo-scene{position:relative;display:grid;place-items:center;width:100%;height:100%}
-#logoCube{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);aspect-ratio:1/1;display:block;pointer-events:none;
-  background:radial-gradient(closest-side,rgba(6,8,22,.95) 0,rgba(6,8,22,.85) 55%,rgba(var(--acc),.18) 78%,rgba(6,8,22,0) 100%);border-radius:50%}
+.medaillon{position:absolute;left:50%;transform:translateX(-50%);display:grid;place-items:center;border-radius:50%;pointer-events:none;z-index:1;
+  background:radial-gradient(closest-side,rgba(10,12,30,.97) 0,rgba(10,12,30,.94) 78%,rgba(var(--acc),.16) 100%);
+  border:1px solid rgba(var(--acc),.55);box-shadow:0 0 0 5px rgba(var(--acc),.07),0 0 28px -4px rgba(var(--acc),.45),0 10px 30px -8px rgba(0,0,0,.9)}
+#logoCube{display:block;aspect-ratio:1/1;pointer-events:none}
 #logo{display:block}
 @media (max-height:700px){#accueil .menu{gap:8px}#accueil .bouton{min-height:50px}#accueil .defile{gap:8px}}
 /* le nom du jeu : capitales fines et très espacées (Jost 300), une lueur de la couleur d'accent ; le cube et
@@ -553,7 +555,7 @@ body.sobre #plateau{transition:none}
       <div class="entete">
         <h1 class="marque notrad">OrbiCube</h1>
       </div>
-      <div class="logoboite"><div class="logo-scene"><canvas id="logoCube" aria-hidden="true"></canvas><canvas id="logo" aria-hidden="true"></canvas></div></div>
+      <div class="logoboite"><div class="logo-scene"><div class="medaillon" id="medaillon"><canvas id="logoCube" aria-hidden="true"></canvas></div><canvas id="logo" aria-hidden="true"></canvas></div></div>
       <div style="display:grid;justify-items:center;gap:10px">
         <div class="menu cascade">
           <button class="bouton principal" id="btnJouer" type="button">
@@ -1146,7 +1148,7 @@ var Logo=new Plateau(document.getElementById("logo"),{etiquettes:false,comete:tr
 // le cube en perspective de l'accueil reflète l'état du logo (ses tours automatiques), exactement comme
 // #mini reflète le plateau pendant une partie : le menu a ainsi l'allure d'une partie en cours
 // même inclinaison qu'en jeu : #mini démarre à PIVOT {y:0,x:0} (vue isométrique, trois faces)
-var CUBE_LOGO=.54,logoCube=document.getElementById("logoCube"),logoCubeC=logoCube.getContext("2d"),PIVOT_LOGO={y:0,x:0};
+var MEDAILLON=.92,CUBE_LOGO=.7,logoCube=document.getElementById("logoCube"),logoCubeC=logoCube.getContext("2d"),PIVOT_LOGO={y:0,x:0};
 function dessinerLogoCube(){var w=logoCube.clientWidth||100,px=Math.round(w*DPR);if(logoCube.width!==px){logoCube.width=px;logoCube.height=px;logoCubeC.setTransform(DPR,0,0,DPR,0,0);}
   var an=Logo.anim,cle=w+"|"+COUL[0]+"|"+Logo.col.join("")+"|"+(an?cleA(an.mv)+an.mv.q+":"+an.t.toFixed(4):"");
   if(cle===dessinerLogoCube.cle)return;dessinerLogoCube.cle=cle;dessinerCube(logoCubeC,w,Logo.col,an,PIVOT_LOGO);}
@@ -1164,11 +1166,13 @@ Logo.apres=function(now){dessinerLogoCube();if(this.occupe()||now<this.prochain)
 // toucher l'orbicube de l'accueil le fait tourner d'un cran : un petit jouet avant d'entrer
 document.getElementById("logo").addEventListener("pointerdown",function(){if(Logo.occupe())return;audio();var b=TOUS[Math.floor(Math.random()*9)],m=MV[b],mv={a:m[0],L:m[1],q:Math.random()<.5?1:-1};
   Logo.sol.unshift(inverse(mv));Logo.pause=0;Logo.prochain=performance.now()+1200;Logo.jouer(mv,300,null,"rebond");sonTour(mv);vibrer(8);});
-// les orbites prennent la place que le menu laisse ; le cube se pose sur le centre du plateau (OY est sous le
-// milieu du canvas de 0,133 unité), à la taille du vide central : les pastilles les plus proches sont à 0,298 unité
-Logo.demarrer=function(){var box=this.cv.parentNode.parentNode.getBoundingClientRect(),
-  orbit=Math.round(Math.min(box.height,innerWidth*.92,400));if(orbit<=0)return;
-  this.dimension(orbit);logoCube.style.width=Math.round(this.ECH*CUBE_LOGO)+"px";logoCube.style.marginTop=Math.round(this.ECH*.133)+"px";
+// le médaillon du cube se pose sur le sommet du cercle du haut : 1,617 unité au-dessus du centre du plateau, soit
+// 0,116 unité sous le bord du canvas (OY = milieu + 0,133). Sa moitié haute dépasse : la scène lui garde cette place.
+Logo.demarrer=function(){var box=this.cv.parentNode.parentNode.getBoundingClientRect(),dep=MEDAILLON/2-.116,
+  orbit=Math.round(Math.min(box.height/(1+dep/3.2),innerWidth*.92,400));if(orbit<=0)return;
+  this.dimension(orbit);var E=this.ECH,m=Math.round(E*MEDAILLON),haut=Math.round(E*dep),med=document.getElementById("medaillon");
+  this.cv.style.marginTop=haut+"px";med.style.width=med.style.height=m+"px";med.style.top="calc(50% - "+Math.round((orbit+haut)/2)+"px)";
+  logoCube.style.width=Math.round(E*CUBE_LOGO)+"px";
   if(!this.sol.length&&!this.pause)melangerLogo();dessinerLogoCube();};
 function etoilesTotal(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t+=PROG.niveaux[k].etoiles||0;});return t;}
 function prochainNiveau(){for(var w=0;w<MONDES.length;w++)for(var i=0;i<MONDES[w].coups.length;i++)if(!PROG.niveaux[(w+1)+"-"+(i+1)])return{w:w,i:i};return null;}
