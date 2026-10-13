@@ -153,7 +153,6 @@ a.bouton{text-decoration:none;color:inherit}
    référence : sa taille (--cube) est la hauteur que le plateau laisse, calculée par redimJeu() */
 .jcube{display:grid;justify-items:center;gap:0;min-width:0;padding-top:14px}
 #mini{width:var(--cube,96px);height:var(--cube,96px);display:block;cursor:grab;touch-action:none}#mini:active{cursor:grabbing}
-#but{width:clamp(66px,24vw,104px);height:clamp(66px,24vw,104px);display:block}
 .jinfo .stat{align-self:start;padding-top:6px}.jinfo .jetoiles{margin-top:8px}.jinfo .jetoiles svg{width:18px;height:18px}
 .fenetre .serie{color:var(--or);font-family:var(--f-chiffre);font-size:13px;margin:4px 0 0}
 .fenetre{animation:pop .45s cubic-bezier(.3,1.4,.5,1)!important}
@@ -561,7 +560,7 @@ body.sobre #plateau{transition:none}
     </div>
     <div class="jinfo">
       <div class="stat">Coups<b id="jCoups">0</b><div class="jetoiles" id="jEt" aria-label="Étoiles possibles"></div></div>
-      <div class="jcube"><canvas id="mini" aria-label="Cube en perspective, glissez pour le faire pivoter"></canvas><canvas id="but" hidden aria-label="Motif à atteindre"></canvas></div>
+      <div class="jcube"><canvas id="mini" aria-label="Cube en perspective, glissez pour le faire pivoter"></canvas></div>
       <div class="stat d">Temps<b id="jTemps">0:00</b><div class="jetoiles d" id="jEtT" aria-label="Étoiles de temps"></div></div>
     </div>
     <div class="plateau" id="zonePlateau">
@@ -726,8 +725,6 @@ function perm(a,L,q){var k=a+","+L+","+q;if(PERM[k])return PERM[k];var m={};
   return PERM[k]=m;}
 function appliquer(col,mv){var m=perm(mv.a,mv.L,mv.q),nc=col.slice();for(var k in m)nc[m[k]]=col[+k];return nc;}
 function estResolu(col){var g={};for(var i=0;i<54;i++){var k=S[i].a+","+S[i].s;if(g[k]===undefined)g[k]=col[i];else if(g[k]!==col[i])return false;}return true;}
-// égalité exacte de coloriage : la victoire du mode Motifs vise une image précise, pas des faces unies
-function egalCol(a,b){for(var i=0;i<54;i++)if(a[i]!==b[i])return false;return true;}
 var MV={R:[0,1,-1],M:[0,0,1],L:[0,-1,1],U:[1,1,-1],E:[1,0,1],D:[1,-1,1],F:[2,1,-1],S:[2,0,-1],B:[2,-1,1]};
 var TOUS=["U","D","L","R","F","B","M","E","S"];
 var NOM_ANNEAU={};Object.keys(MV).forEach(function(k){NOM_ANNEAU[MV[k][0]+","+MV[k][1]]=k;});
@@ -1234,11 +1231,6 @@ function dessinerMini(){if(!PROG.options.cube)return;var w=mini.clientWidth||84,
     if(!PROG.tips.vue){PROG.tips.vue=1;sauver();}var bu=document.getElementById("bulle");if(!bu.hidden&&bu.dataset.tip==="vue")cacherBulle();}
   mini.addEventListener("pointerup",lacher);mini.addEventListener("pointercancel",lacher);})();
 JeuP.apres=function(){dessinerMini();};
-// Mode Motifs : la cible s'affiche en vue plateau (même représentation que le jeu), dans le slot central,
-// indépendamment de l'option « cube en perspective ».
-var ButP=new Plateau(document.getElementById("but"),{etiquettes:false});ButP.permis=null;
-function butActif(){return !!(J&&J.def&&J.def.but);}
-function majBut(){var el=document.getElementById("but");if(!butActif()){el.hidden=true;return;}el.hidden=false;ButP.col=J.def.but.slice();var w=el.clientWidth;if(w)ButP.dimension(w);}
 setInterval(function(){if(ECRAN==="accueil")rafraichirAccueil();},60000);
 // le chrono avance tout seul dès le premier contact avec le plateau, en miroir du compteur de coups
 function majTemps(){if(!J)return;var ms=J.t0?(J.fini?J.tFin:J.enPause?J.tPause-J.t0:performance.now()-J.t0):0,par=J.def.par,e=etoilesTempsPour(ms,par);
@@ -1254,7 +1246,7 @@ function redimJeu(){var jeu=document.getElementById("jeu"),z=document.getElement
       autres=jeu.querySelector(".jtete").offsetHeight+jeu.querySelector(".jbas").offsetHeight+30,
       c=paysage?96:Math.max(64,Math.min(150,jeu.clientHeight-autres-Math.min(jeu.clientWidth-28,560)-12));
     jeu.style.setProperty("--cube",Math.round(c)+"px");}
-  var r=z.getBoundingClientRect();if(!r.width)return;JeuP.dimension(Math.min(r.width-28,r.height-8));dessinerMini();majBut();
+  var r=z.getBoundingClientRect();if(!r.width)return;JeuP.dimension(Math.min(r.width-28,r.height-8));dessinerMini();
   // le cube se centre verticalement entre le titre et le haut du grand cercle (décalage visuel seulement)
   mini.style.transform="";if(PROG.options.cube&&getComputedStyle(jeu).display!=="grid"){var h=jeu.querySelector(".jtete").getBoundingClientRect().bottom,
     c=JeuP.cv.getBoundingClientRect().top+JeuP.OY-(ECART+RAY[2])*JeuP.ECH,m=mini.getBoundingClientRect(),dy=(h+c)/2-(m.top+m.height/2);
@@ -1268,7 +1260,7 @@ function lancer(def){document.getElementById("zonePlateau").classList.add("broui
 var ft=themeFond(def.w!=null?def.w:Math.floor(Math.random()*4));accentTheme(ft);document.body.classList.toggle("zen",!!(PROG.options.zen||def.relax));
 J={def:def,fond:ft,hist:[],t0:0,fini:false,indice:false,pret:false,tranches:{}};
   JeuP.col=(def.base?def.base.slice():resoluCol());JeuP.anim=null;JeuP.file=[];JeuP.indice=null;JeuP.survol=null;
-  document.getElementById("mini").hidden=def.but?true:!PROG.options.cube;majBut();
+  document.getElementById("mini").hidden=!PROG.options.cube;
   if(def.anneaux.length===9)JeuP.permis=null;else{JeuP.permis={};def.anneaux.forEach(function(b){JeuP.permis[MV[b][0]+","+MV[b][1]]=true;});}
   document.getElementById("jTitre").textContent=def.titre;document.getElementById("jSous").textContent=def.sous+" · par "+def.par;
   document.getElementById("plateau").removeAttribute("data-indice");
@@ -1287,7 +1279,7 @@ function jouerCoup(mv){if(!J||!J.pret||J.fini||JeuP.occupe()||!JeuP.permisA(cleA
   JeuP.indice=null;sonTour(mv);vibrer(8);JeuP.jouer(mv,300*PROG.options.vitesse,function(ok){if(ok)apresCoup(mv);},"rebond");}
 function apresCoup(mv){J.hist.push(mv);if(!J.t0){J.t0=performance.now();}PROG.stats.tours+=mv.d||1;avancerMissions(function(m){return m.id==="tours"?mv.d||1:0;});if(mv.L===0){PROG.stats.tranches++;J.tranches[mv.a]=1;}
   if(!document.getElementById("bulle").hidden&&document.getElementById("bulle").dataset.tip==="geste")cacherBulle();
-  majJeu();if(J.def.but?egalCol(JeuP.col,J.def.but):estResolu(JeuP.col))victoire();else if(PROG.stats.tours%25===0)sauver();}
+  majJeu();if(estResolu(JeuP.col))victoire();else if(PROG.stats.tours%25===0)sauver();}
 function annuler(){if(!J||!J.pret||J.fini||JeuP.occupe()||!J.hist.length)return;var mv=J.hist.pop();sonTour(mv);JeuP.indice=null;
   if(mv.d===2)JeuP.jouer(inverse(mv),170*PROG.options.vitesse,null,"doux");
   JeuP.jouer(inverse(mv),240*PROG.options.vitesse,function(){majJeu();},"rebond");majJeu();}
@@ -1589,7 +1581,7 @@ function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)
   document.querySelectorAll("#optPalette button").forEach(function(b){var v=b.dataset.v,ouv=apparenceOuverte(v),c=b.querySelector(".cad");
     b.classList.toggle("on",COUL===PALETTES[v]);b.classList.toggle("verrou",!ouv);
     if(!ouv&&!c){c=document.createElement("span");c.className="cad notrad"+(APP_TEMPS[v]?" t":"");c.textContent="★ "+APPARENCES[v];b.appendChild(c);}else if(ouv&&c)c.remove();});
-  mini.hidden=butActif()?true:!o.cube;majBut();document.getElementById("pave").hidden=!o.pave;
+  mini.hidden=!o.cube;document.getElementById("pave").hidden=!o.pave;
   document.getElementById("btnPaveT").classList.toggle("on",o.pave);
   if(ECRAN==="jeu")requestAnimationFrame(redimJeu);Logo.dessiner();JeuP.dessiner();dessinerMini();}
 function opt(k,v){PROG.options[k]=v;PROG.options.maj=Date.now();sauver();appliquerOptions();}
