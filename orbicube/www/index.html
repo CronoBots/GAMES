@@ -1253,12 +1253,13 @@ var parcIO=null;function parcRevele(ch){var root=document.getElementById("parcou
 function ouvrirParcours(){accent(null);montrer("parcours");requestAnimationFrame(function(){buildParcours();
   var c=document.querySelector(".parc-niv.courant")||document.querySelector(".parc-niv:not(.verrou)"),dd=document.getElementById("parcoursDefile");
   if(!c||!dd)return;var cible=Math.max(0,c.offsetTop-dd.clientHeight*.55);
-  if(CALME){dd.scrollTop=cible;return;}
-  // ouverture : on part du bas de la campagne (Monde 1) et on remonte doucement jusqu'au monde en cours
-  var depart=dd.scrollHeight-dd.clientHeight;dd.scrollTop=depart;
-  var t0=performance.now(),dur=850;
-  (function pas(now){var e=1-Math.pow(1-Math.min(1,(now-t0)/dur),3);dd.scrollTop=depart+(cible-depart)*e;
-    if((now-t0)<dur)requestAnimationFrame(pas);})(t0);});}
+  try{
+    if(CALME||typeof dd.scrollTo!=="function"){dd.scrollTop=cible;return;}
+    // ouverture : on part du bas (Monde 1) puis on remonte en douceur jusqu'au monde en cours.
+    // Scroll NATIF du navigateur (pas de boucle rAF qui réécrirait scrollTop à chaque image : instable sur iOS).
+    dd.scrollTop=dd.scrollHeight-dd.clientHeight;
+    requestAnimationFrame(function(){try{dd.scrollTo({top:cible,behavior:"smooth"});}catch(e){dd.scrollTop=cible;}});
+  }catch(e){dd.scrollTop=cible;}});}
 document.getElementById("chemin").addEventListener("click",function(e){
   var sec=e.target.closest(".parc-sect.paye");if(sec){sonClic();ouvrirBoutique("monde");return;}
   var b=e.target.closest(".parc-niv");if(!b)return;
