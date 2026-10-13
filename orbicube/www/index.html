@@ -108,9 +108,9 @@ body{background:
 /* le menu ressemble à une partie en cours : le cube en perspective, au-dessus des orbites, rejoue les
    tours que le logo joue tout seul. L'ensemble est rétréci pour ne pas surcharger. Cube décoratif :
    pointer-events:none, les touchers tombent sur les orbites (qui tournent au clic). */
-.logo-scene{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;height:100%}
-#logoCube{width:min(30vw,116px,15vh);aspect-ratio:1/1;display:block;pointer-events:none}
-#logo{width:min(60vw,250px,30vh);aspect-ratio:1/1;display:block}
+.logo-scene{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;width:100%;height:100%}
+#logoCube{width:min(30vw,120px,15vh);aspect-ratio:1/1;display:block;pointer-events:none}
+#logo{width:min(58vw,240px,30vh);aspect-ratio:1/1;display:block}
 @media (max-height:700px){#accueil .menu{gap:8px}#accueil .bouton{min-height:50px}#accueil .defile{gap:8px}}
 .marque{font-family:var(--f-titre);font-weight:800;font-size:clamp(34px,11vw,52px);letter-spacing:.08em;margin:0;line-height:1;
   background:linear-gradient(100deg,#fff 0%,#d9ceff 40%,var(--lilas) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -1105,7 +1105,8 @@ document.addEventListener("pointerdown",function(e){if(CALME)return;var b=e.targ
 var Logo=new Plateau(document.getElementById("logo"),{etiquettes:false,comete:true});Logo.continu=true;Logo.lent=true;Logo.pile=[];Logo.prochain=0;Ticker.actifs.push(Logo);
 // le cube en perspective de l'accueil reflète l'état du logo (ses tours automatiques), exactement comme
 // #mini reflète le plateau pendant une partie : le menu a ainsi l'allure d'une partie en cours
-var logoCube=document.getElementById("logoCube"),logoCubeC=logoCube.getContext("2d"),PIVOT_LOGO={y:.6,x:.32};
+// même inclinaison qu'en jeu : #mini démarre à PIVOT {y:0,x:0} (vue isométrique, trois faces)
+var logoCube=document.getElementById("logoCube"),logoCubeC=logoCube.getContext("2d"),PIVOT_LOGO={y:0,x:0};
 function dessinerLogoCube(){var w=logoCube.clientWidth||100,px=Math.round(w*DPR);if(logoCube.width!==px){logoCube.width=px;logoCube.height=px;logoCubeC.setTransform(DPR,0,0,DPR,0,0);}
   var an=Logo.anim,cle=w+"|"+COUL[0]+"|"+Logo.col.join("")+"|"+(an?cleA(an.mv)+an.mv.q+":"+an.t.toFixed(4):"");
   if(cle===dessinerLogoCube.cle)return;dessinerLogoCube.cle=cle;dessinerCube(logoCubeC,w,Logo.col,an,PIVOT_LOGO);}
@@ -1116,7 +1117,11 @@ Logo.apres=function(now){dessinerLogoCube();if(this.occupe()||now<this.prochain)
 // toucher l'orbicube de l'accueil le fait tourner d'un cran : un petit jouet avant d'entrer
 document.getElementById("logo").addEventListener("pointerdown",function(){if(Logo.occupe())return;audio();var b=TOUS[Math.floor(Math.random()*9)],m=MV[b],mv={a:m[0],L:m[1],q:Math.random()<.5?1:-1};
   Logo.pile.push(mv);Logo.prochain=performance.now()+1400;Logo.jouer(mv,300,null,"rebond");sonTour(mv);vibrer(8);});
-Logo.demarrer=function(){var box=this.cv.parentNode.parentNode.getBoundingClientRect(),cube=logoCube.offsetHeight||0,w=Math.min(box.height-cube-10,innerWidth*.72,290);if(w>0)this.dimension(w);dessinerLogoCube();};
+// cube et orbites dimensionnés ENSEMBLE, en proportion, dans la hauteur que le menu laisse : le cube fait
+// ~0,54× l'orbite et chevauche un peu vers le bas, pour que les deux forment un seul bloc (comme en jeu)
+Logo.demarrer=function(){var box=this.cv.parentNode.parentNode.getBoundingClientRect(),
+  budget=Math.min(box.height,innerWidth*.84,350),orbit=Math.round(budget*.60);if(orbit<=0)return;
+  this.dimension(orbit);logoCube.style.width=Math.round(orbit*.54)+"px";logoCube.style.marginBottom=-Math.round(orbit*.10)+"px";dessinerLogoCube();};
 function etoilesTotal(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t+=PROG.niveaux[k].etoiles||0;});return t;}
 function prochainNiveau(){for(var w=0;w<MONDES.length;w++)for(var i=0;i<MONDES[w].coups.length;i++)if(!PROG.niveaux[(w+1)+"-"+(i+1)])return{w:w,i:i};return null;}
 function estHier(k){var d=new Date();d.setDate(d.getDate()-1);return k===cleJour(d);}
