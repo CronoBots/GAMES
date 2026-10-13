@@ -646,7 +646,7 @@ body.sobre #plateau{transition:none}
 @keyframes appel{50%{box-shadow:0 0 0 2px var(--or),0 0 30px -4px rgba(255,207,74,.8)}}
 .bout-acquis{color:rgb(var(--acc));font:600 13px var(--f-titre);flex:none;display:flex;gap:6px;align-items:center}
 .bout-acquis svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.6}
-.bout-apercu{position:sticky;top:calc(env(safe-area-inset-top,0px) + 62px);z-index:2;border-radius:24px;border:1px solid rgba(var(--acc),.3);overflow:hidden;display:grid;justify-items:center;padding:8px 0 12px;
+.bout-apercu{position:relative;border-radius:24px;border:1px solid rgba(var(--acc),.3);overflow:hidden;display:grid;justify-items:center;padding:8px 0 12px;
   background:radial-gradient(70% 65% at 50% 42%,rgba(var(--acc),.16),rgba(8,9,20,.94) 72%),#0b0c1c;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
 #apercu{display:block}
 .bout-apercu .nom{font:600 12px var(--f-titre);letter-spacing:.16em;text-transform:uppercase;color:var(--pale)}
@@ -779,8 +779,8 @@ body.sobre #plateau{transition:none}
     <div class="defile"><div class="bout">
       <div id="boutHero"></div>
       <div class="segment bout-rayons" id="boutRayons"><button type="button" data-r="palette" class="on">Couleurs</button><button type="button" data-r="forme">Formes</button><button type="button" data-r="effets">Effets</button></div>
-      <div class="bout"><div class="bout-apercu"><canvas id="apercu" aria-label="Aperçu du style"></canvas><div class="nom" id="apercuNom"></div></div>
-      <div class="bout" id="boutRayon"></div></div>
+      <div class="bout-apercu"><canvas id="apercu" aria-label="Aperçu du style"></canvas><div class="nom" id="apercuNom"></div></div>
+      <div class="bout" id="boutRayon"></div>
       <div class="bout-sous">Ampoules</div>
       <div class="bout-amp" id="boutAmpoules"></div>
       <div id="boutSoutien"></div>
@@ -2003,7 +2003,7 @@ ApercuP.apres=function(now){if(this.occupe()||now<this.prochain)return;
   this.jouer(this.sol.shift(),560);this.prochain=now+(this.sol.length?250:1500);};
 function habillerApercu(){var vu=function(k){return VU[k]||STY[k];};ApercuP.pal=PALETTES[vu("palette")];ApercuP.forme=vu("forme");ApercuP.trainee=vu("trainee");ApercuP.orbite=vu("orbite");
   var k=RAYON==="effets"?(VU.dernier||"trainee"):RAYON;document.getElementById("apercuNom").textContent=style(k,vu(k)).nom;ApercuP.dessiner();}
-function redimApercu(){var w=document.querySelector("#boutique .bout").clientWidth;if(w)ApercuP.dimension(Math.round(Math.min(w-40,innerHeight<700?170:210)));}
+function redimApercu(){var w=document.querySelector("#boutique .bout").clientWidth;if(w)ApercuP.dimension(Math.round(Math.min(w-40,innerHeight<700?160:190)));}
 // vignettes : un petit dessin par style, avec la palette portée (ou celle du style pour les couleurs)
 function vignette(cv,k,id){var d=Math.min(DPR,2.5),W=64;cv.width=W*d;cv.height=W*d;var cx=cv.getContext("2d");cx.setTransform(d,0,0,d,0,0);cx.clearRect(0,0,W,W);
   var pal=k==="palette"?PALETTES[id]:PALETTES[VU.palette||STY.palette],c=[32,32];

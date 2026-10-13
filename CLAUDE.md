@@ -73,7 +73,7 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 - **Boutique** (`#boutique`, le client, le 13/10/2026 : « le plus professionnellement possible ») : écran ouvert par le
   rond doré du dock (« Boutique », après dix niveaux ; son prix tant que le jeu n'est pas complet, puis « Styles ») et par
   Options > Styles. Offre phare (Édition intégrale, ou Collection si le jeu est déjà complet), **aperçu en direct** sur un
-  vrai plateau (`ApercuP`, collant pendant qu'on parcourt les styles ; un style regardé n'est pas porté), rayons Couleurs /
+  vrai plateau (`ApercuP`, fixe sous les onglets — collant, il recouvrait les vignettes ; un style regardé n'est pas porté), rayons Couleurs /
   Formes / Effets (traînée, orbites, victoire) en vignettes dessinées (`vignette`), ampoules, pack soutien, restauration.
   **Catalogue** : `STYLES` (ouverture : libre, `etoiles`, `chrono`, `rang` ou `pack`), `PACKS` (produit des stores + droit
   RevenueCat ; éditions groupées = plusieurs droits ; ampoules consommables créditées par `crediterAmpoules`). Le style
