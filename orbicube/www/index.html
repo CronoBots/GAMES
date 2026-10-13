@@ -194,6 +194,7 @@ a.bouton{text-decoration:none;color:inherit}
 /* le cube en perspective trône au centre, entre les coups et le temps, comme dans la visualisation de
    référence : sa taille (--cube) est la hauteur que le plateau laisse, calculée par redimJeu() */
 .jcube{display:grid;justify-items:center;gap:0;min-width:0;padding-top:14px}
+.jinfo{position:relative;z-index:2}   /* le cube descendu chevauche le haut du canevas : il reste manipulable */
 #mini{width:var(--cube,96px);height:var(--cube,96px);display:block;cursor:grab;touch-action:none}#mini:active{cursor:grabbing}
 .jinfo .stat{align-self:start;padding-top:6px}.jinfo .jetoiles{margin-top:8px}.jinfo .jetoiles svg{width:18px;height:18px}
 .fenetre .serie{color:var(--or);font-family:var(--f-chiffre);font-size:13px;margin:4px 0 0}
@@ -1340,9 +1341,7 @@ document.getElementById("parcoursDefile").addEventListener("scroll",function(){i
 // (ancien écran de sélection #mondes/#niveaux retiré : la carte de campagne #parcours le remplace)
 
 /* ========== 11. LA PARTIE ========== */
-// le vide vertical en trop (le plateau est limité par la largeur) va pour un tiers au-dessus, deux tiers en dessous :
-// le plateau se rapproche du petit cube et forme un bloc avec lui (le client, le 13/10/2026)
-var JeuP=new Plateau(document.getElementById("plateau"),{eclats:true});JeuP.haut=1/3;Ticker.actifs.push(JeuP);
+var JeuP=new Plateau(document.getElementById("plateau"),{eclats:true});Ticker.actifs.push(JeuP);
 JeuP.onFace=function(n){if(!J||!J.pret||J.fini)return;bip(1047,.28,"sine",.07);bip(1568,.32,"sine",.05,.07);
   // le retour grandit avec le nombre de faces finies d'un même coup : une double arrivée est un plus grand moment
   if(n>1){bip(2093,.34,"sine",.045,.12);vibrer(16);}else vibrer(12);};
@@ -1386,9 +1385,14 @@ function redimJeu(){var jeu=document.getElementById("jeu"),z=document.getElement
       c=paysage?96:Math.max(64,Math.min(110,jeu.clientHeight-autres-Math.min(jeu.clientWidth-28,560)-12));
     jeu.style.setProperty("--cube",Math.round(c)+"px");}
   var r=z.getBoundingClientRect();if(!r.width)return;JeuP.dimension(Math.min(r.width-28,r.height-8),r.height-8);dessinerMini();
-  // le cube se centre verticalement entre le titre et le haut du grand cercle (décalage visuel seulement)
+  // le cube descend vers le plateau (le client, le 13/10/2026) : son bas à 14 px au-dessus du plus grand cercle JOUABLE de
+  // la famille du haut (les cercles interdits ne sont qu'un pointillé à peine visible) ; le plateau ne bouge pas. Sans
+  // place pour ça (petits écrans), il reste centré entre le titre et le cercle.
   mini.style.transform="";if(PROG.options.cube&&getComputedStyle(jeu).display!=="grid"){var h=jeu.querySelector(".jtete").getBoundingClientRect().bottom,
-    c=JeuP.cv.getBoundingClientRect().top+JeuP.OY-(ECART+RAY[2])*JeuP.ECH,m=mini.getBoundingClientRect(),dy=(h+c)/2-(m.top+m.height/2);
+    rh=RAY[2];if(JeuP.permis){rh=0;for(var LH=1;LH>=-1;LH--)if(JeuP.permis["1,"+LH]){rh=RAY[LH+1];break;}if(!rh)rh=RAY[2];}
+    // position du canevas SANS sa transformation : pendant le mélange (.brouille) il est réduit et tourné, et sa boîte
+    // englobante faussait le calcul (le cube restait trop haut une fois le plateau dévoilé)
+    var c=z.getBoundingClientRect().top+JeuP.cv.offsetTop+JeuP.OY-(ECART+rh)*JeuP.ECH,m=mini.getBoundingClientRect(),dy=Math.max((h+c)/2-(m.top+m.height/2),c-14-m.bottom);
     if(Math.abs(dy)>1)mini.style.transform="translateY("+Math.round(dy)+"px)";}}
 function redimAide(){var w=document.getElementById("aideCanvas").getBoundingClientRect().width;if(w)AideP.dimension(w);}
 var ro=new ResizeObserver(function(){if(ECRAN==="jeu")redimJeu();if(ECRAN==="accueil")Logo.demarrer();if(ECRAN==="aide")redimAide();if(ECRAN==="parcours")buildParcours();});
