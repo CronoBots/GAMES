@@ -116,6 +116,9 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   qui masque le trait, fin anneau d'accent, halo) pour ne pas le confondre avec une pièce du plateau. Tailles en `ECH` :
   `MEDAILLON` 0,92, `CUBE_LOGO` 0,7, disque en verre fumé ; `Logo.demarrer` réserve au-dessus du plateau la moitié
   du médaillon qui dépasse plus `AIR`, pour un espace égal sous le titre et au-dessus du bouton.
+  **Logo sobre** (`opts.sobre`, accueil seulement) : cercle actif en fin trait d'accent (pas le blanc épais du jeu),
+  orbites plus fines, traînées, lueurs des pièces et comète deux fois plus discrètes, plateau à 96 % ; sur l'accueil,
+  le ciel animé baisse ses étoiles et n'envoie qu'une étoile filante pâle toutes les 6 à 12 s.
   **Menu du bas** : le bouton principal en pilule (accent, sans gloss plastique), puis un **dock** de raccourcis ronds
   (`.dock`, icône + nom + état : Défis avec un point doré tant que le défi du jour n'est pas joué, Partie libre, Succès,
   et « Jeu complet » en doré quand il est proposé). Plus de bouton musique sur l'accueil : il est dans les options.
