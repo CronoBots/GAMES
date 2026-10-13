@@ -106,7 +106,7 @@ body{background:
 #accueil .defile>:first-child{margin-top:auto}#accueil .defile>:last-child{margin-bottom:auto}
 /* le logo prend la hauteur que le menu laisse, mesurée par la mise en page elle-même (et non estimée) :
    l'accueil tient sur un écran quelles que soient la police et la taille du texte du téléphone */
-.logoboite{flex:1 1 0;min-height:150px;max-height:360px;width:100%;display:grid;place-items:center;overflow:hidden}
+.logoboite{flex:1 1 0;min-height:150px;max-height:372px;width:100%;display:grid;place-items:center;overflow:hidden}
 /* le menu ressemble à une partie en cours : le cube en perspective, au-dessus des orbites, rejoue les
    tours que le logo joue tout seul. L'ensemble est rétréci pour ne pas surcharger. Cube décoratif :
    pointer-events:none, les touchers tombent sur les orbites (qui tournent au clic). */
@@ -114,8 +114,11 @@ body{background:
 #logoCube{width:min(30vw,120px,15vh);aspect-ratio:1/1;display:block;pointer-events:none}
 #logo{width:min(58vw,240px,30vh);aspect-ratio:1/1;display:block}
 @media (max-height:700px){#accueil .menu{gap:8px}#accueil .bouton{min-height:50px}#accueil .defile{gap:8px}}
-.marque{font-family:var(--f-titre);font-weight:800;font-size:clamp(33px,10.5vw,50px);letter-spacing:.01em;margin:0;line-height:1;
+.marque{justify-self:center;position:relative;font-family:var(--f-titre);font-weight:800;font-size:clamp(33px,10.5vw,50px);letter-spacing:.01em;margin:0;line-height:1;
   background:linear-gradient(100deg,#fff 0%,#d4e6ff 40%,rgb(var(--acc)) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* signature : une fine orbite inclinée passe derrière le mot (rappel du motif orbital, discret) */
+.marque::before{content:"";position:absolute;left:50%;top:52%;transform:translate(-50%,-50%) rotate(-7deg);
+  width:126%;height:1.78em;border:1.5px solid rgb(var(--acc));border-radius:50%;opacity:.3;z-index:-1;pointer-events:none}
 .entete{text-align:center;display:grid;gap:7px;width:100%}
 .slogan{margin:0;color:var(--lilas);font-family:var(--f-math);font-style:italic;font-size:clamp(16px,4.6vw,19px);letter-spacing:.01em}
 .devise{margin:0;color:var(--sourd);font-family:var(--f-math);font-style:italic;font-size:14.5px}
@@ -304,8 +307,8 @@ a.bouton{text-decoration:none;color:inherit}
 .segment{border-radius:14px}
 .segment button.on{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.06));box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
 .fenetre p{text-wrap:balance}
-.fenetre{background:linear-gradient(180deg,rgba(38,33,66,.92),rgba(18,18,30,.94));border-color:rgba(165,139,255,.28);border-radius:26px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 40px 90px -25px rgba(0,0,0,.95),0 0 60px -30px rgba(165,139,255,.6)}
+.fenetre{background:linear-gradient(180deg,rgba(38,33,66,.92),rgba(18,18,30,.94));border-color:rgba(var(--acc),.28);border-radius:26px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 40px 90px -25px rgba(0,0,0,.95),0 0 60px -30px rgba(var(--acc),.6)}
 .voile{background:rgba(5,5,12,.6);backdrop-filter:blur(10px) saturate(130%);-webkit-backdrop-filter:blur(10px) saturate(130%)}
 #toast{background:linear-gradient(180deg,rgba(52,44,22,.96),rgba(28,24,14,.96));border-color:rgba(255,207,74,.45);border-radius:20px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 20px 50px -15px rgba(0,0,0,.9)}
@@ -383,7 +386,7 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
 .mission .mx{font-family:var(--f-chiffre);font-size:12px;color:var(--pale)}
 .mission.ok b{color:var(--pale)}
 .mission-bonus{margin:0;padding:10px 16px 14px;font-size:12.5px;color:var(--pale);border-top:1px solid #20202f}
-.xp-gain{display:inline-flex;align-items:center;gap:6px;margin:2px auto 0;padding:5px 12px;border-radius:99px;background:rgba(165,139,255,.14);color:var(--lilas);font-family:var(--f-chiffre);font-size:12.5px}
+.xp-gain{display:inline-flex;align-items:center;gap:6px;margin:2px auto 0;padding:5px 12px;border-radius:99px;background:rgba(var(--acc),.14);color:var(--lilas);font-family:var(--f-chiffre);font-size:12.5px}
 .trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .trio .bouton.bloc{align-items:center;text-align:center;justify-content:center;gap:6px;min-height:96px;padding:12px 6px}
 .trio .bouton.bloc>span:not(.droite){font-size:13.5px;line-height:1.15;hyphens:auto;-webkit-hyphens:auto}
@@ -1127,7 +1130,7 @@ document.getElementById("logo").addEventListener("pointerdown",function(){if(Log
 // cube et orbites dimensionnés ENSEMBLE, en proportion, dans la hauteur que le menu laisse : le cube fait
 // ~0,54× l'orbite et chevauche un peu vers le bas, pour que les deux forment un seul bloc (comme en jeu)
 Logo.demarrer=function(){var box=this.cv.parentNode.parentNode.getBoundingClientRect(),
-  budget=Math.min(box.height,innerWidth*.84,350),orbit=Math.round(budget*.60);if(orbit<=0)return;
+  budget=Math.min(box.height,innerWidth*.86,366),orbit=Math.round(budget*.62);if(orbit<=0)return;
   this.dimension(orbit);logoCube.style.width=Math.round(orbit*.54)+"px";logoCube.style.marginBottom=-Math.round(orbit*.10)+"px";
   if(!this.sol.length&&!this.pause)melangerLogo();dessinerLogoCube();};
 function etoilesTotal(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t+=PROG.niveaux[k].etoiles||0;});return t;}
@@ -1701,7 +1704,7 @@ function rangDe(xp){var r=1;xp=xp||0;while(xp>=xpPour(r)){xp-=xpPour(r);r++;}ret
 function titreRang(r){var t=RANGS[0][1];RANGS.forEach(function(x){if(r>=x[0])t=x[1];});return t;}
 function anneauRang(xp,epais){var R=rangDe(xp),f=R.xp/R.besoin,c=2*Math.PI*16;
   return '<svg viewBox="0 0 38 38"><circle cx="19" cy="19" r="16" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="'+(epais||3)+'"/><circle cx="19" cy="19" r="16" fill="none" stroke="url(#gRang)" stroke-width="'+(epais||3)+'" stroke-linecap="round" stroke-dasharray="'+(c*f).toFixed(1)+' '+c.toFixed(1)+'"/>'+
-    '<defs><linearGradient id="gRang" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a58bff"/><stop offset="1" stop-color="#4cc9f0"/></linearGradient></defs></svg><span>'+R.r+'</span>';}
+    '<defs><linearGradient id="gRang" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="rgb('+ACC+')"/><stop offset="1" stop-color="rgb('+ACC_CLAIR+')"/></linearGradient></defs></svg><span>'+R.r+'</span>';}
 function gagnerXp(n){if(!n)return;var avant=rangDe(PROG.xp).r;PROG.xp=(PROG.xp||0)+n;var apres=rangDe(PROG.xp).r;
   for(var r=avant+1;r<=apres;r++){(function(r){setTimeout(function(){toast("Rang "+r,titreRang(r));},400);})(r);gagnerAmpoule();}
 }
