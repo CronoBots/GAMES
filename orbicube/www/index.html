@@ -357,10 +357,14 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
 .jrecord{display:block;margin-top:10px;font-family:var(--f-chiffre);font-size:11px;letter-spacing:.06em;color:var(--sourd);text-transform:none}
 
 /* ===== Accueil épuré (11/10/2026) : l'orbicube et le nom d'abord ; un bouton, trois tuiles, le reste en icônes ===== */
-.acc-haut{position:absolute;top:8px;left:12px;right:12px;display:flex;justify-content:space-between;z-index:2;pointer-events:none}
+.acc-haut{position:absolute;top:8px;left:12px;right:12px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;z-index:2;pointer-events:none}
+.acc-haut>:first-child{justify-self:start}.acc-haut>:last-child{justify-self:end}
 .acc-haut .ico{pointer-events:auto;width:42px;height:42px;border-radius:50%}
 /* au centre de la barre du haut : le rang (anneau d'expérience) et les trois missions du jour */
-.puce-rang{pointer-events:auto;display:flex;align-items:center;gap:9px;height:42px;padding:0 14px 0 4px;border-radius:99px;border:1px solid var(--bord);background:var(--verre),rgba(14,14,24,.55);cursor:pointer;min-width:0}
+.puce-rang{pointer-events:auto;max-width:54vw;display:flex;align-items:center;gap:9px;height:42px;padding:0 14px 0 4px;border-radius:99px;border:1px solid var(--bord);background:var(--verre),rgba(14,14,24,.55);cursor:pointer;min-width:0}
+.acc-droite{display:flex;gap:8px}
+#btnMusique .mute{display:none}
+#btnMusique.off{color:var(--sourd)}#btnMusique.off .mute{display:inline}
 .puce-rang:active{transform:scale(.96)}
 .puce-rang .anneau-rang{width:34px;height:34px;font-size:13px}
 .puce-rang b{font-size:13.5px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:42vw}
@@ -529,7 +533,10 @@ body.sobre #plateau{transition:none}
     <div class="acc-haut">
       <button class="ico" id="btnAide" type="button" aria-label="Comment jouer"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.8"/><path d="M12 17.2v.1"/></svg></button>
       <button class="puce-rang" id="btnRang" type="button" aria-label="Profil, rang et missions"><span class="anneau-rang notrad" id="rangAnneau"></span><b id="rangTitre">Novice</b><span class="rb-mis" id="rangMissions"></span></button>
+      <div class="acc-droite">
+      <button class="ico" id="btnMusique" type="button" aria-label="Musique"><svg viewBox="0 0 24 24"><path d="M9 17V4l10-2v13"/><circle cx="6.5" cy="17" r="2.5"/><circle cx="16.5" cy="15" r="2.5"/><path class="mute" d="M3 3l18 18"/></svg></button>
       <button class="ico" id="btnOptions" type="button" aria-label="Options"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
+      </div>
     </div>
     <div class="defile">
       <div class="entete">
@@ -570,7 +577,6 @@ body.sobre #plateau{transition:none}
 
   <section class="ecran" id="jeu" aria-label="Partie">
     <div class="jtete">
-      <button class="ico" id="btnAccueilJeu" type="button" aria-label="Accueil"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M6 10v10h12V10"/></svg></button>
       <button class="ico" id="btnPause" type="button" aria-label="Pause"><svg viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg></button>
       <div class="jtitre"><b id="jTitre">Niveau</b><span id="jSous"></span></div>
       <button class="ico indice" id="btnIndice" type="button" aria-label="Indice"><span class="badge notrad" id="ampNb">3</span><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg></button>
@@ -593,7 +599,9 @@ body.sobre #plateau{transition:none}
       <div class="actions">
         <button class="action" id="btnAnnuler" type="button"><svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>Annuler</button>
         <button class="action" id="btnRecommencer" type="button"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Rejouer</button>
-        <button class="action" id="btnPaveT" type="button"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h1M11 10h2M16 10h1M7 14h10"/></svg>Notation</button>
+        <button class="action" id="btnNiveauxJeu" type="button" hidden><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>Niveaux</button>
+        <button class="action" id="btnAccueilJeu" type="button"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M6 10v10h12V10"/></svg>Accueil</button>
+        <button class="action" id="btnPaveT" type="button" hidden><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h1M11 10h2M16 10h1M7 14h10"/></svg>Notation</button>
       </div>
     </div>
   </section>
@@ -1128,7 +1136,7 @@ function dessinerLogoCube(){var w=logoCube.clientWidth||100,px=Math.round(w*DPR)
   if(cle===dessinerLogoCube.cle)return;dessinerLogoCube.cle=cle;dessinerCube(logoCubeC,w,Logo.col,an,PIVOT_LOGO);}
 // l'accueil montre une RÉSOLUTION : le cube part d'une position aléatoire (saut instantané vers un mélange),
 // puis joue les coups qui le résolvent — la résolution est ce mélange inversé, joué à l'envers.
-function melangerLogo(){var mel=genererMelange(Math.random,TOUS,7+Math.floor(Math.random()*4));if(!mel)return;
+function melangerLogo(){var mel=genererMelange(Math.random,TOUS,15+Math.floor(Math.random()*6));if(!mel)return;
   var col=resoluCol();mel.forEach(function(mv){col=appliquer(col,mv);});Logo.col=col;Logo.anim=null;Logo.file=[];
   Logo.sol=mel.slice().reverse().map(inverse);}
 Logo.apres=function(now){dessinerLogoCube();if(this.occupe()||now<this.prochain)return;
@@ -1143,8 +1151,8 @@ document.getElementById("logo").addEventListener("pointerdown",function(){if(Log
 // cube et orbites dimensionnés ENSEMBLE, en proportion, dans la hauteur que le menu laisse : le cube fait
 // ~0,54× l'orbite et chevauche un peu vers le bas, pour que les deux forment un seul bloc (comme en jeu)
 Logo.demarrer=function(){var box=this.cv.parentNode.parentNode.getBoundingClientRect(),
-  budget=Math.min(box.height,innerWidth*.86,366),orbit=Math.round(budget*.62);if(orbit<=0)return;
-  this.dimension(orbit);logoCube.style.width=Math.round(orbit*.46)+"px";logoCube.style.marginBottom=Math.round(orbit*.12)+"px";
+  budget=Math.min(box.height,innerWidth*.88,380),orbit=Math.round(budget*.67);if(orbit<=0)return;
+  this.dimension(orbit);logoCube.style.width=Math.round(orbit*.43)+"px";logoCube.style.marginBottom=Math.round(orbit*.12)+"px";
   if(!this.sol.length&&!this.pause)melangerLogo();dessinerLogoCube();};
 function etoilesTotal(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t+=PROG.niveaux[k].etoiles||0;});return t;}
 function prochainNiveau(){for(var w=0;w<MONDES.length;w++)for(var i=0;i<MONDES[w].coups.length;i++)if(!PROG.niveaux[(w+1)+"-"+(i+1)])return{w:w,i:i};return null;}
@@ -1303,6 +1311,7 @@ J={def:def,fond:ft,hist:[],t0:0,fini:false,indice:false,pret:false,tranches:{}};
   document.getElementById("mini").hidden=!PROG.options.cube;
   if(def.anneaux.length===9)JeuP.permis=null;else{JeuP.permis={};def.anneaux.forEach(function(b){JeuP.permis[MV[b][0]+","+MV[b][1]]=true;});}
   document.getElementById("jTitre").textContent=def.titre;document.getElementById("jSous").textContent=def.sous+" · par "+def.par;
+  document.getElementById("btnNiveauxJeu").hidden=def.mode!=="campagne";
   document.getElementById("plateau").removeAttribute("data-indice");
   construirePave();montrer("jeu");majJeu();majTemps();majAmpoules();cacherBulle(true);document.getElementById("melangeTxt").hidden=false;
   // le mélange se fait à l'abri des regards : le plateau se trouble en tournant, les couleurs changent pendant qu'on
@@ -1524,6 +1533,8 @@ cvJ.addEventListener("contextmenu",function(e){e.preventDefault();});
 
 document.getElementById("btnPause").addEventListener("click",function(){sonClic();pause();});
 document.getElementById("btnAccueilJeu").addEventListener("click",function(){sonClic();montrer("accueil");});  // retour direct au menu
+document.getElementById("btnNiveauxJeu").addEventListener("click",function(){sonClic();ouvrirParcours();});  // retour à la campagne
+document.getElementById("btnMusique").addEventListener("click",function(){opt("musique",PROG.options.musique===false);if(PROG.options.musique!==false){contexteAudio();Musique.lancer();}sonClic();});
 document.getElementById("btnIndice").addEventListener("click",function(){sonClic();if(!J||!J.pret||J.fini||JeuP.occupe())return;
   if(JeuP.indice)return;   // l'indice est déjà affiché : rien à payer de plus
   if(!ampoules()){vibrer(20);plusDAmpoules();return;}
@@ -1617,6 +1628,7 @@ function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)
   document.getElementById("optAnims").checked=o.anims!==false;
   document.getElementById("optSon").checked=o.son;document.getElementById("optVib").checked=o.vib;document.getElementById("optCube").checked=o.cube;
   document.getElementById("optPave").checked=o.pave;document.getElementById("optZen").checked=!!o.zen;document.getElementById("optMusique").checked=o.musique!==false;document.getElementById("optVolMusique").closest(".ligne").hidden=o.musique===false;
+  document.getElementById("btnMusique").classList.toggle("off",o.musique===false);
   document.querySelectorAll("#optVolMusique button").forEach(function(b){b.classList.toggle("on",+b.dataset.v===(o.volMusique||2));});Musique.regler();document.body.classList.toggle("zen",!!o.zen||!!(J&&J.def.relax));
   document.querySelectorAll("#optForme button").forEach(function(b){b.classList.toggle("on",b.dataset.v===(o.forme||"facettes"));});
   document.querySelectorAll("#optVitesse button").forEach(function(b){b.classList.toggle("on",+b.dataset.v===o.vitesse);});
