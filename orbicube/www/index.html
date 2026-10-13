@@ -466,6 +466,11 @@ body{background:
 #accueil .bouton.principal small{opacity:.9}
 #accueil .bouton.principal svg{width:44px;height:44px;padding:13px 12px 13px 14px;background:rgba(255,255,255,.2)}
 #accueil #jouerTxt{font-size:19px;letter-spacing:.08em}
+#accueil .bouton.principal .deuxl{flex:1}
+#accueil .bouton.principal{padding-top:8px;padding-bottom:8px}
+.prog-camp{display:block;height:3px;margin-top:5px;border-radius:3px;background:rgba(255,255,255,.2);overflow:hidden;pointer-events:none}
+.prog-camp[hidden]{display:none}
+.prog-camp i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,rgba(255,255,255,.75),#fff);box-shadow:0 0 8px rgba(255,255,255,.6)}
 .dock{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2px;margin-top:8px}
 .dock .item{display:grid;justify-items:center;align-content:start;gap:6px;padding:4px 0;background:none;border:0;color:var(--encre);cursor:pointer;font:inherit;
   -webkit-tap-highlight-color:transparent}
@@ -591,7 +596,7 @@ body.sobre #plateau{transition:none}
         <div class="menu cascade">
           <button class="bouton principal" id="btnJouer" type="button">
             <svg viewBox="0 0 24 24"><path d="M7 4l12 8-12 8z" fill="currentColor" stroke="none"/></svg>
-            <span class="deuxl"><span id="jouerTxt">Jouer</span><small id="jouerMonde"></small></span><span class="droite notrad" id="jouerSous"></span></button>
+            <span class="deuxl"><span id="jouerTxt">Jouer</span><small id="jouerMonde"></small><span class="prog-camp" aria-hidden="true" hidden><i id="jouerProg"></i></span></span><span class="droite notrad" id="jouerSous"></span></button>
           <nav class="dock" aria-label="Autres modes">
           <button class="item" id="btnJour" type="button"><i class="rond"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15.5" r="2"/></svg><b class="point" id="jourPoint" hidden></b></i>
             <span class="nom">Défis</span><span class="sous" id="jourSous"></span></button>
@@ -1226,6 +1231,9 @@ function rafraichirAccueil(){var pn=prochainNiveau(),fait=Object.keys(PROG.nivea
   // sous « Continuer » : le monde en cours et ses étoiles, dans sa couleur
   // la seconde ligne du bouton dit où l'on en est, sans phrase en plus sous le bouton
   document.getElementById("jouerMonde").textContent=!fait?"Premier niveau":bloque?"Suite dans le jeu complet":!pn?"Campagne terminée":"Niveau "+numNiveau(pn.w,pn.i)+" · "+MONDES[pn.w].nom;
+  // la campagne en une ligne dans le bas du bouton : niveaux finis sur le total (pas le rang, qui reste en haut)
+  var tot=0,fin=0;MONDES.forEach(function(M,w){M.coups.forEach(function(c,i){tot++;if(PROG.niveaux[(w+1)+"-"+(i+1)])fin++;});});
+  document.getElementById("jouerProg").style.width=(100*fin/tot).toFixed(1)+"%";document.querySelector(".prog-camp").hidden=!fin;
   document.getElementById("succesSous").textContent=Object.keys(PROG.succes).length+"/"+SUCCES.length;
   if(typeof majAchat==="function")majAchat();}
 

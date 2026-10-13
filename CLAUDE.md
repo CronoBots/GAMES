@@ -96,7 +96,9 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   sans chrono, compteur ni étoiles. Écran **Profil** par la puce du rang, au centre de la barre du haut de l'accueil
   (anneau d'expérience, titre, puis une cible et « 1/3 » pour les missions du jour, dorés à 3/3). Les joueurs d'avant le rang reçoivent une fois l'expérience
   de leurs niveaux déjà finis (`rattraperXp`, `PROG.xpInit`). Le bouton principal porte deux lignes (l'action, puis
-  où l'on en est) et le total d'étoiles à droite : plus de phrase sous le bouton ni de bande du rang.
+  où l'on en est) et le total d'étoiles à droite, puis une fine barre de la campagne (niveaux finis sur 60, `.prog-camp`, cachée
+  avant le premier niveau) : plus de phrase sous le bouton ni de bande du rang. Le rang reste dans la puce du haut
+  (deux progressions distinctes). Les niveaux s'affichent en numéro continu (`numNiveau`, « Niveau 26 »), comme sur la carte.
 - **Faces terminées** : halo discret de leur couleur sous leurs neuf pastilles (`RAYON_FACE`), sur le plateau de jeu.
 - **Musique** (`Musique`, `www/audio/nuit-dorbites.m4a`, générée par le client avec Suno sous licence
   commerciale) : AAC 96 kb/s (l'Opus d'origine ne se lit pas sur iPhone), boucle Web Audio avec fondu
