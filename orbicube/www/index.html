@@ -75,7 +75,7 @@ body{background:
   transform:translateX(-130%);animation:reflet 5s ease-in-out 1.5s infinite;pointer-events:none}
 @keyframes reflet{0%,70%{transform:translateX(-130%)}100%{transform:translateX(130%)}}
 .marque{animation:lueur 6s ease-in-out infinite}
-@keyframes lueur{0%,100%{filter:drop-shadow(0 0 0 rgba(165,139,255,0))}50%{filter:drop-shadow(0 0 18px rgba(165,139,255,.45))}}
+@keyframes lueur{0%,100%{filter:drop-shadow(0 0 0 rgba(var(--acc),0))}50%{filter:drop-shadow(0 0 18px rgba(var(--acc),.45))}}
 @keyframes saut{30%{transform:scale(1.25);color:var(--lilas)}}
 .saut{display:inline-block;animation:saut .35s var(--ease)}
 @keyframes perd{20%{transform:translateX(-4px) rotate(-12deg)}40%{transform:translateX(4px) rotate(10deg)}60%{transform:translateX(-3px)}100%{transform:none}}
@@ -114,11 +114,9 @@ body{background:
 #logoCube{width:min(30vw,120px,15vh);aspect-ratio:1/1;display:block;pointer-events:none}
 #logo{width:min(58vw,240px,30vh);aspect-ratio:1/1;display:block}
 @media (max-height:700px){#accueil .menu{gap:8px}#accueil .bouton{min-height:50px}#accueil .defile{gap:8px}}
-.marque{font-family:var(--f-titre);font-weight:800;font-size:clamp(34px,11vw,52px);letter-spacing:.08em;margin:0;line-height:1;
-  background:linear-gradient(100deg,#fff 0%,#d9ceff 40%,var(--lilas) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
-.entete{text-align:center;display:grid;gap:5px;width:100%}
-.titre-img{margin:0;line-height:0}
-.logo-titre{width:min(84vw,380px);height:auto;display:block;margin:0 auto}
+.marque{font-family:var(--f-titre);font-weight:800;font-size:clamp(33px,10.5vw,50px);letter-spacing:.01em;margin:0;line-height:1;
+  background:linear-gradient(100deg,#fff 0%,#d4e6ff 40%,rgb(var(--acc)) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.entete{text-align:center;display:grid;gap:7px;width:100%}
 .slogan{margin:0;color:var(--lilas);font-family:var(--f-math);font-style:italic;font-size:clamp(16px,4.6vw,19px);letter-spacing:.01em}
 .devise{margin:0;color:var(--sourd);font-family:var(--f-math);font-style:italic;font-size:14.5px}
 .menu{display:grid;gap:10px;width:min(340px,100%);margin-top:10px}
@@ -301,7 +299,7 @@ a.bouton{text-decoration:none;color:inherit}
 #jeu::before{content:"";position:absolute;inset:-10% -20% auto;height:70%;pointer-events:none;z-index:-1;
   background:radial-gradient(60% 55% at 50% 30%,rgba(var(--acc),.2),rgba(var(--acc),0) 70%);transition:background .6s}
 /* le nom du jeu : un reflet passe lentement sur les lettres */
-.marque{background-image:linear-gradient(100deg,#fff 0%,#d9ceff 22%,#a58bff 42%,#fff 50%,#a58bff 58%,#d9ceff 78%,#fff 100%);background-size:220% 100%;animation:lueur 6s ease-in-out infinite,reflet-titre 7s ease-in-out infinite}
+.marque{background-image:linear-gradient(100deg,#fff 0%,#d4e6ff 22%,rgb(var(--acc)) 42%,#fff 50%,rgb(var(--acc)) 58%,#d4e6ff 78%,#fff 100%);background-size:220% 100%;animation:lueur 6s ease-in-out infinite,reflet-titre 7s ease-in-out infinite}
 @keyframes reflet-titre{0%,60%{background-position:100% 0}100%{background-position:-20% 0}}
 .segment{border-radius:14px}
 .segment button.on{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.06));box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
@@ -524,7 +522,7 @@ body.sobre #plateau{transition:none}
     </div>
     <div class="defile">
       <div class="entete">
-        <h1 class="titre-img"><img class="logo-titre notrad" src="logo-titre.webp" alt="Orbicube" width="760" height="304"></h1>
+        <h1 class="marque notrad">OrbiCube</h1>
       </div>
       <div class="logoboite"><div class="logo-scene"><canvas id="logoCube" aria-hidden="true"></canvas><canvas id="logo" aria-hidden="true"></canvas></div></div>
       <div style="display:grid;justify-items:center;gap:10px">
