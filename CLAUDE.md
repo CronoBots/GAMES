@@ -78,7 +78,9 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   l'ancien trait blanc. L'indice reste doré, l'orbite interdite grise.
 - **Décor en image (thèmes CraftPix)** : menu et jeu ont un fond fixe plein écran (`#fondMonde`, composites
   `img/fond-1…4.webp`, cover, étoiles animées `#ciel` par-dessus) comme la campagne. Menu = thème aléatoire
-  (`FOND_ACC`), jeu = thème du monde courant (`J.fond`, `themeFond(w)=(w%4)+1`, `poserFond`). La campagne
+  (`FOND_ACC`) ; **l'accueil compose son propre décor** (le client, le 13/10/2026) : la nébuleuse seule `bg-2`
+  (`poserFond(t,true)`) et les deux planètes détachées (`img/planete-verte|rousse.webp`, `.astres`) de part et d'autre
+  du médaillon, à moitié hors de l'écran, en lente dérive : plus rien derrière le titre, les pièces ni les boutons ; jeu = thème du monde courant (`J.fond`, `themeFond(w)=(w%4)+1`, `poserFond`). La campagne
   (`#parcours`) garde ses fonds en couches parallaxe par-dessus.
 - **Sans fin** (`sansFinDef(k)`, depuis Partie libre) : étape k = mélange de k+2 coups (25 au plus), record
   `PROG.stats.sansFin` ; au-delà de l'étape 5, le jeu complet. **Partager** le défi du jour : `partager()`,

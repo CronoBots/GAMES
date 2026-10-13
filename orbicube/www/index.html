@@ -108,6 +108,21 @@ body{background:
   top:calc(-1*env(safe-area-inset-top,0px));bottom:calc(-1*env(safe-area-inset-bottom,0px));
   left:calc(-1*env(safe-area-inset-left,0px));right:calc(-1*env(safe-area-inset-right,0px));
   background:radial-gradient(130% 72% at 50% 40%,rgba(3,5,12,.12) 0%,rgba(3,5,12,.5) 74%,rgba(3,5,12,.68) 100%)}
+/* le décor de l'accueil est composé ici (le client, le 13/10/2026) : la nébuleuse seule du thème bleu en fond
+   (bg-2, sans les planètes ni les astéroïdes du composite), et les deux planètes détachées, posées dans les zones
+   libres (à moitié hors de l'écran, loin du titre, des pièces et des boutons), qui dérivent lentement à des vitesses
+   différentes (parallaxe). Sous la vignette, qui les fond dans le bord. */
+#accueil .astres{position:absolute;z-index:-2;pointer-events:none;overflow:hidden;
+  top:calc(-1*env(safe-area-inset-top,0px));bottom:calc(-1*env(safe-area-inset-bottom,0px));
+  left:calc(-1*env(safe-area-inset-left,0px));right:calc(-1*env(safe-area-inset-right,0px))}
+.astre{position:absolute;display:block;background:center/contain no-repeat;will-change:transform}
+.astre.verte{background-image:url(img/planete-verte.webp);width:min(34vw,160px);aspect-ratio:1;left:max(-15vw,-70px);top:19%;opacity:.8;
+  animation:derive-verte 46s ease-in-out infinite alternate}
+.astre.rousse{background-image:url(img/planete-rousse.webp);width:min(25vw,118px);aspect-ratio:187/160;right:max(-9vw,-42px);top:31%;opacity:.7;
+  animation:derive-rousse 34s ease-in-out infinite alternate}
+@keyframes derive-verte{to{transform:translate(10px,-18px) rotate(6deg)}}
+@keyframes derive-rousse{to{transform:translate(-8px,14px) rotate(-8deg)}}
+@media (prefers-reduced-motion:reduce){.astre{animation:none}}
 #accueil .defile{display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:12px}
 /* l'accueil descend un peu dans la zone de la barre d'accueil de l'iPhone (le client, le 11/10/2026) */
 #accueil .defile{padding-bottom:max(10px,calc(env(safe-area-inset-bottom,0px) - 12px))}
@@ -444,23 +459,26 @@ body{background:
 /* accueil (le client, le 13/10/2026) : le bouton principal en pilule, plus de plastique brillant ; dessous, un dock de
    raccourcis ronds (icône, nom, état) au lieu des tuiles en boîtes ; « Jeu complet » y prend place en doré */
 #accueil .bouton.principal{min-height:64px;border-radius:999px;padding:0 24px 0 10px;gap:14px;
-  background:linear-gradient(135deg,color-mix(in srgb,rgb(var(--acc)),#fff 6%) 0%,color-mix(in srgb,rgb(var(--acc)),#0a0820 38%) 100%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.32),0 0 0 1px rgba(var(--acc),.45),0 0 34px -8px rgba(var(--acc),.75)}
+  background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,0) 48%),
+    linear-gradient(120deg,color-mix(in srgb,rgb(var(--acc)),#fff 4%) 0%,color-mix(in srgb,rgb(var(--acc)),#0a1440 42%) 58%,color-mix(in srgb,rgb(var(--acc)),#050a26 62%) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1px 0 rgba(0,0,0,.25),0 0 0 1px rgba(var(--acc),.5),
+    0 14px 30px -12px rgba(0,0,0,.9),0 0 30px -10px rgba(var(--acc),.7)}
+#accueil .bouton.principal small{opacity:.9}
 #accueil .bouton.principal svg{width:44px;height:44px;padding:13px 12px 13px 14px;background:rgba(255,255,255,.2)}
 #accueil #jouerTxt{font-size:19px;letter-spacing:.08em}
 .dock{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2px;margin-top:8px}
 .dock .item{display:grid;justify-items:center;align-content:start;gap:6px;padding:4px 0;background:none;border:0;color:var(--encre);cursor:pointer;font:inherit;
   -webkit-tap-highlight-color:transparent}
 .dock .rond{position:relative;display:grid;place-items:center;width:clamp(46px,14vw,54px);height:clamp(46px,14vw,54px);border-radius:50%;font-style:normal;
-  background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,.02) 55%),rgba(12,13,28,.72);border:1px solid rgba(var(--acc),.38);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 10px 22px -10px rgba(0,0,0,.9),0 0 20px -8px rgba(var(--acc),.6);transition:transform .12s var(--ease)}
+  background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.015) 55%),rgba(11,13,30,.9);border:1px solid rgba(var(--acc),.3);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 10px 22px -10px rgba(0,0,0,.9),0 0 18px -9px rgba(var(--acc),.55);transition:transform .12s var(--ease)}
 .dock .item:active .rond{transform:scale(.9)}
 .dock svg{width:23px;height:23px;stroke:rgb(var(--acc));fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .dock .nom{font-family:var(--f-titre);font-weight:600;font-size:clamp(11.5px,3.5vw,13.5px);letter-spacing:.02em;line-height:1.05;text-align:center;white-space:nowrap}
 .dock .sous{font-size:11px;line-height:1;color:var(--pale);min-height:11px;white-space:nowrap}
 .dock .point{position:absolute;top:1px;right:1px;width:12px;height:12px;border-radius:50%;background:var(--or);box-shadow:0 0 0 2px #0b0d1c,0 0 10px rgba(255,207,74,.9)}
 .dock .point[hidden]{display:none}
-.dock .or .rond{border-color:rgba(255,207,74,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 10px 22px -10px rgba(0,0,0,.9),0 0 20px -6px rgba(255,207,74,.55)}
+.dock .or .rond{border-color:rgba(255,207,74,.42);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 10px 22px -10px rgba(0,0,0,.9),0 0 16px -8px rgba(255,207,74,.45)}
 .dock .or svg{stroke:var(--or)}.dock .or .sous{color:var(--or);font-family:var(--f-chiffre)}
 .dock .item[hidden]{display:none}
 @media (max-height:700px){#accueil .bouton.principal{min-height:56px}#accueil .bouton.principal svg{width:38px;height:38px;padding:11px 10px 11px 12px}.dock{margin-top:4px}.dock .item{gap:4px}}
@@ -556,6 +574,7 @@ body.sobre #plateau{transition:none}
 <div id="app">
 
   <section class="ecran actif" id="accueil" aria-label="Accueil">
+    <div class="astres" aria-hidden="true"><i class="astre verte"></i><i class="astre rousse"></i></div>
     <div class="acc-haut">
       <button class="ico" id="btnAide" type="button" aria-label="Comment jouer"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.8"/><path d="M12 17.2v.1"/></svg></button>
       <button class="puce-rang" id="btnRang" type="button" aria-label="Profil, rang et missions"><span class="anneau-rang notrad" id="rangAnneau"></span><b id="rangTitre">Novice</b><span class="rb-mis" id="rangMissions"></span></button>
@@ -1029,7 +1048,7 @@ function accent(w){ACC=w==null?"165,139,255":ACCENTS[w%ACCENTS.length];ACC_CLAIR
 // (stable tant qu'on ne revient pas d'une partie / de la campagne), jeu = thème du monde courant (J.fond).
 var FOND_ACC=0;
 function themeFond(w){return (w%4)+1;}
-function poserFond(t){var el=document.getElementById("fondMonde");if(el)el.style.backgroundImage="url(img/fond-"+t+".webp)";}
+function poserFond(t,nebuleuse){var el=document.getElementById("fondMonde");if(el)el.style.backgroundImage="url(img/"+(nebuleuse?"bg-":"fond-")+t+".webp)";}
 // une teinte d'accent par thème CraftPix (vert / bleu / rouge / violet) : porte les ORBITES et leurs halos
 // (repos comme sélection) et la vague de victoire, pour que le plateau s'accorde au fond du thème.
 var THEME_ACC=["80,226,150","92,180,255","255,110,120","178,130,255"];
@@ -1138,7 +1157,7 @@ function montrer(id,sens){var prevEcran=ECRAN;sens=sens||1;document.querySelecto
     else{if(e.classList.contains("actif"))e.style.setProperty("--dx",(-sens*28)+"px");e.classList.remove("actif");}});ECRAN=id;
   numeroter(document.getElementById(id));
   Logo.visible=id==="accueil";AideP.visible=id==="aide";JeuP.visible=id==="jeu";
-  if(id==="accueil"){FOND_ACC=2;poserFond(FOND_ACC);accentTheme(FOND_ACC);rafraichirAccueil();majRang();Logo.demarrer();}  // accueil toujours en thème bleu
+  if(id==="accueil"){FOND_ACC=2;poserFond(FOND_ACC,true);accentTheme(FOND_ACC);rafraichirAccueil();majRang();Logo.demarrer();}  // accueil toujours en thème bleu
   if(id==="succes")rafraichirSucces();if(id==="profil")rafraichirProfil();if(id==="aide")redimAide();if(id==="jeu"){poserFond((J&&J.fond)||FOND_ACC||1);redimJeu();}
   Ticker.reveiller();}
 var OPT_DEPUIS_JEU=false;

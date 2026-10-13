@@ -1,12 +1,12 @@
 // Version web (PWA) : tout le jeu est mis en cache pour se jouer hors ligne.
 // Incrémenter V à chaque publication, sinon les joueurs gardent l'ancienne version.
-var V = "orbicube-v98";
+var V = "orbicube-v99";
 var FICHIERS = ["./", "index.html", "config.js", "natif.js", "langues.js", "manifest.webmanifest", "confidentialite.html",
   "img/fond-1.webp", "img/fond-2.webp", "img/fond-3.webp", "img/fond-4.webp",
   "img/bg-1.webp", "img/bg-2.webp", "img/bg-3.webp", "img/bg-4.webp",
   "img/planets-1.webp", "img/planets-2.webp", "img/planets-3.webp", "img/planets-4.webp",
   "img/stars-1.webp", "img/stars-2.webp", "img/stars-3.webp", "img/stars-4.webp",
-  "img/meteors-1.webp", "img/meteors-2.webp", "img/meteors-3.webp", "img/meteors-4.webp",
+  "img/meteors-1.webp", "img/meteors-2.webp", "img/meteors-3.webp", "img/meteors-4.webp", "img/planete-verte.webp", "img/planete-rousse.webp",
   "icones/favicon.png", "icones/apple-touch-icon.png", "icones/icon-192.png", "icones/icon-512.png", "icones/icon-maskable-512.png",
   "polices/polices.css", "polices/Jost-normal-300.woff2", "polices/Jost-normal-600.woff2", "polices/Jost-normal-700.woff2",
   "polices/STIXTwoText-normal-400.woff2", "polices/STIXTwoText-italic-400.woff2",

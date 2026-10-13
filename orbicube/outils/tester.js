@@ -16,8 +16,9 @@ const faute = (m) => { console.log("  ✗ " + m); fautes++; };
 
 async function debordements(p) {
   return p.evaluate(() => [...document.querySelectorAll(".ecran.actif *")].filter((e) => {
-    // le décor de la carte (nébuleuses, anneaux, planètes…) déborde volontairement du cadre et n'est pas interactif
-    if (e.closest(".parc-layer") || e.classList.contains("parc-fond")) return false;
+    // le décor de la carte (nébuleuses, anneaux, planètes…) et les planètes de l'accueil débordent volontairement du
+    // cadre (rognées par leur conteneur) et ne sont pas interactifs
+    if (e.closest(".parc-layer") || e.classList.contains("parc-fond") || e.closest(".astres")) return false;
     const r = e.getBoundingClientRect(); return r.width && r.right > innerWidth + 1;
   }).map((e) => e.id || e.className).slice(0, 3));
 }
@@ -209,7 +210,7 @@ async function resoudre(p) {
     await p.waitForTimeout(1000);
     const debord = new Set();
     const mesurer = async (ou) => (await p.evaluate(() => [...document.querySelectorAll(".ecran.actif *, #fenetre *, #toast *")].filter((e) => {
-      const r = e.getBoundingClientRect(); if (!r.width || getComputedStyle(e).visibility === "hidden" || e.classList.contains("onde") || e.closest(".parc-layer") || e.classList.contains("parc-fond")) return false;
+      const r = e.getBoundingClientRect(); if (!r.width || getComputedStyle(e).visibility === "hidden" || e.classList.contains("onde") || e.closest(".parc-layer") || e.classList.contains("parc-fond") || e.closest(".astres")) return false;
       return r.right > innerWidth + 1 || (e.matches("button,.bouton,.action,h2,h3,b,span,select") && e.scrollWidth > e.clientWidth + 2 && getComputedStyle(e).overflow !== "hidden" && !e.closest(".notation"));
     }).map((e) => (e.id || e.className || e.tagName) + " « " + (e.textContent || "").trim().slice(0, 30) + " »"))).forEach((x) => debord.add(ou + " : " + x));
     const go = async (sel, t = 450) => { const el = await p.$(sel); if (el && await el.isVisible()) { await el.click(); await p.waitForTimeout(t); return true; } return false; };
