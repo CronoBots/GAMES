@@ -52,9 +52,9 @@ async function scene(p, id) {
 
 // document.fonts.ready n'attend pas une police que rien n'a encore demandée : on la demande explicitement
 async function chargerPolices(page) {
-  await page.evaluate(() => Promise.all(["800 40px Unbounded", "italic 400 30px 'STIX Two Text'"].map((f) => document.fonts.load(f))));
-  const ok = await page.evaluate(() => document.fonts.check("800 40px Unbounded"));
-  if (!ok) throw new Error("police Unbounded non chargée");
+  await page.evaluate(() => Promise.all(["600 40px Jost", "italic 400 30px 'STIX Two Text'"].map((f) => document.fonts.load(f))));
+  const ok = await page.evaluate(() => document.fonts.check("600 40px Jost"));
+  if (!ok) throw new Error("police Jost non chargée");
 }
 
 function miseEnPage(f, titre, image, polices) {
@@ -63,7 +63,7 @@ function miseEnPage(f, titre, image, polices) {
   return `<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="${polices}"><style>
     html,body{margin:0;width:${f.w}px;height:${f.h}px;overflow:hidden;background:radial-gradient(90% 60% at 50% 0%,#2a1f5c 0%,#07070c 70%);}
     h1{margin:0;position:absolute;top:0;left:${marge}px;right:${marge}px;height:${haut}px;display:flex;align-items:center;justify-content:center;text-align:center;
-      font:800 ${fs1}px/1.15 Unbounded,system-ui,sans-serif;letter-spacing:.02em;color:#fff;}
+      font:600 ${fs1}px/1.15 Jost,system-ui,sans-serif;letter-spacing:.02em;color:#fff;}
     img{position:absolute;left:50%;top:${haut}px;transform:translateX(-50%);width:${ecranW}px;height:${ecranH}px;border-radius:${Math.round(f.w * 0.05)}px;
       box-shadow:0 0 0 ${Math.round(f.w * 0.008)}px #2b2840, 0 ${Math.round(f.w * 0.03)}px ${Math.round(f.w * 0.08)}px rgba(0,0,0,.6);}
   </style></head><body><h1>${titre}</h1><img src="data:image/png;base64,${image.toString("base64")}"></body></html>`;
@@ -109,7 +109,7 @@ function miseEnPage(f, titre, image, polices) {
       html,body{margin:0;width:1024px;height:500px;overflow:hidden;background:radial-gradient(70% 90% at 25% 30%,#2a1f5c 0%,#07070c 75%);}
       img{position:absolute;left:40px;top:25px;width:450px;height:450px}
       div{position:absolute;left:510px;right:40px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;gap:18px}
-      b{font:800 56px/1 Unbounded,sans-serif;letter-spacing:.04em;white-space:nowrap;background:linear-gradient(100deg,#fff,#d9ceff 40%,#a58bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+      b{font:600 56px/1 Jost,sans-serif;letter-spacing:.04em;white-space:nowrap;background:linear-gradient(100deg,#fff,#d9ceff 40%,#a58bff);-webkit-background-clip:text;background-clip:text;color:transparent}
       i{font:italic 400 30px/1.3 "STIX Two Text",serif;color:#c9c6dc}
     </style></head><body><img src="data:image/png;base64,${logo.toString("base64")}"><div><b>ORBICUBE</b><i>le cube 3×3,<br>cercle par cercle</i></div></body></html>`);
     await chargerPolices(page);

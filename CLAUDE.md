@@ -105,11 +105,13 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   +1 par monde terminé, +1 à la première fois 3★ de coups et 3★ de temps sur un niveau ; le jeu complet en
   offre une par jour ; à zéro, une revient après 10 min (`RECHARGE_AMP`). Fusion par `ampMaj`.
 - **Accueil** (le client, le 13/10/2026) : titre « ORBICUBE » en capitales fines très espacées (Jost 300,
-  `.marque`, lueur d'accent ; plus d'Unbounded ni d'ellipse sur le titre). **Le cube au sommet de l'orbite du haut** (le cube au
+  `.marque`, lueur d'accent, sans ellipse). **Jost remplace Unbounded partout** (`--f-titre`, graisses 600 et 700 embarquées,
+  aussi dans `confidentialite.html` et `outils/captures.js`) ; Unbounded est retirée du dépôt. **Le cube au sommet de l'orbite du haut** (le cube au
   centre était trop petit et touchait les pastilles) : un seul visuel, le plateau prend la place libre et le cube se pose
   sur le sommet du cercle du haut (1,617 unité au-dessus du centre), dans un **médaillon** (`#medaillon` : disque sombre
   qui masque le trait, fin anneau d'accent, halo) pour ne pas le confondre avec une pièce du plateau. Tailles en `ECH` :
-  `MEDAILLON` 0,92, `CUBE_LOGO` 0,7 ; `Logo.demarrer` réserve au-dessus du plateau la moitié du médaillon qui dépasse.
+  `MEDAILLON` 0,92, `CUBE_LOGO` 0,7, disque en verre fumé ; `Logo.demarrer` réserve au-dessus du plateau la moitié
+  du médaillon qui dépasse plus `AIR`, pour un espace égal sous le titre et au-dessus du bouton.
 - **Logo** : les trois anneaux (`ANNEAUX` dans `outils/icones.py`) pour l'icône, le démarrage natif et le logo du
   mélange (`.anneaux`). **L'écran de chargement web montre les neuf orbites du plateau** (`.orbites`, SVG, un éclat de
   couleur par orbite, sans filtre CSS) puis se dissout sur l'accueil (le client, le 13/10/2026) ; les médailles des succès gardent le plateau. Accueil : la devise disparaît après le

@@ -26,7 +26,7 @@
      165,139,255 EST #a58bff, donc le rendu hors thème est identique à avant */
   --lilas:rgb(var(--acc)); --lilas-fonce:#7a5cf0; --lilas-doux:#251f42; --sur-lilas:#130e26;
   --or:#ffcf4a; --or-doux:#3a2f12; --rouge:#ff6b6b;
-  --f-titre:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-titre:"Jost","Instrument Sans",system-ui,sans-serif;
   --f-math:"STIX Two Text","Cambria Math",Georgia,serif;
   --f-texte:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-chiffre:"JetBrains Mono",ui-monospace,Menlo,monospace;
@@ -88,7 +88,7 @@ body{background:
 .centre{max-width:560px;margin:0 auto;width:100%}
 
 .tete{display:flex;align-items:center;gap:8px;padding:10px 12px 6px;min-height:58px}
-.tete h2{flex:1;margin:0;font-family:var(--f-titre);font-weight:700;font-size:18px;letter-spacing:.04em;text-align:center}
+.tete h2{flex:1;margin:0;font-family:var(--f-titre);font-weight:600;font-size:18px;letter-spacing:.04em;text-align:center}
 .ico{width:44px;height:44px;border-radius:14px;border:1px solid var(--trait);background:var(--carte);display:grid;place-items:center;cursor:pointer;flex:none;padding:0}
 .ico svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .ico:active{transform:scale(.94)}
@@ -116,11 +116,11 @@ body{background:
    l'accueil tient sur un écran quelles que soient la police et la taille du texte du téléphone */
 .logoboite{flex:1 1 0;min-height:150px;max-height:410px;width:100%;display:grid;place-items:center;overflow:hidden}
 /* le cube au sommet de l'orbite du haut (le client, le 13/10/2026) : posé sur le cercle comme une planète sur son
-   orbite, dans un médaillon (disque sombre qui masque le trait, fin anneau d'accent, halo) pour qu'on ne le prenne pas
+   orbite, dans un médaillon (verre fumé qui masque le trait, fin anneau d'accent, halo) pour qu'on ne le prenne pas
    pour une pièce du plateau. Décoratif : pointer-events:none, les touchers tombent sur les orbites. */
 .logo-scene{position:relative;display:grid;place-items:center;width:100%;height:100%}
 .medaillon{position:absolute;left:50%;transform:translateX(-50%);display:grid;place-items:center;border-radius:50%;pointer-events:none;z-index:1;
-  background:radial-gradient(closest-side,rgba(10,12,30,.97) 0,rgba(10,12,30,.94) 78%,rgba(var(--acc),.16) 100%);
+  background:radial-gradient(closest-side,rgba(12,14,34,.84) 0,rgba(12,14,34,.74) 76%,rgba(var(--acc),.18) 100%);
   border:1px solid rgba(var(--acc),.55);box-shadow:0 0 0 5px rgba(var(--acc),.07),0 0 28px -4px rgba(var(--acc),.45),0 10px 30px -8px rgba(0,0,0,.9)}
 #logoCube{display:block;aspect-ratio:1/1;pointer-events:none}
 #logo{display:block}
@@ -140,7 +140,7 @@ body{background:
 .bouton svg{width:22px;height:22px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .bouton .droite{margin-left:auto;font-family:var(--f-chiffre);font-size:12.5px;color:var(--pale);font-weight:500}
 .bouton.principal{background:linear-gradient(135deg,var(--lilas) 0%,var(--lilas-fonce) 100%);border-color:transparent;color:var(--sur-lilas);
-  font-family:var(--f-titre);font-weight:700;letter-spacing:.06em;font-size:17px;box-shadow:0 10px 30px -10px rgba(165,139,255,.6)}
+  font-family:var(--f-titre);font-weight:600;letter-spacing:.06em;font-size:17px;box-shadow:0 10px 30px -10px rgba(165,139,255,.6)}
 a.bouton{text-decoration:none;color:inherit}
 .bouton.principal .droite{color:rgba(19,14,38,.7)}
 .bouton.or{border-color:#5a4a1c;background:linear-gradient(135deg,#2a2212,#1b1710)}
@@ -151,7 +151,7 @@ a.bouton{text-decoration:none;color:inherit}
 
 .jtete{display:flex;align-items:center;gap:8px;padding:8px 12px 4px}
 .jtitre{flex:1;min-width:0;text-align:center}
-.jtitre b{display:block;font-family:var(--f-titre);font-size:15px;font-weight:700;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jtitre b{display:block;font-family:var(--f-titre);font-size:15px;font-weight:600;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .jtitre span{display:block;font-size:12px;color:var(--pale);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ico.indice{color:var(--or)}
 .ico.indice.off{color:var(--sourd)}
@@ -184,7 +184,7 @@ a.bouton{text-decoration:none;color:inherit}
 .melange{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:12px;text-align:center;pointer-events:none;z-index:2}
 .melange[hidden]{display:none}
 .melange svg{width:92px;height:92px;filter:drop-shadow(0 0 18px rgba(165,139,255,.35))}
-.melange b{font-family:var(--f-titre);letter-spacing:.3em;font-size:12px;color:#d9ceff;font-weight:700}
+.melange b{font-family:var(--f-titre);letter-spacing:.3em;font-size:12px;color:#d9ceff;font-weight:600}
 /* secousse d'impact à la résolution (déclenchée par .secousse sur #zonePlateau, retirée après) */
 @keyframes secousse{0%,100%{transform:translate(0,0)}12%{transform:translate(-6px,4px)}26%{transform:translate(5px,-5px)}40%{transform:translate(-5px,-3px)}54%{transform:translate(4px,4px)}70%{transform:translate(-3px,2px)}86%{transform:translate(2px,-2px)}}
 .secousse{animation:secousse .46s cubic-bezier(.36,.07,.19,.97)}
@@ -391,7 +391,7 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
 /* la bande du rang, sous les modes : le rang, sa barre d'expérience, les missions du jour */
 .rangbande{display:flex;align-items:center;gap:12px;width:100%;padding:9px 14px 9px 9px;border-radius:18px;border:1px solid var(--bord);background:var(--verre),rgba(14,14,24,.55);cursor:pointer;text-align:left;min-height:54px}
 .rangbande:active{transform:scale(.98)}
-.anneau-rang{position:relative;flex:none;width:38px;height:38px;display:grid;place-items:center;font-family:var(--f-titre);font-weight:800;font-size:14px;color:var(--encre)}
+.anneau-rang{position:relative;flex:none;width:38px;height:38px;display:grid;place-items:center;font-family:var(--f-titre);font-weight:700;font-size:14px;color:var(--encre)}
 .anneau-rang svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
 .rb-txt{flex:1;min-width:0;display:grid;gap:6px}.rb-txt b{font-size:14px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rb-barre{display:block;height:5px;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden}.rb-barre i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--lilas),#4cc9f0);transition:width .6s}
@@ -475,7 +475,7 @@ body{background:
   box-shadow:0 0 12px rgba(var(--pa),.55)}
 .parc-sect{position:absolute;left:50%;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:9px;white-space:nowrap;
   padding:8px 16px;border-radius:999px;border:1px solid rgba(var(--pa),.55);background:linear-gradient(180deg,rgba(var(--pa),.24),rgba(var(--pa),.05)),rgba(12,12,20,.88);
-  font-family:var(--f-titre);font-weight:700;font-size:13px;letter-spacing:.03em;color:#fff;z-index:3;
+  font-family:var(--f-titre);font-weight:600;font-size:13px;letter-spacing:.03em;color:#fff;z-index:3;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 0 22px -6px rgba(var(--pa),.7),0 10px 26px -14px rgba(0,0,0,.95)}
 .parc-sect .parc-et{display:inline-flex;align-items:center;gap:3px;font-family:var(--f-chiffre);font-weight:600;font-size:11px;color:rgba(255,255,255,.82);
   padding-left:9px;margin-left:2px;border-left:1px solid rgba(255,255,255,.18)}
@@ -489,7 +489,7 @@ body{background:
   box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 10px 24px -14px rgba(0,0,0,.9);transition:transform .38s var(--ease),opacity .45s ease}
 .parc-niv.vu{transform:translate(-50%,-50%) scale(1);opacity:1}
 .parc-niv:not(.verrou):active{transform:translate(-50%,-50%) scale(.92)}
-.parc-niv b{font-family:var(--f-titre);font-weight:800;font-size:19px;color:#fff;line-height:1}
+.parc-niv b{font-family:var(--f-titre);font-weight:700;font-size:19px;color:#fff;line-height:1}
 .parc-niv .pet{display:flex;gap:1px;position:absolute;bottom:-8px;background:rgba(9,9,16,.9);border-radius:999px;padding:1.5px 4px;box-shadow:0 2px 6px rgba(0,0,0,.6)}
 .parc-niv .pet svg{width:9px;height:9px}
 .parc-niv.fait{background:radial-gradient(120% 120% at 30% 22%,rgba(var(--pa),.5),rgba(var(--pa),.12) 70%),rgba(14,14,24,.72);border-color:rgba(var(--pa),.6)}
@@ -1148,7 +1148,7 @@ var Logo=new Plateau(document.getElementById("logo"),{etiquettes:false,comete:tr
 // le cube en perspective de l'accueil reflète l'état du logo (ses tours automatiques), exactement comme
 // #mini reflète le plateau pendant une partie : le menu a ainsi l'allure d'une partie en cours
 // même inclinaison qu'en jeu : #mini démarre à PIVOT {y:0,x:0} (vue isométrique, trois faces)
-var MEDAILLON=.92,CUBE_LOGO=.7,logoCube=document.getElementById("logoCube"),logoCubeC=logoCube.getContext("2d"),PIVOT_LOGO={y:0,x:0};
+var MEDAILLON=.92,CUBE_LOGO=.7,AIR=10,logoCube=document.getElementById("logoCube"),logoCubeC=logoCube.getContext("2d"),PIVOT_LOGO={y:0,x:0};
 function dessinerLogoCube(){var w=logoCube.clientWidth||100,px=Math.round(w*DPR);if(logoCube.width!==px){logoCube.width=px;logoCube.height=px;logoCubeC.setTransform(DPR,0,0,DPR,0,0);}
   var an=Logo.anim,cle=w+"|"+COUL[0]+"|"+Logo.col.join("")+"|"+(an?cleA(an.mv)+an.mv.q+":"+an.t.toFixed(4):"");
   if(cle===dessinerLogoCube.cle)return;dessinerLogoCube.cle=cle;dessinerCube(logoCubeC,w,Logo.col,an,PIVOT_LOGO);}
@@ -1168,10 +1168,12 @@ document.getElementById("logo").addEventListener("pointerdown",function(){if(Log
   Logo.sol.unshift(inverse(mv));Logo.pause=0;Logo.prochain=performance.now()+1200;Logo.jouer(mv,300,null,"rebond");sonTour(mv);vibrer(8);});
 // le médaillon du cube se pose sur le sommet du cercle du haut : 1,617 unité au-dessus du centre du plateau, soit
 // 0,116 unité sous le bord du canvas (OY = milieu + 0,133). Sa moitié haute dépasse : la scène lui garde cette place.
+// AIR : un espace au-dessus du médaillon, égal au vide que le bas du canvas laisse sous les orbites (0,117 unité)
+// plus la marge du menu, pour que l'emblème respire autant sous le titre qu'au-dessus du bouton
 Logo.demarrer=function(){var box=this.cv.parentNode.parentNode.getBoundingClientRect(),dep=MEDAILLON/2-.116,
-  orbit=Math.round(Math.min(box.height/(1+dep/3.2),innerWidth*.92,400));if(orbit<=0)return;
-  this.dimension(orbit);var E=this.ECH,m=Math.round(E*MEDAILLON),haut=Math.round(E*dep),med=document.getElementById("medaillon");
-  this.cv.style.marginTop=haut+"px";med.style.width=med.style.height=m+"px";med.style.top="calc(50% - "+Math.round((orbit+haut)/2)+"px)";
+  orbit=Math.round(Math.min((box.height-AIR)/(1+dep/3.2+.117/3.2),innerWidth*.92,400));if(orbit<=0)return;
+  this.dimension(orbit);var E=this.ECH,m=Math.round(E*MEDAILLON),haut=Math.round(E*dep),air=AIR+Math.round(E*.117),med=document.getElementById("medaillon");
+  this.cv.style.marginTop=(haut+air)+"px";med.style.width=med.style.height=m+"px";med.style.top="calc(50% - "+Math.round((orbit+haut+air)/2-air)+"px)";
   logoCube.style.width=Math.round(E*CUBE_LOGO)+"px";
   if(!this.sol.length&&!this.pause)melangerLogo();dessinerLogoCube();};
 function etoilesTotal(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t+=PROG.niveaux[k].etoiles||0;});return t;}
