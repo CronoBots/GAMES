@@ -13,6 +13,7 @@
     ["niveau {0}", "level {0}", "level {0}", "Level {0}", "nivel {0}"],
     ["Défi du jour", "Daily challenge", "Dagelijkse uitdaging", "Tagesrätsel", "Reto diario"],
     ["nouveau", "new", "nieuw", "neu", "nuevo"],
+    ["Autres modes", "Other modes", "Andere modi", "Weitere Modi", "Otros modos"],
     ["réussi · {0}", "done · {0}", "gehaald · {0}", "geschafft · {0}", "superado · {0}"],
     ["série de {0}", "{0}-day streak", "reeks van {0}", "{0} Tage in Folge", "racha de {0}"],
     ["Partie libre", "Free play", "Vrij spel", "Freies Spiel", "Juego libre"],

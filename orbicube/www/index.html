@@ -127,7 +127,7 @@ body{background:
 @media (max-height:700px){#accueil .menu{gap:8px}#accueil .bouton{min-height:50px}#accueil .defile{gap:8px}}
 /* le nom du jeu : capitales fines et très espacées (Jost 300), une lueur de la couleur d'accent ; le cube et
    les orbites portent l'énergie de l'écran, le titre reste calme (le client, le 13/10/2026) */
-.marque{justify-self:center;font-family:"Jost",var(--f-texte);font-weight:300;font-size:clamp(30px,9.6vw,44px);letter-spacing:.32em;padding-left:.32em;
+.marque{justify-self:center;font-family:"Jost",var(--f-texte);font-weight:300;font-size:clamp(34px,11.4vw,54px);letter-spacing:.24em;padding-left:.24em;
   text-transform:uppercase;margin:0;line-height:1;color:#eef3ff;text-shadow:0 0 2px rgba(255,255,255,.35),0 0 22px rgba(var(--acc),.6)}
 .entete{text-align:center;display:grid;gap:7px;width:100%}
 .slogan{margin:0;color:var(--lilas);font-family:var(--f-math);font-style:italic;font-size:clamp(16px,4.6vw,19px);letter-spacing:.01em}
@@ -377,8 +377,6 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
 /* au centre de la barre du haut : le rang (anneau d'expérience) et les trois missions du jour */
 .puce-rang{pointer-events:auto;max-width:54vw;display:flex;align-items:center;gap:9px;height:42px;padding:0 14px 0 4px;border-radius:99px;border:1px solid var(--bord);background:var(--verre),rgba(14,14,24,.55);cursor:pointer;min-width:0}
 .acc-droite{display:flex;gap:8px}
-#btnMusique .mute{display:none}
-#btnMusique.off{color:var(--sourd)}#btnMusique.off .mute{display:inline}
 .puce-rang:active{transform:scale(.96)}
 .puce-rang .anneau-rang{width:34px;height:34px;font-size:13px}
 .puce-rang b{font-size:13.5px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:42vw}
@@ -413,15 +411,6 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
 .mission.ok b{color:var(--pale)}
 .mission-bonus{margin:0;padding:10px 16px 14px;font-size:12.5px;color:var(--pale);border-top:1px solid #20202f}
 .xp-gain{display:inline-flex;align-items:center;gap:6px;margin:2px auto 0;padding:5px 12px;border-radius:99px;background:rgba(var(--acc),.14);color:var(--lilas);font-family:var(--f-chiffre);font-size:12.5px}
-.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.trio .bouton.bloc{align-items:center;text-align:center;justify-content:center;gap:4px;min-height:66px;padding:8px 6px}
-.trio .bouton.bloc>span:not(.droite){font-size:13px;line-height:1.1;hyphens:auto;-webkit-hyphens:auto}
-.trio .bouton.bloc .droite{margin:0;font-size:9.5px}
-.trio .pastille{width:29px;height:29px;border-radius:9px}.trio .pastille svg{width:16px!important;height:16px!important}
-.puce-or{justify-self:center;display:inline-flex;align-items:center;gap:8px;margin-top:2px;padding:8px 14px;border-radius:99px;cursor:pointer;
-  background:linear-gradient(135deg,rgba(255,207,74,.14),rgba(255,207,74,.04));border:1px solid rgba(255,207,74,.35);color:var(--encre);font-size:13.5px;font-weight:600}
-.puce-or svg{width:16px;height:16px;stroke:var(--or);fill:none;stroke-width:2;stroke-linejoin:round}
-.puce-or span:last-child{font-family:var(--f-chiffre);color:var(--or);font-size:12.5px}
 #accueil .menu{gap:9px}
 
 .sous-jouer{margin:-4px 0 0;text-align:center;font-size:12.5px;color:rgb(var(--acc));display:flex;justify-content:center;gap:6px}
@@ -451,7 +440,30 @@ body{background:
   linear-gradient(135deg,color-mix(in srgb,rgb(var(--acc)),#fff 12%) 0%,color-mix(in srgb,rgb(var(--acc)),#000 28%) 52%,color-mix(in srgb,rgb(var(--acc)),#120a2e 56%) 100%);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -10px 22px -12px rgba(30,8,70,.9),
   0 0 0 1px rgba(var(--acc),.32),0 16px 36px -12px rgba(var(--acc),.8)}
-.bouton.bloc,.tuile,.trio .bouton.bloc{background:
+/* accueil (le client, le 13/10/2026) : le bouton principal en pilule, plus de plastique brillant ; dessous, un dock de
+   raccourcis ronds (icône, nom, état) au lieu des tuiles en boîtes ; « Jeu complet » y prend place en doré */
+#accueil .bouton.principal{min-height:64px;border-radius:999px;padding:0 24px 0 10px;gap:14px;
+  background:linear-gradient(135deg,color-mix(in srgb,rgb(var(--acc)),#fff 6%) 0%,color-mix(in srgb,rgb(var(--acc)),#0a0820 38%) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.32),0 0 0 1px rgba(var(--acc),.45),0 0 34px -8px rgba(var(--acc),.75)}
+#accueil .bouton.principal svg{width:44px;height:44px;padding:13px 12px 13px 14px;background:rgba(255,255,255,.2)}
+#accueil #jouerTxt{font-size:19px;letter-spacing:.08em}
+.dock{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2px;margin-top:8px}
+.dock .item{display:grid;justify-items:center;align-content:start;gap:6px;padding:4px 0;background:none;border:0;color:var(--encre);cursor:pointer;font:inherit;
+  -webkit-tap-highlight-color:transparent}
+.dock .rond{position:relative;display:grid;place-items:center;width:clamp(46px,14vw,54px);height:clamp(46px,14vw,54px);border-radius:50%;font-style:normal;
+  background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,.02) 55%),rgba(12,13,28,.72);border:1px solid rgba(var(--acc),.38);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 10px 22px -10px rgba(0,0,0,.9),0 0 20px -8px rgba(var(--acc),.6);transition:transform .12s var(--ease)}
+.dock .item:active .rond{transform:scale(.9)}
+.dock svg{width:23px;height:23px;stroke:rgb(var(--acc));fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.dock .nom{font-family:var(--f-titre);font-weight:600;font-size:clamp(11.5px,3.5vw,13.5px);letter-spacing:.02em;line-height:1.05;text-align:center;white-space:nowrap}
+.dock .sous{font-size:11px;line-height:1;color:var(--pale);min-height:11px;white-space:nowrap}
+.dock .point{position:absolute;top:1px;right:1px;width:12px;height:12px;border-radius:50%;background:var(--or);box-shadow:0 0 0 2px #0b0d1c,0 0 10px rgba(255,207,74,.9)}
+.dock .point[hidden]{display:none}
+.dock .or .rond{border-color:rgba(255,207,74,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 10px 22px -10px rgba(0,0,0,.9),0 0 20px -6px rgba(255,207,74,.55)}
+.dock .or svg{stroke:var(--or)}.dock .or .sous{color:var(--or);font-family:var(--f-chiffre)}
+.dock .item[hidden]{display:none}
+@media (max-height:700px){#accueil .bouton.principal{min-height:56px}#accueil .bouton.principal svg{width:38px;height:38px;padding:11px 10px 11px 12px}.dock{margin-top:4px}.dock .item{gap:4px}}
+.bouton.bloc,.tuile{background:
   linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.02) 42%),rgba(12,13,22,.74);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.14),var(--ombre)}
 .pastille{background:linear-gradient(180deg,rgba(var(--acc),.3),rgba(var(--acc),.12));box-shadow:inset 0 1px 0 rgba(255,255,255,.22)}
@@ -547,7 +559,6 @@ body.sobre #plateau{transition:none}
       <button class="ico" id="btnAide" type="button" aria-label="Comment jouer"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.8"/><path d="M12 17.2v.1"/></svg></button>
       <button class="puce-rang" id="btnRang" type="button" aria-label="Profil, rang et missions"><span class="anneau-rang notrad" id="rangAnneau"></span><b id="rangTitre">Novice</b><span class="rb-mis" id="rangMissions"></span></button>
       <div class="acc-droite">
-      <button class="ico" id="btnMusique" type="button" aria-label="Musique"><svg viewBox="0 0 24 24"><path d="M9 17V4l10-2v13"/><circle cx="6.5" cy="17" r="2.5"/><circle cx="16.5" cy="15" r="2.5"/><path class="mute" d="M3 3l18 18"/></svg></button>
       <button class="ico" id="btnOptions" type="button" aria-label="Options"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
       </div>
     </div>
@@ -561,18 +572,16 @@ body.sobre #plateau{transition:none}
           <button class="bouton principal" id="btnJouer" type="button">
             <svg viewBox="0 0 24 24"><path d="M7 4l12 8-12 8z" fill="currentColor" stroke="none"/></svg>
             <span class="deuxl"><span id="jouerTxt">Jouer</span><small id="jouerMonde"></small></span><span class="droite notrad" id="jouerSous"></span></button>
-          <div class="trio">
-          <button class="bouton or bloc" id="btnJour" type="button">
-            <i class="pastille"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15.5" r="2"/></svg></i>
-            <span>Défis</span><span class="droite" id="jourSous"></span></button>
-          <button class="bouton bloc" id="btnLibre" type="button">
-            <i class="pastille"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg></i>
-            <span>Partie libre</span><span class="droite">chrono</span></button>
-          <button class="bouton bloc" id="btnSucces" type="button">
-            <i class="pastille"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M8.5 14l-1.5 7 5-3 5 3-1.5-7"/></svg></i>
-            <span>Succès</span><span class="droite notrad" id="succesSous"></span></button>
-          </div>
-          <button class="puce-or" id="btnBoutique" type="button" hidden><svg viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg><span>Jeu complet</span><span class="notrad" id="prixAccueil"></span></button>
+          <nav class="dock" aria-label="Autres modes">
+          <button class="item" id="btnJour" type="button"><i class="rond"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15.5" r="2"/></svg><b class="point" id="jourPoint" hidden></b></i>
+            <span class="nom">Défis</span><span class="sous" id="jourSous"></span></button>
+          <button class="item" id="btnLibre" type="button"><i class="rond"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg></i>
+            <span class="nom">Partie libre</span><span class="sous">chrono</span></button>
+          <button class="item" id="btnSucces" type="button"><i class="rond"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M8.5 14l-1.5 7 5-3 5 3-1.5-7"/></svg></i>
+            <span class="nom">Succès</span><span class="sous notrad" id="succesSous"></span></button>
+          <button class="item or" id="btnBoutique" type="button" hidden><i class="rond"><svg viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg></i>
+            <span class="nom">Jeu complet</span><span class="sous notrad" id="prixAccueil"></span></button>
+          </nav>
         </div>
         
       </div>
@@ -1191,6 +1200,7 @@ function rafraichirAccueil(){var pn=prochainNiveau(),fait=Object.keys(PROG.nivea
   var serieVive=PROG.serie>1&&(PROG.dernierJour===cleJour()||estHier(PROG.dernierJour));
   document.getElementById("jourSous").textContent=serieVive?"série de "+PROG.serie:
     j?(h>=1?"dans "+h+" h":"dans "+Math.max(1,Math.ceil(reste/60000))+" min"):"nouveau";
+  document.getElementById("jourPoint").hidden=!!j;
   // sous « Continuer » : le monde en cours et ses étoiles, dans sa couleur
   // la seconde ligne du bouton dit où l'on en est, sans phrase en plus sous le bouton
   document.getElementById("jouerMonde").textContent=!fait?"Premier niveau":bloque?"Suite dans le jeu complet":!pn?"Campagne terminée":"Niveau "+(pn.w+1)+"-"+(pn.i+1)+" · "+MONDES[pn.w].nom;
@@ -1560,7 +1570,7 @@ cvJ.addEventListener("contextmenu",function(e){e.preventDefault();});
 document.getElementById("btnPause").addEventListener("click",function(){sonClic();pause();});
 document.getElementById("btnAccueilJeu").addEventListener("click",function(){sonClic();montrer("accueil");});  // retour direct au menu
 document.getElementById("btnNiveauxJeu").addEventListener("click",function(){sonClic();ouvrirParcours();});  // retour à la campagne
-document.getElementById("btnMusique").addEventListener("click",function(){opt("musique",PROG.options.musique===false);if(PROG.options.musique!==false){contexteAudio();Musique.lancer();}sonClic();});
+
 document.getElementById("btnIndice").addEventListener("click",function(){sonClic();if(!J||!J.pret||J.fini||JeuP.occupe())return;
   if(JeuP.indice)return;   // l'indice est déjà affiché : rien à payer de plus
   if(!ampoules()){vibrer(20);plusDAmpoules();return;}
@@ -1654,7 +1664,6 @@ function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)
   document.getElementById("optAnims").checked=o.anims!==false;
   document.getElementById("optSon").checked=o.son;document.getElementById("optVib").checked=o.vib;document.getElementById("optCube").checked=o.cube;
   document.getElementById("optPave").checked=o.pave;document.getElementById("optZen").checked=!!o.zen;document.getElementById("optMusique").checked=o.musique!==false;document.getElementById("optVolMusique").closest(".ligne").hidden=o.musique===false;
-  document.getElementById("btnMusique").classList.toggle("off",o.musique===false);
   document.querySelectorAll("#optVolMusique button").forEach(function(b){b.classList.toggle("on",+b.dataset.v===(o.volMusique||2));});Musique.regler();document.body.classList.toggle("zen",!!o.zen||!!(J&&J.def.relax));
   document.querySelectorAll("#optForme button").forEach(function(b){b.classList.toggle("on",b.dataset.v===(o.forme||"facettes"));});
   document.querySelectorAll("#optVitesse button").forEach(function(b){b.classList.toggle("on",+b.dataset.v===o.vitesse);});
