@@ -100,13 +100,17 @@ body{background:
 .etoile.eteinte{fill:#34324a}
 .etoile.temps{fill:#4cc9f0}
 
+/* vignette de l'accueil : calme le fond parallax (chargé) pour que le titre, le cube et les boutons
+   ressortent nettement, tout en laissant le décor respirer sur les bords. Derrière le contenu. */
+#accueil::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(130% 72% at 50% 40%,rgba(3,5,12,.12) 0%,rgba(3,5,12,.5) 74%,rgba(3,5,12,.68) 100%)}
 #accueil .defile{display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:12px}
 /* l'accueil descend un peu dans la zone de la barre d'accueil de l'iPhone (le client, le 11/10/2026) */
 #accueil .defile{padding-bottom:max(10px,calc(env(safe-area-inset-bottom,0px) - 12px))}
 #accueil .defile>:first-child{margin-top:auto}#accueil .defile>:last-child{margin-bottom:auto}
 /* le logo prend la hauteur que le menu laisse, mesurée par la mise en page elle-même (et non estimée) :
    l'accueil tient sur un écran quelles que soient la police et la taille du texte du téléphone */
-.logoboite{flex:1 1 0;min-height:150px;max-height:372px;width:100%;display:grid;place-items:center;overflow:hidden}
+.logoboite{flex:1 1 0;min-height:150px;max-height:410px;width:100%;display:grid;place-items:center;overflow:hidden}
 /* le menu ressemble à une partie en cours : le cube en perspective, au-dessus des orbites, rejoue les
    tours que le logo joue tout seul. L'ensemble est rétréci pour ne pas surcharger. Cube décoratif :
    pointer-events:none, les touchers tombent sur les orbites (qui tournent au clic). */
@@ -329,8 +333,8 @@ a.bouton{text-decoration:none;color:inherit}
 body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
 
 /* ===== Accueil en mosaïque (11/10/2026) : le bouton principal, puis deux tuiles hautes, puis le reste ===== */
-#accueil .menu{gap:12px}
-#accueil .bouton.principal{min-height:62px;border-radius:20px;font-size:18px}
+#accueil .menu{gap:9px}
+#accueil .bouton.principal{min-height:56px;border-radius:20px;font-size:18px}
 #accueil .bouton.principal svg{width:34px;height:34px;padding:9px;border-radius:50%;background:rgba(255,255,255,.18);box-sizing:border-box}
 .bento{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .bouton.bloc{flex-direction:column;align-items:flex-start;justify-content:space-between;gap:10px;min-height:104px;padding:14px 15px;border-radius:20px}
@@ -388,7 +392,7 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
 .mission-bonus{margin:0;padding:10px 16px 14px;font-size:12.5px;color:var(--pale);border-top:1px solid #20202f}
 .xp-gain{display:inline-flex;align-items:center;gap:6px;margin:2px auto 0;padding:5px 12px;border-radius:99px;background:rgba(var(--acc),.14);color:var(--lilas);font-family:var(--f-chiffre);font-size:12.5px}
 .trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.trio .bouton.bloc{align-items:center;text-align:center;justify-content:center;gap:6px;min-height:96px;padding:12px 6px}
+.trio .bouton.bloc{align-items:center;text-align:center;justify-content:center;gap:5px;min-height:80px;padding:9px 6px}
 .trio .bouton.bloc>span:not(.droite){font-size:13.5px;line-height:1.15;hyphens:auto;-webkit-hyphens:auto}
 .trio .bouton.bloc .droite{margin:0;font-size:10px}
 .trio .pastille{width:34px;height:34px;border-radius:11px}
@@ -396,7 +400,7 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
   background:linear-gradient(135deg,rgba(255,207,74,.14),rgba(255,207,74,.04));border:1px solid rgba(255,207,74,.35);color:var(--encre);font-size:13.5px;font-weight:600}
 .puce-or svg{width:16px;height:16px;stroke:var(--or);fill:none;stroke-width:2;stroke-linejoin:round}
 .puce-or span:last-child{font-family:var(--f-chiffre);color:var(--or);font-size:12.5px}
-#accueil .menu{gap:12px}
+#accueil .menu{gap:9px}
 
 .sous-jouer{margin:-4px 0 0;text-align:center;font-size:12.5px;color:rgb(var(--acc));display:flex;justify-content:center;gap:6px}
 .sous-jouer[hidden]{display:none}
@@ -426,8 +430,8 @@ body{background:
   box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -10px 22px -12px rgba(30,8,70,.9),
   0 0 0 1px rgba(var(--acc),.32),0 16px 36px -12px rgba(var(--acc),.8)}
 .bouton.bloc,.tuile,.trio .bouton.bloc{background:
-  linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.02) 42%),rgba(14,14,24,.55);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),var(--ombre)}
+  linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.02) 42%),rgba(12,13,22,.74);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),var(--ombre)}
 .pastille{background:linear-gradient(180deg,rgba(var(--acc),.3),rgba(var(--acc),.12));box-shadow:inset 0 1px 0 rgba(255,255,255,.22)}
 /* écran de chargement : les trois anneaux baignent dans une lumière orbitale (uniquement au démarrage) */
 #chargement{background:
@@ -1131,7 +1135,7 @@ document.getElementById("logo").addEventListener("pointerdown",function(){if(Log
 // ~0,54× l'orbite et chevauche un peu vers le bas, pour que les deux forment un seul bloc (comme en jeu)
 Logo.demarrer=function(){var box=this.cv.parentNode.parentNode.getBoundingClientRect(),
   budget=Math.min(box.height,innerWidth*.86,366),orbit=Math.round(budget*.62);if(orbit<=0)return;
-  this.dimension(orbit);logoCube.style.width=Math.round(orbit*.54)+"px";logoCube.style.marginBottom=-Math.round(orbit*.10)+"px";
+  this.dimension(orbit);logoCube.style.width=Math.round(orbit*.46)+"px";logoCube.style.marginBottom=Math.round(orbit*.12)+"px";
   if(!this.sol.length&&!this.pause)melangerLogo();dessinerLogoCube();};
 function etoilesTotal(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t+=PROG.niveaux[k].etoiles||0;});return t;}
 function prochainNiveau(){for(var w=0;w<MONDES.length;w++)for(var i=0;i<MONDES[w].coups.length;i++)if(!PROG.niveaux[(w+1)+"-"+(i+1)])return{w:w,i:i};return null;}
