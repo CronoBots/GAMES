@@ -80,7 +80,9 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   `img/fond-1…4.webp`, cover, étoiles animées `#ciel` par-dessus) comme la campagne. Menu = thème aléatoire
   (`FOND_ACC`) ; **l'accueil compose son propre décor** (le client, le 13/10/2026) : la nébuleuse seule `bg-2`
   (`poserFond(t,true)`) et les deux planètes détachées (`img/planete-verte|rousse.webp`, `.astres`) de part et d'autre
-  du médaillon, à moitié hors de l'écran, en lente dérive : plus rien derrière le titre, les pièces ni les boutons ; jeu = thème du monde courant (`J.fond`, `themeFond(w)=(w%4)+1`), **nébuleuse seule** `bg-N` elle aussi
+  du médaillon, à moitié hors de l'écran, en lente dérive : plus rien derrière le titre, les pièces ni les boutons ;
+  **trois petits astéroïdes** détachés (`img/asteroide-1…3.webp`, `.roc`) dans les marges libres, à l'accueil ET en jeu
+  (le client, le 13/10/2026), jamais sur le plateau, le titre ni les boutons ; jeu = thème du monde courant (`J.fond`, `themeFond(w)=(w%4)+1`), **nébuleuse seule** `bg-N` elle aussi
   (`poserFond(t,true)`, le client, le 13/10/2026 : les planètes et astéroïdes des composites passaient sous le plateau ;
   les `fond-N` ne servent plus). En jeu comme à l'accueil, le ciel animé est baissé et n'envoie qu'une étoile filante pâle à la fois. La campagne
   (`#parcours`) garde ses fonds en couches parallaxe par-dessus.
