@@ -1252,14 +1252,7 @@ var parcIO=null;function parcRevele(ch){var root=document.getElementById("parcou
   [].forEach.call(ch.querySelectorAll(".parc-niv"),function(n){parcIO.observe(n);});}
 function ouvrirParcours(){accent(null);montrer("parcours");requestAnimationFrame(function(){buildParcours();
   var c=document.querySelector(".parc-niv.courant")||document.querySelector(".parc-niv:not(.verrou)"),dd=document.getElementById("parcoursDefile");
-  if(!c||!dd)return;var cible=Math.max(0,c.offsetTop-dd.clientHeight*.55);
-  try{
-    if(CALME||typeof dd.scrollTo!=="function"){dd.scrollTop=cible;return;}
-    // ouverture : on part du bas (Monde 1) puis on remonte en douceur jusqu'au monde en cours.
-    // Scroll NATIF du navigateur (pas de boucle rAF qui réécrirait scrollTop à chaque image : instable sur iOS).
-    dd.scrollTop=dd.scrollHeight-dd.clientHeight;
-    requestAnimationFrame(function(){try{dd.scrollTo({top:cible,behavior:"smooth"});}catch(e){dd.scrollTop=cible;}});
-  }catch(e){dd.scrollTop=cible;}});}
+  if(c&&dd)dd.scrollTop=Math.max(0,c.offsetTop-dd.clientHeight*.55);});}
 document.getElementById("chemin").addEventListener("click",function(e){
   var sec=e.target.closest(".parc-sect.paye");if(sec){sonClic();ouvrirBoutique("monde");return;}
   var b=e.target.closest(".parc-niv");if(!b)return;
