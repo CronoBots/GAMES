@@ -66,7 +66,7 @@ body{background:
 @keyframes entre{from{opacity:0;transform:translateY(14px) scale(.97)}}
 .ecran.actif .cascade>*{animation:entre .5s var(--ease) backwards;animation-delay:calc(var(--i,0)*55ms + 80ms)}
 /* onde au toucher, reflet du bouton principal */
-.bouton,.action,.ico,.niveau,.monde{position:relative;overflow:hidden}
+.bouton,.action,.ico{position:relative;overflow:hidden}
 .onde{position:absolute;border-radius:50%;background:rgba(255,255,255,.22);transform:translate(-50%,-50%) scale(0);pointer-events:none;animation:onde .6s ease-out forwards}
 @keyframes onde{to{transform:translate(-50%,-50%) scale(1);opacity:0}}
 .bouton.principal::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.4) 50%,transparent 70%);
@@ -131,36 +131,6 @@ a.bouton{text-decoration:none;color:inherit}
 .rangee2 .bouton{justify-content:center;font-size:15px;padding:0 10px}
 .pied{color:var(--sourd);font-size:12px;margin-top:8px;text-align:center}
 
-.mondes{display:grid;gap:12px}
-.monde{display:grid;grid-template-columns:56px minmax(0,1fr);gap:14px;align-items:center;padding:14px;border-radius:var(--r);
-  background:var(--carte);border:1px solid var(--trait);cursor:pointer;text-align:left;width:100%;overflow:hidden}
-.monde:active{transform:scale(.985)}
-.monde canvas{width:56px;height:56px}
-.monde h3{margin:0;font-family:var(--f-titre);font-size:15px;font-weight:700;letter-spacing:.03em}
-.monde p{margin:3px 0 8px;color:var(--pale);font-size:13px;line-height:1.35}
-.monde .num{font-family:var(--f-chiffre);color:var(--lilas);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
-.barre{height:6px;border-radius:99px;background:#24233a;overflow:hidden}
-.barre i{display:block;height:100%;background:linear-gradient(90deg,var(--or),#ffe08a);border-radius:99px}
-.monde .compte{display:flex;justify-content:space-between;gap:8px;font-family:var(--f-chiffre);font-size:11.5px;color:var(--pale);margin-top:6px}
-.monde.verrou{opacity:.55}
-.monde.paye{opacity:.8;border-color:#4a3d18}.monde.paye .cadenas{stroke:var(--or)}
-.monde .cadenas{position:absolute;right:12px;top:12px;width:20px;height:20px;stroke:var(--pale);fill:none;stroke-width:2}
-
-#nivApercu{display:block;margin:2px auto 8px;width:min(230px,60vw,30vh);aspect-ratio:1/1}
-#niveaux .centre{margin:auto}#niveaux .defile{display:flex;flex-direction:column}
-.niv-intro{color:var(--pale);font-size:14px;margin:2px 0 14px;text-align:center;line-height:1.4}
-.niveaux{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
-.niveau{aspect-ratio:1/1.08;border-radius:14px;background:var(--carte);border:1px solid var(--trait);cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:0}
-.niveau b{font-family:var(--f-titre);font-size:20px;font-weight:700}
-.niveau .et{display:flex;gap:1px}.niveau .et svg{width:12px;height:12px}
-.niveau.fait{border-color:#3b335f;background:linear-gradient(180deg,#1d1934,#15141f)}
-.niveau.courant{border-color:var(--lilas);box-shadow:0 0 0 1px var(--lilas),0 0 22px -6px var(--lilas)}
-.niveau.verrou{opacity:.4;cursor:default}
-.niveau svg.cad{width:18px;height:18px;stroke:var(--pale);fill:none;stroke-width:2}
-.niveau:not(.verrou):active{transform:scale(.94)}
-.par{font-family:var(--f-chiffre);font-size:10.5px;color:var(--sourd)}
-
 .jtete{display:flex;align-items:center;gap:8px;padding:8px 12px 4px}
 .jtitre{flex:1;min-width:0;text-align:center}
 .jtitre b{display:block;font-family:var(--f-titre);font-size:15px;font-weight:700;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -214,8 +184,6 @@ a.bouton{text-decoration:none;color:inherit}
 .pave button:active{background:var(--lilas-doux);border-color:var(--lilas)}
 @media (min-width:900px) and (min-height:700px){
   .centre{max-width:900px}
-  .mondes{grid-template-columns:1fr 1fr}
-  .niveaux{max-width:620px;margin:0 auto}
   .tuiles{grid-template-columns:repeat(3,minmax(0,1fr))}
   .succes{grid-template-columns:1fr 1fr}
 }
@@ -314,7 +282,7 @@ a.bouton{text-decoration:none;color:inherit}
    sous une dizaine de cartes ferait ramer un téléphone. Le verre est simulé par un dégradé translucide. */
 :root{--acc:165,139,255;--verre:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.025));--bord:rgba(255,255,255,.09);
   --reflet:inset 0 1px 0 rgba(255,255,255,.07);--ombre:0 14px 34px -22px rgba(0,0,0,.9);--r:18px}
-.bouton,.ico,.action,.monde,.niveau,.groupe,.tuile,.suc,.puce,.segment{background:var(--verre),rgba(14,14,24,.55);border-color:var(--bord);
+.bouton,.ico,.action,.groupe,.tuile,.suc,.puce,.segment{background:var(--verre),rgba(14,14,24,.55);border-color:var(--bord);
   box-shadow:var(--reflet),var(--ombre)}
 .bouton:hover,.action:hover,.ico:hover{border-color:rgba(255,255,255,.16)}
 .bouton.principal{background:linear-gradient(135deg,#a68cff 0%,#7b57ff 55%,#5a37ea 100%);color:#fff;
@@ -322,25 +290,16 @@ a.bouton{text-decoration:none;color:inherit}
 .bouton.principal .droite{color:rgba(255,255,255,.78)}
 .bouton.principal svg{fill:#fff}
 .bouton.or{background:linear-gradient(135deg,rgba(255,207,74,.13),rgba(255,207,74,.03)),rgba(14,14,24,.55);border-color:rgba(255,207,74,.32)}
-.niveau{border-radius:16px}
-.niveau.fait{background:linear-gradient(180deg,rgba(var(--acc),.16),rgba(var(--acc),.04)),rgba(14,14,24,.55);border-color:rgba(var(--acc),.3)}
-.niveau.courant{background:linear-gradient(180deg,rgba(var(--acc),.3),rgba(var(--acc),.08)),rgba(14,14,24,.6);border-color:rgb(var(--acc));
-  box-shadow:0 0 0 1px rgb(var(--acc)),0 0 26px -6px rgb(var(--acc));animation:respire 2.6s ease-in-out infinite}
-@keyframes respire{50%{box-shadow:0 0 0 1px rgb(var(--acc)),0 0 36px -4px rgb(var(--acc))}}
-.monde{border-radius:20px}
-.monde:not(.verrou):not(.paye){border-color:rgba(var(--acc),.3);background:radial-gradient(120% 140% at 0% 0%,rgba(var(--acc),.16),rgba(var(--acc),0) 55%),var(--verre),rgba(14,14,24,.55)}
-.monde .num{color:rgb(var(--acc))}
-#niveaux .tete h2,#niveaux .niv-intro{text-shadow:0 0 28px rgba(var(--acc),.45)}
 .jtitre b{text-shadow:0 0 24px rgba(var(--acc),.5)}
-/* l'ambiance du monde : une lueur douce de sa couleur derrière l'écran des niveaux et la partie */
-#niveaux::before,#jeu::before{content:"";position:absolute;inset:-10% -20% auto;height:70%;pointer-events:none;z-index:-1;
+/* l'ambiance du monde : une lueur douce de sa couleur derrière la partie */
+#jeu::before{content:"";position:absolute;inset:-10% -20% auto;height:70%;pointer-events:none;z-index:-1;
   background:radial-gradient(60% 55% at 50% 30%,rgba(var(--acc),.2),rgba(var(--acc),0) 70%);transition:background .6s}
 /* le nom du jeu : un reflet passe lentement sur les lettres */
 .marque{background-image:linear-gradient(100deg,#fff 0%,#d9ceff 22%,#a58bff 42%,#fff 50%,#a58bff 58%,#d9ceff 78%,#fff 100%);background-size:220% 100%;animation:lueur 6s ease-in-out infinite,reflet-titre 7s ease-in-out infinite}
 @keyframes reflet-titre{0%,60%{background-position:100% 0}100%{background-position:-20% 0}}
 .segment{border-radius:14px}
 .segment button.on{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.06));box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
-.niv-intro,.fenetre p,.monde p{text-wrap:balance}
+.fenetre p{text-wrap:balance}
 .fenetre{background:linear-gradient(180deg,rgba(38,33,66,.92),rgba(18,18,30,.94));border-color:rgba(165,139,255,.28);border-radius:26px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 40px 90px -25px rgba(0,0,0,.95),0 0 60px -30px rgba(165,139,255,.6)}
 .voile{background:rgba(5,5,12,.6);backdrop-filter:blur(10px) saturate(130%);-webkit-backdrop-filter:blur(10px) saturate(130%)}
@@ -361,10 +320,6 @@ a.bouton{text-decoration:none;color:inherit}
 #chargement.fini{opacity:0;visibility:hidden}
 /* mode zen : la partie sans chiffres */
 body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
-/* la carte d'un monde s'agrandit jusqu'à devenir l'écran de ses niveaux */
-.envol{position:fixed;z-index:15;border-radius:20px;pointer-events:none;border:1px solid rgba(var(--acc),.45);
-  background:radial-gradient(120% 120% at 20% 0%,rgba(var(--acc),.32),rgba(var(--acc),.04) 60%),#0d0d17;
-  box-shadow:0 0 60px -10px rgba(var(--acc),.6);transition:left .42s var(--ease),top .42s var(--ease),width .42s var(--ease),height .42s var(--ease),border-radius .42s var(--ease)}
 
 /* ===== Accueil en mosaïque (11/10/2026) : le bouton principal, puis deux tuiles hautes, puis le reste ===== */
 #accueil .menu{gap:12px}
@@ -1140,7 +1095,7 @@ function numeroter(racine){if(!racine)return;racine.querySelectorAll(".cascade")
   // relance l'animation d'entrée à chaque affichage
   c.style.display="none";void c.offsetWidth;c.style.display="";});}
 // onde au toucher sur tout ce qui se presse
-document.addEventListener("pointerdown",function(e){if(CALME)return;var b=e.target.closest(".bouton,.action,.ico,.niveau,.monde");if(!b||b.disabled)return;
+document.addEventListener("pointerdown",function(e){if(CALME)return;var b=e.target.closest(".bouton,.action,.ico");if(!b||b.disabled)return;
   var r=b.getBoundingClientRect(),d=Math.max(r.width,r.height)*2.2,o=document.createElement("span");o.className="onde";
   o.style.width=o.style.height=d+"px";o.style.left=(e.clientX-r.left)+"px";o.style.top=(e.clientY-r.top)+"px";b.appendChild(o);setTimeout(function(){o.remove();},650);},{passive:true});
 
