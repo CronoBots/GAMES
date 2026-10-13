@@ -1067,8 +1067,10 @@ function genererMelange(rnd,anneaux,n){var out=[];for(var essai=0;essai<50;essai
   for(var i=0;i<n;i++){var b;do{b=anneaux[Math.floor(rnd()*anneaux.length)];}while(b===prec&&anneaux.length>1);prec=b;
     var m=MV[b],mv={a:m[0],L:m[1],q:rnd()<.5?1:-1};out.push(mv);col=appliquer(col,mv);}
   if(!estResolu(col))return out;}return out;}
+// numéro affiché d'un niveau : continu sur toute la campagne (1 à 60), comme sur la carte, et non remis à 1 par monde
+function numNiveau(w,i){var n=i+1;for(var k=0;k<w;k++)n+=MONDES[k].coups.length;return n;}
 function niveauDef(w,i){var M=MONDES[w];return{mode:"campagne",w:w,i:i,id:(w+1)+"-"+(i+1),anneaux:M.anneaux,par:M.coups[i],
-  melange:genererMelange(graine("orbicube-"+w+"-"+i),M.anneaux,M.coups[i]),titre:"Monde "+(w+1)+" · Niveau "+(i+1),sous:M.nom};}
+  melange:genererMelange(graine("orbicube-"+w+"-"+i),M.anneaux,M.coups[i]),titre:"Monde "+(w+1)+" · Niveau "+numNiveau(w,i),sous:M.nom};}
 function cleJour(d){d=d||new Date();return d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0");}
 function jourDef(){var k=cleJour(),d=new Date();return{mode:"jour",id:k,anneaux:SIXFACES,par:8,melange:genererMelange(graine("jour-"+k),SIXFACES,8),
   titre:"Défi du jour",sous:d.toLocaleDateString(locale(),{weekday:"long",day:"numeric",month:"long"})};}
@@ -1223,7 +1225,7 @@ function rafraichirAccueil(){var pn=prochainNiveau(),fait=Object.keys(PROG.nivea
   document.getElementById("jourPoint").hidden=!!j;
   // sous « Continuer » : le monde en cours et ses étoiles, dans sa couleur
   // la seconde ligne du bouton dit où l'on en est, sans phrase en plus sous le bouton
-  document.getElementById("jouerMonde").textContent=!fait?"Premier niveau":bloque?"Suite dans le jeu complet":!pn?"Campagne terminée":"Niveau "+(pn.w+1)+"-"+(pn.i+1)+" · "+MONDES[pn.w].nom;
+  document.getElementById("jouerMonde").textContent=!fait?"Premier niveau":bloque?"Suite dans le jeu complet":!pn?"Campagne terminée":"Niveau "+numNiveau(pn.w,pn.i)+" · "+MONDES[pn.w].nom;
   document.getElementById("succesSous").textContent=Object.keys(PROG.succes).length+"/"+SUCCES.length;
   if(typeof majAchat==="function")majAchat();}
 
