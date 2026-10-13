@@ -9,7 +9,7 @@ window.ORBICUBE_CONFIG = {
   libresGratuits: [5],        // niveaux de partie libre jouables sans achat (5, 10, 15, 25)
 
   // Prix affiché tant que le store n'a pas répondu (le vrai prix vient du store, dans la devise du joueur).
-  prixAffiche: "2,99 €",
+  prixAffiche: "4,99 €",
 
   // RevenueCat : clés PUBLIQUES du SDK (elles sont faites pour être dans l'app), à copier depuis
   // app.revenuecat.com > Project settings > API keys. Vides = achats désactivés.

@@ -19,7 +19,7 @@ Ils changent : vérifiez-les sur les pages officielles au moment de vous inscrir
 | Partie libre | Facile | Facile, Moyen, Difficile, Expert |
 | Publicité | aucune | aucune |
 
-- **Prix conseillé : 2,99 €.** C'est le prix courant d'un jeu de réflexion complet. Le joueur voit
+- **Prix : 4,99 €** (décision du client, le 13/10/2026). Le joueur voit
   le prix dans sa devise : il vient du store.
 - **Pas de publicité** : l'application ne collecte aucune donnée personnelle. Pas de bandeau de
   consentement RGPD, une fiche de confidentialité courte, de meilleures notes.
@@ -74,7 +74,7 @@ Un seul produit, avec le **même identifiant partout** : `orbicube_complet`.
 
 1. **App Store Connect** > votre app > Achats intégrés > **Non consommable**
    - Identifiant produit : `orbicube_complet`
-   - Prix : 2,99 €
+   - Prix : 4,99 €
    - Nom affiché : « Orbicube complet ». Description : « Les 6 mondes et toute la partie libre. »
    - Une capture de la boutique pour la vérification (`npm run captures`, ou une capture du téléphone).
 2. **Google Play Console** > Monétiser > Produits > **Produits intégrés à l'application**

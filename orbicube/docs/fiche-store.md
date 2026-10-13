@@ -183,6 +183,6 @@ Los dos primeros mundos son gratis. Una sola compra desbloquea todo el juego, pa
 | Type | Non consommable (Apple) · Produit intégré à l'application (Google) |
 | Nom | Orbicube complet · Orbicube full game |
 | Description | Les 6 mondes et toute la partie libre. · All 6 worlds and every free-play level. |
-| Prix | 2,99 € |
+| Prix | 4,99 € |
 
 > Le jeu parle les cinq langues de cette fiche : publiez chaque langue sur les deux stores.

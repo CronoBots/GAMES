@@ -1146,7 +1146,7 @@ function fusion(a,b){if(!b||typeof b!=="object")return a;var r=JSON.parse(JSON.s
   return r;}
 var PROG=progVide();
 try{var brut=localStorage.getItem(CLE_LOCALE);if(brut)PROG=fusion(progVide(),JSON.parse(brut));}catch(e){}
-var CFG=window.ORBICUBE_CONFIG||{modele:"essai",mondesGratuits:2,libresGratuits:[5],prixAffiche:"2,99 €",liens:{}};
+var CFG=window.ORBICUBE_CONFIG||{modele:"essai",mondesGratuits:2,libresGratuits:[5],prixAffiche:"4,99 €",liens:{}};
 var NATIF=window.Natif||{natif:false,vibrer:function(){return false;},lire:function(){return Promise.resolve(null);},ecrire:function(){},demarrer:function(){},surRetour:function(){},quitter:function(){},
   achatsDisponibles:function(){return Promise.resolve(false);},prix:function(){return Promise.resolve(null);},etatAchat:function(){return Promise.resolve(null);},
   acheter:function(){return Promise.resolve({ok:false,erreur:"indisponible"});},succesDisponibles:function(){return false;},restaurer:function(){return Promise.resolve({ok:false,erreur:"indisponible"});}};
