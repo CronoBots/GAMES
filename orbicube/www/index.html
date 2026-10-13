@@ -45,11 +45,6 @@ body{background:
   radial-gradient(70% 45% at 15% 5%,rgba(122,92,240,.22),rgba(122,92,240,0) 70%),
   radial-gradient(60% 40% at 90% 90%,rgba(30,136,229,.14),rgba(30,136,229,0) 70%),
   radial-gradient(50% 35% at 80% 20%,rgba(229,56,59,.07),rgba(229,56,59,0) 70%),var(--nuit)}
-/* les ciels qu'on gagne avec les rangs : seul le fond change, les étoiles restent */
-body.ciel-aurore{background:radial-gradient(80% 50% at 20% 0%,rgba(46,204,153,.22),rgba(46,204,153,0) 70%),radial-gradient(60% 45% at 85% 25%,rgba(76,201,240,.16),rgba(76,201,240,0) 70%),radial-gradient(60% 40% at 50% 100%,rgba(122,92,240,.18),rgba(122,92,240,0) 70%),#070b12}
-body.ciel-nebuleuse{background:radial-gradient(70% 45% at 80% 10%,rgba(255,94,170,.22),rgba(255,94,170,0) 70%),radial-gradient(70% 50% at 10% 70%,rgba(122,92,240,.28),rgba(122,92,240,0) 70%),radial-gradient(50% 35% at 70% 95%,rgba(255,170,90,.12),rgba(255,170,90,0) 70%),#0b0714}
-body.ciel-abysse{background:radial-gradient(90% 55% at 50% 0%,rgba(30,136,229,.24),rgba(30,136,229,0) 70%),radial-gradient(60% 40% at 15% 90%,rgba(0,200,180,.14),rgba(0,200,180,0) 70%),#03080f}
-body.ciel-solaire{background:radial-gradient(80% 50% at 50% -5%,rgba(255,180,60,.26),rgba(255,180,60,0) 70%),radial-gradient(60% 40% at 90% 80%,rgba(229,56,59,.14),rgba(229,56,59,0) 70%),radial-gradient(60% 40% at 5% 60%,rgba(255,120,60,.1),rgba(255,120,60,0) 70%),#0d0806}
 /* fond image CraftPix fixe du menu et du jeu : composite d'un thème (720x1280), posé en cover sous les
    étoiles animées. Menu = thème aléatoire ; jeu = thème du monde courant. La campagne (#parcours) a ses
    propres fonds en couches par-dessus (dans #app, z-index 1) et recouvre celui-ci. */
@@ -419,7 +414,6 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
 .rang-carte h3{margin:6px 0 0;font-family:var(--f-titre);font-size:21px;letter-spacing:.03em}
 .rang-carte .xp{font-family:var(--f-chiffre);font-size:12.5px;color:var(--pale)}
 .rang-carte .rc-et{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-chiffre);font-size:13px;color:var(--pale)}.rang-carte .rc-et svg{width:15px;height:15px}
-.rang-carte .suite{margin:4px 0 0;font-size:13px;color:var(--pale)}
 .mission{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 16px;border-top:1px solid #20202f}
 .groupe h4+.mission{border-top:0}
 .mission .coche{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--trait-vif);display:grid;place-items:center}
@@ -430,17 +424,6 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
 .mission .mx{font-family:var(--f-chiffre);font-size:12px;color:var(--pale)}
 .mission.ok b{color:var(--pale)}
 .mission-bonus{margin:0;padding:10px 16px 14px;font-size:12.5px;color:var(--pale);border-top:1px solid #20202f}
-.ciel-aide{margin:0;padding:2px 16px 10px;font-size:12.5px;color:var(--pale)}
-.ciels{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:10px;padding:0 14px 14px}
-.ciel-ch{position:relative;display:grid;align-content:end;height:76px;padding:8px;border-radius:14px;border:1.5px solid var(--bord);cursor:pointer;font-size:12.5px;font-weight:650;text-align:left;overflow:hidden}
-.ciel-ch.on{border-color:var(--lilas);box-shadow:0 0 0 3px rgba(165,139,255,.25)}
-.ciel-ch.ferme{color:var(--pale)}.ciel-ch.ferme::after{content:"";position:absolute;inset:0;background:rgba(6,6,12,.55)}
-.ciel-ch small{position:relative;z-index:1;font-family:var(--f-chiffre);font-size:10.5px;font-weight:500;color:var(--pale)}.ciel-ch span{position:relative;z-index:1}
-.c-nuit{background:radial-gradient(90% 70% at 15% 10%,rgba(122,92,240,.5),transparent 70%),#0a0a14}
-.c-aurore{background:radial-gradient(90% 70% at 20% 0%,rgba(46,204,153,.55),transparent 70%),radial-gradient(70% 60% at 90% 40%,rgba(76,201,240,.35),transparent 70%),#070b12}
-.c-nebuleuse{background:radial-gradient(90% 70% at 85% 10%,rgba(255,94,170,.5),transparent 70%),radial-gradient(80% 70% at 10% 90%,rgba(122,92,240,.55),transparent 70%),#0b0714}
-.c-abysse{background:radial-gradient(100% 70% at 50% 0%,rgba(30,136,229,.55),transparent 70%),#03080f}
-.c-solaire{background:radial-gradient(100% 70% at 50% 0%,rgba(255,180,60,.6),transparent 70%),radial-gradient(60% 50% at 90% 90%,rgba(229,56,59,.35),transparent 70%),#0d0806}
 .xp-gain{display:inline-flex;align-items:center;gap:6px;margin:2px auto 0;padding:5px 12px;border-radius:99px;background:rgba(165,139,255,.14);color:var(--lilas);font-family:var(--f-chiffre);font-size:12.5px}
 .trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .trio .bouton.bloc{align-items:center;text-align:center;justify-content:center;gap:6px;min-height:96px;padding:12px 6px}
@@ -653,11 +636,10 @@ body.sobre #plateau{transition:none}
       <div class="rang-carte" id="rangCarte"></div>
       <button class="bouton" id="btnClassements" type="button" hidden style="width:100%;justify-content:center;margin-bottom:14px"><svg viewBox="0 0 24 24"><path d="M4 20V11h4v9M10 20V5h4v15M16 20v-6h4v6"/></svg><span>Classements</span></button>
       <div class="groupe"><h4>Missions du jour</h4><div id="listeMissions"></div></div>
-      <div class="groupe" hidden><h4>Ciel</h4><p class="ciel-aide">Le décor du jeu. Chaque rang en ouvre un nouveau.</p><div class="ciels" id="listeCiels"></div></div>
       <div class="groupe"><h4>Comment monter</h4><div class="ligne"><div class="lt"><b>Résoudre un cube</b><span>De l’expérience selon sa longueur, plus pour chaque étoile.</span></div></div>
         <div class="ligne"><div class="lt"><b>Missions du jour</b><span>Trois par jour ; les trois réussies offrent une ampoule.</span></div></div>
         <div class="ligne"><div class="lt"><b>Défis</b><span>Le défi du jour et celui de la semaine rapportent le plus.</span></div></div>
-        <div class="ligne"><div class="lt"><b>Chaque rang</b><span>Une ampoule, et de nouveaux ciels.</span></div></div></div>
+        <div class="ligne"><div class="lt"><b>Chaque rang</b><span>Une ampoule gagnée.</span></div></div></div>
     </div></div>
   </section>
 
@@ -1652,7 +1634,6 @@ function appliquerOptions(){var o=PROG.options;COUL=(apparenceOuverte(o.palette)
   document.querySelectorAll("#optPalette button").forEach(function(b){var v=b.dataset.v,ouv=apparenceOuverte(v),c=b.querySelector(".cad");
     b.classList.toggle("on",COUL===PALETTES[v]);b.classList.toggle("verrou",!ouv);
     if(!ouv&&!c){c=document.createElement("span");c.className="cad notrad"+(APP_TEMPS[v]?" t":"");c.textContent="★ "+APPARENCES[v];b.appendChild(c);}else if(ouv&&c)c.remove();});
-  if(CIELS)appliquerCiel();
   mini.hidden=butActif()?true:!o.cube;majBut();document.getElementById("pave").hidden=!o.pave;
   document.getElementById("btnPaveT").classList.toggle("on",o.pave);
   if(ECRAN==="jeu")requestAnimationFrame(redimJeu);Logo.dessiner();JeuP.dessiner();dessinerMini();}
@@ -1740,23 +1721,19 @@ NATIF.surRetour(function(){if(!document.getElementById("voile").hidden){if(FEN.e
   if(ECRAN==="options"&&OPT_DEPUIS_JEU){document.querySelector("#options [data-retour]").click();return;}
   if(ECRAN==="jeu"){pause();return;}if(ECRAN!=="accueil"){montrer("accueil",-1);return;}NATIF.quitter();});
 
-/* ========== 15 quinquies. LE RANG, LES MISSIONS, LES CIELS, LES DÉFIS ==========
-   Le jeu se joue cinq minutes (un défi, trois missions) ou des semaines (les rangs, les ciels, les mondes).
-   L'expérience vient de chaque cube résolu ; chaque rang offre une ampoule et, à certains paliers, un ciel. */
+/* ========== 15 quinquies. LE RANG, LES MISSIONS, LES DÉFIS ==========
+   Le jeu se joue cinq minutes (un défi, trois missions) ou des semaines (les rangs, les mondes).
+   L'expérience vient de chaque cube résolu ; chaque rang offre une ampoule. */
 var RANGS=[[1,"Novice"],[5,"Apprenti"],[10,"Navigateur"],[15,"Astronome"],[20,"Gardien des orbites"],[30,"Maître des cercles"],[40,"Légende"]];
 function xpPour(r){return 60+r*40;}                       // pour passer du rang r au rang r+1
 function rangDe(xp){var r=1;xp=xp||0;while(xp>=xpPour(r)){xp-=xpPour(r);r++;}return{r:r,xp:xp,besoin:xpPour(r)};}
 function titreRang(r){var t=RANGS[0][1];RANGS.forEach(function(x){if(r>=x[0])t=x[1];});return t;}
-var CIELS=[{id:"nuit",nom:"Nuit",rang:1},{id:"aurore",nom:"Aurore",rang:3},{id:"nebuleuse",nom:"Nébuleuse",rang:6},{id:"abysse",nom:"Abysse",rang:10},{id:"solaire",nom:"Solaire",rang:15}];
-function cielOuvert(c){return rangDe(PROG.xp).r>=c.rang;}
-function appliquerCiel(){var id=PROG.options.ciel||"nuit",c=CIELS.filter(function(x){return x.id===id;})[0];if(!c||!cielOuvert(c))id="nuit";
-  CIELS.forEach(function(x){document.body.classList.toggle("ciel-"+x.id,x.id===id&&id!=="nuit");});}
 function anneauRang(xp,epais){var R=rangDe(xp),f=R.xp/R.besoin,c=2*Math.PI*16;
   return '<svg viewBox="0 0 38 38"><circle cx="19" cy="19" r="16" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="'+(epais||3)+'"/><circle cx="19" cy="19" r="16" fill="none" stroke="url(#gRang)" stroke-width="'+(epais||3)+'" stroke-linecap="round" stroke-dasharray="'+(c*f).toFixed(1)+' '+c.toFixed(1)+'"/>'+
     '<defs><linearGradient id="gRang" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a58bff"/><stop offset="1" stop-color="#4cc9f0"/></linearGradient></defs></svg><span>'+R.r+'</span>';}
 function gagnerXp(n){if(!n)return;var avant=rangDe(PROG.xp).r;PROG.xp=(PROG.xp||0)+n;var apres=rangDe(PROG.xp).r;
-  for(var r=avant+1;r<=apres;r++){(function(r){setTimeout(function(){toast("Rang "+r,titreRang(r));CIELS.forEach(function(c){if(c.rang===r)toast("Nouveau ciel",c.nom);});},400);})(r);gagnerAmpoule();}
-  if(apres>avant)appliquerCiel();}
+  for(var r=avant+1;r<=apres;r++){(function(r){setTimeout(function(){toast("Rang "+r,titreRang(r));},400);})(r);gagnerAmpoule();}
+}
 // expérience d'un cube résolu : sa longueur, puis ses étoiles ; les défis comptent double la première fois
 function xpVictoire(d,e,eT,premier){if(d.relax)return 12;var x=d.mode==="sansfin"?6*d.etape+6:Math.min(70,10+4*d.par);x+=5*e+(PROG.options.zen?5:5*eT);
   if(d.mode==="jour"&&premier)x+=60;if(d.mode==="semaine"&&premier)x+=150;if(d.mode==="campagne"&&!premier)x=Math.round(x/2);return x;}
@@ -1784,16 +1761,12 @@ function missionsVictoire(d,e,eT,temps){avancerMissions(function(m){return{cubes
 function majRang(){var R=rangDe(PROG.xp),M=missionsDuJour();document.getElementById("rangAnneau").innerHTML=anneauRang(PROG.xp);
   document.getElementById("rangTitre").textContent=titreRang(R.r);
   document.getElementById("rangMissions").innerHTML=M.l.map(function(m){return '<i class="'+(missionFinie(m)?"ok":"")+'"></i>';}).join("");}
-function rafraichirProfil(){var R=rangDe(PROG.xp),M=missionsDuJour(),proch=CIELS.filter(function(c){return c.rang>R.r;})[0];
+function rafraichirProfil(){var R=rangDe(PROG.xp),M=missionsDuJour();
   document.getElementById("rangCarte").innerHTML='<span class="anneau-rang notrad">'+anneauRang(PROG.xp,2.4)+'</span><h3>'+titreRang(R.r)+'</h3>'+
-    '<span class="xp notrad">'+R.xp+' / '+R.besoin+' XP</span><span class="rc-et notrad">'+SVG_ET+etoilesTotal()+' '+SVG_ETT+etoilesChrono()+'</span>'+(proch?'<p class="suite">Prochain ciel : '+proch.nom+', rang '+proch.rang+'</p>':"");
+    '<span class="xp notrad">'+R.xp+' / '+R.besoin+' XP</span><span class="rc-et notrad">'+SVG_ET+etoilesTotal()+' '+SVG_ETT+etoilesChrono()+'</span>';
   document.getElementById("listeMissions").innerHTML=M.l.map(function(m){var ok=missionFinie(m);return '<div class="mission'+(ok?" ok":"")+'"><span class="coche">'+(ok?'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>':"")+'</span>'+
     '<div><b>'+texteMission(m)+'</b><i class="mb"><i style="width:'+(100*m.p/m.but).toFixed(0)+'%"></i></i></div><span class="mx notrad">'+(m.id==="vite"||m.id==="sansfin"?(ok?"✓":""):m.p+"/"+m.but)+'</span></div>';}).join("")+
-    '<p class="mission-bonus">'+(M.bonus?"Les trois sont réussies : ampoule gagnée. Nouvelles missions demain.":"Les trois réussies : une ampoule. +"+XP_MISSION+" XP chacune.")+'</p>';
-  var cur=PROG.options.ciel||"nuit";
-  document.getElementById("listeCiels").innerHTML=CIELS.map(function(c){var ok=cielOuvert(c);return '<button type="button" class="ciel-ch c-'+c.id+(ok?"":" ferme")+(cur===c.id&&ok?" on":"")+'" data-ciel="'+c.id+'"><span>'+c.nom+'</span>'+(ok?"":'<small>rang '+c.rang+'</small>')+'</button>';}).join("");}
-document.getElementById("listeCiels").addEventListener("click",function(e){var b=e.target.closest("[data-ciel]");if(!b)return;var c=CIELS.filter(function(x){return x.id===b.dataset.ciel;})[0];
-  if(!cielOuvert(c)){vibrer(20);toast(c.nom,"Débloqué au rang {0}".replace("{0}",c.rang));return;}sonClic();opt("ciel",c.id);appliquerCiel();rafraichirProfil();});
+    '<p class="mission-bonus">'+(M.bonus?"Les trois sont réussies : ampoule gagnée. Nouvelles missions demain.":"Les trois réussies : une ampoule. +"+XP_MISSION+" XP chacune.")+'</p>';}
 document.getElementById("btnClassements").addEventListener("click",function(){sonClic();NATIF.classementsAfficher("");});
 document.getElementById("btnRang").addEventListener("click",function(){sonClic();montrer("profil");});
 
