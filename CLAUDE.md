@@ -80,7 +80,9 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   `img/fond-1…4.webp`, cover, étoiles animées `#ciel` par-dessus) comme la campagne. Menu = thème aléatoire
   (`FOND_ACC`) ; **l'accueil compose son propre décor** (le client, le 13/10/2026) : la nébuleuse seule `bg-2`
   (`poserFond(t,true)`) et les deux planètes détachées (`img/planete-verte|rousse.webp`, `.astres`) de part et d'autre
-  du médaillon, à moitié hors de l'écran, en lente dérive : plus rien derrière le titre, les pièces ni les boutons ; jeu = thème du monde courant (`J.fond`, `themeFond(w)=(w%4)+1`, `poserFond`). La campagne
+  du médaillon, à moitié hors de l'écran, en lente dérive : plus rien derrière le titre, les pièces ni les boutons ; jeu = thème du monde courant (`J.fond`, `themeFond(w)=(w%4)+1`), **nébuleuse seule** `bg-N` elle aussi
+  (`poserFond(t,true)`, le client, le 13/10/2026 : les planètes et astéroïdes des composites passaient sous le plateau ;
+  les `fond-N` ne servent plus). En jeu comme à l'accueil, le ciel animé est baissé et n'envoie qu'une étoile filante pâle à la fois. La campagne
   (`#parcours`) garde ses fonds en couches parallaxe par-dessus.
 - **Sans fin** (`sansFinDef(k)`, depuis Partie libre) : étape k = mélange de k+2 coups (25 au plus), record
   `PROG.stats.sansFin` ; au-delà de l'étape 5, le jeu complet. **Partager** le défi du jour : `partager()`,
@@ -124,6 +126,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   et « Jeu complet » en doré quand il est proposé). Plus de bouton musique sur l'accueil : il est dans les options.
   **Le bouton principal en pilule est celui de tout le jeu** (fenêtres de pause, victoire, boutique…), avec des boutons
   secondaires en pilule de verre sombre au contour d'accent, texte centré (`.fenetre .bouton`).
+  **Écran de jeu au même langage** : boutons à icône seule (`.ico`, partout) en ronds de verre au contour d'accent,
+  Annuler/Rejouer en pilules de verre, Niveaux/Accueil en petits ronds avec leur nom dessous (bloc en fin de feuille de style).
 - **Logo** : les trois anneaux (`ANNEAUX` dans `outils/icones.py`) pour l'icône, le démarrage natif et le logo du
   mélange (`.anneaux`). **L'écran de chargement web montre les neuf orbites du plateau** (`.orbites`, SVG, un éclat de
   couleur par orbite, sans filtre CSS) puis se dissout sur l'accueil (le client, le 13/10/2026) ; les médailles des succès gardent le plateau. Accueil : la devise disparaît après le

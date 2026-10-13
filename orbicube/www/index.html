@@ -569,6 +569,18 @@ body{background:
 /* réglage « Animations » décoché : même neutralisation, à la demande du joueur (en plus du réglage système) */
 body.sobre *,body.sobre *::before,body.sobre *::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
 body.sobre #plateau{transition:none}
+/* écran de jeu au style de l'accueil (le client, le 13/10/2026) : boutons ronds de verre sombre au contour d'accent
+   (pause, indice, et partout où il y a une icône seule), Annuler/Rejouer en pilules de verre, Niveaux/Accueil en petits
+   ronds avec leur nom dessous, comme le dock */
+.ico{border-radius:50%;background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.015) 55%),rgba(11,13,30,.88);
+  border:1px solid rgba(var(--acc),.3);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 10px 22px -12px rgba(0,0,0,.9)}
+#jeu .action{border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.015) 55%),rgba(11,13,30,.88);
+  border:1px solid rgba(var(--acc),.3);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 10px 22px -12px rgba(0,0,0,.9);font-family:var(--f-titre);font-size:15px;letter-spacing:.02em}
+#jeu .action svg{stroke:rgb(var(--acc))}#jeu .action:disabled svg{stroke:currentColor}
+#jeu .nav-btn{background:none;border:0;box-shadow:none;min-width:48px;gap:4px;padding:0;color:var(--pale);font-size:10.5px}
+#jeu .nav-btn svg{width:40px;height:40px;padding:10px;box-sizing:border-box;border-radius:50%;stroke:rgb(var(--acc));
+  background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.015) 55%),rgba(11,13,30,.88);border:1px solid rgba(var(--acc),.3)}
+#jeu .stat{font-family:var(--f-titre);font-weight:600;letter-spacing:.14em}
 </style>
 </head>
 <body>
@@ -1170,7 +1182,7 @@ function montrer(id,sens){var prevEcran=ECRAN;sens=sens||1;document.querySelecto
   numeroter(document.getElementById(id));
   Logo.visible=id==="accueil";AideP.visible=id==="aide";JeuP.visible=id==="jeu";
   if(id==="accueil"){FOND_ACC=2;poserFond(FOND_ACC,true);accentTheme(FOND_ACC);rafraichirAccueil();majRang();Logo.demarrer();}  // accueil toujours en thème bleu
-  if(id==="succes")rafraichirSucces();if(id==="profil")rafraichirProfil();if(id==="aide")redimAide();if(id==="jeu"){poserFond((J&&J.fond)||FOND_ACC||1);redimJeu();}
+  if(id==="succes")rafraichirSucces();if(id==="profil")rafraichirProfil();if(id==="aide")redimAide();if(id==="jeu"){poserFond((J&&J.fond)||FOND_ACC||1,true);redimJeu();}
   Ticker.reveiller();}
 var OPT_DEPUIS_JEU=false;
 document.querySelectorAll("[data-retour]").forEach(function(b){b.addEventListener("click",function(){sonClic();
@@ -1746,12 +1758,12 @@ var Ciel=(function(){var cv=document.getElementById("ciel"),cx=cv.getContext("2d
       v:Math.random()*.6+.2,p:Math.random()*.08+.02,c:Math.random()<.18?"200,185,255":Math.random()<.1?"255,214,140":"255,255,255"});dessin(performance.now());}
   function dessin(now){cx.clearRect(0,0,W,H);
     for(var i=0;i<et.length;i++){var s=et[i];if(!CALME){s.y-=s.p;if(s.y<-2){s.y=H+2;s.x=Math.random()*W;}}
-      var a=(CALME?.6:.35+.45*(.5+.5*Math.sin(now/1000*s.v+s.ph)))*(ECRAN==="accueil"?.75:1);cx.beginPath();cx.arc(s.x,s.y,s.r,0,6.283);cx.fillStyle="rgba("+s.c+","+a+")";cx.fill();}
+      var a=(CALME?.6:.35+.45*(.5+.5*Math.sin(now/1000*s.v+s.ph)))*(ECRAN==="accueil"||ECRAN==="jeu"?.75:1);cx.beginPath();cx.arc(s.x,s.y,s.r,0,6.283);cx.fillStyle="rgba("+s.c+","+a+")";cx.fill();}
     if(CALME)return;
     // étoiles filantes : plus fréquentes (1,4–4 s) et jusqu'à 3 à la fois, sur l'accueil ET en jeu
-    // sur l'accueil, une seule à la fois et bien plus rare, plus pâle : elles passaient sur les pièces et les boutons
-    var acc=ECRAN==="accueil";
-    if(now>proch&&fils.length<(acc?1:3)&&(acc||ECRAN==="jeu")){proch=now+(acc?6000+Math.random()*6000:1400+Math.random()*2600);var ang=Math.PI*(.12+Math.random()*.16);
+    // sur l'accueil et en jeu, une seule à la fois, rare et pâle : elles passaient sur les pièces et les boutons
+    var acc=ECRAN==="accueil"||ECRAN==="jeu";
+    if(now>proch&&fils.length<1&&acc){proch=now+6000+Math.random()*6000;var ang=Math.PI*(.12+Math.random()*.16);
       fils.push({x:Math.random()*W,y:Math.random()*H*.5,dx:Math.cos(ang),dy:Math.sin(ang),t0:now,v:.9+Math.random()*.6});}
     for(var fi=fils.length-1;fi>=0;fi--){var F=fils[fi],e=(now-F.t0)/900;if(e>=1){fils.splice(fi,1);continue;}
       var d=e*F.v*W*.5,x=F.x+F.dx*d,y=F.y+F.dy*d,l=120*(1-Math.abs(e-.5)),g=cx.createLinearGradient(x,y,x-F.dx*l,y-F.dy*l);
