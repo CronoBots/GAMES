@@ -1382,17 +1382,17 @@ function fmt(ms){var s=Math.floor(ms/1000);return Math.floor(s/60)+":"+String(s%
 function redimJeu(){var jeu=document.getElementById("jeu"),z=document.getElementById("zonePlateau");if(!jeu.clientWidth)return;
   if(PROG.options.cube){var paysage=getComputedStyle(jeu).display==="grid",
       autres=jeu.querySelector(".jtete").offsetHeight+jeu.querySelector(".jbas").offsetHeight+30,
-      c=paysage?96:Math.max(64,Math.min(110,jeu.clientHeight-autres-Math.min(jeu.clientWidth-28,560)-12));
+      c=paysage?96:Math.max(64,Math.min(124,jeu.clientHeight-autres-Math.min(jeu.clientWidth-28,560)-12));
     jeu.style.setProperty("--cube",Math.round(c)+"px");}
   var r=z.getBoundingClientRect();if(!r.width)return;JeuP.dimension(Math.min(r.width-28,r.height-8),r.height-8);dessinerMini();
-  // le cube descend vers le plateau (le client, le 13/10/2026) : son bas à 14 px au-dessus du plus grand cercle JOUABLE de
+  // le cube descend vers le plateau (le client, le 13/10/2026) : son bas à 28 px au-dessus du plus grand cercle JOUABLE de
   // la famille du haut (les cercles interdits ne sont qu'un pointillé à peine visible) ; le plateau ne bouge pas. Sans
   // place pour ça (petits écrans), il reste centré entre le titre et le cercle.
   mini.style.transform="";if(PROG.options.cube&&getComputedStyle(jeu).display!=="grid"){var h=jeu.querySelector(".jtete").getBoundingClientRect().bottom,
     rh=RAY[2];if(JeuP.permis){rh=0;for(var LH=1;LH>=-1;LH--)if(JeuP.permis["1,"+LH]){rh=RAY[LH+1];break;}if(!rh)rh=RAY[2];}
     // position du canevas SANS sa transformation : pendant le mélange (.brouille) il est réduit et tourné, et sa boîte
     // englobante faussait le calcul (le cube restait trop haut une fois le plateau dévoilé)
-    var c=z.getBoundingClientRect().top+JeuP.cv.offsetTop+JeuP.OY-(ECART+rh)*JeuP.ECH,m=mini.getBoundingClientRect(),dy=Math.max((h+c)/2-(m.top+m.height/2),c-14-m.bottom);
+    var c=z.getBoundingClientRect().top+JeuP.cv.offsetTop+JeuP.OY-(ECART+rh)*JeuP.ECH,m=mini.getBoundingClientRect(),dy=Math.max((h+c)/2-(m.top+m.height/2),c-28-m.bottom);
     if(Math.abs(dy)>1)mini.style.transform="translateY("+Math.round(dy)+"px)";}}
 function redimAide(){var w=document.getElementById("aideCanvas").getBoundingClientRect().width;if(w)AideP.dimension(w);}
 var ro=new ResizeObserver(function(){if(ECRAN==="jeu")redimJeu();if(ECRAN==="accueil")Logo.demarrer();if(ECRAN==="aide")redimAide();if(ECRAN==="parcours")buildParcours();});

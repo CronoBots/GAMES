@@ -54,8 +54,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   `outils/icones.py` et `outils/tester.js` (geste le long de U) : les changer aux trois endroits.
 - **Le cube en perspective est au centre de la ligne des coups et du temps** (le client, le 11/10/2026,
   « l'endroit optimal ») : le plateau prend d'abord la largeur moins 14 px de chaque côté, et `redimJeu()` donne au cube la
-  hauteur qui reste (`--cube`, de 64 à 110 px depuis le 13/10/2026 : à 150 il volait la vedette au plateau). **Le plateau
-  ne bouge pas, c'est le cube qui descend** (le client) : son bas à 14 px au-dessus du plus grand cercle jouable de la
+  hauteur qui reste (`--cube`, de 64 à 124 px depuis le 13/10/2026 : à 150 il volait la vedette au plateau). **Le plateau
+  ne bouge pas, c'est le cube qui descend** (le client) : son bas à 28 px au-dessus du plus grand cercle jouable de la
   famille du haut (`redimJeu`, position du canevas lue SANS sa transformation `.brouille`), centré entre titre et cercle
   s'il manque de place ; `.jinfo` passe au-dessus du canevas pour que le cube reste manipulable. Pas en filigrane : des couleurs derrière les pastilles
   se confondraient avec elles.
