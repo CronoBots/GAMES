@@ -9,7 +9,7 @@ Limites de longueur indiquées entre parenthèses. Aucun texte ne cite la marque
 
 **Sous-titre App Store** (30) : Le cube 3×3 en neuf cercles
 
-**Description courte Google Play** (80) : Faites tourner neuf cercles pour remettre le cube en ordre. 60 niveaux.
+**Description courte Google Play** (80) : Faites tourner neuf cercles pour remettre le cube en ordre. 90 niveaux.
 
 **Texte promotionnel App Store** (170) :
 Un nouveau défi chaque jour. Glissez un cercle, douze pastilles tournent : le cube 3×3 comme
@@ -24,7 +24,7 @@ pastilles de couleur, posées au croisement des deux cercles qui peuvent les dé
 le doigt le long d'un cercle : douze pastilles tournent, et le cube en perspective tourne avec
 elles. Regroupez chaque couleur pour gagner.
 
-• 60 niveaux en 6 mondes, de deux cercles jusqu'aux neuf à la fois
+• 90 niveaux en 6 mondes, de deux cercles jusqu'aux neuf à la fois
 • Un tutoriel intégré : on comprend en jouant
 • Trois étoiles en un minimum de coups
 • Un défi du jour et un défi de la semaine, les mêmes pour tout le monde
@@ -44,7 +44,7 @@ casse-tête,cube,3x3,cercles,puzzle,logique,permutation,réflexion,cerveau,défi
 
 **Catégorie** : Jeux > Réflexion (catégorie secondaire : Jeux > Éducation)
 
-**Nouveautés de la version 1.0** : Première version : 60 niveaux, le défi du jour et la partie libre.
+**Nouveautés de la version 1.0** : Première version : 90 niveaux, le défi du jour et la partie libre.
 
 ## English
 
@@ -52,7 +52,7 @@ casse-tête,cube,3x3,cercles,puzzle,logique,permutation,réflexion,cerveau,défi
 
 **App Store subtitle** (30): The 3×3 cube in nine circles
 
-**Google Play short description** (80): Spin nine circles to put the cube back in order. 60 levels.
+**Google Play short description** (80): Spin nine circles to put the cube back in order. 90 levels.
 
 **App Store promotional text** (170):
 A new challenge every day. Swipe a circle and twelve dots turn: the 3×3 cube as you have never
@@ -66,7 +66,7 @@ In Orbicube, every slice of the cube becomes a circle. The 54 stickers become co
 sitting where the two circles that can move them cross. Slide your finger along a circle:
 twelve dots turn, and the 3D cube turns with them. Group every colour to win.
 
-• 60 levels across 6 worlds, from two circles up to all nine
+• 90 levels across 6 worlds, from two circles up to all nine
 • A built-in tutorial: you learn by playing
 • Three stars for the fewest moves
 • A daily challenge, the same for everyone
@@ -88,7 +88,7 @@ The first three worlds are free. A single purchase unlocks the whole game, forev
 
 **Naam**: Orbicube · **Ondertitel** (30): De 3×3-kubus in negen cirkels
 
-**Korte beschrijving Google Play** (80): Draai negen cirkels om de kubus weer op orde te brengen. 60 levels.
+**Korte beschrijving Google Play** (80): Draai negen cirkels om de kubus weer op orde te brengen. 90 levels.
 
 **Promotietekst**: Elke dag een nieuwe uitdaging. Veeg over een cirkel en twaalf bolletjes draaien
 mee: de 3×3-kubus zoals je hem nog nooit zag.
@@ -101,7 +101,7 @@ In Orbicube wordt elke plak van de kubus een cirkel. De 54 vakjes worden gekleur
 het kruispunt van de twee cirkels die ze kunnen verplaatsen. Veeg met je vinger langs een cirkel:
 twaalf bolletjes draaien, en de 3D-kubus draait mee. Breng elke kleur samen om te winnen.
 
-• 60 levels in 6 werelden, van twee cirkels tot alle negen
+• 90 levels in 6 werelden, van twee cirkels tot alle negen
 • Een ingebouwde uitleg: je leert al spelend
 • Drie sterren voor zo weinig mogelijk zetten
 • Elke dag een nieuwe uitdaging, voor iedereen dezelfde
@@ -118,7 +118,7 @@ De eerste drie werelden zijn gratis. Eén aankoop ontgrendelt het hele spel, voo
 
 **Name**: Orbicube · **Untertitel** (30): Der 3×3-Würfel in neun Kreisen
 
-**Kurzbeschreibung Google Play** (80): Drehe neun Kreise, bis der Würfel wieder geordnet ist. 60 Level.
+**Kurzbeschreibung Google Play** (80): Drehe neun Kreise, bis der Würfel wieder geordnet ist. 90 Level.
 
 **Werbetext**: Jeden Tag ein neues Rätsel. Wische über einen Kreis und zwölf Punkte drehen sich:
 der 3×3-Würfel, wie du ihn noch nie gesehen hast.
@@ -132,7 +132,7 @@ Punkten, dort, wo sich die beiden Kreise kreuzen, die sie bewegen können. Wisch
 entlang: Zwölf Punkte drehen sich, und der 3D-Würfel dreht sich mit. Bringe jede Farbe zusammen,
 um zu gewinnen.
 
-• 60 Level in 6 Welten, von zwei Kreisen bis zu allen neun
+• 90 Level in 6 Welten, von zwei Kreisen bis zu allen neun
 • Eine eingebaute Anleitung: Du lernst beim Spielen
 • Drei Sterne für möglichst wenige Züge
 • Jeden Tag ein neues Rätsel, für alle gleich
@@ -149,7 +149,7 @@ Die ersten drei Welten sind kostenlos. Ein einziger Kauf schaltet das ganze Spie
 
 **Nombre**: Orbicube · **Subtítulo** (30): El cubo 3×3 en nueve círculos
 
-**Descripción breve Google Play** (80): Gira nueve círculos para volver a ordenar el cubo. 60 niveles.
+**Descripción breve Google Play** (80): Gira nueve círculos para volver a ordenar el cubo. 90 niveles.
 
 **Texto promocional**: Un reto nuevo cada día. Desliza un círculo y giran doce bolitas: el cubo 3×3
 como nunca lo habías visto.
@@ -162,7 +162,7 @@ En Orbicube, cada capa del cubo se convierte en un círculo. Las 54 pegatinas se
 bolitas de colores, en el cruce de los dos círculos que pueden moverlas. Desliza el dedo por un
 círculo: giran doce bolitas, y el cubo en 3D gira con ellas. Reúne cada color para ganar.
 
-• 60 niveles en 6 mundos, de dos círculos a los nueve
+• 90 niveles en 6 mundos, de dos círculos a los nueve
 • Un tutorial integrado: se aprende jugando
 • Tres estrellas con el mínimo de movimientos
 • Un reto diario, el mismo para todos

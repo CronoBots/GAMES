@@ -17,7 +17,7 @@ const FORMATS = [
 const SCENES = [
   { id: "1-accueil", titre: "Le cube 3×3,<br>cercle par cercle" },
   { id: "2-tour", titre: "Glissez un cercle :<br>douze pastilles tournent" },
-  { id: "3-campagne", titre: "60 niveaux,<br>six mondes" },
+  { id: "3-campagne", titre: "90 niveaux,<br>six mondes" },
   { id: "4-victoire", titre: "Trois étoiles<br>en un minimum de coups" },
   { id: "5-defi", titre: "Un nouveau défi<br>chaque jour" },
 ];

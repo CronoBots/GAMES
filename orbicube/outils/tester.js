@@ -124,6 +124,14 @@ async function resoudre(p) {
     const restants = await p.$$eval(".parc-sect.paye", (l) => l.length);
     restants === 0 ? ok("jeu complet : plus aucun monde réservé, progression gardée") : faute(restants + " mondes encore réservés");
 
+    // niveaux experts : après le dixième niveau du monde 1, le monde 2 ET le premier expert s'ouvrent, le second expert attend
+    await p.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); for (let i = 1; i <= 10; i++) v.niveaux["1-" + i] = { etoiles: 3, chrono: 3, coups: 1, temps: 9000, sansIndice: true }; localStorage.setItem(k, JSON.stringify(v)); });
+    await p.reload(); await p.waitForTimeout(1200);
+    (await p.textContent("#jouerMonde")).includes("Niveau 16") ? ok("experts : le bouton principal mène au monde 2 (niveau 16), pas aux experts") : faute("bouton principal : " + (await p.textContent("#jouerMonde")));
+    await p.tap("#btnJouer"); await p.waitForTimeout(600);
+    const exp = await p.evaluate(() => { const n = (w, i) => document.querySelector('.parc-niv[data-w="' + w + '"][data-i="' + i + '"]'); return { m2: !n(1, 0).classList.contains("verrou"), e1: n(0, 10).classList.contains("expert") && !n(0, 10).classList.contains("verrou"), e2: n(0, 11).classList.contains("verrou"), titres: document.querySelectorAll(".parc-exp").length, total: document.querySelectorAll(".parc-niv").length }; });
+    exp.m2 && exp.e1 && exp.e2 && exp.titres === 6 && exp.total === 90 ? ok("experts : 90 niveaux, cinq experts par monde, ouverts après le dixième sans bloquer le monde suivant") : faute("niveaux experts : " + JSON.stringify(exp));
+
     // paysage
     if (appareil === "iPhone 13") {
       await p.setViewportSize({ width: 844, height: 390 });

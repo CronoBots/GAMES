@@ -169,6 +169,12 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 - **Le mélange ne se montre jamais** (le client, le 11/10/2026) : au lancement, le plateau se trouble en tournant
   (`.brouille`, flou, posé SANS transition dans `lancer()` : sinon le plateau et le cube se voyaient nets puis disparaissaient), les couleurs changent hors de vue puis il se dévoile. Animer les coups un par un permettait
   de les rejouer à l'envers. Seul « Revoir ma partie », après la victoire, rejoue le mélange.
+- **Niveaux experts** (le client, le 14/10/2026) : chaque monde a 15 niveaux, 90 en tout ; les dix premiers font le chemin
+  (`BASE`), les cinq derniers (`estExpert`) sont plus longs, ouverts après le dixième, en option : ils ne bloquent pas le
+  monde suivant (`mondeOuvert`, `mondeFini` lisent le dixième), le bouton principal passe d'abord par le chemin
+  (`prochainNiveau`), une ampoule pour le chemin d'un monde et une pour ses experts. Sur la carte : anneau doré et
+  intertitre « Niveaux experts ». **Les neuf anneaux ne vont jamais dans un monde gratuit** : le vérificateur le contrôle,
+  et l'empreinte des 60 niveaux d'origine (les étoiles des joueurs y sont attachées).
 - Les niveaux de campagne sont tirés d'une graine fixe (`orbicube-<monde>-<niveau>`) : changer
   `genererMelange()` change tous les niveaux des joueurs. Ne le faire qu'avec une nouvelle graine.
 - La progression est dans `localStorage` (clé `orbicube-v1`) et, sur téléphone, dans

@@ -159,7 +159,7 @@ else {
   sensOk ? ok(tours + " tours : toutes les pastilles d'un cercle tournent dans le même sens") : faute("une pastille tourne à contresens");
   arriveeOk ? ok("chaque pastille arrive exactement à sa place") : faute("une pastille n'arrive pas à sa place");
   pasOk ? ok("un quart de tour vaut π/2 sur les 9 cercles") : faute("PAS différent de π/2");
-  // les 60 niveaux : longueur annoncée, jamais résolus au départ, et identiques d'une ouverture à l'autre
+  // tous les niveaux : longueur annoncée, jamais résolus au départ, et identiques d'une ouverture à l'autre
   let niv = 0, mauvais = [];
   G.MONDES.forEach((M, w) => M.coups.forEach((n, i) => {
     niv++;
@@ -169,6 +169,14 @@ else {
     if (d1.melange.length !== n || G.estResolu(col) || JSON.stringify(d1.melange) !== JSON.stringify(d2.melange)) mauvais.push(d1.id);
   }));
   mauvais.length ? faute("niveaux défectueux : " + mauvais.join(", ")) : ok(niv + " niveaux : bonne longueur, jamais résolus au départ, toujours les mêmes");
+  // les 60 niveaux d'origine (les dix premiers de chaque monde) ne bougent jamais : les joueurs y ont leurs étoiles
+  let empreinte = "";
+  for (let w = 0; w < 6; w++) for (let i = 0; i < 10; i++) { const d = G.niveauDef(w, i); empreinte += d.id + ":" + d.melange.map((m) => m.a + "," + m.L + "," + m.q).join(";") + "|"; }
+  empreinte = require("crypto").createHash("sha256").update(empreinte).digest("hex").slice(0, 16);
+  empreinte === "1e4cbc3f22f5a13e" ? ok("les 60 niveaux d'origine sont inchangés") : faute("les 60 niveaux d'origine ont changé (empreinte " + empreinte + ")");
+  // les neuf anneaux ne vont jamais dans un monde gratuit : ils restent l'avantage du jeu complet (le client, le 14/10/2026)
+  const neufLibres = G.MONDES.map((M, w) => w < CFG.mondesGratuits && M.anneaux.length === 9 ? w + 1 : 0).filter(Boolean);
+  neufLibres.length ? faute("monde gratuit à neuf anneaux : " + neufLibres.join(", ")) : ok("aucun monde gratuit à neuf anneaux");
 }
 
 console.log(fautes ? "\n" + fautes + " faute(s)." : "\nTout est en ordre.");

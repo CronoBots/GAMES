@@ -14,7 +14,7 @@ Ils changent : vérifiez-les sur les pages officielles au moment de vous inscrir
 
 | | Gratuit | Orbicube complet (achat unique) |
 |---|---|---|
-| Mondes | 1 à 3 (30 niveaux) | les 6 (60 niveaux) |
+| Mondes | 1 à 3 (45 niveaux, experts compris) | les 6 (90 niveaux) |
 | Défi du jour | oui | oui |
 | Partie libre | Facile | Facile, Moyen, Difficile, Expert |
 | Publicité | aucune | aucune |
@@ -116,7 +116,7 @@ de la marge pour des succès futurs.
 | m6 | `orbicube.grandmaitre` | Grand maître | Terminer toute la campagne. | 100 |
 | p10 | `orbicube.precision` | Précision | Trois étoiles sur 10 niveaux. | 50 |
 | pm | `orbicube.perfectionniste` | Perfectionniste | Trois étoiles sur tout un monde. | 75 |
-| p60 | `orbicube.sansfaute` | Sans faute | Les 180 étoiles de la campagne. | 100 |
+| p60 | `orbicube.sansfaute` | Sans faute | Toutes les étoiles de la campagne. | 100 |
 | eclair | `orbicube.eclair` | Éclair | Résoudre un niveau d'au moins 3 coups en moins de 10 secondes. | 50 |
 | jour | `orbicube.rendezvous` | Rendez-vous | Réussir un défi du jour. | 25 |
 | serie3 | `orbicube.serie3` | Trois jours de suite | Réussir le défi du jour trois jours d'affilée. | 75 |
