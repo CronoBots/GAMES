@@ -1029,11 +1029,15 @@ body.sobre #plateau{transition:none}
 // « Couleurs du monde » (le client, le 14/10/2026 : que les couleurs du cube ne jurent pas avec celles du jeu) : la
 // palette par défaut suit le décor, une par thème, qui reprend la couleur du monde en gardant six teintes bien distinctes
 // (rouge/rose, jaune, bleu ou cyan, blanc, vert, violet selon le thème). « Classique » reste un choix gratuit.
-var PAL_THEME=[
-  ["#3DDC97","#F2C14E","#3AA7F0","#EEF3E6","#F26B5B","#A685F2"],   // 1, vert : menthe, or, ciel, crème, corail, lavande
-  ["#5CB4FF","#FFB703","#F72585","#EEF6FF","#2ED6A0","#8B5CF6"],   // 2, bleu : azur, ambre, rose, glace, émeraude, violet
-  ["#FF6E78","#FFD166","#3FD1C6","#FFF1E6","#B565E8","#7BD389"],   // 3, rouge : corail, or, turquoise, crème, prune, vert tendre
-  ["#B282FF","#FFD166","#FF5DA2","#F5F0FF","#4DD4FF","#8EE86B"]];  // 4, violet : lilas, or, magenta, blanc, cyan, citron vert
+var PAL_THEME=[   // même ordre que le classique (orange, rouge, jaune, blanc, vert, bleu) : le cube se lit comme un vrai cube
+  ["#FF9B45","#F2536B","#F2D449","#E8F6EC","#34D98E","#3D9BEA"],   // 1, vert : vert de jade, blanc d'écume
+  ["#FF9A3C","#FF4F6D","#FFD23F","#E8F2FF","#2FD39A","#4FAEFF"],   // 2, bleu : bleu azur, blanc de glace
+  ["#FFA040","#FF4D5E","#FFD25E","#FFEFE4","#45D29A","#4C9DFF"],   // 3, rouge : rouge corail, blanc nacré
+  ["#FFA048","#FF557F","#FFD65E","#F1ECFF","#4FDCA0","#7A8CFF"]];  // 4, violet : rose cosmique, bleu pervenche, blanc lavande
+// « Style du monde » : la matière des pastilles suit le décor (le client, le 14/10/2026 : couleur, modèle, forme, opacité,
+// motif, taille). Corps en verre sombre teinté du monde, liseré de la couleur du monde, pastille plus ronde et un peu plus
+// petite (de l'air entre les pièces), et un motif par décor : taille de cristal (vert), givre (bleu), braise (rouge), étincelle (violet)
+var LOOK_THEME=[{corps:"#071712",motif:"cristal"},{corps:"#07111F",motif:"givre"},{corps:"#1A090C",motif:"braise"},{corps:"#120A22",motif:"etincelle"}];
 var THEME_COURANT=2;   // l'accueil et les menus ont le décor bleu (bg-2) ; le jeu et la carte prennent celui de leur monde
 var PALETTES={classique:["#FF7A1E","#FA3A47","#FBD101","#F4F4F6","#2DCC4B","#0095D5"],
   contraste:["#E69F00","#CC79A7","#F0E442","#FFFFFF","#009E73","#0072B2"],
@@ -1066,7 +1070,7 @@ var STYLES={
   palette:[{id:"monde",nom:"Couleurs du monde"},{id:"classique",nom:"Classique"},{id:"contraste",nom:"Daltonien"},{id:"pastel",nom:"Pastel",ouv:{etoiles:45}},{id:"neon",nom:"Néon",ouv:{chrono:45}},
     {id:"aurore",nom:"Aurore",ouv:{pack:"couleurs"}},{id:"galaxie",nom:"Galaxie",ouv:{pack:"couleurs"}},{id:"glace",nom:"Glace",ouv:{pack:"couleurs"}},{id:"joyaux",nom:"Joyaux",ouv:{pack:"couleurs"}},
     {id:"emeraude",nom:"Émeraude",ouv:{voie:0}},{id:"nebuleuse",nom:"Nébuleuse",ouv:{voie:5}}],
-  forme:[{id:"facettes",nom:"Facettes"},{id:"perles",nom:"Perles"},{id:"hexagones",nom:"Hexagones",ouv:{rang:8}},
+  forme:[{id:"astral",nom:"Style du monde"},{id:"facettes",nom:"Facettes"},{id:"perles",nom:"Perles"},{id:"hexagones",nom:"Hexagones",ouv:{rang:8}},
     {id:"gemmes",nom:"Gemmes",ouv:{pack:"formes"}},{id:"etoiles",nom:"Étoiles",ouv:{pack:"formes"}},{id:"cristaux",nom:"Cristaux",ouv:{pack:"formes"}},
     {id:"ecailles",nom:"Écailles",ouv:{voie:2}},{id:"eclats",nom:"Éclats",ouv:{voie:6}}],
   trainee:[{id:"halo",nom:"Halo"},{id:"poussiere",nom:"Poussière d’étoiles",ouv:{rang:12}},{id:"comete",nom:"Comète",ouv:{pack:"effets"}},{id:"sillage",nom:"Sillage",ouv:{voie:1}}],
@@ -1074,13 +1078,13 @@ var STYLES={
     {id:"amethyste",nom:"Améthyste",ouv:{voie:3}},{id:"couronne",nom:"Couronne",ouv:{voie:7}}],
   victoire:[{id:"confettis",nom:"Confettis"},{id:"pluie",nom:"Pluie d’étoiles",ouv:{chrono:30}},{id:"feux",nom:"Feu d’artifice",ouv:{pack:"effets"}},{id:"supernova",nom:"Supernova",ouv:{voie:4}}]};
 // les styles portés, recalculés par appliquerOptions() (le dessin les lit à chaque image)
-var STY={palette:"monde",forme:"facettes",trainee:"halo",orbite:"accent",victoire:"confettis"};
+var STY={palette:"monde",forme:"astral",trainee:"halo",orbite:"accent",victoire:"confettis"};
 // chaque style d'un pack s'achète aussi à l'unité (le client, le 14/10/2026) : produit orbicube_style_<id>, droit style_<id>
 Object.keys(STYLES).forEach(function(k){STYLES[k].forEach(function(st){if(st.ouv&&st.ouv.pack)PACKS["s_"+st.id]={produit:"orbicube_style_"+st.id,droit:"style_"+st.id,nom:st.nom,unite:true};});});
 // une phrase par style, pour la fiche de l'aperçu : on sait ce qu'on porte ou ce qu'on achète
-var DESC_STYLE={monde:"Les teintes du monde où vous jouez, en accord avec son décor.",classique:"Les six couleurs du cube 3×3.",contraste:"Des teintes distinctes pour tous les yeux.",pastel:"Des couleurs douces, tout en légèreté.",
+var DESC_STYLE={monde:"Les couleurs du cube, accordées au monde où vous jouez.",astral:"Des pièces de verre aux reflets du monde : cristal, givre, braise ou étincelle.",classique:"Les six couleurs du cube 3×3.",contraste:"Des teintes distinctes pour tous les yeux.",pastel:"Des couleurs douces, tout en légèreté.",
   neon:"Des couleurs vives qui brillent dans la nuit.",aurore:"Les voiles d’une aurore boréale.",galaxie:"Le pourpre, le rose et l’or d’une nébuleuse.",
-  glace:"Les bleus froids de la banquise.",joyaux:"Rubis, émeraude, saphir et topaze.",facettes:"Des facettes taillées qui suivent les cercles.",
+  glace:"Les bleus froids de la banquise.",joyaux:"Rubis, émeraude, saphir et topaze.",facettes:"Le cube de compétition : autocollants sur corps noir.",
   perles:"Des billes de verre rondes et brillantes.",hexagones:"Des alvéoles nettes et régulières.",gemmes:"Des pierres taillées qui accrochent la lumière.",
   etoiles:"Chaque pastille devient une étoile.",cristaux:"Des éclats de cristal effilés.",halo:"Un léger halo suit les pièces.",
   poussiere:"Une poussière d’étoiles scintille derrière elles.",comete:"Une longue queue de comète au cœur blanc.",accent:"Les orbites prennent la couleur du monde.",
@@ -1228,6 +1232,32 @@ function pastille(cx,q,f,h,coul,forme){var U=[f.u[0]*h,-f.u[1]*h],V=[f.v[0]*h,-f
     cx.beginPath();cx.arc(q[0]-h*.18,q[1]-h*.2,h*.1,0,6.283);cx.fillStyle="rgba(255,255,255,.75)";cx.fill();}
   else{var g=cx.createLinearGradient(q[0]-h*.7,q[1]-h*.7,q[0]+h*.7,q[1]+h*.7);g.addColorStop(0,"rgba(255,255,255,.3)");g.addColorStop(.45,"rgba(255,255,255,0)");
     g.addColorStop(1,"rgba(0,0,0,.14)");tracer(.8);cx.fillStyle=g;cx.fill();}}
+// mélange d'une couleur avec du blanc (m>0) ou du corps du monde (m<0), mis en cache : 54 pastilles par image
+var MELANGE={};
+function melange(hex,m,fond){var k=hex+m+fond;if(MELANGE[k])return MELANGE[k];var a=hexRGB(hex).split(",").map(Number),b=m>0?[255,255,255]:hexRGB(fond).split(",").map(Number),t=Math.abs(m);
+  return MELANGE[k]="rgb("+a.map(function(v,i){return Math.round(v+(b[i]-v)*t);}).join(",")+")";}
+function pastilleMonde(cx,q,f,h,coul,t){var L=LOOK_THEME[t-1]||LOOK_THEME[1],acc=THEME_ACC[t-1]||THEME_ACC[1],U=[f.u[0]*h,-f.u[1]*h],V=[f.v[0]*h,-f.v[1]*h];
+  function tracer(s,k){var P=[[1,1],[1,-1],[-1,-1],[-1,1]].map(function(m){return[q[0]+(m[0]*U[0]+m[1]*V[0])*s,q[1]+(m[0]*U[1]+m[1]*V[1])*s];});
+    cx.beginPath();for(var n=0;n<4;n++){var A=P[(n+3)%4],B=P[n],C=P[(n+1)%4],a1=[B[0]+(A[0]-B[0])*k,B[1]+(A[1]-B[1])*k],c1=[B[0]+(C[0]-B[0])*k,B[1]+(C[1]-B[1])*k];
+      if(!n)cx.moveTo(a1[0],a1[1]);else cx.lineTo(a1[0],a1[1]);cx.quadraticCurveTo(B[0],B[1],c1[0],c1[1]);}cx.closePath();return P;}
+  // corps de verre sombre teinté, liseré fin de la couleur du monde (comme les orbites)
+  tracer(.98,.3);cx.fillStyle=L.corps;cx.fill();cx.lineWidth=Math.max(1,h*.09);cx.strokeStyle="rgba("+acc+",.42)";cx.lineJoin="round";cx.stroke();
+  // pastille : plus ronde, un peu plus petite, dégradé de la lumière (haut) vers le corps (bas), presque opaque
+  var sp=tracer(.78,.34);if(h<=4){cx.fillStyle=coul;cx.fill();return;}
+  var g=cx.createLinearGradient(sp[0][0],sp[0][1],sp[2][0],sp[2][1]);g.addColorStop(0,melange(coul,.3));g.addColorStop(.5,coul);g.addColorStop(1,melange(coul,-.28,L.corps));
+  cx.globalAlpha=.96;cx.fillStyle=g;cx.fill();cx.globalAlpha=1;
+  cx.lineWidth=Math.max(.8,h*.05);cx.strokeStyle="rgba(255,255,255,.28)";cx.stroke();   // arête claire : du verre, pas du plastique
+  if(h<=7)return;
+  if(L.motif==="cristal"){   // taille de cristal : une moitié plus claire, coupée d'un coin à l'autre
+    cx.beginPath();cx.moveTo(sp[0][0]*.82+q[0]*.18,sp[0][1]*.82+q[1]*.18);cx.lineTo(sp[1][0]*.82+q[0]*.18,sp[1][1]*.82+q[1]*.18);cx.lineTo(sp[2][0]*.82+q[0]*.18,sp[2][1]*.82+q[1]*.18);cx.closePath();
+    cx.fillStyle="rgba(255,255,255,.16)";cx.fill();}
+  else if(L.motif==="givre"){   // givre : un reflet en croissant sur le haut
+    cx.beginPath();cx.ellipse(q[0]-h*.08,q[1]-h*.28,h*.42,h*.16,-.35,0,6.283);cx.fillStyle="rgba(255,255,255,.3)";cx.fill();}
+  else if(L.motif==="braise"){   // braise : un cœur chaud qui luit
+    cx.beginPath();cx.arc(q[0],q[1],h*.3,0,6.283);cx.fillStyle="rgba(255,236,200,.2)";cx.fill();cx.beginPath();cx.arc(q[0],q[1],h*.14,0,6.283);cx.fillStyle="rgba(255,244,220,.32)";cx.fill();}
+  else{   // étincelle : une petite étoile à quatre branches dans le coin haut
+    var x=q[0]-h*.26,y=q[1]-h*.26,r=h*.24,e=h*.05;cx.beginPath();cx.moveTo(x,y-r);cx.lineTo(x+e,y-e);cx.lineTo(x+r,y);cx.lineTo(x+e,y+e);cx.lineTo(x,y+r);cx.lineTo(x-e,y+e);cx.lineTo(x-r,y);cx.lineTo(x-e,y-e);cx.closePath();
+    cx.fillStyle="rgba(255,255,255,.8)";cx.fill();}}
 function facette(cx,q,f,h,coul){var U=[f.u[0]*h,-f.u[1]*h],V=[f.v[0]*h,-f.v[1]*h];
   // Style « cube de compétition », identique au mini-cube : autocollant coloré encastré sur un corps noir
   // (le liseré entre les pièces), coins arrondis par des courbes posées sur les côtés (robuste même très aigu).
@@ -1313,6 +1343,7 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
     if(r>5){cx.beginPath();cx.arc(q[0]-r*.28,q[1]-r*.3,r*.36,0,6.283);cx.fillStyle="rgba(255,255,255,.34)";cx.fill();
       cx.beginPath();cx.arc(q[0]-r*.34,q[1]-r*.36,r*.15,0,6.283);cx.fillStyle="rgba(255,255,255,.7)";cx.fill();}}
     else if(FO==="facettes")facette(cx,q,formeA(pos[i],i),r*1.2,CL[pos[i].c]);
+    else if(FO==="astral")pastilleMonde(cx,q,formeA(pos[i],i),r*1.2,CL[pos[i].c],this.theme||THEME_COURANT);
     else pastille(cx,q,formeA(pos[i],i),r*1.2,CL[pos[i].c],FO);}
   // ondes des faces complétées
   if(this.eclats.length)this.eclats=this.eclats.filter(function(ec){var e=(now-ec.t0)/800;if(e>=1)return false;var c=self.vers(ec.xy);
@@ -1361,7 +1392,8 @@ document.addEventListener("visibilitychange",function(){if(!document.hidden)Tick
 
 /* ========== 4. LE CUBE EN PERSPECTIVE ========== */
 var C30=Math.cos(Math.PI/6);
-function dessinerCube(cc,w,col,anim,pivot){cc.clearRect(0,0,w,w);var k=w/6.6,ox=w/2,oy=w/2;
+function dessinerCube(cc,w,col,anim,pivot){cc.clearRect(0,0,w,w);var k=w/6.6,ox=w/2,oy=w/2,
+    LK=STY.forme==="astral"?LOOK_THEME[THEME_COURANT-1]:null,LKA=THEME_ACC[THEME_COURANT-1];   // « Style du monde » : verre teinté du décor
   // orientation libre : pivot.y fait tourner autour de la verticale, pivot.x bascule vers l'avant
   // (autour de l'axe horizontal de l'écran, (1,0,−1)/√2), ce qui montre la face du dessous
   var cy=pivot?Math.cos(pivot.y):1,sy=pivot?Math.sin(pivot.y):0,cx_=pivot?Math.cos(pivot.x):1,sx=pivot?Math.sin(pivot.x):0,h=Math.SQRT1_2;
@@ -1384,18 +1416,21 @@ function dessinerCube(cc,w,col,anim,pivot){cc.clearRect(0,0,w,w);var k=w/6.6,ox=
     var a=d[0]?0:d[1]?1:2,u=(a+1)%3,v=(a+2)%3;
     function coin(su,sv,h){var q=cb.p.slice();q[a]+=d[a]*.5;q[u]+=su*h;q[v]+=sv*h;return proj(cb.tr(q));}
     var pts=[coin(-1,-1,.5),coin(1,-1,.5),coin(1,1,.5),coin(-1,1,.5)];
-    cc.beginPath();pts.forEach(function(q,i){i?cc.lineTo(q[0],q[1]):cc.moveTo(q[0],q[1]);});cc.closePath();cc.fillStyle="#0b0b0e";cc.fill();cc.strokeStyle="#0b0b0e";cc.lineWidth=1.2;cc.lineJoin="round";cc.stroke();
+    cc.beginPath();pts.forEach(function(q,i){i?cc.lineTo(q[0],q[1]):cc.moveTo(q[0],q[1]);});cc.closePath();cc.fillStyle=LK?LK.corps:"#0b0b0e";cc.fill();cc.strokeStyle=LK?"rgba("+LKA+",.38)":"#0b0b0e";cc.lineWidth=LK?.9:1.2;cc.lineJoin="round";cc.stroke();
     var idx=CLE[cb.p+"|"+d];if(idx===undefined)return;
     // une face vue presque par la tranche ne montre qu'un éclat de couleur, qui passait pour un défaut
     // de texture pendant les tours : la facette s'efface en douceur sous 20° d'inclinaison
     var face=(nv[0]+nv[1]+nv[2])/Math.sqrt(3),al=Math.min(1,(face-.12)/.22);if(al<=0)return;cc.globalAlpha=al;
     // facette « cube de compétition » : carré arrondi sur corps noir, avec un léger reflet
-    var sp=[coin(-1,-1,.42),coin(1,-1,.42),coin(1,1,.42),coin(-1,1,.42)],ra=k*.13;
+    var ts=LK?.4:.42,sp=[coin(-1,-1,ts),coin(1,-1,ts),coin(1,1,ts),coin(-1,1,ts)],ra=k*(LK?.17:.13);
     cc.beginPath();for(var i=0;i<4;i++){var A=sp[(i+3)%4],B=sp[i],C=sp[(i+1)%4];
       if(!i)cc.moveTo((A[0]+B[0])/2,(A[1]+B[1])/2);cc.arcTo(B[0],B[1],(B[0]+C[0])/2,(B[1]+C[1])/2,ra);}
     cc.closePath();cc.fillStyle=COUL[col[idx]];cc.fill();
-    var g=cc.createLinearGradient(sp[0][0],sp[0][1],sp[2][0],sp[2][1]);g.addColorStop(0,"rgba(255,255,255,.28)");g.addColorStop(.45,"rgba(255,255,255,0)");g.addColorStop(1,"rgba(0,0,0,.14)");
-    cc.fillStyle=g;cc.fill();cc.globalAlpha=1;});});}
+    var g=cc.createLinearGradient(sp[0][0],sp[0][1],sp[2][0],sp[2][1]);
+    if(LK){g.addColorStop(0,"rgba(255,255,255,.3)");g.addColorStop(.5,"rgba(255,255,255,0)");g.addColorStop(1,"rgba(0,0,0,.2)");cc.fillStyle=g;cc.fill();
+      cc.lineWidth=.7;cc.strokeStyle="rgba(255,255,255,.3)";cc.stroke();}   // le même verre que les pastilles du plateau
+    else{g.addColorStop(0,"rgba(255,255,255,.28)");g.addColorStop(.45,"rgba(255,255,255,0)");g.addColorStop(1,"rgba(0,0,0,.14)");cc.fillStyle=g;cc.fill();}
+    cc.globalAlpha=1;});});}
 
 /* ========== 5. LES NIVEAUX ========== */
 // Chaque monde a sa couleur d'accent : cartes, niveaux, cercle saisi et vague de victoire la prennent.
@@ -1562,7 +1597,7 @@ var Logo=new Plateau(document.getElementById("logo"),{etiquettes:false,comete:tr
 // même inclinaison qu'en jeu : #mini démarre à PIVOT {y:0,x:0} (vue isométrique, trois faces)
 var MEDAILLON=.92,CUBE_LOGO=.7,AIR=10,logoCube=document.getElementById("logoCube"),logoCubeC=logoCube.getContext("2d"),PIVOT_LOGO={y:0,x:0};
 function dessinerLogoCube(){var w=logoCube.clientWidth||100,px=Math.round(w*DPR);if(logoCube.width!==px){logoCube.width=px;logoCube.height=px;logoCubeC.setTransform(DPR,0,0,DPR,0,0);}
-  var an=Logo.anim,cle=w+"|"+COUL[0]+"|"+Logo.col.join("")+"|"+(an?cleA(an.mv)+an.mv.q+":"+an.t.toFixed(4):"");
+  var an=Logo.anim,cle=w+"|"+COUL[0]+STY.forme+THEME_COURANT+"|"+Logo.col.join("")+"|"+(an?cleA(an.mv)+an.mv.q+":"+an.t.toFixed(4):"");
   if(cle===dessinerLogoCube.cle)return;dessinerLogoCube.cle=cle;dessinerCube(logoCubeC,w,Logo.col,an,PIVOT_LOGO);}
 // l'accueil montre une RÉSOLUTION : le cube part d'une position aléatoire (saut instantané vers un mélange),
 // puis joue les coups qui le résolvent — la résolution est ce mélange inversé, joué à l'envers.
@@ -1804,7 +1839,7 @@ JeuP.onFace=function(n){if(!J||!J.pret||J.fini)return;bip(1047,.28,"sine",.07);b
 var mini=document.getElementById("mini"),miniC=mini.getContext("2d"),PIVOT={y:0,x:0},J=null;
 function dessinerMini(){if(!PROG.options.cube)return;var w=mini.clientWidth||84,px=Math.round(w*DPR);if(mini.width!==px){mini.width=px;mini.height=px;miniC.setTransform(DPR,0,0,DPR,0,0);}
   // le plateau se redessine à chaque image (indice qui pulse, halos) : le cube, lui, seulement quand il change
-  var an=JeuP.anim,cle=w+"|"+COUL[0]+"|"+JeuP.col.join("")+"|"+PIVOT.y.toFixed(4)+","+PIVOT.x.toFixed(4)+"|"+(an?cleA(an.mv)+an.mv.q+":"+an.t.toFixed(4):"");
+  var an=JeuP.anim,cle=w+"|"+COUL[0]+STY.forme+THEME_COURANT+"|"+JeuP.col.join("")+"|"+PIVOT.y.toFixed(4)+","+PIVOT.x.toFixed(4)+"|"+(an?cleA(an.mv)+an.mv.q+":"+an.t.toFixed(4):"");
   if(cle===dessinerMini.cle)return;dessinerMini.cle=cle;dessinerCube(miniC,w,JeuP.col,an,PIVOT);}
 // Le cube pivote au doigt : glisser à gauche ou à droite le fait tourner autour de la verticale, vers le
 // haut ou le bas le bascule pour montrer la face du dessous. Au lâcher, il se cale sur la vue la plus
@@ -2208,7 +2243,7 @@ function rafraichirSucces(){document.getElementById("sucCompte").textContent=Obj
 /* ========== 14. OPTIONS ========== */
 function appliquerOptions(){var o=PROG.options;
   // une fois : « Couleurs du monde » devient la palette par défaut (le client, le 14/10/2026), même pour qui avait « Classique » par défaut
-  if(!o.pal2){if(!o.palette||o.palette==="classique")o.palette="monde";o.pal2=1;}Object.keys(STY).forEach(function(k){STY[k]=styleActif(k);});COUL=PALETTES[STY.palette]||PALETTES.classique;
+  if(!o.pal2){if(!o.palette||o.palette==="classique")o.palette="monde";o.pal2=1;}if(!o.sty3){if(!o.forme||o.forme==="facettes")o.forme="astral";o.sty3=1;}Object.keys(STY).forEach(function(k){STY[k]=styleActif(k);});COUL=PALETTES[STY.palette]||PALETTES.classique;
   // « Animations » décoché = calme forcé, en plus du réglage système prefers-reduced-motion
   CALME=!!((window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)||o.anims===false);
   document.body.classList.toggle("sobre",o.anims===false);
@@ -2348,7 +2383,7 @@ function vignette(cv,k,id){var d=Math.min(DPR,2.5),W=64;cv.width=W*d;cv.height=W
   var f={u:[Math.cos(.5),Math.sin(.5)],v:[Math.cos(2.1),Math.sin(2.1)]};
   function piece(x,y,h,col,fo){if(fo==="perles"){cx.beginPath();cx.arc(x,y,h*.8,0,6.283);cx.fillStyle=col;cx.fill();cx.lineWidth=h*.16;cx.strokeStyle="rgba(0,0,0,.45)";cx.stroke();
       cx.beginPath();cx.arc(x-h*.22,y-h*.24,h*.28,0,6.283);cx.fillStyle="rgba(255,255,255,.34)";cx.fill();}
-    else if(fo==="facettes")facette(cx,[x,y],f,h,col);else pastille(cx,[x,y],f,h,col,fo);}
+    else if(fo==="facettes")facette(cx,[x,y],f,h,col);else if(fo==="astral")pastilleMonde(cx,[x,y],f,h,col,THEME_COURANT);else pastille(cx,[x,y],f,h,col,fo);}
   if(k==="forme"){piece(21,22,11,pal[0],id);piece(44,24,11,pal[2],id);piece(32,44,11,pal[5],id);return;}
   if(k==="trainee"){var r=22,a0=-2.3,n=id==="comete"?9:id==="sillage"?11:id==="poussiere"?7:5;
     for(var t=n;t>=1;t--){var aa=a0+t*.2,x=c[0]+Math.cos(aa)*r,y=c[1]+18+Math.sin(aa)*r-18,fr=1-t/(n+1);

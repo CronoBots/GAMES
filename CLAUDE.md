@@ -83,10 +83,14 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   montre son **contenu exact** (`contenuPack` : vignette et nom de chaque style ; puces des packs pour les éditions groupées).
   **Les palettes du pack Couleurs quittent les six teintes du cube** (le client, le 14/10/2026 : trop ressemblantes) : chacune
   a son ambiance (Aurore, Galaxie, Glace, Joyaux), six couleurs distinctes ; leur vignette montre leurs teintes typiques.
-  **Couleurs des pastilles par défaut : « Couleurs du monde »** (le client, le 14/10/2026 : que le cube ne jure pas avec le
-  décor) : `PAL_THEME`, une palette par thème (`PALETTES.monde` la lit selon `THEME_COURANT`, posé par `accent`/`accentTheme` via
-  `suivreTheme` ; menus = thème 2) ; « Classique » reste un choix gratuit. Migration une fois (`PROG.options.pal2`) : l'ancien
-  défaut classique passe à « monde ».
+  **Style par défaut des pastilles : celui du monde** (le client, le 14/10/2026 : que le cube ne jure pas avec le décor ;
+  « couleur, modèle, forme, opacité, motif, taille »). Palette « Couleurs du monde » (`PAL_THEME`, une par thème, les six
+  teintes du cube dans l'ordre classique, accordées au décor ; `PALETTES.monde` lit `THEME_COURANT`, posé par `accent`/
+  `accentTheme` via `suivreTheme` ; menus = thème 2) et forme « Style du monde » (id `astral`, `pastilleMonde`, `LOOK_THEME`) :
+  corps de verre sombre teinté du monde, liseré de la couleur du monde, pastille plus ronde et plus petite en dégradé presque
+  opaque, arête claire, motif par décor (cristal, givre, braise, étincelle). Le petit cube et celui du médaillon suivent
+  (`dessinerCube`, `LK`). « Classique » et « Facettes » (corps noir, cube de compétition) restent des choix gratuits.
+  Migrations une fois : `PROG.options.pal2` (classique → monde), `sty3` (facettes → astral).
   **Pour donner envie et comprendre** (le client, le 14/10/2026) : phrase d'accueil (gagner en jouant ou acheter), compteur de
   collection sur chaque onglet (« 4/8 »), fiche avec une phrase par style (`DESC_STYLE`) et, pour un style à gagner, sa barre de
   progression (`progresStyle`) ; badge « Nouveau » sur les styles gagnés pas encore vus (`PROG.stylesVus`, `nouveauxStyles`) et
