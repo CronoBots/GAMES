@@ -149,6 +149,11 @@ async function resoudre(p) {
     await p.reload(); await p.waitForTimeout(1200); await p.tap("#btnJouer"); await p.waitForTimeout(800);
     (await p.evaluate(() => document.querySelector('.parc-niv[data-w="0"][data-i="9"]').classList.contains("verrou"))) ? ok("experts : rien ne s'ouvre sur la voie dorée tant que le chemin n'est pas fini") : faute("un expert s'ouvre avant la fin du chemin");
     await p.evaluate((v) => localStorage.setItem("orbicube-v1", JSON.stringify(v)), exp2); await p.reload(); await p.waitForTimeout(1200); await p.tap("#btnJouer"); await p.waitForTimeout(800);
+    // toucher un niveau fermé explique comment l'ouvrir (notification en bas de l'écran)
+    await p.evaluate(() => document.querySelector('.parc-niv[data-w="0"][data-i="9"]').click()); await p.waitForTimeout(500);
+    const avis = await p.evaluate(() => { const a = document.getElementById("avis"); return a.classList.contains("vu") ? a.textContent : ""; });
+    avis.includes("verrouillé") && avis.includes("Gagnez") ? ok("carte : un niveau fermé dit comment l'ouvrir") : faute("notification de verrou absente : « " + avis + " »");
+    await p.tap("#avis"); await p.waitForTimeout(500);
     // un nœud ouvre la fiche du niveau (objectif, record, étoiles) avant de jouer, pas le niveau directement
     await p.evaluate(() => document.querySelector('.parc-niv[data-w="0"][data-i="2"]').click()); await p.waitForTimeout(500);
     const fiche = await p.evaluate(() => { const f = document.querySelector("#fenetre"); return !!f && f.textContent.includes("Niveau 3") && !!f.querySelector('[data-a="jouer"]') && document.querySelector(".ecran.actif").id === "parcours"; });

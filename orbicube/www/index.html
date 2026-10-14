@@ -331,6 +331,18 @@ a.bouton{text-decoration:none;color:inherit}
   background:#1d1a33;border:1px solid var(--or);border-radius:16px;padding:10px 16px;display:flex;gap:10px;align-items:center;
   box-shadow:0 20px 50px -15px rgba(0,0,0,.9);transition:transform .45s var(--ease),visibility 0s .45s;max-width:calc(100% - 32px)}
 #toast.vu{transform:translate(-50%,0);visibility:visible;transition:transform .45s var(--ease)}
+/* notification d'un niveau verrouillé : en bas, aux couleurs du monde, cadenas, explication, barre d'étoiles si besoin */
+#avis{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);width:min(92vw,400px);z-index:41;display:flex;gap:12px;align-items:center;
+  padding:14px 16px;border-radius:20px;border:1px solid rgba(var(--acc),.5);color:#fff;pointer-events:auto;
+  background:linear-gradient(160deg,rgba(var(--acc),.2),rgba(16,16,28,.97) 55%),#10101c;box-shadow:0 18px 40px -12px rgba(0,0,0,.85),0 0 24px -8px rgba(var(--acc),.6);
+  transform:translate(-50%,calc(100% + 40px));visibility:hidden;transition:transform .35s var(--ease),visibility 0s .35s}
+#avis.vu{transform:translate(-50%,0);visibility:visible;transition:transform .45s var(--ease)}
+#avis .avis-ic{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:rgba(var(--acc),.18);border:1px solid rgba(var(--acc),.5)}
+#avis .avis-ic svg{width:20px;height:20px;fill:none;stroke:rgb(var(--acc));stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#avis b{display:block;font-family:var(--f-chiffre);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgb(var(--acc));margin-bottom:2px}
+#avis span{display:block;font-size:14px;line-height:1.35}
+#avis .avis-barre{display:block;height:6px;margin-top:8px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden}
+#avis .avis-barre i{display:block;height:100%;border-radius:99px;background:var(--or)}#avis .avis-barre.t i{background:#4cc9f0}
 #toast svg{width:26px;height:26px;flex:none}
 #toast b{display:block;font-size:12px;color:var(--or);letter-spacing:.1em;text-transform:uppercase}
 #toast span{font-size:14px}
@@ -573,8 +585,10 @@ body{background:
 /* verrouillé : plus petit, gris, un cadenas */
 .parc-niv.verrou{cursor:default}
 .parc-niv.verrou .bille{border-color:rgba(255,255,255,.1);background:rgba(18,18,28,.7);box-shadow:none}
-.parc-niv.verrou.vu{transform:translate(-50%,-50%) scale(.82);opacity:.5}
+.parc-niv.verrou.vu{transform:translate(-50%,-50%) scale(.82);opacity:.72}
 .parc-niv .pcad{width:20px;height:20px;stroke:rgba(255,255,255,.6);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.parc-niv .pcad.or{position:relative;z-index:1;stroke:rgba(255,207,74,.85)}
+.parc-desc .parc-meta{display:block;margin-top:5px;font-family:var(--f-chiffre);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgb(var(--pa))}
 .parc-niv.paye.vu{opacity:.8}.parc-niv.paye .pcad{stroke:var(--or)}
 /* les étoiles de coups en arc au-dessus du nœud, l'anneau du temps en trois arcs bleus sur le bas */
 .parc-niv .arc{position:absolute;left:50%;top:-6px;width:0;height:0;z-index:3;pointer-events:none}
@@ -995,6 +1009,7 @@ body.sobre #plateau{transition:none}
 
 <div class="voile" id="voile" hidden><div class="fenetre" id="fenetre" role="dialog" aria-modal="true"></div></div>
 <canvas id="confettis" hidden></canvas>
+<div id="avis" role="status" aria-live="polite"></div>
 <div id="toast" role="status" aria-live="polite"><svg viewBox="0 0 24 24"><circle cx="12" cy="10" r="7" fill="#ffcf4a"/><path d="M8.5 15.5l-1.5 6 5-2.5 5 2.5-1.5-6" fill="#c9971a"/></svg><div><b id="toastTitre">Succès débloqué</b><span id="toastTxt"></span></div></div>
 
 <script src="config.js"></script>
@@ -1361,14 +1376,14 @@ function poserFond(t,nebuleuse){var el=document.getElementById("fondMonde");if(e
 var THEME_ACC=["80,226,150","92,180,255","255,110,120","178,130,255"];
 function accentTheme(t){ACC=THEME_ACC[(((t-1)%4)+4)%4];ACC_CLAIR=eclaircir(ACC,.65);document.documentElement.style.setProperty("--acc",ACC);}
 var MONDES=[
-  {nom:"Premier cercle",desc:"Deux orbites, U et R. Le geste s’apprend ici.",anneaux:["U","R"],coups:[1,2,3,3,4,4,5,5,5,6,6,7]},
-  {nom:"Trois faces",desc:"Une troisième orbite, F : chaque pastille hésite entre deux chemins.",anneaux:["U","R","F"],coups:[2,3,3,4,4,5,5,6,6,7,7,8]},
-  {nom:"Face cachée",desc:"D, la face du dessous, tourne sur le même axe que U.",anneaux:["U","D","R","F"],etoiles:{jaunes:2},coups:[3,3,4,4,5,5,6,6,7,7,8,9]},
-  {nom:"Face à face",desc:"L rejoint R : cinq orbites, deux faces opposées.",anneaux:["U","D","L","R","F"],etoiles:{bleues:2},coups:[3,4,4,5,5,6,6,7,7,8,9,10]},
-  {nom:"Six faces",desc:"Les six faces du cube, sans les tranches.",anneaux:["U","D","L","R","F","B"],coups:[4,4,5,5,6,7,7,8,8,9,10,11]},
-  {nom:"Première tranche",desc:"M, l’orbite du milieu, n’a pas de face à elle.",anneaux:["U","D","L","R","F","B","M"],coups:[4,5,5,6,7,7,8,9,9,10,11,12]},
-  {nom:"Deux tranches",desc:"E se glisse entre U et D : huit orbites.",anneaux:["U","D","L","R","F","B","M","E"],coups:[5,5,6,7,7,8,9,10,10,11,12,13]},
-  {nom:"Grand maître",desc:"Les neuf orbites à la fois, jusqu’à dix-huit coups.",anneaux:TOUS,coups:[5,6,7,8,9,10,11,12,12,14,16,18]}];
+  {nom:"Premier cercle",desc:"Le geste s’apprend ici : faites glisser U et R.",anneaux:["U","R"],coups:[1,2,3,3,4,4,5,5,5,6,6,7]},
+  {nom:"Trois faces",desc:"F entre en jeu : chaque pastille a désormais deux chemins.",anneaux:["U","R","F"],coups:[2,3,3,4,4,5,5,6,6,7,7,8]},
+  {nom:"Face cachée",desc:"D tourne sur le même axe que U : pensez en couches.",anneaux:["U","D","R","F"],etoiles:{jaunes:2},coups:[3,3,4,4,5,5,6,6,7,7,8,9]},
+  {nom:"Face à face",desc:"L fait face à R : la moitié du cube bouge à chaque tour.",anneaux:["U","D","L","R","F"],etoiles:{bleues:2},coups:[3,4,4,5,5,6,6,7,7,8,9,10]},
+  {nom:"Six faces",desc:"Les six faces du cube : le vrai casse-tête commence.",anneaux:["U","D","L","R","F","B"],coups:[4,4,5,5,6,7,7,8,8,9,10,11]},
+  {nom:"Première tranche",desc:"M, la tranche du milieu, déplace des pastilles sans face à elle.",anneaux:["U","D","L","R","F","B","M"],coups:[4,5,5,6,7,7,8,9,9,10,11,12]},
+  {nom:"Deux tranches",desc:"E se glisse entre U et D : presque tout le cube bouge.",anneaux:["U","D","L","R","F","B","M","E"],coups:[5,5,6,7,7,8,9,10,10,11,12,13]},
+  {nom:"Grand maître",desc:"Les neuf orbites à la fois : le défi ultime.",anneaux:TOUS,coups:[5,6,7,8,9,10,11,12,12,14,16,18]}];
 // une orbite de plus à chaque monde (le client, le 14/10/2026). Longueurs : un coup de plus tous les deux niveaux (les trois
 // premiers montent d'un coup chacun), une pente qui se raidit avec les orbites ; chaque monde repart un peu plus bas que la
 // fin du précédent (une orbite de plus à apprivoiser) ; ses experts partent de la fin de son chemin. Un coup de plus à
@@ -1647,14 +1662,14 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
       sects+='<div class="parc-sep" style="--pa:'+it.acc+';top:'+fy+'px"></div>'
         +'<div class="parc-sect'+(pa?" paye":"")+'" style="--pa:'+it.acc+';top:'+fy+'px"><b>Monde '+(it.w+1)+'</b><small>'+it.nom+'</small>'
         +(pa?'<svg class="pscad" viewBox="0 0 24 24">'+CAD+'</svg>':cE?'<span class="parc-cond'+(cE.jaunes?"":" t")+'"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+cE.a+' / '+cE.faut+'</span>':'<span class="parc-et"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etM+'/'+maxM+'<svg class="t" viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etTM+'/'+maxM+'</span>')+'</div>'
-        +'<div class="parc-desc" style="top:'+(fy+30)+'px">'+MONDES[it.w].desc+'</div>';}
+        +'<div class="parc-desc" style="--pa:'+it.acc+';top:'+(fy+30)+'px">'+MONDES[it.w].desc+'<span class="parc-meta">'+MONDES[it.w].anneaux.length+' orbites · '+MONDES[it.w].coups[0]+' à '+MONDES[it.w].coups[BASE-1]+' coups</span></div>';}
     // la pastille de la voie dorée, discrète, posée sur la bifurcation (le client, le 14/10/2026)
     else if(it.t==="x")sects+='<div class="parc-exp'+(mondeFini(it.w)?"":" discret")+'" style="top:'+fy+'px;left:'+it.x.toFixed(1)+'px"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>Voie dorée</div>';
     else{var ex=estExpert(it.i),cache=ex&&!mondeFini(it.w),r=it.r,e=r?r.etoiles||0:0,t=r?r.chrono||0:0,
         nv=DERNIER&&DERNIER.w===it.w&&DERNIER.i===it.i?DERNIER:null,
         cls="parc-niv"+(ex?" expert"+(cache?" discret":""):"")+(r?" fait":"")+(e===3&&t===3?" parfait":"")+(!it.ouv?" verrou":"")+(it.paye?" paye":"")+(it.cur?" courant":""),inner;
       var bille=ex?"":'<span class="bille"></span>';
-      if(cache)inner='<svg class="eclat" viewBox="0 0 24 24">'+ET_PATH+'</svg>';
+      if(cache||(ex&&!it.ouv))inner='<svg class="pcad or" viewBox="0 0 24 24">'+CAD+'</svg>';
       else if(!it.ouv)inner=bille+'<svg class="pcad" viewBox="0 0 24 24">'+CAD+'</svg>';
       // ouvert : le numéro, l'arc des étoiles de coups au-dessus, l'anneau du temps autour
       else inner=bille+'<b>'+it.num+'</b>'+
@@ -1700,11 +1715,27 @@ function accentCarte(){var pn=prochainNiveau();accentTheme(themeFond(pn?pn.w:0))
 function ouvrirParcours(){accentCarte();montrer("parcours");requestAnimationFrame(function(){buildParcours();
   var c=document.querySelector(".parc-niv.courant")||document.querySelector(".parc-niv:not(.verrou)"),dd=document.getElementById("parcoursDefile");
   if(c&&dd)dd.scrollTop=Math.max(0,c.offsetTop-dd.clientHeight*.55);});}
+document.getElementById("avis").addEventListener("click",function(){clearTimeout(avisMinuteur);fermerAvis();});
 document.getElementById("chemin").addEventListener("click",function(e){
   var sec=e.target.closest(".parc-sect.paye");if(sec){sonClic();ouvrirBoutique("monde");return;}
   var b=e.target.closest(".parc-niv");if(!b)return;
   if(b.classList.contains("paye")){sonClic();ouvrirBoutique("monde");return;}
-  if(b.classList.contains("verrou")){vibrer(20);return;}sonClic();ficheNiveau(+b.dataset.w,+b.dataset.i);});
+  if(b.classList.contains("verrou")){vibrer(20);avisVerrou(+b.dataset.w,+b.dataset.i);return;}sonClic();ficheNiveau(+b.dataset.w,+b.dataset.i);});
+// toucher un niveau fermé (le client, le 14/10/2026) : une notification en bas de l'écran, aux couleurs du monde, qui dit
+// exactement comment l'ouvrir ; pour des étoiles, une barre montre où l'on en est. Un toucher ou 4 s la referment.
+function raisonVerrou(w,i){var c,ex=estExpert(i);
+  if(w>0&&!mondeOuvert(w)){c=PROG.niveaux[w+"-"+BASE]?condEtoiles(w):null;
+    if(c)return{t:"Monde "+(w+1)+" verrouillé",x:c.jaunes?"Il faut "+c.faut+" étoiles de coups pour ouvrir ce monde : encore "+c.manque+".":"Il faut "+c.faut+" étoiles de temps pour ouvrir ce monde : encore "+c.manque+".",p:c.a/c.faut,bleu:!c.jaunes};
+    return{t:"Monde "+(w+1)+" verrouillé",x:"Terminez le niveau "+numNiveau(w-1,BASE-1)+" pour ouvrir ce monde."};}
+  if(ex&&!mondeFini(w))return{t:"Expert "+numNiveau(w,i)+" verrouillé",x:"Terminez les 8 niveaux du monde pour ouvrir la voie dorée."};
+  if(ex)return{t:"Expert "+numNiveau(w,i)+" verrouillé",x:"Gagnez l’expert "+numNiveau(w,i-1)+" pour ouvrir celui-ci."};
+  return{t:"Niveau "+numNiveau(w,i)+" verrouillé",x:"Terminez le niveau "+numNiveau(w,i-1)+" pour ouvrir celui-ci."};}
+var avisMinuteur=0;
+function avisVerrou(w,i){var r=raisonVerrou(w,i),el=document.getElementById("avis");accentTheme(themeFond(w));
+  el.innerHTML='<span class="avis-ic"><svg viewBox="0 0 24 24">'+CAD+'</svg></span><div><b>'+r.t+'</b><span>'+r.x+'</span>'+
+    (r.p!=null?'<i class="avis-barre'+(r.bleu?" t":"")+'"><i style="width:'+Math.round(Math.min(1,r.p)*100)+'%"></i></i>':"")+'</div>';
+  el.classList.remove("vu");void el.offsetWidth;el.classList.add("vu");clearTimeout(avisMinuteur);avisMinuteur=setTimeout(fermerAvis,4000);}
+function fermerAvis(){document.getElementById("avis").classList.remove("vu");if(ECRAN==="parcours")accentCarte();}
 // la fiche d'un niveau avant de le jouer (le client) : son objectif, votre meilleur score, vos étoiles, puis « Jouer »
 function ficheNiveau(w,i){var r=PROG.niveaux[(w+1)+"-"+(i+1)],par=MONDES[w].coups[i],e=r?r.etoiles||0:0,t=r?r.chrono||0:0;
   // la fiche prend la couleur du monde (son décor), pas le lilas de l'accueil (le client)

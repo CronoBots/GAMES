@@ -172,7 +172,11 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   aux couleurs du monde. La carte (`accentCarte` : le monde où l'on en est) et la fiche prennent la couleur du décor ;
   `montrer` rend le lilas à l'accueil et aux menus (le client : « menu toujours mauve »). Au retour d'une victoire, les nouvelles étoiles apparaissent
   une à une (`DERNIER`, posé par `victoire`). Le chemin entre deux niveaux finis passe en trait plein de la couleur du
-  monde, coupé au bord des billes. Les décorations tiennent dans le bouton : le test des débordements reste exigeant. Options : les réglages à plusieurs choix
+  monde, coupé au bord des billes. Niveaux et experts verrouillés : cadenas (doré sur les losanges), opacité 72 % (le client :
+  « un peu plus visibles »). **Toucher un niveau fermé** ouvre une notification en bas de l'écran (`#avis`, `avisVerrou`,
+  `raisonVerrou`) aux couleurs du monde : ce qu'il faut faire pour l'ouvrir (niveau d'avant, fin du chemin pour la voie
+  dorée, expert d'avant, étoiles du monde avec une barre de progression) ; un toucher ou 4 s la referment. Sous la phrase
+  de chaque monde (réécrites pour dire ce qui change), une ligne « N orbites · a à b coups » (`.parc-meta`). Les décorations tiennent dans le bouton : le test des débordements reste exigeant. Options : les réglages à plusieurs choix
   (`.ligne.empile`) prennent toute la largeur du cadre.
 - **Écrans de menu** (profil, options, succès, aide) : le contenu défile derrière l'en-tête jusqu'aux bords de l'écran
   (zones de sécurité comprises) ; l'en-tête flotte sur un fondu sombre (bloc en fin de feuille de style, le client, le 13/10/2026).
