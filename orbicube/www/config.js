@@ -6,7 +6,7 @@ window.ORBICUBE_CONFIG = {
   // "complet" : tout est ouvert (application vendue payante sur le store, ou version de démonstration).
   modele: "essai",
   mondesGratuits: 4,          // mondes jouables sans achat (sur 8) : de 2 à 5 orbites ; les neuf à la fois, jamais gratuites
-  libresGratuits: [5],        // niveaux de partie libre jouables sans achat (5, 10, 15, 25)
+  libresGratuits: [5],        // niveaux de jeu libre jouables sans achat (5, 10, 15, 25)
 
   // Prix affiché tant que le store n'a pas répondu (le vrai prix vient du store, dans la devise du joueur).
   prixAffiche: "4,99 €",

@@ -98,7 +98,7 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 - **Fin de niveau** : les six faces s'illuminent l'une après l'autre et le cube fait un tour sur
   lui-même (`PIVOT` n'est animé que là) ; « Revoir ma partie » rejoue le mélange puis les coups (`revoir()`).
 - **Couleur d'accent par monde** (`ACCENTS`, `accent(w)`) : variable CSS `--acc` (triplet r,g,b) et
-  `ACC` pour le canevas (cercle saisi, vague de victoire). Accueil, défi et partie libre : le lilas.
+  `ACC` pour le canevas (cercle saisi, vague de victoire). Accueil, défi et jeu libre : le lilas.
   **Les orbites du plateau** (trait fin + halo léger, au repos comme à la sélection/au tour) prennent cette
   couleur d'accent (`ACC` pour le halo, `ACC_CLAIR` pour le trait) — décision client 12/10/2026, remplace
   l'ancien trait blanc. L'indice reste doré, l'orbite interdite grise.
@@ -112,7 +112,12 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   (`poserFond(t,true)`, le client, le 13/10/2026 : les planètes et astéroïdes des composites passaient sous le plateau ;
   les `fond-N` ne servent plus). En jeu comme à l'accueil, le ciel animé est baissé et n'envoie qu'une étoile filante pâle à la fois. La campagne
   (`#parcours`) garde ses fonds en couches parallaxe par-dessus.
-- **Sans fin** (`sansFinDef(k)`, depuis Partie libre) : étape k = mélange de k+2 coups (25 au plus), record
+- **Ce que l'achat ouvre, dit clairement** (le client, le 14/10/2026 : « Jeu libre », pas « Partie libre » ; donner envie
+  d'acheter) : sans achat, le jeu libre n'a que « Facile » sur les orbites du dernier monde gratuit (`orbitesLibres`,
+  `libresGratuits`) ; Moyen/Difficile/Expert, Sans fin, Relax et le **défi de la semaine** sont dans une carte dorée
+  « Avec le jeu complet » (`carteReserve` : cadenas, une phrase par mode, bouton Débloquer et prix) qui mène à la boutique.
+  Le défi du jour reste gratuit (habitude, ampoules ; six orbites : un avant-goût).
+- **Sans fin** (`sansFinDef(k)`, depuis Jeu libre) : étape k = mélange de k+2 coups (25 au plus), record
   `PROG.stats.sansFin` ; au-delà de l'étape 5, le jeu complet. **Partager** le défi du jour : `partager()`,
   un résumé texte (coups, temps, étoiles) par la feuille de partage du téléphone ou le presse-papiers.
 - **Progression** (le client, le 11/10/2026 : « un jeu qu'on lance quelques minutes ou dans lequel on s'investit ») :
@@ -122,7 +127,7 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   `avancerMissions`), +30 XP chacune, une ampoule pour les trois. **Ciels** (`CIELS`, `appliquerCiel`, classes
   `ciel-…` sur `body`) ouverts par rang : **désactivés depuis le décor CraftPix** (le fond image masque le body) —
   sélecteur des options masqué, code encore présent, à nettoyer. La tuile **Défis** ouvre le défi du jour et celui de la **semaine**
-  (`semaineDef`, 14 coups, deux ampoules la première fois). **Relax** (`relaxDef`, depuis Partie libre) : 8 coups,
+  (`semaineDef`, 14 coups, deux ampoules la première fois). **Relax** (`relaxDef`, depuis Jeu libre) : 8 coups,
   sans chrono, compteur ni étoiles. Écran **Profil** par la puce du rang, au centre de la barre du haut de l'accueil
   (anneau d'expérience, titre, puis une cible et « 1/3 » pour les missions du jour, dorés à 3/3). Les joueurs d'avant le rang reçoivent une fois l'expérience
   de leurs niveaux déjà finis (`rattraperXp`, `PROG.xpInit`). Le bouton principal porte deux lignes (l'action, puis
@@ -150,7 +155,7 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   orbites plus fines, traînées, lueurs des pièces et comète deux fois plus discrètes, plateau à 96 % ; sur l'accueil,
   le ciel animé baisse ses étoiles et n'envoie qu'une étoile filante pâle toutes les 6 à 12 s.
   **Menu du bas** : le bouton principal en pilule (accent, sans gloss plastique), puis un **dock** de raccourcis ronds
-  (`.dock`, icône + nom + état : Défis avec un point doré tant que le défi du jour n'est pas joué, « +1 ampoule » dessous, Partie libre, Succès,
+  (`.dock`, icône + nom + état : Défis avec un point doré tant que le défi du jour n'est pas joué, « +1 ampoule » dessous, Jeu libre, Succès,
   et « Boutique » en doré dès le premier niveau fini). Plus de bouton musique sur l'accueil : il est dans les options.
   **Le bouton principal en pilule est celui de tout le jeu** (fenêtres de pause, victoire, boutique…), avec des boutons
   secondaires en pilule de verre sombre au contour d'accent, texte centré (`.fenetre .bouton`).
@@ -182,8 +187,10 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   niveau, côté opposé au monde suivant, en pointillé doré, nœuds « E1 » à « E4 » à anneau doré et intertitre « Niveaux
   experts » ; le chemin numérote 1 à 64 sans eux (`numNiveau`, `nomNiveau` : « Expert 3 »). 150 px d'air sous le monde 1,
   112 entre chaque bandeau et son premier niveau.
-- **Mondes gratuits et étoiles** : le monde 3 demande en plus 36 étoiles de coups (jaunes), le monde 4 36 étoiles de temps
-  (bleues), comptées sur toute la campagne (`MONDES[w].etoiles`, `condEtoiles`), achat ou non. Un monde déjà commencé reste
+- **Mondes gratuits et étoiles** : le monde 3 demande en plus des étoiles de coups (jaunes), le monde 4 des étoiles de
+  temps (bleues), comptées sur toute la campagne, achat ou non. **Règle unique** (le client : logique, jamais 100 %) : deux
+  étoiles par niveau du chemin des mondes d'avant (`MONDES[w].etoiles` = 2, `seuilEtoiles` : 32 puis 48), le vérificateur
+  refuse plus des trois quarts. Un monde déjà commencé reste
   ouvert. La carte, l'accueil (`mondeAttend`) et la victoire disent ce qui manque.
 - Les niveaux de campagne sont tirés d'une graine fixe (`orbicube-<monde>-<niveau>`) : changer
   `genererMelange()` change tous les niveaux des joueurs. Ne le faire qu'avec une nouvelle graine.

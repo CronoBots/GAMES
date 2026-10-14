@@ -91,11 +91,19 @@ async function resoudre(p) {
     (await p.textContent("#fenetre")).includes("dans l’application") ? ok("version web : l'achat renvoie vers l'application") : faute("texte web de la boutique absent");
     await p.tap('#fenetre [data-a="x"]'); await p.waitForTimeout(300);
 
-    // partie libre « Moyen » réservée, « Facile » ouverte
+    // jeu libre : « Facile » ouvert sur les cinq orbites gratuites, le reste dans la carte « Avec le jeu complet »
     await p.tap("#parcours [data-retour]"); await p.waitForTimeout(400);
     await p.tap("#btnLibre"); await p.waitForTimeout(300);
+    const lib = await p.evaluate(() => { const f = document.querySelector("#fenetre"); const fa = f.querySelector('[data-a="5"]'); return { facile: !!fa && !fa.closest(".reserve") && fa.textContent.includes("5 orbites"), carte: !!f.querySelector(".reserve") && f.querySelector(".reserve").textContent.includes("Avec le jeu complet"), reserves: [...f.querySelectorAll(".reserve [data-a]")].map((b) => b.dataset.a).join(",") }; });
+    lib.facile && lib.carte && lib.reserves === "10,sansfin,relax,acheter" ? ok("jeu libre : Facile sur 5 orbites, le reste réservé et annoncé") : faute("jeu libre sans achat : " + JSON.stringify(lib));
     await p.tap('#fenetre [data-a="10"]'); await p.waitForTimeout(400);
-    (await p.textContent("#fenetre")).includes("partie libre fait partie") ? ok("partie libre « Moyen » réservée") : faute("« Moyen » n'est pas réservé");
+    (await p.textContent("#fenetre")).includes("jeu libre fait partie") ? ok("jeu libre « Moyen » réservée") : faute("« Moyen » n'est pas réservé");
+    await p.tap('#fenetre [data-a="x"]'); await p.waitForTimeout(300);
+    // défis : celui du jour est gratuit, celui de la semaine réservé au jeu complet
+    await p.tap("#btnJour"); await p.waitForTimeout(300);
+    const sem = await p.evaluate(() => { const f = document.querySelector("#fenetre"); return !!f.querySelector('.reserve [data-a="semaine"]') && !f.querySelector('[data-a="jour"]').closest(".reserve"); });
+    await p.tap('#fenetre [data-a="semaine"]'); await p.waitForTimeout(400);
+    sem && (await p.textContent("#fenetre")).includes("défi de la semaine fait partie") ? ok("défis : le jour gratuit, la semaine réservée au jeu complet") : faute("défi de la semaine pas réservé");
     await p.tap('#fenetre [data-a="x"]'); await p.waitForTimeout(300);
 
     // options : groupe Achat et lien de confidentialité
@@ -132,15 +140,15 @@ async function resoudre(p) {
     const exp = await p.evaluate(() => { const n = (w, i) => document.querySelector('.parc-niv[data-w="' + w + '"][data-i="' + i + '"]'); return { m2: !n(1, 0).classList.contains("verrou"), e1: n(0, 8).classList.contains("expert") && !n(0, 8).classList.contains("verrou"), e2: n(0, 9).classList.contains("verrou"), titres: document.querySelectorAll(".parc-exp").length, total: document.querySelectorAll(".parc-niv").length }; });
     exp.m2 && exp.e1 && exp.e2 && exp.titres === 8 && exp.total === 96 ? ok("experts : 96 niveaux, quatre experts par monde sur une voie à part, ouverts après le huitième sans bloquer le monde suivant") : faute("niveaux experts : " + JSON.stringify(exp));
 
-    // monde 3 gratuit mais fermé par 36 étoiles de coups : 32 ne suffisent pas, 36 l'ouvrent
-    const poser = (n1) => p.evaluate((n1) => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); for (let i = 1; i <= 8; i++) v.niveaux["2-" + i] = { etoiles: i <= n1 ? 3 : 1, chrono: 1, coups: 9, temps: 60000, sansIndice: true }; localStorage.setItem(k, JSON.stringify(v)); }, n1);
+    // monde 3 gratuit mais fermé par 32 étoiles de coups (deux par niveau du chemin d'avant) : 24 ne suffisent pas, 32 l'ouvrent
+    const poser = (n1) => p.evaluate((n1) => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); for (let i = 1; i <= 8; i++) v.niveaux["1-" + i].etoiles = 2; for (let i = 1; i <= 8; i++) v.niveaux["2-" + i] = { etoiles: i <= n1 ? 3 : 1, chrono: 1, coups: 9, temps: 60000, sansIndice: true }; localStorage.setItem(k, JSON.stringify(v)); }, n1);
     await poser(0); await p.reload(); await p.waitForTimeout(1200);
     const att = await p.textContent("#jouerMonde");
     await p.tap("#btnJouer"); await p.waitForTimeout(600);
     const ferme = await p.evaluate(() => document.querySelector('.parc-niv[data-w="2"][data-i="0"]').classList.contains("verrou") && !!document.querySelector(".parc-cond"));
-    att.includes("encore 4 étoiles de coups") && ferme ? ok("étoiles : le monde 3 attend 36 étoiles de coups (il en manque 4), l'accueil et la carte le disent") : faute("condition d'étoiles : « " + att + " », fermé " + ferme);
-    await poser(2); await p.reload(); await p.waitForTimeout(1200); await p.tap("#btnJouer"); await p.waitForTimeout(600);
-    (await p.evaluate(() => !document.querySelector('.parc-niv[data-w="2"][data-i="0"]').classList.contains("verrou"))) ? ok("étoiles : à 36 étoiles de coups, le monde 3 s'ouvre") : faute("le monde 3 reste fermé à 36 étoiles");
+    att.includes("encore 8 étoiles de coups") && ferme ? ok("étoiles : le monde 3 attend 32 étoiles de coups (il en manque 8), l'accueil et la carte le disent") : faute("condition d'étoiles : « " + att + " », fermé " + ferme);
+    await poser(4); await p.reload(); await p.waitForTimeout(1200); await p.tap("#btnJouer"); await p.waitForTimeout(600);
+    (await p.evaluate(() => !document.querySelector('.parc-niv[data-w="2"][data-i="0"]').classList.contains("verrou"))) ? ok("étoiles : à 32 étoiles de coups, le monde 3 s'ouvre") : faute("le monde 3 reste fermé à 32 étoiles");
 
     // paysage
     if (appareil === "iPhone 13") {
@@ -163,7 +171,7 @@ async function resoudre(p) {
     const p = await ctx.newPage();
     p.setDefaultTimeout(8000);
     await p.goto(URL); await p.waitForTimeout(1000);
-    // la partie libre est réservée au jeu complet : on débloque pour tester les gestes sur les neuf cercles
+    // la jeu libre est réservée au jeu complet : on débloque pour tester les gestes sur les neuf cercles
     await p.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k) || "{}"); v.achat = true; localStorage.setItem(k, JSON.stringify(v)); });
     await p.reload(); await p.waitForTimeout(1200);
     await p.click("#btnLibre"); await p.waitForTimeout(300); await p.click('#fenetre [data-a="5"]'); await p.waitForTimeout(2600);
@@ -272,9 +280,9 @@ async function resoudre(p) {
     await p.waitForTimeout(2200); await mesurer("victoire"); await go('#fenetre [data-a="suivant"]', 2000);
     await go("#btnIndice", 400); await mesurer("indice"); await go('#fenetre [data-a="oui"]'); await go("#btnPause"); await go('#fenetre [data-a="niveaux"]', 600); await mesurer("niveaux");
     await mesurer("parcours"); await go(".parc-sect.paye"); await mesurer("boutique"); await fermer();
-    await go("#parcours [data-retour]"); await go("#btnLibre"); await mesurer("partie libre"); await go('#fenetre [data-a="25"]'); await fermer();
-    await go("#btnJour"); await mesurer("défis"); await go('#fenetre [data-a="semaine"]', 2500); await mesurer("défi de la semaine"); await go("#btnPause"); await go('#fenetre [data-a="accueil"]');
-    await go("#btnLibre"); await go('#fenetre [data-a="relax"]'); await mesurer("boutique partie libre"); await fermer();
+    await go("#parcours [data-retour]"); await go("#btnLibre"); await mesurer("jeu libre"); await go('#fenetre [data-a="10"]'); await mesurer("boutique jeu libre moyen"); await fermer();
+    await go("#btnJour"); await mesurer("défis"); await go('#fenetre [data-a="semaine"]', 600); await mesurer("boutique défi de la semaine"); await fermer();
+    await go("#btnLibre"); await go('#fenetre [data-a="relax"]'); await mesurer("boutique jeu libre"); await fermer();
     await go("#btnRang"); await mesurer("profil"); await go("#profil [data-retour]");
     await go("#btnSucces"); await mesurer("succès"); await go("#succes [data-retour]"); await go("#btnAide"); await mesurer("aide"); await go("#aide [data-retour]");
     await p.waitForTimeout(3200);

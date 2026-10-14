@@ -14,9 +14,10 @@ Ils changent : vérifiez-les sur les pages officielles au moment de vous inscrir
 
 | | Gratuit | Orbicube complet (achat unique) |
 |---|---|---|
-| Mondes | 1 à 4, de 2 à 5 orbites (48 niveaux, experts compris ; le 3 demande 36 étoiles de coups, le 4 36 étoiles de temps) | les 8, jusqu’aux 9 orbites (96 niveaux) |
+| Mondes | 1 à 4, de 2 à 5 orbites (48 niveaux, experts compris ; le 3 demande 32 étoiles de coups, le 4 48 étoiles de temps : deux par niveau du chemin d'avant) | les 8, jusqu’aux 9 orbites (96 niveaux) |
 | Défi du jour | oui | oui |
-| Partie libre | Facile | Facile, Moyen, Difficile, Expert |
+| Défi de la semaine | non | oui |
+| Jeu libre | Facile, sur 5 orbites | Facile, Moyen, Difficile, Expert, Sans fin, Relax, sur les 9 orbites |
 | Publicité | aucune | aucune |
 
 - **Prix : 4,99 €** (décision du client, le 13/10/2026). Le joueur voit
@@ -78,7 +79,7 @@ Un seul produit, avec le **même identifiant partout** : `orbicube_complet`.
 1. **App Store Connect** > votre app > Achats intégrés > **Non consommable**
    - Identifiant produit : `orbicube_complet`
    - Prix : 4,99 €
-   - Nom affiché : « Orbicube complet ». Description : « Les 8 mondes et toute la partie libre. »
+   - Nom affiché : « Orbicube complet ». Description : « Les 8 mondes et tout le jeu libre. »
    - Une capture de la boutique pour la vérification (`npm run captures`, ou une capture du téléphone).
 2. **Google Play Console** > Monétiser > Produits > **Produits intégrés à l'application**
    - Identifiant : `orbicube_complet`, même nom, même prix.
@@ -120,7 +121,7 @@ de la marge pour des succès futurs.
 | eclair | `orbicube.eclair` | Éclair | Résoudre un niveau d'au moins 3 coups en moins de 10 secondes. | 50 |
 | jour | `orbicube.rendezvous` | Rendez-vous | Réussir un défi du jour. | 25 |
 | serie3 | `orbicube.serie3` | Trois jours de suite | Réussir le défi du jour trois jours d'affilée. | 75 |
-| expert | `orbicube.expert` | Expert | Résoudre une partie libre de 25 coups. | 100 |
+| expert | `orbicube.expert` | Expert | Résoudre une partie de 25 coups en jeu libre. | 100 |
 | axes | `orbicube.troisaxes` | Trois axes | Tourner M, E et S dans une même partie résolue. | 50 |
 | tours | `orbicube.milletours` | Mille tours | Tourner les cercles 1 000 fois. | 100 |
 
@@ -262,7 +263,7 @@ Après chaque modification du jeu : `npm run cap:sync`, puis reconstruire.
   L'achat est simulé.
 - À vérifier sur un vrai téléphone :
   1. monde 3 → la boutique s'ouvre, avec le bon prix ;
-  2. l'achat débloque les mondes 3 à 6 et la partie libre ;
+  2. l'achat débloque les mondes 5 à 8, tout le jeu libre et le défi de la semaine ;
   3. désinstaller, réinstaller, puis *Options > Restaurer* : tout revient ;
   4. le mode avion : le jeu se joue, la boutique dit que le store ne répond pas ;
   5. le bouton retour d'Android : il ferme les fenêtres, met en pause, remonte, puis quitte ;

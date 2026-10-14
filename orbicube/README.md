@@ -3,7 +3,7 @@
 Le cube 3×3 joué en faisant tourner neuf cercles. Chaque tranche du cube est un cercle, chaque
 facette une pastille posée au croisement des deux cercles qui peuvent la déplacer.
 
-- 96 niveaux en 8 mondes, un défi du jour, une partie libre chronométrée
+- 96 niveaux en 8 mondes, un défi du jour, un jeu libre chronométré
 - 14 succès, aussi dans Game Center et Google Play Jeux
 - en français, anglais, néerlandais, allemand et espagnol (langue du téléphone, ou au choix dans les options)
 - gratuit pour les mondes 1 et 2, **un achat unique** (« Orbicube complet ») pour le reste

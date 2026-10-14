@@ -179,6 +179,9 @@ else {
   neufLibres.length ? faute("monde gratuit à neuf anneaux : " + neufLibres.join(", ")) : ok("aucun monde gratuit à neuf anneaux");
   // une orbite de plus à chaque monde, de deux jusqu'aux neuf (le client, le 14/10/2026) : chaque monde garde celles du précédent
   const pas = G.MONDES.every((M, w) => M.anneaux.length === w + 2 && (w === 0 || G.MONDES[w - 1].anneaux.every((a) => M.anneaux.includes(a))));
+  // les seuils d'étoiles des mondes : jamais toutes les étoiles du chemin d'avant, au plus les trois quarts (le client)
+  const seuilsTrop = G.MONDES.map((M, w) => { const c = M.etoiles; return c && (c.jaunes || c.bleues) > 3 * 0.75 ? w + 1 : 0; }).filter(Boolean);
+  seuilsTrop.length ? faute("seuil d'étoiles trop haut (plus des trois quarts) : monde " + seuilsTrop.join(", ")) : ok("seuils d'étoiles : au plus les trois quarts des étoiles du chemin d'avant");
   pas && G.MONDES[G.MONDES.length - 1].anneaux.length === 9 ? ok(G.MONDES.length + " mondes : une orbite de plus à chaque monde, jusqu'aux neuf") : faute("les mondes n'ajoutent pas une orbite à la fois jusqu'aux neuf");
 }
 

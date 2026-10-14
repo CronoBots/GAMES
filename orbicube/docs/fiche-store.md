@@ -29,7 +29,7 @@ elles. Regroupez chaque couleur pour gagner.
 • Trois étoiles en un minimum de coups
 • Un défi du jour et un défi de la semaine, les mêmes pour tout le monde
 • Des rangs à gravir, trois missions chaque jour et des ciels à débloquer
-• Une partie libre chronométrée, de facile à expert, un mode sans fin et un mode relax
+• Un jeu libre chronométré, de facile à expert, un mode sans fin et un mode relax
 • Des étoiles de coups et des étoiles de temps, chacune avec ses récompenses
 • 14 succès, aussi dans Game Center et Google Play Jeux
 • En français, anglais, néerlandais, allemand et espagnol
@@ -44,7 +44,7 @@ casse-tête,cube,3x3,cercles,puzzle,logique,permutation,réflexion,cerveau,défi
 
 **Catégorie** : Jeux > Réflexion (catégorie secondaire : Jeux > Éducation)
 
-**Nouveautés de la version 1.0** : Première version : 96 niveaux, le défi du jour et la partie libre.
+**Nouveautés de la version 1.0** : Première version : 96 niveaux, le défi du jour et le jeu libre.
 
 ## English
 
@@ -182,7 +182,7 @@ Los cuatro primeros mundos son gratis. Las nueve órbitas a la vez se juegan con
 | Identifiant | `orbicube_complet` |
 | Type | Non consommable (Apple) · Produit intégré à l'application (Google) |
 | Nom | Orbicube complet · Orbicube full game |
-| Description | Les 8 mondes et toute la partie libre. · All 8 worlds and every free-play level. |
+| Description | Les 8 mondes et tout le jeu libre. · All 8 worlds and every free-play level. |
 | Prix | 4,99 € |
 
 > Le jeu parle les cinq langues de cette fiche : publiez chaque langue sur les deux stores.
