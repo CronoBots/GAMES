@@ -117,7 +117,7 @@ async function resoudre(p) {
     // après achat, tout s'ouvre et la progression survit au rechargement
     await p.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); v.achat = true; localStorage.setItem(k, JSON.stringify(v)); });
     await p.reload(); await p.waitForTimeout(1200);
-    (await p.isHidden("#prixAccueil")) && (await p.textContent("#stylesAccueil")) === "Styles" ? ok("jeu complet : la boutique ne vend plus que les styles") : faute("la boutique affiche encore le prix du jeu");
+    (await p.textContent("#btnAchatOpt")) === "Débloqué" ? ok("jeu complet : l'achat est reconnu après rechargement") : faute("le jeu complet n'est pas reconnu");
     await p.tap("#btnJouer"); await p.waitForTimeout(600);
     const restants = await p.$$eval(".parc-sect.paye", (l) => l.length);
     restants === 0 ? ok("jeu complet : plus aucun monde réservé, progression gardée") : faute(restants + " mondes encore réservés");
@@ -172,7 +172,7 @@ async function resoudre(p) {
         achatsDisponibles: () => Promise.resolve(true), prix: () => Promise.resolve("3,49 €"), etatAchat: () => Promise.resolve(null),
         acheter: () => new Promise((ok) => setTimeout(() => ok({ ok: true }), 200)), restaurer: () => Promise.resolve({ ok: false, erreur: "aucun" }),
         prixProduits: () => Promise.resolve({ orbicube_pack_couleurs: "2,29 €" }), droits: () => Promise.resolve(null),
-        acheterProduit: (id) => new Promise((ok) => setTimeout(() => ok({ ok: true, droits: id === "orbicube_pack_couleurs" ? ["pack_couleurs"] : [] }), 150)),
+        acheterProduit: (id) => new Promise((ok) => setTimeout(() => ok({ ok: true, droits: id === "orbicube_pack_couleurs" ? ["pack_couleurs"] : id === "orbicube_style_galaxie" ? ["style_galaxie"] : [] }), 150)),
         succesDisponibles: () => true, succesConnecter: () => { window.__connexions++; return Promise.resolve(true); },
         succesDebloquer: (id) => { window.__envoyes.push(id); return Promise.resolve(true); }, succesAfficher: () => { window.__affiche = true; return Promise.resolve(true); },
         classementEnvoyer: (id, v, t) => { window.__scores.push([id, v, t]); return Promise.resolve(true); }, classementsAfficher: (id) => { window.__classement = id; return Promise.resolve(true); } };` }));
@@ -181,7 +181,6 @@ async function resoudre(p) {
     const erreurs = [];
     p.on("pageerror", (e) => erreurs.push(e.message));
     await p.goto(URL + "?capture"); await p.waitForTimeout(1200);
-    (await p.textContent("#prixAccueil")) === "3,49 €" ? ok("le prix vient du store (3,49 €)") : faute("prix du store non affiché");
     await p.click("#btnJouer"); await p.waitForTimeout(1800);
     for (const m of await p.evaluate(() => window.__orbicube.solution())) { await p.keyboard.press(m.length > 1 ? "Shift+" + m[0] : m[0]); await p.waitForTimeout(450); }
     await p.waitForTimeout(2200);
@@ -204,12 +203,15 @@ async function resoudre(p) {
     await p.click("#btnJouer"); await p.waitForTimeout(700); await p.click(".parc-sect.paye"); await p.waitForTimeout(400);
     (await p.textContent("#fenetre")).includes("3,49 €") ? ok("la boutique affiche le prix du store") : faute("prix absent de la boutique");
     await p.click('#fenetre [data-a="acheter"]'); await p.waitForTimeout(1400);
-    (await p.isHidden("#prixAccueil")) ? ok("achat réussi : le jeu complet est débloqué") : faute("l'achat ne débloque rien");
+    (await p.textContent("#btnAchatOpt")) === "Débloqué" ? ok("achat réussi : le jeu complet est débloqué") : faute("l'achat ne débloque rien");
     (await p.$$eval(".parc-sect.paye", (l) => l.length)) === 0 ? ok("après l'achat, plus aucun monde réservé") : faute("des mondes restent réservés après l'achat");
     // boutique : prix d'un pack venu du store, achat d'un pack (ses styles s'ouvrent), achat d'ampoules (créditées)
     await p.click("#parcours [data-retour]"); await p.waitForTimeout(400);
     await p.click("#btnOptions"); await p.waitForTimeout(400); await p.click("#btnStylesOpt"); await p.waitForTimeout(700);
     (await p.textContent("#pack-couleurs")).includes("2,29 €") ? ok("boutique : le prix du pack vient du store (2,29 €)") : faute("prix du pack absent");
+    // un style seul : la fiche de l'aperçu le vend à l'unité, sans le reste du pack
+    await p.click('.style[data-id="galaxie"]'); await p.waitForTimeout(500); await p.click('#apercuFiche [data-achat="s_galaxie"]'); await p.waitForTimeout(900);
+    !(await p.$('.style.ferme[data-id="galaxie"]')) && (await p.$('.style.ferme[data-id="aurore"]')) ? ok("un style acheté seul s'ouvre, sans ouvrir le reste du pack") : faute("l'achat à l'unité ne marche pas");
     await p.click("#pack-couleurs [data-achat]"); await p.waitForTimeout(900);
     !(await p.$('.style.ferme[data-id="aurore"]')) && (await p.textContent("#pack-couleurs")).includes("Acquis") ? ok("pack acheté : ses palettes s'ouvrent") : faute("le pack acheté n'ouvre rien");
     const amp0 = +(await p.textContent("#boutAmpNb")); await p.click('[data-achat="amp10"]'); await p.waitForTimeout(900);

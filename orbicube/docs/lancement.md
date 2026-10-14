@@ -208,6 +208,12 @@ sont ceux de `PACKS` dans `www/index.html` ; les prix affichés en attendant le 
 | `orbicube_soutien` « Soutenir Orbicube » | Non consommable | 2,99 € | `soutien` |
 | `orbicube_ampoules_10` « 10 ampoules » | **Consommable** | 0,99 € | aucun : le jeu crédite les ampoules |
 | `orbicube_ampoules_30` « 30 ampoules » | **Consommable** | 1,99 € | aucun |
+| `orbicube_style_<id>` : chaque style d'un pack, **à l'unité** (11 produits, voir ci-dessous) | Non consommable | 0,99 € | `style_<id>` |
+
+Les 11 styles vendus aussi à l'unité (le client, le 14/10/2026 : « chaque élément peut être acheté séparément ») :
+`aurore`, `galaxie`, `glace`, `joyaux` (couleurs) ; `gemmes`, `etoiles`, `cristaux` (formes) ; `comete`, `argent`,
+`arcenciel`, `feux` (effets). Produit `orbicube_style_aurore`, droit `style_aurore`, et ainsi de suite. Un style s'ouvre
+avec son propre droit **ou** celui de son pack : le pack reste plus avantageux dès deux styles.
 
 - Dans RevenueCat, **attachez chaque produit à ses droits** : un produit groupé à plusieurs droits. C'est ce qui
   ouvre tout d'un coup avec l'Édition intégrale. Les produits n'ont pas besoin d'être dans l'*offering*.

@@ -72,11 +72,14 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   au premier contact avec le plateau et avance seul (`majTemps`, toutes les 250 ms).
 - **Boutique** (`#boutique`, le client, le 13/10/2026 : « le plus professionnellement possible ») : écran ouvert par le
   rond doré du dock (« Boutique », après dix niveaux ; son prix tant que le jeu n'est pas complet, puis « Styles ») et par
-  Options > Styles. Offre phare (Édition intégrale, ou Collection si le jeu est déjà complet), **aperçu en direct** sur un
-  vrai plateau (`ApercuP`, fixe sous les onglets — collant, il recouvrait les vignettes ; un style regardé n'est pas porté), rayons Couleurs /
+  Options > Styles (le dock n'affiche plus de prix, le client le 14/10/2026). **En haut la vitrine, en bas toutes les offres**
+  (Édition intégrale ou Collection, Orbicube complet, Collection, les 3 packs, ampoules, soutien). **Aperçu en direct** sur un
+  vrai plateau (`ApercuP`, fixe sous les onglets — collant, il recouvrait les vignettes ; un style regardé n'est pas porté), avec
+  sa **fiche** (`#apercuFiche` : Porté, Porter, condition à gagner, ou **achat à l'unité** et lien vers le pack) ; rayons Couleurs /
   Formes / Effets (traînée, orbites, victoire) en vignettes dessinées (`vignette`), ampoules, pack soutien, restauration.
   **Catalogue** : `STYLES` (ouverture : libre, `etoiles`, `chrono`, `rang` ou `pack`), `PACKS` (produit des stores + droit
-  RevenueCat ; éditions groupées = plusieurs droits ; ampoules consommables créditées par `crediterAmpoules`). Le style
+  RevenueCat ; éditions groupées = plusieurs droits ; ampoules consommables créditées par `crediterAmpoules` ; **chaque style
+  d'un pack s'achète aussi seul** : `PACKS.s_<id>`, produit `orbicube_style_<id>`, droit `style_<id>`, 0,99 €). Le style
   porté est dans `PROG.options` et lu par `STY` (recalculé par `appliquerOptions`, un style reperdu retombe sur le premier) ;
   les achats dans `PROG.droits` (jamais perdus par `fusion`, gardés par « Tout effacer »). Le dessin (`dessiner`, `pastille`,
   `couleurOrbite`, `confettis(v)`) lit les styles du plateau (`pal`, `forme`, `trainee`, `orbite`) ou `STY`. Le pont natif

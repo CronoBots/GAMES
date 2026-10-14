@@ -300,6 +300,10 @@
     ["Mille tours", "A thousand turns", "Duizend draaien", "Tausend Drehungen", "Mil giros"],
     ["Tourner les cercles 1 000 fois.", "Turn the circles 1,000 times.", "Draai de cirkels 1.000 keer.", "Drehe die Kreise 1.000-mal.", "Gira los círculos 1.000 veces."],
     // --- boutique (le client, le 13/10/2026)
+    ["Packs et offres", "Packs and offers", "Pakketten en aanbiedingen", "Pakete und Angebote", "Packs y ofertas"],
+    ["Acheter", "Buy", "Kopen", "Kaufen", "Comprar"],
+    ["Porter", "Wear", "Gebruiken", "Verwenden", "Usar"],
+    ["ou le pack {0}", "or the {0} pack", "of het pakket {0}", "oder das Paket {0}", "o el pack {0}"],
     ["Ampoules", "Bulbs", "Lampjes", "Glühbirnen", "Bombillas"],
     ["Boutique", "Shop", "Winkel", "Shop", "Tienda"],
     ["Styles", "Styles", "Stijlen", "Stile", "Estilos"],

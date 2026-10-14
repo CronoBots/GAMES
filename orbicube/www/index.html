@@ -649,6 +649,12 @@ body.sobre #plateau{transition:none}
 .bout-apercu{position:relative;border-radius:24px;border:1px solid rgba(var(--acc),.3);overflow:hidden;display:grid;justify-items:center;padding:8px 0 12px;
   background:radial-gradient(70% 65% at 50% 42%,rgba(var(--acc),.16),rgba(8,9,20,.94) 72%),#0b0c1c;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
 #apercu{display:block}
+.fiche{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:8px;min-height:44px;justify-content:center}
+.fiche .btn-or{width:auto;min-height:44px;padding:0 24px;font-size:15px}
+.fiche .bouton.petit{margin:0}
+.fiche-etat{display:flex;align-items:center;gap:6px;color:rgb(var(--acc));font:600 14px var(--f-titre)}.fiche-etat svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.6}
+.fiche-cond{color:var(--pale);font-size:13px;text-align:center;padding:0 12px}
+.fiche-pack{background:none;border:0;color:var(--or);font:500 12.5px var(--f-texte);text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:4px 8px}
 .bout-apercu .nom{font:600 12px var(--f-titre);letter-spacing:.16em;text-transform:uppercase;color:var(--pale)}
 .bout-rayons{width:100%}.bout-rayons button{flex:1}
 .bout-sous{margin:6px 2px -4px;font:600 11px var(--f-titre);letter-spacing:.18em;text-transform:uppercase;color:rgb(var(--acc))}
@@ -717,7 +723,7 @@ body.sobre #plateau{transition:none}
           <button class="item" id="btnSucces" type="button"><i class="rond"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M8.5 14l-1.5 7 5-3 5 3-1.5-7"/></svg></i>
             <span class="nom">Succès</span><span class="sous notrad" id="succesSous"></span></button>
           <button class="item or" id="btnBoutique" type="button" hidden><i class="rond"><svg viewBox="0 0 24 24"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/></svg></i>
-            <span class="nom">Boutique</span><span class="sous notrad" id="prixAccueil"></span><span class="sous" id="stylesAccueil" hidden>Styles</span></button>
+            <span class="nom">Boutique</span><span class="sous" id="stylesAccueil">Styles</span></button>
           </nav>
         </div>
         
@@ -777,10 +783,11 @@ body.sobre #plateau{transition:none}
       <span class="puce bout-reserve" aria-label="Ampoules"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg><span class="notrad" id="boutAmpNb">3</span></span>
     </div>
     <div class="defile"><div class="bout">
-      <div id="boutHero"></div>
       <div class="segment bout-rayons" id="boutRayons"><button type="button" data-r="palette" class="on">Couleurs</button><button type="button" data-r="forme">Formes</button><button type="button" data-r="effets">Effets</button></div>
-      <div class="bout-apercu"><canvas id="apercu" aria-label="Aperçu du style"></canvas><div class="nom" id="apercuNom"></div></div>
+      <div class="bout-apercu"><canvas id="apercu" aria-label="Aperçu du style"></canvas><div class="nom" id="apercuNom"></div><div class="fiche" id="apercuFiche"></div></div>
       <div class="bout" id="boutRayon"></div>
+      <div class="bout-sous">Packs et offres</div>
+      <div class="bout" id="boutHero"></div>
       <div class="bout-sous">Ampoules</div>
       <div class="bout-amp" id="boutAmpoules"></div>
       <div id="boutSoutien"></div>
@@ -940,10 +947,12 @@ var STYLES={
   victoire:[{id:"confettis",nom:"Confettis"},{id:"pluie",nom:"Pluie d’étoiles",ouv:{chrono:30}},{id:"feux",nom:"Feu d’artifice",ouv:{pack:"effets"}}]};
 // les styles portés, recalculés par appliquerOptions() (le dessin les lit à chaque image)
 var STY={palette:"classique",forme:"facettes",trainee:"halo",orbite:"accent",victoire:"confettis"};
+// chaque style d'un pack s'achète aussi à l'unité (le client, le 14/10/2026) : produit orbicube_style_<id>, droit style_<id>
+Object.keys(STYLES).forEach(function(k){STYLES[k].forEach(function(st){if(st.ouv&&st.ouv.pack)PACKS["s_"+st.id]={produit:"orbicube_style_"+st.id,droit:"style_"+st.id,nom:st.nom,unite:true};});});
 function style(k,id){var l=STYLES[k];for(var i=0;i<l.length;i++)if(l[i].id===id)return l[i];return l[0];}
 function aDroit(d){return d==="complet"?complet():!!(PROG.droits&&PROG.droits[d]);}
 function styleOuvert(k,id){var o=style(k,id).ouv;if(!o)return true;if(o.etoiles)return etoilesTotal()>=o.etoiles;if(o.chrono)return etoilesChrono()>=o.chrono;
-  if(o.rang)return rangDe(PROG.xp).r>=o.rang;if(o.pack)return aDroit(PACKS[o.pack].droit);return false;}
+  if(o.rang)return rangDe(PROG.xp).r>=o.rang;if(o.pack)return aDroit(PACKS[o.pack].droit)||aDroit("style_"+id);return false;}
 // le style porté (un style reperdu, ou d'un pack pas encore restauré, retombe sur le premier de son rayon)
 function styleActif(k){var v=PROG.options[k];return v&&style(k,v).id===v&&styleOuvert(k,v)?v:STYLES[k][0].id;}
 var COUL=PALETTES.classique;
@@ -1964,7 +1973,7 @@ NATIF.prix().then(function(p){if(p){PRIX=p;majAchat();}});
 NATIF.etatAchat().then(function(ok){if(ok===true&&!PROG.achat){PROG.achat=true;sauver();majAchat();rafraichirAccueil();}
   else if(ok===false&&PROG.achat){PROG.achat=false;sauver();majAchat();rafraichirAccueil();}});
 // la pastille d'achat n'apparaît qu'une fois le monde 1 fini : avant, elle parle d'un jeu qu'on ne connaît pas encore
-function majAchat(){var c=complet();document.getElementById("btnBoutique").hidden=Object.keys(PROG.niveaux).length<10;var vendu=c||CFG.modele==="complet";document.getElementById("prixAccueil").textContent=PRIX;document.getElementById("prixAccueil").hidden=vendu;document.getElementById("stylesAccueil").hidden=!vendu;
+function majAchat(){var c=complet();document.getElementById("btnBoutique").hidden=Object.keys(PROG.niveaux).length<10;
   document.getElementById("grpAchat").hidden=CFG.modele==="complet";
   document.getElementById("achatEtat").textContent=c?"Débloqué. Merci pour votre soutien !":"Les 6 mondes, toute la partie libre"+(PRIX?" · "+PRIX:"")+".";
   var b=document.getElementById("btnAchatOpt");b.textContent=c?"Débloqué":"Débloquer";b.disabled=c;
@@ -1993,7 +2002,8 @@ document.getElementById("btnAchatOpt").addEventListener("click",function(){sonCl
 document.getElementById("btnRestaurer").addEventListener("click",function(){sonClic();if(!NATIF.natif){avertir("Restaurer","Les achats se restaurent dans l’application.");return;}restaurer();});
 /* ========== 15 quater. LA BOUTIQUE (écran) ========== */
 // prix affichés tant que le store n'a pas répondu (config.js > prixPacks) ; le vrai prix vient du store
-var PRIXP=Object.assign({couleurs:"1,99 €",formes:"1,99 €",effets:"1,99 €",collection:"3,99 €",integrale:"7,99 €",soutien:"2,99 €",amp10:"0,99 €",amp30:"1,99 €"},CFG.prixPacks||{});
+var PRIXP=Object.assign({style:"0,99 €",couleurs:"1,99 €",formes:"1,99 €",effets:"1,99 €",collection:"3,99 €",integrale:"7,99 €",soutien:"2,99 €",amp10:"0,99 €",amp30:"1,99 €"},CFG.prixPacks||{});
+Object.keys(PACKS).forEach(function(k){if(PACKS[k].unite&&!PRIXP[k])PRIXP[k]=PRIXP.style;});
 var RAYON="palette",VU={},COCHE='<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',CADENAS='<path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z"/>';
 // l'aperçu : un vrai plateau qui joue trois tours puis les défait, habillé du style regardé (sans le porter)
 var ApercuP=new Plateau(document.getElementById("apercu"),{etiquettes:false});ApercuP.continu=true;ApercuP.prochain=0;ApercuP.sol=[];Ticker.actifs.push(ApercuP);
@@ -2002,7 +2012,13 @@ ApercuP.apres=function(now){if(this.occupe()||now<this.prochain)return;
     this.sol=mv.slice().reverse().map(inverse);mv.forEach(function(x){ApercuP.jouer(x,560);});this.prochain=now+900;return;}
   this.jouer(this.sol.shift(),560);this.prochain=now+(this.sol.length?250:1500);};
 function habillerApercu(){var vu=function(k){return VU[k]||STY[k];};ApercuP.pal=PALETTES[vu("palette")];ApercuP.forme=vu("forme");ApercuP.trainee=vu("trainee");ApercuP.orbite=vu("orbite");
-  var k=RAYON==="effets"?(VU.dernier||"trainee"):RAYON;document.getElementById("apercuNom").textContent=style(k,vu(k)).nom;ApercuP.dessiner();}
+  var k=RAYON==="effets"?(VU.dernier||"trainee"):RAYON,st=style(k,vu(k)),o=st.ouv||{},f;document.getElementById("apercuNom").textContent=st.nom;
+  if(STY[k]===st.id)f='<span class="fiche-etat">'+COCHE+'Porté</span>';
+  else if(styleOuvert(k,st.id))f='<button class="bouton petit" type="button" data-porter="'+k+'" data-id="'+st.id+'">Porter</button>';
+  else if(o.pack)f='<button class="btn-or" type="button" data-achat="s_'+st.id+'"><span>Acheter</span><span class="px notrad">'+PRIXP["s_"+st.id]+'</span></button>'+
+    '<button class="fiche-pack" type="button" data-achat="'+o.pack+'">ou le pack '+PACKS[o.pack].nom+'</button>';
+  else f='<span class="fiche-cond">'+(o.etoiles?"Se gagne à {0} étoiles de coups".replace("{0}",o.etoiles):o.chrono?"Se gagne à {0} étoiles de temps".replace("{0}",o.chrono):"Se gagne au rang {0}".replace("{0}",o.rang))+'</span>';
+  document.getElementById("apercuFiche").innerHTML=f;ApercuP.dessiner();}
 function redimApercu(){var w=document.querySelector("#boutique .bout").clientWidth;if(w)ApercuP.dimension(Math.round(Math.min(w-40,innerHeight<700?160:190)));}
 // vignettes : un petit dessin par style, avec la palette portée (ou celle du style pour les couleurs)
 function vignette(cv,k,id){var d=Math.min(DPR,2.5),W=64;cv.width=W*d;cv.height=W*d;var cx=cv.getContext("2d");cx.setTransform(d,0,0,d,0,0);cx.clearRect(0,0,W,W);
@@ -2033,11 +2049,11 @@ function vignette(cv,k,id){var d=Math.min(DPR,2.5),W=64;cv.width=W*d;cv.height=W
     else{for(var j=0;j<16;j++){cx.beginPath();cx.arc(10+((j*37)%46),10+((j*23)%46),2.4+(j%3),0,6.283);cx.fillStyle=pal[j%6];cx.fill();}}}}
 // une condition lisible pour ce qui n'est pas encore ouvert
 function condition(st){var o=st.ouv||{};if(o.etoiles)return'<small class="notrad">'+SVG_ET+o.etoiles+'</small>';if(o.chrono)return'<small class="notrad">'+SVG_ETT+o.chrono+'</small>';
-  if(o.rang)return'<small>Rang '+o.rang+'</small>';return'<small>'+PACKS[o.pack].nom+'</small>';}
+  if(o.rang)return'<small>Rang '+o.rang+'</small>';return'<small class="notrad">'+PRIXP["s_"+st.id]+'</small>';}
 function carteStyle(k,st){var ouv=styleOuvert(k,st.id),porte=STY[k]===st.id,vu=VU[k]===st.id;
   return'<button class="style'+(porte?" porte":"")+(vu?" vu":"")+(ouv?"":" ferme")+'" type="button" data-k="'+k+'" data-id="'+st.id+'"><canvas></canvas><b>'+st.nom+'</b>'+
     (porte?'<small>Porté</small>':ouv?'<small>Choisir</small>':condition(st))+(ouv?"":'<svg class="cad" viewBox="0 0 24 24">'+CADENAS+'</svg>')+'</button>';}
-function lignePack(cle,ic){var P=PACKS[cle],a=aDroit(P.droit);
+function lignePack(cle,ic){var P=PACKS[cle],a=P.droit?aDroit(P.droit):(P.droits||[]).every(aDroit);
   return'<div class="bout-ligne'+(a?" acquis":"")+'" id="pack-'+cle+'"><span class="ic"><svg viewBox="0 0 24 24">'+ic+'</svg></span><div class="lt"><b>'+P.nom+'</b><span>'+P.desc+'</span></div>'+
     (a?'<span class="bout-acquis">'+COCHE+'Acquis</span>':'<button class="btn-or" type="button" data-achat="'+cle+'"><span class="px notrad">'+PRIXP[cle]+'</span></button>')+'</div>';}
 var IC={couleurs:'<circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><circle cx="12" cy="16" r="3"/>',formes:'<path d="M12 3l4 5-4 13-4-13z"/><path d="M8 8h8"/>',
@@ -2050,17 +2066,19 @@ function rendreBoutique(){var c=complet(),tous=["pack_couleurs","pack_formes","p
       puce("Les 6 mondes et toute la partie libre")+puce("Une ampoule offerte chaque jour")+puce("Les 3 packs : 4 palettes, 3 formes, 4 effets")+'</ul>'+
       '<button class="btn-or" type="button" data-achat="integrale"><span>Tout débloquer</span><span class="px notrad">'+PRIXP.integrale+'</span></button></div>'+
       '<div class="bout-ligne" id="pack-complet"><span class="ic"><svg viewBox="0 0 24 24">'+IC.couronne+'</svg></span><div class="lt"><b>Orbicube complet</b><span>Les 6 mondes, toute la partie libre, une ampoule par jour.</span></div>'+
-      '<button class="btn-or" type="button" data-achat="complet"><span class="px notrad">'+PRIX+'</span></button></div>';
+      '<button class="btn-or" type="button" data-achat="complet"><span class="px notrad">'+PRIX+'</span></button></div>'+(tous?"":lignePack("collection",IC.effets));
   else if(!tous)h='<div class="bout-hero"><span class="etiq">Collection</span><h3>'+PACKS.collection.nom+'</h3><p>Les trois packs de styles, en un seul achat.</p><ul>'+
       puce("4 palettes : Aurore, Galaxie, Glace, Joyaux")+puce("3 formes : Gemmes, Étoiles, Cristaux")+puce("4 effets : comète, argent, arc-en-ciel, feu d’artifice")+'</ul>'+
       '<button class="btn-or" type="button" data-achat="collection"><span>Tout le style</span><span class="px notrad">'+PRIXP.collection+'</span></button></div>';
   else h='<div class="bout-hero merci"><span class="etiq">Merci</span><h3>Vous avez tout Orbicube</h3><p>Tous les mondes et tous les styles sont à vous. Bon voyage dans les orbites.</p></div>';
+  // en bas de la boutique, toutes les offres : l'édition phare, puis chaque pack (chacun ouvre aussi ses styles un par un)
+  h+=lignePack("couleurs",IC.couleurs)+lignePack("formes",IC.formes)+lignePack("effets",IC.effets);
   document.getElementById("boutHero").innerHTML=h;
   document.querySelectorAll("#boutRayons button").forEach(function(b){b.classList.toggle("on",b.dataset.r===RAYON);});
   var r="";
-  if(RAYON==="palette")r=lignePack("couleurs",IC.couleurs)+'<div class="bout-grille">'+STYLES.palette.map(function(st){return carteStyle("palette",st);}).join("")+'</div>';
-  else if(RAYON==="forme")r=lignePack("formes",IC.formes)+'<div class="bout-grille">'+STYLES.forme.map(function(st){return carteStyle("forme",st);}).join("")+'</div>';
-  else r=lignePack("effets",IC.effets)+[["trainee","Traînée"],["orbite","Orbites"],["victoire","Victoire"]].map(function(g){
+  if(RAYON==="palette")r='<div class="bout-grille">'+STYLES.palette.map(function(st){return carteStyle("palette",st);}).join("")+'</div>';
+  else if(RAYON==="forme")r='<div class="bout-grille">'+STYLES.forme.map(function(st){return carteStyle("forme",st);}).join("")+'</div>';
+  else r=[["trainee","Traînée"],["orbite","Orbites"],["victoire","Victoire"]].map(function(g){
       return'<div class="bout-sous">'+g[1]+'</div><div class="bout-grille">'+STYLES[g[0]].map(function(st){return carteStyle(g[0],st);}).join("")+'</div>';}).join("");
   var el=document.getElementById("boutRayon");el.innerHTML=r;
   el.querySelectorAll(".style").forEach(function(b){vignette(b.querySelector("canvas"),b.dataset.k,b.dataset.id);});
@@ -2088,12 +2106,14 @@ function acheterPack(cle){sonClic();
 function ouvrirMagasin(depuis){document.getElementById("boutRetour").setAttribute("data-retour",depuis||"accueil");VU={};montrer("boutique");}
 document.getElementById("boutRayons").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;sonClic();RAYON=b.dataset.r;rendreBoutique();});
 document.getElementById("boutique").addEventListener("click",function(e){var a=e.target.closest("[data-achat]");if(a){acheterPack(a.dataset.achat);return;}
+  var pt=e.target.closest("[data-porter]");if(pt){opt(pt.dataset.porter,pt.dataset.id);sonClic();vibrer(8);rendreBoutique();return;}
   var b=e.target.closest(".style");if(!b)return;var k=b.dataset.k,id=b.dataset.id,st=style(k,id);VU[k]=id;VU.dernier=k;
+  // l'aperçu et sa fiche reviennent à la vue s'ils sont sortis de l'écran (un style touché plus bas)
+  var ap=document.querySelector(".bout-apercu").getBoundingClientRect();if(ap.top<60||ap.bottom>innerHeight)document.querySelector(".bout-apercu").scrollIntoView({behavior:CALME?"auto":"smooth",block:"center"});
   if(k==="victoire")confettis(id);
   if(styleOuvert(k,id)){if(STY[k]!==id){opt(k,id);vibrer(8);}sonClic();}
   else{vibrer(20);var o=st.ouv;
-    if(o.pack){var l=document.getElementById("pack-"+o.pack);if(l){l.scrollIntoView({behavior:CALME?"auto":"smooth",block:"center"});l.classList.remove("appel");void l.offsetWidth;l.classList.add("appel");}
-      toast(st.nom,"Dans le pack {0}".replace("{0}",PACKS[o.pack].nom));}
+    if(o.pack){}   // la fiche sous l'aperçu propose le style seul ou son pack
     else toast(st.nom,o.etoiles?"Se gagne à {0} étoiles de coups".replace("{0}",o.etoiles):o.chrono?"Se gagne à {0} étoiles de temps".replace("{0}",o.chrono):"Se gagne au rang {0}".replace("{0}",o.rang));}
   rendreBoutique();});
 document.getElementById("boutRestaurer").addEventListener("click",function(){sonClic();if(!NATIF.natif){avertir("Restaurer","Les achats se restaurent dans l’application.");return;}restaurer();});
