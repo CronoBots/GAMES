@@ -1582,7 +1582,7 @@ function texteCond(c){return c.jaunes?"Pour ouvrir ce monde : "+c.faut+" étoile
 function mondeAttend(){for(var w=1;w<MONDES.length;w++)if(!mondePaye(w)&&PROG.niveaux[w+"-"+BASE]&&condEtoiles(w))return w;return -1;}
 function mondeOuvert(w){return !mondePaye(w)&&(w===0||(!!PROG.niveaux[w+"-"+BASE]&&!condEtoiles(w)));}
 // les experts s'ouvrent quand le chemin du monde est fini (le client : la voie dorée est pour après), puis l'un après l'autre
-function niveauOuvert(w,i){if(!mondeOuvert(w))return false;if(estExpert(i))return !!PROG.niveaux[(w+1)+"-"+(i===BASE?BASE:i)];
+function niveauOuvert(w,i){if(!mondeOuvert(w))return false;if(estExpert(i))return !!PROG.niveaux[(w+1)+"-"+BASE]&&(i===BASE||!!PROG.niveaux[(w+1)+"-"+i]);   // le chemin fini ET l'expert d'avant (un expert gagné sous une ancienne règle n'ouvre rien tant que le chemin n'est pas fini)
   return i===0||!!PROG.niveaux[(w+1)+"-"+i];}
 function chronoMonde(w){var t=0;for(var i=0;i<MONDES[w].coups.length;i++){var r=PROG.niveaux[(w+1)+"-"+(i+1)];if(r)t+=r.chrono||0;}return t;}
 function etoilesMonde(w){var t=0;for(var i=0;i<MONDES[w].coups.length;i++){var r=PROG.niveaux[(w+1)+"-"+(i+1)];if(r)t+=r.etoiles;}return t;}
@@ -1679,14 +1679,14 @@ var parcRaf=0;
 // des mondes à moins d'un écran de la vue restent affichées, les autres sont retirées du rendu.
 // à chaque image du défilement : aucune recherche dans la page (les bandes sont listées une fois par carte, PARC_BANDES),
 // aucune écriture inutile (un style n'est touché que s'il change), une seule lecture de la position
-var PARC_BANDES=null,PARC_VIT={"parc-bg":-.18,"parc-planets":-.09,"parc-starsb":0,"parc-meteorsb":0};
+var PARC_BANDES=null,PARC_VIT={"parc-bg":-.18,"parc-planets":-.09,"parc-starsb":-.05,"parc-meteorsb":0};   // nébuleuse, planètes et étoiles bougent (le client) ; les météores restent fixes (mémoire)
 function parcParallax(){var pd=document.getElementById("parcoursDefile");if(!pd)return;
   if(!PARC_BANDES||!PARC_BANDES.length||!PARC_BANDES[0].isConnected)PARC_BANDES=[].map.call(pd.querySelectorAll(".parc-bg,.parc-planets,.parc-starsb,.parc-meteorsb"),function(el){
     return{el:el,t:parseFloat(el.style.top)||0,h:parseFloat(el.style.height)||0,cy:+el.dataset.cy,sp:PARC_VIT[el.className.split(" ")[0]]||0,vu:null,y:null};});
   var st=pd.scrollTop,vh=pd.clientHeight,sc=st+vh/2,C=CALME;
-  PARC_BANDES.forEach(function(b){var vu=b.t+b.h>st-vh*.5&&b.t<st+vh*1.5;
+  PARC_BANDES.forEach(function(b){var vu=b.t+b.h>st-vh*.25&&b.t<st+vh*1.25;
     if(b.vu!==vu){b.vu=vu;b.el.style.display=vu?"":"none";
-      // seules les bandes visibles qui bougent deviennent un calque GPU : fluide, sans rouvrir le gouffre de mémoire (au plus 6)
+      // seules les bandes visibles qui bougent deviennent un calque GPU : fluide, sans rouvrir le gouffre de mémoire (au plus 9)
       b.el.style.willChange=vu&&b.sp&&!C?"transform":"";if(!vu){b.el.style.transform="";b.y=null;}}
     if(vu&&b.sp&&!C){var y=Math.round((b.cy-sc)*b.sp*2)/2;if(y!==b.y){b.y=y;b.el.style.transform="translate3d(0,"+y+"px,0)";}}});}
 // révélation : les nœuds apparaissent (fondu + pop) quand ils entrent dans la fenêtre pendant qu'on monte

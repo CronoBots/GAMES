@@ -143,6 +143,12 @@ async function resoudre(p) {
     bandes <= 12 ? ok("carte : " + bandes + " bandes d'image affichées sur 32 (mémoire de l'iPhone)") : faute("carte : " + bandes + " bandes d'image affichées, Safari risque de fermer la page");
     exp.m2 && exp.e1 && exp.e2 && exp.titres === 8 && exp.total === 96 && exp.ecart >= 70 ? ok("experts : 96 niveaux, une voie dorée de quatre experts par monde (E1 ouvert à la fin du chemin), aucun nœud n'en touche un autre (" + exp.ecart + " px)") : faute("niveaux experts : " + JSON.stringify(exp));
 
+    // un expert gagné sous une ancienne règle n'ouvre pas le suivant tant que le chemin du monde n'est pas fini
+    const exp2 = await p.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); return v; });
+    await p.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); delete v.niveaux["1-8"]; v.niveaux["1-9"] = { etoiles: 3, chrono: 3, coups: 5, temps: 9000 }; localStorage.setItem(k, JSON.stringify(v)); });
+    await p.reload(); await p.waitForTimeout(1200); await p.tap("#btnJouer"); await p.waitForTimeout(800);
+    (await p.evaluate(() => document.querySelector('.parc-niv[data-w="0"][data-i="9"]').classList.contains("verrou"))) ? ok("experts : rien ne s'ouvre sur la voie dorée tant que le chemin n'est pas fini") : faute("un expert s'ouvre avant la fin du chemin");
+    await p.evaluate((v) => localStorage.setItem("orbicube-v1", JSON.stringify(v)), exp2); await p.reload(); await p.waitForTimeout(1200); await p.tap("#btnJouer"); await p.waitForTimeout(800);
     // un nœud ouvre la fiche du niveau (objectif, record, étoiles) avant de jouer, pas le niveau directement
     await p.evaluate(() => document.querySelector('.parc-niv[data-w="0"][data-i="2"]').click()); await p.waitForTimeout(500);
     const fiche = await p.evaluate(() => { const f = document.querySelector("#fenetre"); return !!f && f.textContent.includes("Niveau 3") && !!f.querySelector('[data-a="jouer"]') && document.querySelector(".ecran.actif").id === "parcours"; });

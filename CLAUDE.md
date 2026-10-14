@@ -192,7 +192,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   campagne (achats, expérience et succès, si).
 - **Niveaux experts** : 12 niveaux par monde, 96 en tout ; les huit premiers font le chemin (`BASE`), les quatre derniers
   (`estExpert`) forment **une voie dorée parallèle** (le client, le 14/10/2026) : ils s'ouvrent quand le chemin du monde
-  est fini, puis l'un après l'autre (`niveauOuvert`), en option, sans jamais bloquer le monde suivant (`mondeOuvert`,
+  est fini, puis l'un après l'autre (`niveauOuvert` exige TOUJOURS le chemin fini : un expert gagné sous une ancienne
+  règle ouvrait le suivant, plus grand et cliquable, le client l'a vu), en option, sans jamais bloquer le monde suivant (`mondeOuvert`,
   `mondeFini` lisent le huitième). La victoire du huitième niveau propose « Expert 1 » en second bouton doré. Sur la carte (le client : « la forme inverse », mais pas
   « trop symétrique ») : le chemin garde sa vague naturelle mais jamais au centre (`vague` : au moins 42 % de l'amplitude),
   la voie dorée est sa forme inverse resserrée à 86 % (`inv`), partie du niveau 1 avec le chemin ; l'expert j se pose sur elle, à la
@@ -204,11 +205,12 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 - **Mémoire de la carte sur iPhone** (Safari fermait la page, « un problème est survenu à plusieurs reprises ») : chaque
   bande d'image d'un monde (4 par monde) était un calque de carte graphique (`will-change`) ; à 8 mondes, 48 calques,
   ≈ 760 Mo. Désormais pas de `will-change` sur les bandes ni sur leurs calques parents, et `parcParallax` ne garde
-  affichées que les bandes à moins d'un demi-écran de la vue. **Fluidité** (le client : « pas fluide ») : seules la
-  nébuleuse et les planètes bougent, et seules les bandes visibles deviennent un calque GPU (`translate3d` +
-  `will-change` posés par `parcParallax`, au plus 6) ; étoiles et météores restent fixes ; le ciel animé (`Ciel`) ne se
+  affichées que les bandes à moins d'un demi-écran de la vue. **Fluidité** (le client : « pas fluide », puis « les étoiles doivent
+  bouger aussi ») : la nébuleuse, les planètes et les étoiles bougent (`PARC_VIT`), seules les bandes à l'écran (à un quart
+  d'écran près) deviennent un calque GPU (`translate3d` + `will-change` posés par `parcParallax`, au plus 9) ; les
+  météores restent fixes (les faire bouger aussi : 37 calques, 46 images/s) ; le ciel animé (`Ciel`) ne se
   redessine pas sous la carte ; `parcParallax` ne cherche rien dans la page à chaque image (`PARC_BANDES`, listées une
-  fois par carte) et ne touche un style que s'il change. Mesuré, processeur ralenti ×4 : 37 → 57 images/s. Le parcours de test exige au plus
+  fois par carte) et ne touche un style que s'il change. Mesuré, processeur ralenti ×4 : 37 → 52 images/s avec les étoiles en mouvement. Le parcours de test exige au plus
   12 bandes affichées. Nœuds « E1 » à « E4 ». Le chemin numérote 1 à 64 sans eux (`numNiveau`, `nomNiveau`).
 - **Vraie progression** (le client : deux niveaux de suite se ressemblaient ; « trouver le bon compromis
   difficulté/progression/orbites ») : une orbite de plus par monde ; dans un monde, un coup de plus tous les deux niveaux
