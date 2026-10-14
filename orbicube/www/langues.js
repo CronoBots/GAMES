@@ -61,6 +61,8 @@
     ["Suite dans le jeu complet", "More in the full game", "Meer in het volledige spel", "Mehr im Vollspiel", "Más en el juego completo"],
     ["Campagne terminée", "Campaign complete", "Campagne voltooid", "Kampagne geschafft", "Campaña terminada"],
     ["Niveau {0} · {1}", "Level {0} · {1}", "Level {0} · {1}", "Level {0} · {1}", "Nivel {0} · {1}"],
+    ["Expert {0} · {1}", "Expert {0} · {1}", "Expert {0} · {1}", "Experte {0} · {1}", "Experto {0} · {1}"],
+    ["Monde {0} · Expert {1}", "World {0} · Expert {1}", "Wereld {0} · Expert {1}", "Welt {0} · Experte {1}", "Mundo {0} · Experto {1}"],
     ["Défis", "Challenges", "Uitdagingen", "Rätsel", "Retos"],
     ["Le même mélange pour tout le monde.", "The same scramble for everyone.", "Dezelfde husseling voor iedereen.", "Dasselbe Mischen für alle.", "La misma mezcla para todos."],
     ["Défi de la semaine", "Weekly challenge", "Wekelijkse uitdaging", "Wochenrätsel", "Reto semanal"],

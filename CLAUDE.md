@@ -172,8 +172,10 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 - **Niveaux experts** (le client, le 14/10/2026) : chaque monde a 15 niveaux, 90 en tout ; les dix premiers font le chemin
   (`BASE`), les cinq derniers (`estExpert`) sont plus longs, ouverts après le dixième, en option : ils ne bloquent pas le
   monde suivant (`mondeOuvert`, `mondeFini` lisent le dixième), le bouton principal passe d'abord par le chemin
-  (`prochainNiveau`), une ampoule pour le chemin d'un monde et une pour ses experts. Sur la carte : anneau doré et
-  intertitre « Niveaux experts ». **Les neuf anneaux ne vont jamais dans un monde gratuit** : le vérificateur le contrôle,
+  (`prochainNiveau`), une ampoule pour le chemin d'un monde et une pour ses experts. Sur la carte, **une voie parallèle**
+  (le client) : elle part du dixième niveau, côté opposé au monde suivant, en pointillé doré, nœuds « E1 » à « E5 » à anneau
+  doré et intertitre « Niveaux experts » ; le chemin numérote 1 à 60 sans eux (`numNiveau`, `nomNiveau` : « Expert 3 »).
+  150 px d'air sous le monde 1 et 112 entre chaque bandeau et son premier niveau. **Les neuf anneaux ne vont jamais dans un monde gratuit** : le vérificateur le contrôle,
   et l'empreinte des 60 niveaux d'origine (les étoiles des joueurs y sont attachées).
 - **Mondes gratuits et étoiles** (le client, le 14/10/2026) : tous les mondes d'avant les neuf anneaux sont gratuits
   (`mondesGratuits: 4`, contrôlé par le vérificateur) ; certains demandent en plus des étoiles comptées sur toute la campagne

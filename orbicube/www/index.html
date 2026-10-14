@@ -1322,10 +1322,12 @@ function genererMelange(rnd,anneaux,n){var out=[];for(var essai=0;essai<50;essai
   for(var i=0;i<n;i++){var b;do{b=anneaux[Math.floor(rnd()*anneaux.length)];}while(b===prec&&anneaux.length>1);prec=b;
     var m=MV[b],mv={a:m[0],L:m[1],q:rnd()<.5?1:-1};out.push(mv);col=appliquer(col,mv);}
   if(!estResolu(col))return out;}return out;}
-// numéro affiché d'un niveau : continu sur toute la campagne (1 à 90), comme sur la carte, et non remis à 1 par monde
-function numNiveau(w,i){var n=i+1;for(var k=0;k<w;k++)n+=MONDES[k].coups.length;return n;}
+// numéro affiché d'un niveau du chemin : continu sur toute la campagne (1 à 60), comme sur la carte, et non remis à 1 par
+// monde ; les experts, sur leur voie à part, sont numérotés dans leur monde (« Expert 1 » à « Expert 5 »)
+function numNiveau(w,i){if(estExpert(i))return i-BASE+1;var n=i+1;for(var k=0;k<w;k++)n+=Math.min(BASE,MONDES[k].coups.length);return n;}
+function nomNiveau(w,i){return(estExpert(i)?"Expert ":"Niveau ")+numNiveau(w,i);}
 function niveauDef(w,i){var M=MONDES[w];return{mode:"campagne",w:w,i:i,id:(w+1)+"-"+(i+1),anneaux:M.anneaux,par:M.coups[i],
-  melange:genererMelange(graine("orbicube-"+w+"-"+i),M.anneaux,M.coups[i]),titre:"Monde "+(w+1)+" · Niveau "+numNiveau(w,i),sous:estExpert(i)?"Niveau expert":M.nom};}
+  melange:genererMelange(graine("orbicube-"+w+"-"+i),M.anneaux,M.coups[i]),titre:"Monde "+(w+1)+" · "+nomNiveau(w,i),sous:estExpert(i)?"Niveau expert":M.nom};}
 function cleJour(d){d=d||new Date();return d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0");}
 function jourDef(){var k=cleJour(),d=new Date();return{mode:"jour",id:k,anneaux:SIXFACES,par:8,melange:genererMelange(graine("jour-"+k),SIXFACES,8),
   titre:"Défi du jour",sous:d.toLocaleDateString(locale(),{weekday:"long",day:"numeric",month:"long"})};}
@@ -1484,7 +1486,7 @@ function rafraichirAccueil(){var pn=prochainNiveau(),fait=Object.keys(PROG.nivea
   document.getElementById("jourPoint").hidden=!!j;
   // sous « Continuer » : le monde en cours et ses étoiles, dans sa couleur
   // la seconde ligne du bouton dit où l'on en est, sans phrase en plus sous le bouton
-  document.getElementById("jouerMonde").textContent=!fait?"Premier niveau":cA?(cA.jaunes?"Monde "+(att+1)+" : encore "+cA.manque+" étoiles de coups":"Monde "+(att+1)+" : encore "+cA.manque+" étoiles de temps"):bloque?"Suite dans le jeu complet":!pn?"Campagne terminée":"Niveau "+numNiveau(pn.w,pn.i)+" · "+MONDES[pn.w].nom;
+  document.getElementById("jouerMonde").textContent=!fait?"Premier niveau":cA?(cA.jaunes?"Monde "+(att+1)+" : encore "+cA.manque+" étoiles de coups":"Monde "+(att+1)+" : encore "+cA.manque+" étoiles de temps"):bloque?"Suite dans le jeu complet":!pn?"Campagne terminée":nomNiveau(pn.w,pn.i)+" · "+MONDES[pn.w].nom;
   // la campagne en une ligne dans le bas du bouton : niveaux finis sur le total (pas le rang, qui reste en haut)
   var tot=0,fin=0;MONDES.forEach(function(M,w){M.coups.forEach(function(c,i){tot++;if(PROG.niveaux[(w+1)+"-"+(i+1)])fin++;});});
   document.getElementById("jouerProg").style.width=(100*fin/tot).toFixed(1)+"%";document.querySelector(".prog-camp").hidden=!fin;
@@ -1513,16 +1515,27 @@ function etoilesMonde(w){var t=0;for(var i=0;i<MONDES[w].coups.length;i++){var r
 function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
   document.getElementById("parcEt").textContent=etoilesTotal();document.getElementById("parcEtT").textContent=etoilesChrono();
   var W=Math.min(ch.clientWidth||(document.getElementById("parcoursDefile").clientWidth-28)||340,492),
-    cx=W/2,amp=Math.min(W*.3,118),GAP=96,pn=prochainNiveau(),y=72,k=0,items=[],pts=[];
+    cx=W/2,amp=Math.min(W*.3,118),GAP=96,pn=prochainNiveau(),y=150,k=0,items=[],pts=[],branches=[];
   // on empile du niveau 1 au dernier ; les y sont ensuite retournés pour que la progression MONTE (bas -> haut, façon Candy Crush)
   var wreg=[];
   for(var w=0;w<MONDES.length;w++){var M=MONDES[w],acc=ACCENTS[w%ACCENTS.length],y0=y;
-    y+=28;items.push({t:"s",acc:acc,w:w,nom:M.nom,y:y});y+=74;
-    for(var i=0;i<M.coups.length;i++){if(i===BASE){y-=6;items.push({t:"x",y:y});y+=66;}var x=cx+Math.sin(k*.66)*amp,r=PROG.niveaux[(w+1)+"-"+(i+1)];
-      items.push({t:"n",x:x,y:y,w:w,i:i,num:k+1,r:r,ouv:niveauOuvert(w,i),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===i),acc:acc});
-      pts.push([x,y]);y+=GAP;k++;}
+    y+=28;items.push({t:"s",acc:acc,w:w,nom:M.nom,y:y});y+=112;
+    // le chemin : les dix premiers niveaux, en lacets
+    var x10=cx,y10=y;
+    for(var i=0;i<Math.min(BASE,M.coups.length);i++){var x=cx+Math.sin(k*.66)*amp,r=PROG.niveaux[(w+1)+"-"+(i+1)];
+      items.push({t:"n",x:x,y:y,w:w,i:i,num:numNiveau(w,i),r:r,ouv:niveauOuvert(w,i),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===i),acc:acc});
+      pts.push([x,y]);x10=x;y10=y;y+=GAP;k++;}
+    // les experts (le client, le 14/10/2026) : une voie parallèle, en option, qui part du dixième niveau sur le côté libre
+    // pendant que le chemin file tout droit vers le monde suivant
+    // côté : à l'opposé du premier niveau du monde suivant, pour que le chemin ne traverse pas la voie des experts
+    if(M.coups.length>BASE){var xs=w+1<MONDES.length?Math.sin(k*.66):-(x10-cx),cote=xs>0?-1:1,xb=cx+cote*amp*.95,bra=[[x10,y10]],ye=y10+70;
+      items.push({t:"x",y:ye,x:Math.max(96,Math.min(W-96,xb))});ye+=62;
+      for(var i=BASE;i<M.coups.length;i++){var x=xb-cote*Math.abs(Math.sin((i-BASE)*1.1))*amp*.32,r=PROG.niveaux[(w+1)+"-"+(i+1)];
+        items.push({t:"n",x:x,y:ye,w:w,i:i,num:"E"+numNiveau(w,i),r:r,ouv:niveauOuvert(w,i),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===i),acc:acc});
+        bra.push([x,ye]);ye+=84;}
+      branches.push(bra);y=Math.max(y,ye-30);}
     wreg.push({w:w,acc:acc,y0:y0,y1:y});y+=18;}
-  var H=y+60,nodes="",sects="",d="";
+  var H=y+60,de="",nodes="",sects="",d="";
   // FONDS CRAFTPIX (Space Vertical Game Backgrounds, 4 thèmes cyclés par monde), en COUCHES parallaxe :
   // BG (nébuleuse, lointain) + Planets (milieu) par monde ; Stars et Meteors tuilés en global (premier plan).
   // Bords des bandes masqués pour fondre entre mondes ; bandes extrêmes débordant du cadre (plus de noir).
@@ -1534,21 +1547,22 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
     lst+='<div class="parc-starsb'+st+'stars-'+t+'.webp)"></div>';
     lme+='<div class="parc-meteorsb'+st+'meteors-'+t+'.webp)"></div>';});
   pts.forEach(function(p,j){d+=(j?"L":"M")+p[0].toFixed(1)+" "+(H-p[1])+" ";});
+  branches.forEach(function(b){b.forEach(function(p,j){de+=(j?"L":"M")+p[0].toFixed(1)+" "+(H-p[1])+" ";});});
   items.forEach(function(it){var fy=H-it.y;
     if(it.t==="s"){var pa=mondePaye(it.w),cE=!pa&&condEtoiles(it.w),etM=etoilesMonde(it.w),etTM=chronoMonde(it.w),maxM=MONDES[it.w].coups.length*3;
       sects+='<div class="parc-sep" style="--pa:'+it.acc+';top:'+fy+'px"></div>'
         +'<div class="parc-sect'+(pa?" paye":"")+'" style="--pa:'+it.acc+';top:'+fy+'px"><b>Monde '+(it.w+1)+'</b><small>'+it.nom+'</small>'
         +(pa?'<svg class="pscad" viewBox="0 0 24 24">'+CAD+'</svg>':cE?'<span class="parc-cond'+(cE.jaunes?"":" t")+'"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+cE.a+' / '+cE.faut+'</span>':'<span class="parc-et"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etM+'/'+maxM+'<svg class="t" viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etTM+'/'+maxM+'</span>')+'</div>'
         +'<div class="parc-desc" style="top:'+(fy+30)+'px">'+MONDES[it.w].desc+(cE?'<b class="cond'+(cE.jaunes?"":" t")+'">'+texteCond(cE)+'</b>':"")+'</div>';}
-    else if(it.t==="x")sects+='<div class="parc-exp" style="top:'+fy+'px"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>Niveaux experts</div>';
+    else if(it.t==="x")sects+='<div class="parc-exp" style="top:'+fy+'px;left:'+it.x.toFixed(1)+'px"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>Niveaux experts</div>';
     else{var cls="parc-niv"+(estExpert(it.i)?" expert":"")+(it.r?" fait":"")+(!it.ouv?" verrou":"")+(it.paye?" paye":"")+(it.cur?" courant":""),
       inner=it.ouv?('<b>'+it.num+'</b><span class="pet"><i>'+[0,1,2].map(function(j){return it.r&&it.r.etoiles>j?SVG_ET:SVG_ET_OFF;}).join("")+'</i><i class="t">'+[0,1,2].map(function(j){return it.r&&(it.r.chrono||0)>j?SVG_ETT:SVG_ET_OFF;}).join("")+'</i></span>'):('<svg class="pcad" viewBox="0 0 24 24">'+CAD+'</svg>');
-      nodes+='<button type="button" class="'+cls+'" style="--pa:'+it.acc+';left:'+it.x.toFixed(1)+'px;top:'+fy+'px" data-w="'+it.w+'" data-i="'+it.i+'" aria-label="Monde '+(it.w+1)+' Niveau '+(it.i+1)+'">'+inner+'</button>';}});
+      nodes+='<button type="button" class="'+cls+'" style="--pa:'+it.acc+';left:'+it.x.toFixed(1)+'px;top:'+fy+'px" data-w="'+it.w+'" data-i="'+it.i+'" aria-label="Monde '+(it.w+1)+' '+nomNiveau(it.w,it.i)+'">'+inner+'</button>';}});
   ch.style.height=H+"px";
   ch.innerHTML='<div class="parc-fond"></div>'
     +'<div class="parc-layer l-bg">'+lbg+'</div><div class="parc-layer l-planets">'+lpl+'</div>'
     +'<div class="parc-layer l-stars">'+lst+'</div><div class="parc-layer l-meteors">'+lme+'</div>'
-    +'<svg class="trail" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" preserveAspectRatio="none"><path d="'+d+'" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 11"/></svg>'
+    +'<svg class="trail" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" preserveAspectRatio="none"><path d="'+d+'" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 11"/><path d="'+de+'" fill="none" stroke="rgba(255,196,80,.55)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 9"/></svg>'
     +sects+nodes;
   parcRevele(ch);parcParallax();}
 // parallaxe PAR BANDE : chaque bande (BG/Planets/Stars/Meteors de son monde) se décale selon sa distance au
