@@ -17,7 +17,7 @@ const FORMATS = [
 const SCENES = [
   { id: "1-accueil", titre: "Le cube 3×3,<br>cercle par cercle" },
   { id: "2-tour", titre: "Glissez un cercle :<br>douze pastilles tournent" },
-  { id: "3-campagne", titre: "90 niveaux,<br>six mondes" },
+  { id: "3-campagne", titre: "96 niveaux,<br>huit mondes" },
   { id: "4-victoire", titre: "Trois étoiles<br>en un minimum de coups" },
   { id: "5-defi", titre: "Un nouveau défi<br>chaque jour" },
 ];
@@ -25,8 +25,8 @@ const SCENES = [
 function progression() {
   const niveaux = {};
   const et = [3, 3, 2, 3, 3, 3, 2, 3, 3, 3, 3, 2, 3, 3, 1, 3, 3, 2, 3, 3, 3, 3, 3, 2, 3, 2, 3, 3];
-  [[1, 10], [2, 10], [3, 10], [4, 10], [5, 3]].forEach(([w, n]) => { for (let i = 1; i <= n; i++) niveaux[w + "-" + i] = { etoiles: et[(w * 10 + i) % et.length], coups: 3, temps: 20000, sansIndice: true }; });
-  return { v: 1, niveaux, achat: true, tips: { geste: 1, toucher: 1, pastille: 1, indice: 1, vue: 1, tranche: 1 }, succes: { premier: 1, m1: 1 },
+  [[1, 8], [2, 8], [3, 8], [4, 8], [5, 3]].forEach(([w, n]) => { for (let i = 1; i <= n; i++) niveaux[w + "-" + i] = { etoiles: et[(w * 10 + i) % et.length], coups: 3, temps: 20000, sansIndice: true }; });
+  return { v: 1, campagne: 2, niveaux, achat: true, tips: { geste: 1, toucher: 1, pastille: 1, indice: 1, vue: 1, tranche: 1 }, succes: { premier: 1, m1: 1 },
     stats: { tours: 412, tranches: 60, resolus: 28, indices: 2, meilleur: {} }, jours: {}, serie: 4, dernierJour: "",
     options: { son: false, vib: false, vitesse: 1, palette: "classique", cube: true, pave: false, horaire: true, maj: 1 } };
 }

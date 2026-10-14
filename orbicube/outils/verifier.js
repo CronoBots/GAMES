@@ -23,7 +23,7 @@ const fen = {};
 vm.runInNewContext(fs.readFileSync(path.join(WWW, "config.js"), "utf8"), { window: fen });
 const CFG = fen.ORBICUBE_CONFIG || {};
 ["essai", "complet"].includes(CFG.modele) ? ok("modèle « " + CFG.modele + " »") : faute("modele doit valoir essai ou complet");
-CFG.mondesGratuits >= 1 && CFG.mondesGratuits <= 6 ? ok(CFG.mondesGratuits + " monde(s) gratuit(s)") : faute("mondesGratuits hors de 1 à 6");
+CFG.mondesGratuits >= 1 && CFG.mondesGratuits <= 8 ? ok(CFG.mondesGratuits + " monde(s) gratuit(s)") : faute("mondesGratuits hors de 1 à 8");
 const pkg = require(path.join(RACINE, "package.json"));
 CFG.version === pkg.version ? ok("version " + pkg.version + " identique dans config.js et package.json") : faute("version différente : config.js " + CFG.version + ", package.json " + pkg.version);
 
@@ -169,17 +169,17 @@ else {
     if (d1.melange.length !== n || G.estResolu(col) || JSON.stringify(d1.melange) !== JSON.stringify(d2.melange)) mauvais.push(d1.id);
   }));
   mauvais.length ? faute("niveaux défectueux : " + mauvais.join(", ")) : ok(niv + " niveaux : bonne longueur, jamais résolus au départ, toujours les mêmes");
-  // les 60 niveaux d'origine (les dix premiers de chaque monde) ne bougent jamais : les joueurs y ont leurs étoiles
+  // les 64 niveaux du chemin (les huit premiers de chaque monde) ne bougent plus : les joueurs y ont leurs étoiles
   let empreinte = "";
-  for (let w = 0; w < 6; w++) for (let i = 0; i < 10; i++) { const d = G.niveauDef(w, i); empreinte += d.id + ":" + d.melange.map((m) => m.a + "," + m.L + "," + m.q).join(";") + "|"; }
+  for (let w = 0; w < 8; w++) for (let i = 0; i < 8; i++) { const d = G.niveauDef(w, i); empreinte += d.id + ":" + d.melange.map((m) => m.a + "," + m.L + "," + m.q).join(";") + "|"; }
   empreinte = require("crypto").createHash("sha256").update(empreinte).digest("hex").slice(0, 16);
-  empreinte === "1e4cbc3f22f5a13e" ? ok("les 60 niveaux d'origine sont inchangés") : faute("les 60 niveaux d'origine ont changé (empreinte " + empreinte + ")");
+  empreinte === "3a4918a635a3b0f9" ? ok("les 64 niveaux du chemin sont inchangés") : faute("les 64 niveaux du chemin ont changé (empreinte " + empreinte + ")");
   // les neuf anneaux ne vont jamais dans un monde gratuit : ils restent l'avantage du jeu complet (le client, le 14/10/2026)
   const neufLibres = G.MONDES.map((M, w) => w < CFG.mondesGratuits && M.anneaux.length === 9 ? w + 1 : 0).filter(Boolean);
   neufLibres.length ? faute("monde gratuit à neuf anneaux : " + neufLibres.join(", ")) : ok("aucun monde gratuit à neuf anneaux");
-  // et tous les mondes d'avant les neuf anneaux sont gratuits (le client, le 14/10/2026)
-  const premierNeuf = G.MONDES.findIndex((M) => M.anneaux.length === 9);
-  CFG.mondesGratuits === premierNeuf ? ok("les " + premierNeuf + " mondes d'avant les neuf anneaux sont gratuits") : faute("mondesGratuits vaut " + CFG.mondesGratuits + " : les mondes gratuits doivent aller jusqu'au premier monde à neuf anneaux (" + premierNeuf + ")");
+  // une orbite de plus à chaque monde, de deux jusqu'aux neuf (le client, le 14/10/2026) : chaque monde garde celles du précédent
+  const pas = G.MONDES.every((M, w) => M.anneaux.length === w + 2 && (w === 0 || G.MONDES[w - 1].anneaux.every((a) => M.anneaux.includes(a))));
+  pas && G.MONDES[G.MONDES.length - 1].anneaux.length === 9 ? ok(G.MONDES.length + " mondes : une orbite de plus à chaque monde, jusqu'aux neuf") : faute("les mondes n'ajoutent pas une orbite à la fois jusqu'aux neuf");
 }
 
 console.log(fautes ? "\n" + fautes + " faute(s)." : "\nTout est en ordre.");

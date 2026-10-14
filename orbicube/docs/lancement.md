@@ -14,7 +14,7 @@ Ils changent : vérifiez-les sur les pages officielles au moment de vous inscrir
 
 | | Gratuit | Orbicube complet (achat unique) |
 |---|---|---|
-| Mondes | 1 à 4 (60 niveaux, experts compris ; le 3 demande 45 étoiles de coups, le 4 40 étoiles de temps) | les 6 (90 niveaux) |
+| Mondes | 1 à 4, de 2 à 5 orbites (48 niveaux, experts compris ; le 3 demande 36 étoiles de coups, le 4 36 étoiles de temps) | les 8, jusqu’aux 9 orbites (96 niveaux) |
 | Défi du jour | oui | oui |
 | Partie libre | Facile | Facile, Moyen, Difficile, Expert |
 | Publicité | aucune | aucune |
@@ -78,7 +78,7 @@ Un seul produit, avec le **même identifiant partout** : `orbicube_complet`.
 1. **App Store Connect** > votre app > Achats intégrés > **Non consommable**
    - Identifiant produit : `orbicube_complet`
    - Prix : 4,99 €
-   - Nom affiché : « Orbicube complet ». Description : « Les 6 mondes et toute la partie libre. »
+   - Nom affiché : « Orbicube complet ». Description : « Les 8 mondes et toute la partie libre. »
    - Une capture de la boutique pour la vérification (`npm run captures`, ou une capture du téléphone).
 2. **Google Play Console** > Monétiser > Produits > **Produits intégrés à l'application**
    - Identifiant : `orbicube_complet`, même nom, même prix.

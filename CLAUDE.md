@@ -126,7 +126,7 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   sans chrono, compteur ni étoiles. Écran **Profil** par la puce du rang, au centre de la barre du haut de l'accueil
   (anneau d'expérience, titre, puis une cible et « 1/3 » pour les missions du jour, dorés à 3/3). Les joueurs d'avant le rang reçoivent une fois l'expérience
   de leurs niveaux déjà finis (`rattraperXp`, `PROG.xpInit`). Le bouton principal porte deux lignes (l'action, puis
-  où l'on en est) et le total d'étoiles à droite, puis une fine barre de la campagne (niveaux finis sur 60, `.prog-camp`, cachée
+  où l'on en est) et le total d'étoiles à droite, puis une fine barre de la campagne (niveaux finis sur le total, `.prog-camp`, cachée
   avant le premier niveau) : plus de phrase sous le bouton ni de bande du rang. Le rang reste dans la puce du haut
   (deux progressions distinctes). Les niveaux s'affichent en numéro continu (`numNiveau`, « Niveau 26 »), comme sur la carte.
 - **Faces terminées** : halo discret de leur couleur sous leurs neuf pastilles (`RAYON_FACE`), sur le plateau de jeu.
@@ -169,18 +169,22 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 - **Le mélange ne se montre jamais** (le client, le 11/10/2026) : au lancement, le plateau se trouble en tournant
   (`.brouille`, flou, posé SANS transition dans `lancer()` : sinon le plateau et le cube se voyaient nets puis disparaissaient), les couleurs changent hors de vue puis il se dévoile. Animer les coups un par un permettait
   de les rejouer à l'envers. Seul « Revoir ma partie », après la victoire, rejoue le mélange.
-- **Niveaux experts** (le client, le 14/10/2026) : chaque monde a 15 niveaux, 90 en tout ; les dix premiers font le chemin
-  (`BASE`), les cinq derniers (`estExpert`) sont plus longs, ouverts après le dixième, en option : ils ne bloquent pas le
-  monde suivant (`mondeOuvert`, `mondeFini` lisent le dixième), le bouton principal passe d'abord par le chemin
-  (`prochainNiveau`), une ampoule pour le chemin d'un monde et une pour ses experts. Sur la carte, **une voie parallèle**
-  (le client) : elle part du dixième niveau, côté opposé au monde suivant, en pointillé doré, nœuds « E1 » à « E5 » à anneau
-  doré et intertitre « Niveaux experts » ; le chemin numérote 1 à 60 sans eux (`numNiveau`, `nomNiveau` : « Expert 3 »).
-  150 px d'air sous le monde 1 et 112 entre chaque bandeau et son premier niveau. **Les neuf anneaux ne vont jamais dans un monde gratuit** : le vérificateur le contrôle,
-  et l'empreinte des 60 niveaux d'origine (les étoiles des joueurs y sont attachées).
-- **Mondes gratuits et étoiles** (le client, le 14/10/2026) : tous les mondes d'avant les neuf anneaux sont gratuits
-  (`mondesGratuits: 4`, contrôlé par le vérificateur) ; certains demandent en plus des étoiles comptées sur toute la campagne
-  (`MONDES[w].etoiles`, `condEtoiles`) : le monde 3 45 étoiles de coups (jaunes), le monde 4 40 étoiles de temps (bleues),
-  achat ou non. Un monde déjà commencé reste ouvert. La carte, l'accueil (`mondeAttend`) et la victoire disent ce qui manque.
+- **Campagne : huit mondes, une orbite de plus à chaque monde** (le client, le 14/10/2026 : « logique », et le joueur qui
+  veut toutes les orbites doit acheter) : 2, 3, 4, 5 orbites gratuites (U R, +F, +D, +L), puis 6, 7, 8 et les 9 avec le jeu
+  complet (`mondesGratuits: 4`). Le vérificateur contrôle l'orbite de plus par monde (chacun garde celles du précédent),
+  aucun monde gratuit à neuf orbites, et l'empreinte des 64 niveaux du chemin. Campagne refaite = **nouvelle graine**
+  (`orbicube2-<monde>-<niveau>`) et `CAMPAGNE=2` : `fusion` ne reprend pas les niveaux d'une sauvegarde d'une autre
+  campagne (achats, expérience et succès, si).
+- **Niveaux experts** : 12 niveaux par monde, 96 en tout ; les huit premiers font le chemin (`BASE`), les quatre derniers
+  (`estExpert`) sont plus longs, ouverts après le huitième, en option : ils ne bloquent pas le monde suivant (`mondeOuvert`,
+  `mondeFini` lisent le huitième), le bouton principal passe d'abord par le chemin (`prochainNiveau`), une ampoule pour le
+  chemin d'un monde et une pour ses experts. Sur la carte, **une voie parallèle** (le client) : elle part du huitième
+  niveau, côté opposé au monde suivant, en pointillé doré, nœuds « E1 » à « E4 » à anneau doré et intertitre « Niveaux
+  experts » ; le chemin numérote 1 à 64 sans eux (`numNiveau`, `nomNiveau` : « Expert 3 »). 150 px d'air sous le monde 1,
+  112 entre chaque bandeau et son premier niveau.
+- **Mondes gratuits et étoiles** : le monde 3 demande en plus 36 étoiles de coups (jaunes), le monde 4 36 étoiles de temps
+  (bleues), comptées sur toute la campagne (`MONDES[w].etoiles`, `condEtoiles`), achat ou non. Un monde déjà commencé reste
+  ouvert. La carte, l'accueil (`mondeAttend`) et la victoire disent ce qui manque.
 - Les niveaux de campagne sont tirés d'une graine fixe (`orbicube-<monde>-<niveau>`) : changer
   `genererMelange()` change tous les niveaux des joueurs. Ne le faire qu'avec une nouvelle graine.
 - La progression est dans `localStorage` (clé `orbicube-v1`) et, sur téléphone, dans

@@ -81,10 +81,10 @@ async function resoudre(p) {
     const xp = await p.evaluate(() => JSON.parse(localStorage.getItem("orbicube-v1")).xp || 0);
     xp > 0 ? ok("le cube résolu rapporte " + xp + " XP") : faute("aucune expérience gagnée");
 
-    // la carte de campagne : les mondes 3 à 6 (sections payantes) mènent à la boutique
+    // la carte de campagne : les mondes 5 à 8 (sections payantes) mènent à la boutique
     await p.tap('#fenetre [data-a="menu"]'); await p.waitForTimeout(600);
     const payes = await p.$$eval(".parc-sect.paye", (l) => l.length);
-    const reserves = 6 - (await p.evaluate(() => (window.ORBICUBE_CONFIG || {}).mondesGratuits || 2));
+    const reserves = 8 - (await p.evaluate(() => (window.ORBICUBE_CONFIG || {}).mondesGratuits || 2));
     payes === reserves ? ok(reserves + " mondes réservés au jeu complet") : faute(payes + " mondes réservés au lieu de " + reserves);
     await p.tap(".parc-sect.paye"); await p.waitForTimeout(400);
     (await p.textContent("#fenetre")).includes("Orbicube complet") ? ok("un monde réservé ouvre la boutique") : faute("la boutique ne s'ouvre pas");
@@ -124,23 +124,23 @@ async function resoudre(p) {
     const restants = await p.$$eval(".parc-sect.paye", (l) => l.length);
     restants === 0 ? ok("jeu complet : plus aucun monde réservé, progression gardée") : faute(restants + " mondes encore réservés");
 
-    // niveaux experts : après le dixième niveau du monde 1, le monde 2 ET le premier expert s'ouvrent, le second expert attend
-    await p.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); for (let i = 1; i <= 10; i++) v.niveaux["1-" + i] = { etoiles: 3, chrono: 3, coups: 1, temps: 9000, sansIndice: true }; localStorage.setItem(k, JSON.stringify(v)); });
+    // niveaux experts : après le huitième niveau du monde 1, le monde 2 ET le premier expert s'ouvrent, le second expert attend
+    await p.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); for (let i = 1; i <= 8; i++) v.niveaux["1-" + i] = { etoiles: 3, chrono: 3, coups: 1, temps: 9000, sansIndice: true }; localStorage.setItem(k, JSON.stringify(v)); });
     await p.reload(); await p.waitForTimeout(1200);
-    (await p.textContent("#jouerMonde")).includes("Niveau 11") ? ok("experts : le bouton principal mène au monde 2 (niveau 11), pas aux experts") : faute("bouton principal : " + (await p.textContent("#jouerMonde")));
+    (await p.textContent("#jouerMonde")).includes("Niveau 9") ? ok("experts : le bouton principal mène au monde 2 (niveau 9), pas aux experts") : faute("bouton principal : " + (await p.textContent("#jouerMonde")));
     await p.tap("#btnJouer"); await p.waitForTimeout(600);
-    const exp = await p.evaluate(() => { const n = (w, i) => document.querySelector('.parc-niv[data-w="' + w + '"][data-i="' + i + '"]'); return { m2: !n(1, 0).classList.contains("verrou"), e1: n(0, 10).classList.contains("expert") && !n(0, 10).classList.contains("verrou"), e2: n(0, 11).classList.contains("verrou"), titres: document.querySelectorAll(".parc-exp").length, total: document.querySelectorAll(".parc-niv").length }; });
-    exp.m2 && exp.e1 && exp.e2 && exp.titres === 6 && exp.total === 90 ? ok("experts : 90 niveaux, cinq experts par monde sur une voie à part, ouverts après le dixième sans bloquer le monde suivant") : faute("niveaux experts : " + JSON.stringify(exp));
+    const exp = await p.evaluate(() => { const n = (w, i) => document.querySelector('.parc-niv[data-w="' + w + '"][data-i="' + i + '"]'); return { m2: !n(1, 0).classList.contains("verrou"), e1: n(0, 8).classList.contains("expert") && !n(0, 8).classList.contains("verrou"), e2: n(0, 9).classList.contains("verrou"), titres: document.querySelectorAll(".parc-exp").length, total: document.querySelectorAll(".parc-niv").length }; });
+    exp.m2 && exp.e1 && exp.e2 && exp.titres === 8 && exp.total === 96 ? ok("experts : 96 niveaux, quatre experts par monde sur une voie à part, ouverts après le huitième sans bloquer le monde suivant") : faute("niveaux experts : " + JSON.stringify(exp));
 
-    // monde 3 gratuit mais fermé par 45 étoiles de coups : 40 ne suffisent pas, 46 l'ouvrent
-    const poser = (n1) => p.evaluate((n1) => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); for (let i = 1; i <= 10; i++) v.niveaux["2-" + i] = { etoiles: i <= n1 ? 3 : 1, chrono: 1, coups: 9, temps: 60000, sansIndice: true }; localStorage.setItem(k, JSON.stringify(v)); }, n1);
+    // monde 3 gratuit mais fermé par 36 étoiles de coups : 32 ne suffisent pas, 36 l'ouvrent
+    const poser = (n1) => p.evaluate((n1) => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); for (let i = 1; i <= 8; i++) v.niveaux["2-" + i] = { etoiles: i <= n1 ? 3 : 1, chrono: 1, coups: 9, temps: 60000, sansIndice: true }; localStorage.setItem(k, JSON.stringify(v)); }, n1);
     await poser(0); await p.reload(); await p.waitForTimeout(1200);
     const att = await p.textContent("#jouerMonde");
     await p.tap("#btnJouer"); await p.waitForTimeout(600);
     const ferme = await p.evaluate(() => document.querySelector('.parc-niv[data-w="2"][data-i="0"]').classList.contains("verrou") && !!document.querySelector(".parc-cond"));
-    att.includes("encore 5 étoiles de coups") && ferme ? ok("étoiles : le monde 3 attend 45 étoiles de coups (il en manque 5), l'accueil et la carte le disent") : faute("condition d'étoiles : « " + att + " », fermé " + ferme);
-    await poser(3); await p.reload(); await p.waitForTimeout(1200); await p.tap("#btnJouer"); await p.waitForTimeout(600);
-    (await p.evaluate(() => !document.querySelector('.parc-niv[data-w="2"][data-i="0"]').classList.contains("verrou"))) ? ok("étoiles : à 46 étoiles de coups, le monde 3 s'ouvre") : faute("le monde 3 reste fermé à 46 étoiles");
+    att.includes("encore 4 étoiles de coups") && ferme ? ok("étoiles : le monde 3 attend 36 étoiles de coups (il en manque 4), l'accueil et la carte le disent") : faute("condition d'étoiles : « " + att + " », fermé " + ferme);
+    await poser(2); await p.reload(); await p.waitForTimeout(1200); await p.tap("#btnJouer"); await p.waitForTimeout(600);
+    (await p.evaluate(() => !document.querySelector('.parc-niv[data-w="2"][data-i="0"]').classList.contains("verrou"))) ? ok("étoiles : à 36 étoiles de coups, le monde 3 s'ouvre") : faute("le monde 3 reste fermé à 36 étoiles");
 
     // paysage
     if (appareil === "iPhone 13") {
@@ -149,6 +149,10 @@ async function resoudre(p) {
       await p.tap("#btnJour"); await p.waitForTimeout(300); await p.tap('#fenetre [data-a="jour"]'); await p.waitForTimeout(2200);
       const d3 = await debordements(p); d3.length ? faute("débordement en paysage : " + d3) : ok("défi du jour en paysage, sans débordement");
     }
+    // la campagne refaite (huit mondes) ne reprend pas les niveaux d'une ancienne sauvegarde, mais garde l'achat
+    await p.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); v.campagne = 1; localStorage.setItem(k, JSON.stringify(v)); });
+    await p.reload(); await p.waitForTimeout(1200);
+    (await p.textContent("#jouerTxt")) === "Jouer" && (await p.textContent("#btnAchatOpt")) === "Débloqué" ? ok("ancienne campagne : niveaux non repris, achat gardé") : faute("ancienne campagne : « " + (await p.textContent("#jouerTxt")) + " »");
     erreurs.length ? faute("erreurs : " + erreurs.join(" | ")) : ok("aucune erreur de script");
     await ctx.close();
   }

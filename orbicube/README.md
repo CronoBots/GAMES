@@ -3,7 +3,7 @@
 Le cube 3×3 joué en faisant tourner neuf cercles. Chaque tranche du cube est un cercle, chaque
 facette une pastille posée au croisement des deux cercles qui peuvent la déplacer.
 
-- 90 niveaux en 6 mondes, un défi du jour, une partie libre chronométrée
+- 96 niveaux en 8 mondes, un défi du jour, une partie libre chronométrée
 - 14 succès, aussi dans Game Center et Google Play Jeux
 - en français, anglais, néerlandais, allemand et espagnol (langue du téléphone, ou au choix dans les options)
 - gratuit pour les mondes 1 et 2, **un achat unique** (« Orbicube complet ») pour le reste
@@ -35,7 +35,7 @@ Textes des stores : [`docs/fiche-store.md`](docs/fiche-store.md).
 npm install
 npm run servir        # le jeu dans le navigateur : http://localhost:8080
 npm run construire    # recompile www/natif.js après une modification de src/natif.js
-npm run verifier      # contrôles rapides (syntaxe, marque, secrets, hors ligne, géométrie, 90 niveaux)
+npm run verifier      # contrôles rapides (syntaxe, marque, secrets, hors ligne, géométrie, 96 niveaux)
 npm run tester        # parcours sur iPhone 13, iPhone SE et Pixel 7, app iOS simulée, et les 5 langues
 npm run icones        # régénère les icônes, l'écran de démarrage et les images des succès
 npm run captures      # régénère les 15 captures et la bannière des stores

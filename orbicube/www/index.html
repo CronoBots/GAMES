@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <title>Orbicube</title>
-<meta name="description" content="Le cube 3×3 joué en faisant tourner neuf cercles. 90 niveaux, un défi par jour, sans publicité.">
+<meta name="description" content="Le cube 3×3 joué en faisant tourner neuf cercles. 96 niveaux, un défi par jour, sans publicité.">
 <meta name="theme-color" content="#07070c">
 <meta name="color-scheme" content="dark">
 <meta name="mobile-web-app-capable" content="yes">
@@ -881,7 +881,7 @@ body.sobre #plateau{transition:none}
           <label class="interrupteur"><input type="checkbox" id="optAnims" role="switch" aria-label="Animations"><i></i></label></div>
       </div>
       <div class="groupe" id="grpAchat"><h4>Achat</h4>
-        <div class="ligne"><div class="lt"><b>Orbicube complet</b><span id="achatEtat">Les 6 mondes, toute la partie libre.</span></div>
+        <div class="ligne"><div class="lt"><b>Orbicube complet</b><span id="achatEtat">Les 8 mondes, toute la partie libre.</span></div>
           <button class="danger" id="btnAchatOpt" type="button" style="color:var(--or);border-color:#5a4a1c;background:#221c0d">Débloquer</button></div>
         <div class="ligne"><div class="lt"><b>Restaurer mes achats</b><span>Après une réinstallation ou sur un autre appareil du même compte.</span></div>
           <button class="danger" id="btnRestaurer" type="button" style="color:var(--encre);border-color:var(--trait-vif);background:var(--carte2)">Restaurer</button></div>
@@ -1305,16 +1305,19 @@ function poserFond(t,nebuleuse){var el=document.getElementById("fondMonde");if(e
 var THEME_ACC=["80,226,150","92,180,255","255,110,120","178,130,255"];
 function accentTheme(t){ACC=THEME_ACC[(((t-1)%4)+4)%4];ACC_CLAIR=eclaircir(ACC,.65);document.documentElement.style.setProperty("--acc",ACC);}
 var MONDES=[
-  {nom:"Premier cercle",desc:"Deux cercles, U et R. Le geste s’apprend ici.",anneaux:["U","R"],coups:[1,1,2,2,2,3,3,3,4,4,5,5,6,6,7]},
-  {nom:"Trois faces",desc:"U, R et F se croisent : chaque pastille hésite entre deux chemins.",anneaux:["U","R","F"],coups:[2,2,3,3,3,4,4,4,5,5,6,6,7,7,8]},
-  {nom:"Les tranches",desc:"Les cercles du milieu, M, E et S, n’ont pas de face à eux.",anneaux:["M","E","S"],etoiles:{jaunes:45},coups:[1,2,2,3,3,3,4,4,5,5,6,6,7,7,8]},
-  {nom:"Six faces",desc:"Toutes les faces, sans les tranches.",anneaux:["U","D","L","R","F","B"],etoiles:{bleues:40},coups:[3,3,4,4,4,5,5,5,6,6,7,7,8,8,9]},
-  {nom:"Orbite complète",desc:"Les neuf cercles à la fois.",anneaux:TOUS,coups:[4,5,5,6,6,6,7,7,8,8,9,9,10,10,11]},
-  {nom:"Grand maître",desc:"Des mélanges longs, jusqu’à vingt-cinq coups.",anneaux:TOUS,coups:[9,10,10,11,12,13,14,15,17,20,21,22,23,24,25]}];
-// les dix premiers niveaux de chaque monde font le chemin ; les cinq suivants sont des niveaux experts (le client,
-// le 14/10/2026), en option : ils s'ouvrent après le dixième et ne bloquent pas le monde suivant. Les neuf anneaux
-// ne vont jamais dans un monde gratuit (le vérificateur le contrôle) : ils restent l'avantage du jeu complet.
-var BASE=10;function estExpert(i){return i>=BASE;}
+  {nom:"Premier cercle",desc:"Deux orbites, U et R. Le geste s’apprend ici.",anneaux:["U","R"],coups:[1,1,2,2,3,3,4,4,5,5,6,7]},
+  {nom:"Trois faces",desc:"Une troisième orbite, F : chaque pastille hésite entre deux chemins.",anneaux:["U","R","F"],coups:[2,2,3,3,4,4,5,5,6,6,7,8]},
+  {nom:"Face cachée",desc:"D, la face du dessous, tourne sur le même axe que U.",anneaux:["U","D","R","F"],etoiles:{jaunes:36},coups:[2,3,3,4,4,5,5,6,6,7,7,8]},
+  {nom:"Face à face",desc:"L rejoint R : cinq orbites, deux faces opposées.",anneaux:["U","D","L","R","F"],etoiles:{bleues:36},coups:[3,3,4,4,5,5,6,6,7,7,8,9]},
+  {nom:"Six faces",desc:"Les six faces du cube, sans les tranches.",anneaux:["U","D","L","R","F","B"],coups:[3,4,4,5,5,6,6,7,8,8,9,10]},
+  {nom:"Première tranche",desc:"M, l’orbite du milieu, n’a pas de face à elle.",anneaux:["U","D","L","R","F","B","M"],coups:[4,4,5,5,6,6,7,7,8,9,10,11]},
+  {nom:"Deux tranches",desc:"E se glisse entre U et D : huit orbites.",anneaux:["U","D","L","R","F","B","M","E"],coups:[4,5,5,6,6,7,7,8,9,10,11,12]},
+  {nom:"Grand maître",desc:"Les neuf orbites à la fois, jusqu’à vingt-cinq coups.",anneaux:TOUS,coups:[6,7,8,10,12,14,16,20,21,22,24,25]}];
+// une orbite de plus à chaque monde (le client, le 14/10/2026) : les quatre premiers sont gratuits, les neuf orbites à la
+// fois ne se jouent qu'avec le jeu complet. Les huit premiers niveaux de chaque monde font le chemin ; les quatre suivants
+// sont des niveaux experts, sur une voie à part, en option : ils s'ouvrent après le huitième et ne bloquent pas le monde
+// suivant. Le vérificateur contrôle l'orbite de plus par monde et qu'aucun monde gratuit n'a les neuf orbites.
+var BASE=8;function estExpert(i){return i>=BASE;}
 var NB_NIV=MONDES.reduce(function(s,m){return s+m.coups.length;},0);
 function graine(str){var h=1779033703^str.length;for(var i=0;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=h<<13|h>>>19;}
   return function(){h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);h^=h>>>16;return (h>>>0)/4294967296;};}
@@ -1322,12 +1325,12 @@ function genererMelange(rnd,anneaux,n){var out=[];for(var essai=0;essai<50;essai
   for(var i=0;i<n;i++){var b;do{b=anneaux[Math.floor(rnd()*anneaux.length)];}while(b===prec&&anneaux.length>1);prec=b;
     var m=MV[b],mv={a:m[0],L:m[1],q:rnd()<.5?1:-1};out.push(mv);col=appliquer(col,mv);}
   if(!estResolu(col))return out;}return out;}
-// numéro affiché d'un niveau du chemin : continu sur toute la campagne (1 à 60), comme sur la carte, et non remis à 1 par
+// numéro affiché d'un niveau du chemin : continu sur toute la campagne (1 à 64), comme sur la carte, et non remis à 1 par
 // monde ; les experts, sur leur voie à part, sont numérotés dans leur monde (« Expert 1 » à « Expert 5 »)
 function numNiveau(w,i){if(estExpert(i))return i-BASE+1;var n=i+1;for(var k=0;k<w;k++)n+=Math.min(BASE,MONDES[k].coups.length);return n;}
 function nomNiveau(w,i){return(estExpert(i)?"Expert ":"Niveau ")+numNiveau(w,i);}
 function niveauDef(w,i){var M=MONDES[w];return{mode:"campagne",w:w,i:i,id:(w+1)+"-"+(i+1),anneaux:M.anneaux,par:M.coups[i],
-  melange:genererMelange(graine("orbicube-"+w+"-"+i),M.anneaux,M.coups[i]),titre:"Monde "+(w+1)+" · "+nomNiveau(w,i),sous:estExpert(i)?"Niveau expert":M.nom};}
+  melange:genererMelange(graine("orbicube2-"+w+"-"+i),M.anneaux,M.coups[i]),titre:"Monde "+(w+1)+" · "+nomNiveau(w,i),sous:estExpert(i)?"Niveau expert":M.nom};}
 function cleJour(d){d=d||new Date();return d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0");}
 function jourDef(){var k=cleJour(),d=new Date();return{mode:"jour",id:k,anneaux:SIXFACES,par:8,melange:genererMelange(graine("jour-"+k),SIXFACES,8),
   titre:"Défi du jour",sous:d.toLocaleDateString(locale(),{weekday:"long",day:"numeric",month:"long"})};}
@@ -1343,12 +1346,15 @@ function etoilesChrono(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t
 
 /* ========== 6. LA PROGRESSION (appareil, et compte si connecté) ========== */
 var CLE_LOCALE="orbicube-v1";
-function progVide(){return{v:1,niveaux:{},tips:{},succes:{},stats:{tours:0,tranches:0,resolus:0,indices:0,meilleur:{}},jours:{},serie:0,dernierJour:"",amp:3,ampVide:0,ampJour:"",ampMaj:0,xp:0,semaines:{},missions:null,droits:{},stylesVus:{},
+function progVide(){return{v:1,campagne:CAMPAGNE,niveaux:{},tips:{},succes:{},stats:{tours:0,tranches:0,resolus:0,indices:0,meilleur:{}},jours:{},serie:0,dernierJour:"",amp:3,ampVide:0,ampJour:"",ampMaj:0,xp:0,semaines:{},missions:null,droits:{},stylesVus:{},
   options:{musique:true,volMusique:2,son:true,vib:true,anims:true,vitesse:1,palette:"classique",cube:true,pave:false,horaire:true,langue:"auto",maj:0}};}
+// la campagne a été refaite le 14/10/2026 (huit mondes, nouvelle graine) : les niveaux d'une ancienne campagne ne
+// correspondent plus à rien et ne sont pas repris (l'expérience, les succès et les achats, si)
+var CAMPAGNE=2;
 function fusion(a,b){if(!b||typeof b!=="object")return a;var r=JSON.parse(JSON.stringify(a));if(b.achat)r.achat=true;
   r.droits=r.droits||{};Object.keys(b.droits||{}).forEach(function(k){if(b.droits[k])r.droits[k]=true;});
   r.stylesVus=r.stylesVus||{};Object.keys(b.stylesVus||{}).forEach(function(k){r.stylesVus[k]=true;});   // achats : on n'en perd jamais
-  Object.keys(b.niveaux||{}).forEach(function(k){var x=r.niveaux[k],y=b.niveaux[k];if(!x){r.niveaux[k]=y;return;}
+  if(b.campagne===CAMPAGNE)Object.keys(b.niveaux||{}).forEach(function(k){var x=r.niveaux[k],y=b.niveaux[k];if(!x){r.niveaux[k]=y;return;}
     r.niveaux[k]={etoiles:Math.max(x.etoiles||0,y.etoiles||0),chrono:Math.max(x.chrono||0,y.chrono||0),coups:Math.min(x.coups||1e9,y.coups||1e9),temps:Math.min(x.temps||1e12,y.temps||1e12),sansIndice:!!(x.sansIndice||y.sansIndice)};});
   ["tips","succes"].forEach(function(f){Object.keys(b[f]||{}).forEach(function(k){if(!r[f][k])r[f][k]=b[f][k];});});
   if((b.ampMaj||0)>(r.ampMaj||0)){r.amp=b.amp;r.ampVide=b.ampVide||0;r.ampJour=b.ampJour||"";r.ampMaj=b.ampMaj;}
@@ -1533,7 +1539,7 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
       for(var i=BASE;i<M.coups.length;i++){var x=xb-cote*Math.abs(Math.sin((i-BASE)*1.1))*amp*.32,r=PROG.niveaux[(w+1)+"-"+(i+1)];
         items.push({t:"n",x:x,y:ye,w:w,i:i,num:"E"+numNiveau(w,i),r:r,ouv:niveauOuvert(w,i),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===i),acc:acc});
         bra.push([x,ye]);ye+=84;}
-      branches.push(bra);y=Math.max(y,ye-30);}
+      branches.push(bra);y=Math.max(y,ye+50);}
     wreg.push({w:w,acc:acc,y0:y0,y1:y});y+=18;}
   var H=y+60,de="",nodes="",sects="",d="";
   // FONDS CRAFTPIX (Space Vertical Game Backgrounds, 4 thèmes cyclés par monde), en COUCHES parallaxe :
@@ -1950,9 +1956,9 @@ function mondeFini(w){return !!PROG.niveaux[(w+1)+"-"+BASE];}
 var SUCCES=[
   {id:"premier",nom:"Premier tour",desc:"Résoudre le premier niveau.",ok:function(){return !!PROG.niveaux["1-1"];}},
   {id:"m1",nom:"Initié",desc:"Terminer le monde 1.",ok:function(){return mondeFini(0);}},
-  {id:"m3",nom:"Trancheur",desc:"Terminer le monde des tranches.",ok:function(){return mondeFini(2);}},
+  {id:"m3",nom:"Trancheur",desc:"Terminer le monde des tranches.",ok:function(){return mondeFini(6);}},
   {id:"m5",nom:"En orbite",desc:"Terminer le monde 5.",ok:function(){return mondeFini(4);}},
-  {id:"m6",nom:"Grand maître",desc:"Terminer toute la campagne.",ok:function(){return mondeFini(5);}},
+  {id:"m6",nom:"Grand maître",desc:"Terminer toute la campagne.",ok:function(){return mondeFini(MONDES.length-1);}},
   {id:"p10",nom:"Précision",desc:"Trois étoiles sur 10 niveaux.",ok:function(){return nbParfaits()>=10;}},
   {id:"pm",nom:"Perfectionniste",desc:"Trois étoiles sur tout un monde.",ok:function(){for(var w=0;w<MONDES.length;w++)if(etoilesMonde(w)===MONDES[w].coups.length*3)return true;return false;}},
   {id:"p60",nom:"Sans faute",desc:"Toutes les étoiles de la campagne.",ok:function(){return etoilesTotal()===NB_NIV*3;}},
@@ -2058,12 +2064,12 @@ NATIF.etatAchat().then(function(ok){if(ok===true&&!PROG.achat){PROG.achat=true;s
 // la pastille d'achat n'apparaît qu'une fois le monde 1 fini : avant, elle parle d'un jeu qu'on ne connaît pas encore
 function majAchat(){var c=complet();document.getElementById("btnBoutique").hidden=!Object.keys(PROG.niveaux).length;document.getElementById("boutPoint").hidden=!nouveauxStyles().length;   // dès le premier niveau fini (le client, le 14/10/2026)
   document.getElementById("grpAchat").hidden=CFG.modele==="complet";
-  document.getElementById("achatEtat").textContent=c?"Débloqué. Merci pour votre soutien !":"Les 6 mondes, toute la partie libre"+(PRIX?" · "+PRIX:"")+".";
+  document.getElementById("achatEtat").textContent=c?"Débloqué. Merci pour votre soutien !":"Les 8 mondes, toute la partie libre"+(PRIX?" · "+PRIX:"")+".";
   var b=document.getElementById("btnAchatOpt");b.textContent=c?"Débloqué":"Débloquer";b.disabled=c;
   document.getElementById("optPied").textContent="Orbicube "+(CFG.version||"")+(c||CFG.modele==="complet"?"":" · version d’essai");}
-var POURQUOI={indice:"Le jeu complet en offre une chaque jour.",monde:"Les mondes à neuf anneaux font partie du jeu complet.",libre:"Ce niveau de partie libre fait partie du jeu complet.",accueil:""};
+var POURQUOI={indice:"Le jeu complet en offre une chaque jour.",monde:"Les mondes 5 à 8 font partie du jeu complet.",libre:"Ce niveau de partie libre fait partie du jeu complet.",accueil:""};
 function ouvrirBoutique(raison){var web=!NATIF.natif,li=CFG.liens||{};
-  var avantages=[["30 niveaux de plus","L’orbite complète et le Grand maître, avec les neuf anneaux."],["Toute la partie libre","Moyen, difficile et expert, avec chrono et records."],["Une ampoule offerte chaque jour","Pour un indice quand vous bloquez."],["Un seul achat, pour toujours","Sans publicité, sans abonnement."]];
+  var avantages=[["48 niveaux de plus","Six, sept, huit orbites, puis les neuf à la fois."],["Toute la partie libre","Moyen, difficile et expert, avec chrono et records."],["Une ampoule offerte chaque jour","Pour un indice quand vous bloquez."],["Un seul achat, pour toujours","Sans publicité, sans abonnement."]];
   var html='<h3>Orbicube complet</h3>'+(POURQUOI[raison]?'<p>'+POURQUOI[raison]+'</p>':'<p>Vous avez joué la version d’essai. La suite vous attend.</p>')+
     '<div style="display:grid;gap:10px;text-align:left;margin:4px 0 16px">'+avantages.map(function(a){return '<div style="display:flex;gap:10px;align-items:flex-start"><svg viewBox="0 0 24 24" style="width:20px;height:20px;flex:none;margin-top:1px;stroke:var(--or);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b style="display:block">'+a[0]+'</b><span style="color:var(--pale);font-size:13px">'+a[1]+'</span></div></div>';}).join("")+'</div><div class="menu">';
   if(web){html+='<p style="margin:0 0 6px">L’achat se fait dans l’application, sur iPhone ou Android.</p>'+
@@ -2161,9 +2167,9 @@ function rendreBoutique(){var c=complet(),tous=["pack_couleurs","pack_formes","p
   document.getElementById("boutAmpNb").textContent=ampoules();
   var puce=function(t){return'<li><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>'+t+'</span></li>';};
   if(!c&&CFG.modele!=="complet")h='<div class="bout-hero"><span class="etiq">Meilleure offre</span><h3>'+PACKS.integrale.nom+'</h3><p>Tout Orbicube, en un seul achat, pour toujours.</p><ul>'+
-      puce("Les 6 mondes et toute la partie libre")+puce("Une ampoule offerte chaque jour")+puce("Les 3 packs : 4 palettes, 3 formes, 4 effets")+'</ul>'+
+      puce("Les 8 mondes et toute la partie libre")+puce("Une ampoule offerte chaque jour")+puce("Les 3 packs : 4 palettes, 3 formes, 4 effets")+'</ul>'+
       '<button class="btn-or" type="button" data-achat="integrale"><span>Tout débloquer</span><span class="px notrad">'+PRIXP.integrale+'</span></button>'+auLieuDe("integrale")+'</div>'+
-      '<div class="bout-ligne" id="pack-complet"><span class="ic"><svg viewBox="0 0 24 24">'+IC.couronne+'</svg></span><div class="lt"><b>Orbicube complet</b><span>Les 6 mondes, toute la partie libre, une ampoule par jour.</span></div>'+
+      '<div class="bout-ligne" id="pack-complet"><span class="ic"><svg viewBox="0 0 24 24">'+IC.couronne+'</svg></span><div class="lt"><b>Orbicube complet</b><span>Les 8 mondes, toute la partie libre, une ampoule par jour.</span></div>'+
       '<button class="btn-or" type="button" data-achat="complet"><span class="px notrad">'+PRIX+'</span></button></div>'+(tous?"":lignePack("collection",IC.effets));
   else if(!tous)h='<div class="bout-hero"><span class="etiq">Collection</span><h3>'+PACKS.collection.nom+'</h3><p>Les trois packs de styles, en un seul achat.</p><ul>'+
       puce("4 palettes : Aurore, Galaxie, Glace, Joyaux")+puce("3 formes : Gemmes, Étoiles, Cristaux")+puce("4 effets : comète, argent, arc-en-ciel, feu d’artifice")+'</ul>'+

@@ -5,7 +5,7 @@ window.ORBICUBE_CONFIG = {
   // "essai"   : gratuit au téléchargement, les mondes gratuits puis un achat unique débloque tout.
   // "complet" : tout est ouvert (application vendue payante sur le store, ou version de démonstration).
   modele: "essai",
-  mondesGratuits: 4,          // mondes jouables sans achat (sur 6) : tous ceux d’avant les neuf anneaux
+  mondesGratuits: 4,          // mondes jouables sans achat (sur 8) : de 2 à 5 orbites ; les neuf à la fois, jamais gratuites
   libresGratuits: [5],        // niveaux de partie libre jouables sans achat (5, 10, 15, 25)
 
   // Prix affiché tant que le store n'a pas répondu (le vrai prix vient du store, dans la devise du joueur).
