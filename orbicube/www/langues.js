@@ -297,6 +297,8 @@
     ["Sans faute", "Flawless", "Foutloos", "Fehlerlos", "Impecable"],
     ["Niveaux experts", "Expert levels", "Expertlevels", "Expertenlevel", "Niveles expertos"],
     ["Voie dorée", "Golden path", "Gouden pad", "Goldener Pfad", "Camino dorado"],
+    ["Parfait : toutes les étoiles sont à vous.", "Perfect: every star is yours.", "Perfect: alle sterren zijn van jou.", "Perfekt: Alle Sterne gehören dir.", "Perfecto: todas las estrellas son tuyas."],
+    ["Battez votre record pour gagner plus d’étoiles.", "Beat your record to earn more stars.", "Verbeter je record voor meer sterren.", "Schlage deinen Rekord für mehr Sterne.", "Supera tu récord para ganar más estrellas."],
     ["Niveau expert", "Expert level", "Expertlevel", "Expertenlevel", "Nivel experto"],
     ["La voie dorée s’ouvre : quatre niveaux experts vous attendent.", "The golden path opens: four expert levels await you.", "Het gouden pad gaat open: vier expertlevels wachten op je.", "Der goldene Pfad öffnet sich: Vier Expertenlevel warten auf dich.", "Se abre el camino dorado: te esperan cuatro niveles expertos."],
     ["Expert {0}", "Expert {0}", "Expert {0}", "Experte {0}", "Experto {0}"],

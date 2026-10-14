@@ -143,6 +143,11 @@ async function resoudre(p) {
     bandes <= 12 ? ok("carte : " + bandes + " bandes d'image affichées sur 32 (mémoire de l'iPhone)") : faute("carte : " + bandes + " bandes d'image affichées, Safari risque de fermer la page");
     exp.m2 && exp.e1 && exp.e2 && exp.titres === 8 && exp.total === 96 && exp.ecart >= 70 ? ok("experts : 96 niveaux, une voie dorée de quatre experts par monde (E1 ouvert à la fin du chemin), aucun nœud n'en touche un autre (" + exp.ecart + " px)") : faute("niveaux experts : " + JSON.stringify(exp));
 
+    // un nœud ouvre la fiche du niveau (objectif, record, étoiles) avant de jouer, pas le niveau directement
+    await p.evaluate(() => document.querySelector('.parc-niv[data-w="0"][data-i="2"]').click()); await p.waitForTimeout(500);
+    const fiche = await p.evaluate(() => { const f = document.querySelector("#fenetre"); return !!f && f.textContent.includes("Niveau 3") && !!f.querySelector('[data-a="jouer"]') && document.querySelector(".ecran.actif").id === "parcours"; });
+    await p.tap('#fenetre [data-a="jouer"]'); await p.waitForTimeout(1500);
+    fiche && (await p.evaluate(() => document.querySelector(".ecran.actif").id)) === "jeu" ? ok("carte : un niveau ouvre sa fiche, « Jouer » le lance") : faute("fiche du niveau absente ou « Jouer » sans effet");
     // monde 3 gratuit mais fermé par 32 étoiles de coups (deux par niveau du chemin d'avant) : 24 ne suffisent pas, 32 l'ouvrent
     const poser = (n1) => p.evaluate((n1) => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); for (let i = 1; i <= 8; i++) v.niveaux["1-" + i].etoiles = 2; for (let i = 1; i <= 8; i++) v.niveaux["2-" + i] = { etoiles: i <= n1 ? 3 : 1, chrono: 1, coups: 9, temps: 60000, sansIndice: true }; localStorage.setItem(k, JSON.stringify(v)); }, n1);
     await poser(0); await p.reload(); await p.waitForTimeout(1200);

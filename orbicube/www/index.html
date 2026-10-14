@@ -547,28 +547,60 @@ body{background:
 .parc-desc{position:absolute;left:50%;transform:translateX(-50%);width:min(84%,420px);text-align:center;z-index:3;pointer-events:none;
   font-family:var(--f-texte);font-size:12.5px;line-height:1.4;color:rgba(255,255,255,.82);text-shadow:0 1px 8px rgba(0,0,0,.95)}
 .parc-sect small{font-family:var(--f-chiffre);font-weight:500;font-size:10.5px;color:rgba(255,255,255,.62);letter-spacing:.12em;text-transform:uppercase}
-.parc-niv{position:absolute;transform:translate(-50%,-50%) scale(.66);opacity:0;width:56px;height:56px;border-radius:50%;z-index:1;cursor:pointer;padding:0;
-  display:grid;place-items:center;border:1px solid rgba(255,255,255,.14);background:var(--verre),rgba(14,14,24,.72);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 10px 24px -14px rgba(0,0,0,.9);transition:transform .38s var(--ease),opacity .45s ease}
+.parc-niv{position:absolute;transform:translate(-50%,-50%) scale(.66);opacity:0;width:66px;height:66px;border-radius:50%;z-index:1;cursor:pointer;padding:0;
+  display:grid;place-items:center;border:none;background:none;color:#fff;transition:transform .38s var(--ease),opacity .45s ease}
+.parc-niv>*{grid-area:1/1}
+.parc-niv .bille{width:56px;height:56px;border-radius:50%;border:1.5px solid rgba(var(--pa),.45);
+  background:radial-gradient(circle at 32% 26%,rgba(255,255,255,.16),rgba(var(--pa),.28) 34%,rgba(14,14,26,.92) 78%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 10px 24px -14px rgba(0,0,0,.9)}
 .parc-niv.vu{transform:translate(-50%,-50%) scale(1);opacity:1}
 .parc-niv:not(.verrou):active{transform:translate(-50%,-50%) scale(.92)}
-.parc-niv b{font-family:var(--f-titre);font-weight:700;font-size:19px;color:#fff;line-height:1}
-.parc-niv .pet{display:flex;gap:1px;position:absolute;bottom:-8px;background:rgba(9,9,16,.9);border-radius:999px;padding:1.5px 4px;box-shadow:0 2px 6px rgba(0,0,0,.6)}
-.parc-niv .pet svg{width:9px;height:9px}
-/* deux rangées sous le numéro : les étoiles de coups (dorées), puis celles de temps (bleues), comme en jeu */
-.parc-niv .pet{flex-direction:column;align-items:center;gap:0;bottom:-15px;padding:1.5px 4px 2px;border-radius:9px}
-.parc-niv .pet i{display:flex;gap:1px;font-style:normal}
-.parc-niv.fait{background:radial-gradient(120% 120% at 30% 22%,rgba(var(--pa),.5),rgba(var(--pa),.12) 70%),rgba(14,14,24,.72);border-color:rgba(var(--pa),.6)}
-.parc-niv.courant{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.5),0 0 26px -2px rgba(var(--pa),.9),inset 0 1px 0 rgba(255,255,255,.3);animation:parc-pulse 2.2s ease-in-out infinite}
+.parc-niv b{position:relative;z-index:2;font-family:var(--f-titre);font-weight:700;font-size:19px;color:#fff;line-height:1;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+/* fini : la bille prend la couleur de son monde */
+.parc-niv.fait .bille{border-color:rgba(var(--pa),.9);background:radial-gradient(circle at 32% 26%,rgba(255,255,255,.42),rgba(var(--pa),.95) 30%,rgba(var(--pa),.6) 62%,rgba(12,12,24,.95) 100%)}
+/* parfait (3 + 3) : un anneau doré qui luit */
+.parc-niv.parfait .bille{border-color:var(--or);box-shadow:0 0 0 2px rgba(255,207,74,.35),0 0 18px -2px rgba(255,207,74,.7),inset 0 1px 0 rgba(255,255,255,.3)}
+/* à jouer : plus grand, anneau blanc qui pulse, « Jouer » au-dessus */
+.parc-niv.courant.vu{transform:translate(-50%,-50%) scale(1.14)}
+.parc-niv.courant .bille{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.5),0 0 26px -2px rgba(var(--pa),.9),inset 0 1px 0 rgba(255,255,255,.3);animation:parc-pulse 2.2s ease-in-out infinite}
 @keyframes parc-pulse{50%{box-shadow:0 0 0 3px rgba(255,255,255,.75),0 0 38px 0 rgba(var(--pa),1),inset 0 1px 0 rgba(255,255,255,.3)}}
-.parc-niv.courant::after{content:"";position:absolute;top:-15px;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#fff}
-.parc-niv.verrou{opacity:.42;cursor:default;border-color:rgba(255,255,255,.08)}
-.parc-niv.verrou b{display:none}
+.jouer-tag{position:absolute;transform:translate(-50%,-50%);z-index:3;white-space:nowrap;pointer-events:none;
+  font-family:var(--f-chiffre);font-weight:700;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#14121f;background:#fff;border-radius:999px;padding:3px 9px;
+  box-shadow:0 4px 12px -4px rgba(0,0,0,.7)}
+/* verrouillé : plus petit, gris, un cadenas */
+.parc-niv.verrou{cursor:default}
+.parc-niv.verrou .bille{border-color:rgba(255,255,255,.1);background:rgba(18,18,28,.7);box-shadow:none}
+.parc-niv.verrou.vu{transform:translate(-50%,-50%) scale(.82);opacity:.5}
 .parc-niv .pcad{width:20px;height:20px;stroke:rgba(255,255,255,.6);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.parc-niv.paye{opacity:.85}.parc-niv.paye .pcad{stroke:var(--or)}
+.parc-niv.paye.vu{opacity:.8}.parc-niv.paye .pcad{stroke:var(--or)}
+/* les étoiles de coups en arc au-dessus du nœud, l'anneau du temps en trois arcs bleus sur le bas */
+.parc-niv .arc{position:absolute;left:50%;top:-6px;width:0;height:0;z-index:3;pointer-events:none}
+.parc-niv .arc i{position:absolute;width:15px;height:15px;transform:translate(-50%,-50%);filter:drop-shadow(0 1px 2px rgba(0,0,0,.8))}
+.parc-niv .arc i:nth-child(1){left:-19px;top:7px;transform:translate(-50%,-50%) rotate(-20deg)}
+.parc-niv .arc i:nth-child(2){left:0;top:-1px;width:17px;height:17px}
+.parc-niv .arc i:nth-child(3){left:19px;top:7px;transform:translate(-50%,-50%) rotate(20deg)}
+.parc-niv .arc svg{width:100%;height:100%;display:block;fill:rgba(30,28,46,.95);stroke:rgba(255,255,255,.22);stroke-width:1.2}
+.parc-niv .arc i.on svg{fill:var(--or);stroke:rgba(120,80,0,.6)}
+.parc-niv .anneau-t{position:absolute;width:66px;height:66px;left:50%;top:50%;transform:translate(-50%,-50%);overflow:visible;pointer-events:none;z-index:1}
+.parc-niv .anneau-t path{fill:none;stroke:rgba(255,255,255,.13);stroke-width:3;stroke-linecap:round}
+.parc-niv .anneau-t path.on{stroke:#4cc9f0;filter:drop-shadow(0 0 3px rgba(76,201,240,.7))}
+/* les orbites du monde en filigrane dans la bille (2 à 9) */
+.parc-niv .atome{width:50px;height:50px;pointer-events:none;z-index:1}
+.parc-niv .atome ellipse{fill:none;stroke:rgba(255,255,255,.16);stroke-width:.8}
+/* au retour d'une victoire, les nouvelles étoiles apparaissent une à une */
+.parc-niv .arc i.pop{animation:et-pop .55s cubic-bezier(.3,1.6,.5,1) both;animation-delay:calc(.45s + var(--d)*.2s)}
+.parc-niv .anneau-t path.pop{animation:t-pop .5s ease both;animation-delay:calc(1.05s + var(--d)*.18s)}
+@keyframes et-pop{from{opacity:0;scale:0}to{opacity:1;scale:1}}
+@keyframes t-pop{from{opacity:0;stroke-width:8}to{opacity:1;stroke-width:3}}
+.fenetre .fiche-monde{margin:-6px 0 12px;font-family:var(--f-chiffre);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--pale)}
 /* niveaux experts (E1 à E4 de chaque monde) : un second anneau doré autour du nœud, la voie dorée sous la description */
-.parc-niv.expert{outline:1.5px solid rgba(255,196,80,.75);outline-offset:3px}
-.parc-niv.expert.verrou{outline-color:rgba(255,196,80,.35)}
+.parc-niv.expert .bille{display:none}
+.parc-niv.expert::before{content:"";grid-area:1/1;width:42px;height:42px;border-radius:9px;transform:rotate(45deg);z-index:0;
+  border:1.5px solid rgba(255,196,80,.8);background:radial-gradient(circle at 30% 30%,rgba(255,226,140,.3),rgba(60,44,12,.95) 75%);box-shadow:0 0 14px -4px rgba(255,196,80,.6)}
+.parc-niv.expert.fait::before{background:radial-gradient(circle at 30% 30%,rgba(255,240,190,.9),rgba(255,196,80,.95) 40%,rgba(150,100,20,.95))}
+.parc-niv.expert.fait b{color:#2a1c04;text-shadow:none}
+.parc-niv.expert.verrou::before{border-color:rgba(255,196,80,.35);background:rgba(30,24,12,.8);box-shadow:none}
+.parc-niv.expert .atome{display:none}
 /* tant que le chemin du monde n'est pas fini, la voie dorée s'efface : on la devine, on ne la suit pas encore */
 .parc-niv.expert.discret.vu{opacity:.38;outline-color:rgba(255,196,80,.3)}.parc-niv.expert.discret.vu.verrou{opacity:.24}
 .parc-exp{position:absolute;transform:translate(-50%,-50%);z-index:1;pointer-events:none;display:flex;align-items:center;gap:4px;white-space:nowrap;
@@ -1540,6 +1572,14 @@ function niveauOuvert(w,i){if(!mondeOuvert(w))return false;if(estExpert(i))retur
   return i===0||!!PROG.niveaux[(w+1)+"-"+i];}
 function chronoMonde(w){var t=0;for(var i=0;i<MONDES[w].coups.length;i++){var r=PROG.niveaux[(w+1)+"-"+(i+1)];if(r)t+=r.chrono||0;}return t;}
 function etoilesMonde(w){var t=0;for(var i=0;i<MONDES[w].coups.length;i++){var r=PROG.niveaux[(w+1)+"-"+(i+1)];if(r)t+=r.etoiles;}return t;}
+// nœuds de la carte (le client, le 14/10/2026 : « tout ») : l'anneau du temps en trois arcs bleus sur le bas du nœud (le
+// haut reste aux étoiles de coups), les orbites du monde en filigrane dans la bille, le dernier niveau gagné fait
+// apparaître ses nouvelles étoiles une à une au retour sur la carte (DERNIER, posé par la victoire)
+var DERNIER=null;
+function arcSvg(a0,a1,r){var p=function(a){a=(a-90)*Math.PI/180;return(r*Math.cos(a)).toFixed(2)+" "+(r*Math.sin(a)).toFixed(2);};return "M"+p(a0)+" A"+r+" "+r+" 0 0 1 "+p(a1);}
+function anneauTemps(t,avant){return '<svg class="anneau-t" viewBox="-32 -32 64 64">'+[[65,135],[145,215],[225,295]].map(function(a,j){
+  return '<path class="'+(t>j?"on":"")+(t>j&&j>=avant?" pop":"")+'" style="--d:'+j+'" d="'+arcSvg(a[0],a[1],30)+'"/>';}).join("")+'</svg>';}
+function orbitesNoeud(n){var h='';for(var q=0;q<n;q++)h+='<ellipse rx="21" ry="7" transform="rotate('+(q*180/n).toFixed(1)+')"/>';return '<svg class="atome" viewBox="-28 -28 56 56">'+h+'</svg>';}
 // ===== Carte de campagne : parcours vertical scrollable (façon Candy Crush), nœuds le long d'une traînée orbitale =====
 function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
   document.getElementById("parcEt").textContent=etoilesTotal();document.getElementById("parcEtT").textContent=etoilesChrono();
@@ -1556,7 +1596,7 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
     var vague=function(q){var v=Math.sin(q*.66);return (v<0?-1:1)*(.42+.58*Math.abs(v));},ks=[];
     for(var i=0;i<Math.min(BASE,M.coups.length);i++){var x=cx+vague(k)*amp,r=PROG.niveaux[(w+1)+"-"+(i+1)];ks.push(k);
       items.push({t:"n",x:x,y:y,w:w,i:i,num:numNiveau(w,i),r:r,ouv:niveauOuvert(w,i),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===i),acc:acc});
-      pts.push([x,y]);xs.push(x);ys.push(y);y+=GAP;k++;}
+      pts.push([x,y,!!r,acc]);xs.push(x);ys.push(y);y+=GAP;k++;}
     // la voie dorée des experts (le client, le 14/10/2026) : la forme inverse du chemin, un peu plus resserrée pour ne pas
     // faire miroir parfait. Elle part du niveau 1, avec le chemin ; l'expert j se pose en face du niveau 2j+3 ou 2j+4 (le plus écarté du
     // centre), sur la voie : à la hauteur d'un niveau, de l'autre côté, jamais sur lui
@@ -1581,6 +1621,10 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
     lst+='<div class="parc-starsb'+st+'stars-'+t+'.webp)"></div>';
     lme+='<div class="parc-meteorsb'+st+'meteors-'+t+'.webp)"></div>';});
   pts.forEach(function(p,j){d+=(j?"L":"M")+p[0].toFixed(1)+" "+(H-p[1])+" ";});
+  // le chemin déjà parcouru (deux niveaux finis de suite) passe en trait plein, dans la couleur du monde d'arrivée
+  // (coupé au bord des billes : il relie les nœuds sans passer dessus)
+  var fait="";pts.forEach(function(p,j){if(!j||!p[2]||!pts[j-1][2])return;var q=pts[j-1],dx=p[0]-q[0],dy=p[1]-q[1],L=Math.hypot(dx,dy),c=34/L;if(L<80)return;
+    fait+='<path d="M'+(q[0]+dx*c).toFixed(1)+" "+(H-(q[1]+dy*c)).toFixed(1)+" L"+(p[0]-dx*c).toFixed(1)+" "+(H-(p[1]-dy*c)).toFixed(1)+'" stroke="rgba('+p[3]+',.75)"/>';});
   // la voie dorée se trace comme le chemin (même trait, en miroir)
   // la voie dorée reste discrète tant que le chemin de son monde n'est pas fini (le client, le 14/10/2026)
   var deD="";branches.forEach(function(b){var t="";b.pts.forEach(function(p,j){t+=(j?"L":"M")+p[0].toFixed(1)+" "+(H-p[1])+" ";});if(mondeFini(b.w))de+=t;else deD+=t;});
@@ -1592,14 +1636,24 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
         +'<div class="parc-desc" style="top:'+(fy+30)+'px">'+MONDES[it.w].desc+'</div>';}
     // la pastille de la voie dorée, discrète, posée sur la bifurcation (le client, le 14/10/2026)
     else if(it.t==="x")sects+='<div class="parc-exp'+(mondeFini(it.w)?"":" discret")+'" style="top:'+fy+'px;left:'+it.x.toFixed(1)+'px"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>Voie dorée</div>';
-    else{var cls="parc-niv"+(estExpert(it.i)?" expert"+(mondeFini(it.w)?"":" discret"):"")+(it.r?" fait":"")+(!it.ouv?" verrou":"")+(it.paye?" paye":"")+(it.cur?" courant":""),
-      inner=estExpert(it.i)&&!mondeFini(it.w)?'<svg class="eclat" viewBox="0 0 24 24">'+ET_PATH+'</svg>':it.ouv?('<b>'+it.num+'</b><span class="pet"><i>'+[0,1,2].map(function(j){return it.r&&it.r.etoiles>j?SVG_ET:SVG_ET_OFF;}).join("")+'</i><i class="t">'+[0,1,2].map(function(j){return it.r&&(it.r.chrono||0)>j?SVG_ETT:SVG_ET_OFF;}).join("")+'</i></span>'):('<svg class="pcad" viewBox="0 0 24 24">'+CAD+'</svg>');
+    else{var ex=estExpert(it.i),cache=ex&&!mondeFini(it.w),r=it.r,e=r?r.etoiles||0:0,t=r?r.chrono||0:0,
+        nv=DERNIER&&DERNIER.w===it.w&&DERNIER.i===it.i?DERNIER:null,
+        cls="parc-niv"+(ex?" expert"+(cache?" discret":""):"")+(r?" fait":"")+(e===3&&t===3?" parfait":"")+(!it.ouv?" verrou":"")+(it.paye?" paye":"")+(it.cur?" courant":""),inner;
+      var bille=ex?"":'<span class="bille"></span>';
+      if(cache)inner='<svg class="eclat" viewBox="0 0 24 24">'+ET_PATH+'</svg>';
+      else if(!it.ouv)inner=bille+'<svg class="pcad" viewBox="0 0 24 24">'+CAD+'</svg>';
+      // ouvert : les orbites du monde en filigrane, le numéro, l'arc des étoiles de coups au-dessus, l'anneau du temps autour
+      else inner=bille+orbitesNoeud(MONDES[it.w].anneaux.length)+'<b>'+it.num+'</b>'+
+        '<span class="arc">'+[0,1,2].map(function(j){return '<i class="'+(e>j?"on":"")+(nv&&e>j&&j>=nv.e?" pop":"")+'" style="--d:'+j+'">'+SVG_ET+'</i>';}).join("")+'</span>'+
+        anneauTemps(t,nv?nv.c:3);
+      if(it.cur&&it.ouv)sects+='<span class="jouer-tag" style="left:'+it.x.toFixed(1)+'px;top:'+(fy-58)+'px">Jouer</span>';
       nodes+='<button type="button" class="'+cls+'" style="--pa:'+it.acc+';left:'+it.x.toFixed(1)+'px;top:'+fy+'px" data-w="'+it.w+'" data-i="'+it.i+'" aria-label="Monde '+(it.w+1)+' '+nomNiveau(it.w,it.i)+'">'+inner+'</button>';}});
+  DERNIER=null;
   ch.style.height=H+"px";
   ch.innerHTML='<div class="parc-fond"></div>'
     +'<div class="parc-layer l-bg">'+lbg+'</div><div class="parc-layer l-planets">'+lpl+'</div>'
     +'<div class="parc-layer l-stars">'+lst+'</div><div class="parc-layer l-meteors">'+lme+'</div>'
-    +'<svg class="trail" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" preserveAspectRatio="none"><path d="'+d+'" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 11"/><path d="'+de+'" fill="none" stroke="rgba(255,196,80,.55)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 9"/><path class="voie-discrete" d="'+deD+'" fill="none" stroke="rgba(255,196,80,.2)" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="1 9"/></svg>'
+    +'<svg class="trail" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" preserveAspectRatio="none"><path d="'+d+'" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 11"/><g fill="none" stroke-width="2.6" stroke-linecap="round">'+fait+'</g><path d="'+de+'" fill="none" stroke="rgba(255,196,80,.55)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 9"/><path class="voie-discrete" d="'+deD+'" fill="none" stroke="rgba(255,196,80,.2)" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="1 9"/></svg>'
     +sects+nodes;
   parcRevele(ch);parcParallax();}
 // parallaxe PAR BANDE : chaque bande (BG/Planets/Stars/Meteors de son monde) se décale selon sa distance au
@@ -1628,7 +1682,17 @@ document.getElementById("chemin").addEventListener("click",function(e){
   var sec=e.target.closest(".parc-sect.paye");if(sec){sonClic();ouvrirBoutique("monde");return;}
   var b=e.target.closest(".parc-niv");if(!b)return;
   if(b.classList.contains("paye")){sonClic();ouvrirBoutique("monde");return;}
-  if(b.classList.contains("verrou")){vibrer(20);return;}sonClic();lancer(niveauDef(+b.dataset.w,+b.dataset.i));});
+  if(b.classList.contains("verrou")){vibrer(20);return;}sonClic();ficheNiveau(+b.dataset.w,+b.dataset.i);});
+// la fiche d'un niveau avant de le jouer (le client) : son objectif, votre meilleur score, vos étoiles, puis « Jouer »
+function ficheNiveau(w,i){var r=PROG.niveaux[(w+1)+"-"+(i+1)],par=MONDES[w].coups[i],e=r?r.etoiles||0:0,t=r?r.chrono||0:0;
+  var et=function(n,on){return [0,1,2].map(function(k){return k<n?on:SVG_ET_OFF;}).join("");};
+  ouvrirFenetre('<h3>'+nomNiveau(w,i)+'</h3><p class="fiche-monde">'+MONDES[w].nom+'</p>'+
+    '<div class="resume"><div>Coups<b>'+(r?r.coups:"–")+' / '+par+'</b><i class="mini-et">'+et(e,SVG_ET)+'</i></div>'+
+    '<div>Temps<b>'+(r?fmt(r.temps):"–")+' / '+fmt(objectifTemps(par))+'</b><i class="mini-et">'+et(t,SVG_ETT)+'</i></div></div>'+
+    '<p>'+(e===3&&t===3?"Parfait : toutes les étoiles sont à vous.":r?"Battez votre record pour gagner plus d’étoiles.":"Trois étoiles en "+par+" coups ou moins.")+'</p>'+
+    '<div class="menu"><button class="bouton principal" data-a="jouer" type="button"><span>Jouer</span></button>'+
+    '<button class="bouton" data-a="x" type="button" style="justify-content:center;color:var(--pale)">Fermer</button></div>',
+    function(a){fermerFenetre();if(a==="jouer")lancer(niveauDef(w,i));},"x");}
 document.getElementById("parcoursDefile").addEventListener("scroll",function(){if(parcRaf)return;parcRaf=requestAnimationFrame(function(){parcRaf=0;parcParallax();});},{passive:true});
 // (ancien écran de sélection #mondes/#niveaux retiré : la carte de campagne #parcours le remplace)
 
@@ -1756,7 +1820,7 @@ function indice(gratuit){if(!J||!J.pret||J.fini||JeuP.occupe())return;var ch=che
   if(!gratuit&&!J.indice){J.indice=true;PROG.stats.indices++;sauver();}majJeu();Ticker.reveiller();}
 function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length,d=J.def,e=etoilesPour(n,d.par,J.indice),eT=etoilesTempsPour(temps,d.par),record=false,av;J.tFin=temps;J.eT=eT;majTemps();
   PROG.stats.resolus++;
-  if(d.mode==="campagne"){av=PROG.niveaux[d.id];record=!av||e>av.etoiles||n<av.coups;
+  if(d.mode==="campagne"){av=PROG.niveaux[d.id];DERNIER={w:d.w,i:d.i,e:av?av.etoiles||0:0,c:av?av.chrono||0:0};record=!av||e>av.etoiles||n<av.coups;
     record=record||eT>((av&&av.chrono)||0);
     var gain=(e===3&&eT===3&&!(av&&av.etoiles===3&&av.chrono===3)),finMonde=!av&&MONDES[d.w].coups.every(function(c,i){return estExpert(i)!==estExpert(d.i)||i===d.i||PROG.niveaux[(d.w+1)+"-"+(i+1)];});
     PROG.niveaux[d.id]=av?{etoiles:Math.max(av.etoiles,e),chrono:Math.max(av.chrono||0,eT),coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),sansIndice:av.sansIndice||!J.indice}:{etoiles:e,chrono:eT,coups:n,temps:temps,sansIndice:!J.indice};
