@@ -1314,15 +1314,16 @@ function poserFond(t,nebuleuse){var el=document.getElementById("fondMonde");if(e
 var THEME_ACC=["80,226,150","92,180,255","255,110,120","178,130,255"];
 function accentTheme(t){ACC=THEME_ACC[(((t-1)%4)+4)%4];ACC_CLAIR=eclaircir(ACC,.65);document.documentElement.style.setProperty("--acc",ACC);}
 var MONDES=[
-  {nom:"Premier cercle",desc:"Deux orbites, U et R. Le geste s’apprend ici.",anneaux:["U","R"],coups:[1,2,3,4,4,5,5,6,4,6,7,8]},
-  {nom:"Trois faces",desc:"Une troisième orbite, F : chaque pastille hésite entre deux chemins.",anneaux:["U","R","F"],coups:[2,3,3,4,4,5,6,6,5,6,7,9]},
-  {nom:"Face cachée",desc:"D, la face du dessous, tourne sur le même axe que U.",anneaux:["U","D","R","F"],etoiles:{jaunes:2},coups:[2,3,4,4,5,5,6,7,5,6,7,9]},
-  {nom:"Face à face",desc:"L rejoint R : cinq orbites, deux faces opposées.",anneaux:["U","D","L","R","F"],etoiles:{bleues:2},coups:[3,4,4,5,5,6,6,7,6,7,8,10]},
-  {nom:"Six faces",desc:"Les six faces du cube, sans les tranches.",anneaux:["U","D","L","R","F","B"],coups:[3,4,5,5,6,6,7,8,7,8,9,11]},
-  {nom:"Première tranche",desc:"M, l’orbite du milieu, n’a pas de face à elle.",anneaux:["U","D","L","R","F","B","M"],coups:[4,5,5,6,6,7,8,9,7,8,10,12]},
-  {nom:"Deux tranches",desc:"E se glisse entre U et D : huit orbites.",anneaux:["U","D","L","R","F","B","M","E"],coups:[4,5,6,6,7,8,9,10,8,9,11,13]},
-  {nom:"Grand maître",desc:"Les neuf orbites à la fois, jusqu’à vingt-cinq coups.",anneaux:TOUS,coups:[6,8,10,12,14,16,18,20,12,16,20,25]}];
-// une orbite de plus à chaque monde (le client, le 14/10/2026) : les quatre premiers sont gratuits, les neuf orbites à la
+  {nom:"Premier cercle",desc:"Deux orbites, U et R. Le geste s’apprend ici.",anneaux:["U","R"],coups:[1,2,3,4,5,6,7,8,9,10,11,12]},
+  {nom:"Trois faces",desc:"Une troisième orbite, F : chaque pastille hésite entre deux chemins.",anneaux:["U","R","F"],coups:[2,3,4,5,6,7,8,9,10,11,12,13]},
+  {nom:"Face cachée",desc:"D, la face du dessous, tourne sur le même axe que U.",anneaux:["U","D","R","F"],etoiles:{jaunes:2},coups:[3,4,5,6,7,8,9,10,11,12,13,14]},
+  {nom:"Face à face",desc:"L rejoint R : cinq orbites, deux faces opposées.",anneaux:["U","D","L","R","F"],etoiles:{bleues:2},coups:[4,5,6,7,8,9,10,11,12,13,14,15]},
+  {nom:"Six faces",desc:"Les six faces du cube, sans les tranches.",anneaux:["U","D","L","R","F","B"],coups:[5,6,7,8,9,10,11,12,13,14,15,16]},
+  {nom:"Première tranche",desc:"M, l’orbite du milieu, n’a pas de face à elle.",anneaux:["U","D","L","R","F","B","M"],coups:[6,7,8,9,10,11,12,13,14,15,16,17]},
+  {nom:"Deux tranches",desc:"E se glisse entre U et D : huit orbites.",anneaux:["U","D","L","R","F","B","M","E"],coups:[7,8,9,10,11,12,13,14,15,16,17,18]},
+  {nom:"Grand maître",desc:"Les neuf orbites à la fois, jusqu’à dix-neuf coups.",anneaux:TOUS,coups:[8,9,10,11,12,13,14,15,16,17,18,19]}];
+// une orbite de plus à chaque monde et un coup de plus à chaque niveau (le client, le 14/10/2026) : le monde n va de n à
+// n+7 coups, ses experts de n+8 à n+11, sur les mêmes orbites. Les quatre premiers mondes sont gratuits, les neuf orbites à la
 // fois ne se jouent qu'avec le jeu complet. Les huit premiers niveaux de chaque monde font le chemin ; les quatre suivants
 // sont des niveaux experts, sur une voie dorée parallèle (le client) : l'expert j s'ouvre avec le niveau 2j du chemin (et
 // l'expert d'avant), en option, sans jamais bloquer le monde suivant. Le vérificateur contrôle l'orbite de plus par monde et qu'aucun monde gratuit n'a les neuf orbites.
@@ -1545,19 +1546,20 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
     y+=28;items.push({t:"s",acc:acc,w:w,nom:M.nom,y:y});y+=136;
     // le chemin : les huit niveaux, en lacets
     var xs=[],ys=[];
-    for(var i=0;i<Math.min(BASE,M.coups.length);i++){var x=cx+Math.sin(k*.66)*amp,r=PROG.niveaux[(w+1)+"-"+(i+1)];
+    // lacets réguliers : deux niveaux d'un côté, deux de l'autre (1 | 2 3 | 4 5 | 6 7 | 8), côté de départ alterné d'un
+    // monde à l'autre ; aucun nœud au centre, là où le chemin et sa voie dorée se croisent
+    var LACET=[-1,1,1,-1,-1,1,1,-1],cote=w%2?-1:1;
+    for(var i=0;i<Math.min(BASE,M.coups.length);i++){var x=cx+cote*LACET[i%8]*amp*.8,r=PROG.niveaux[(w+1)+"-"+(i+1)];
       items.push({t:"n",x:x,y:y,w:w,i:i,num:numNiveau(w,i),r:r,ouv:niveauOuvert(w,i),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===i),acc:acc});
       pts.push([x,y]);xs.push(x);ys.push(y);y+=GAP;k++;}
-    // la voie dorée des experts (le client, le 14/10/2026) : parallèle au chemin, elle avance avec lui et le croise. Elle
-    // part du niveau 2 ; l'expert j se pose juste après le niveau 2j+2 qui l'ouvre, du côté opposé au chemin, sans place
-    // perdue entre deux mondes
-    if(M.coups.length>BASE){var bra=[[xs[1],ys[1]]];
-      for(var j=0;j<M.coups.length-BASE&&2*j+1<ys.length;j++){var a=2*j+1,i=BASE+j,ye=ys[a]+GAP/2,
-          // le côté le plus loin de ses deux voisins du chemin (au-dessus et au-dessous)
-          voi=[xs[a]].concat(a+1<xs.length?[xs[a+1]]:[]),ecart=function(x){return Math.min.apply(null,voi.map(function(v){return Math.abs(v-x);}));},
-          xg=cx-amp*.95,xd=cx+amp*.95,xe=ecart(xg)>=ecart(xd)?xg:xd,r=PROG.niveaux[(w+1)+"-"+(i+1)];
-        items.push({t:"n",x:xe,y:ye,w:w,i:i,num:"E"+numNiveau(w,i),r:r,ouv:niveauOuvert(w,i),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===i),acc:acc});
-        bra.push([xe,ye]);}
+    // la voie dorée des experts (le client, le 14/10/2026) : le miroir exact du chemin, sa forme inverse. Elle part du
+    // niveau 2 et suit le reflet des niveaux suivants ; l'expert j se pose entre les niveaux 2j+2 et 2j+3, en face d'eux :
+    // les deux voies s'enlacent et ne se croisent qu'entre deux paires de niveaux, là où il n'y a aucun nœud
+    if(M.coups.length>BASE&&xs.length===BASE){var bra=[[xs[1],ys[1]],[2*cx-xs[1],ys[1]+GAP/2]];
+      for(var i=2;i<BASE;i++)bra.push([2*cx-xs[i],ys[i]]);
+      for(var j=0;j<M.coups.length-BASE;j++){var a=2*j+1,ye=ys[a]+GAP/2,xe=2*cx-xs[a],ie=BASE+j,r=PROG.niveaux[(w+1)+"-"+(ie+1)];
+        items.push({t:"n",x:xe,y:ye,w:w,i:ie,num:"E"+numNiveau(w,ie),r:r,ouv:niveauOuvert(w,ie),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===ie),acc:acc});}
+      bra.push([2*cx-xs[BASE-1],ys[BASE-1]+GAP/2]);
       branches.push(bra);}
     wreg.push({w:w,acc:acc,y0:y0,y1:y});y+=18;}
   var H=y+60,de="",nodes="",sects="",d="";
@@ -1572,9 +1574,8 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
     lst+='<div class="parc-starsb'+st+'stars-'+t+'.webp)"></div>';
     lme+='<div class="parc-meteorsb'+st+'meteors-'+t+'.webp)"></div>';});
   pts.forEach(function(p,j){d+=(j?"L":"M")+p[0].toFixed(1)+" "+(H-p[1])+" ";});
-  // la voie dorée en courbes en S (départ et arrivée verticaux) : elle croise le chemin sans passer sur ses nœuds
-  branches.forEach(function(b){b.forEach(function(p,j){var Y=H-p[1];if(!j){de+="M"+p[0].toFixed(1)+" "+Y+" ";return;}
-    var q=b[j-1],Yq=H-q[1],c1=(Yq+(Y-Yq)*.85).toFixed(1),c2=(Y-(Y-Yq)*.85).toFixed(1);de+="C"+q[0].toFixed(1)+" "+c1+" "+p[0].toFixed(1)+" "+c2+" "+p[0].toFixed(1)+" "+Y+" ";});});
+  // la voie dorée se trace comme le chemin (même trait, en miroir)
+  branches.forEach(function(b){b.forEach(function(p,j){de+=(j?"L":"M")+p[0].toFixed(1)+" "+(H-p[1])+" ";});});
   items.forEach(function(it){var fy=H-it.y;
     if(it.t==="s"){var pa=mondePaye(it.w),cE=!pa&&condEtoiles(it.w),etM=etoilesMonde(it.w),etTM=chronoMonde(it.w),maxM=MONDES[it.w].coups.length*3;
       sects+='<div class="parc-sep" style="--pa:'+it.acc+';top:'+fy+'px"></div>'

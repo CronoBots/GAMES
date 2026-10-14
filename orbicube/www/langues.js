@@ -47,7 +47,7 @@
     ["Les six faces du cube, sans les tranches.", "The cube’s six faces, no slices.", "De zes vlakken van de kubus, zonder plakken.", "Die sechs Seiten des Würfels, ohne Scheiben.", "Las seis caras del cubo, sin capas."],
     ["M, l’orbite du milieu, n’a pas de face à elle.", "M, the middle orbit, has no face of its own.", "M, de middelste baan, heeft geen eigen vlak.", "M, die mittlere Bahn, hat keine eigene Seite.", "M, la órbita central, no tiene cara propia."],
     ["E se glisse entre U et D : huit orbites.", "E slips between U and D: eight orbits.", "E schuift tussen U en D: acht banen.", "E schiebt sich zwischen U und D: acht Bahnen.", "E se cuela entre U y D: ocho órbitas."],
-    ["Les neuf orbites à la fois, jusqu’à vingt-cinq coups.", "All nine orbits at once, up to twenty-five moves.", "Alle negen banen tegelijk, tot vijfentwintig zetten.", "Alle neun Bahnen auf einmal, bis zu fünfundzwanzig Züge.", "Las nueve órbitas a la vez, hasta veinticinco movimientos."],
+    ["Les neuf orbites à la fois, jusqu’à dix-neuf coups.", "All nine orbits at once, up to nineteen moves.", "Alle negen banen tegelijk, tot negentien zetten.", "Alle neun Bahnen auf einmal, bis zu neunzehn Züge.", "Las nueve órbitas a la vez, hasta diecinueve movimientos."],
     ["Grand maître", "Grand master", "Grootmeester", "Großmeister", "Gran maestro"],
     ["{0} Cercles : {1}.", "{0} Circles: {1}.", "{0} Cirkels: {1}.", "{0} Kreise: {1}.", "{0} Círculos: {1}."],
     ["Terminez le monde {0} pour l’ouvrir.", "Finish world {0} to unlock it.", "Voltooi wereld {0} om hem te openen.", "Schließe Welt {0} ab, um sie freizuschalten.", "Termina el mundo {0} para abrirlo."],

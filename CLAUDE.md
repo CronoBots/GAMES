@@ -184,12 +184,14 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   (`estExpert`) forment **une voie dorée parallèle qui avance avec le monde** (le client, le 14/10/2026) : l'expert j s'ouvre
   avec le niveau 2j+2 du chemin et l'expert d'avant (`niveauOuvert`), il est un peu plus long que les niveaux qui l'entourent,
   en option, sans jamais bloquer le monde suivant (`mondeOuvert`, `mondeFini` lisent le huitième). La victoire d'un niveau
-  pair qui ouvre un expert le propose en second bouton doré. Sur la carte, la voie part du niveau 2 et se pose après le
-  niveau qui ouvre chaque expert, du côté le plus loin de ses deux voisins, en courbes en S qui croisent le chemin sans
-  toucher ses nœuds (le parcours de test exige 70 px entre deux nœuds) ; nœuds « E1 » à « E4 », pastille « Voie dorée :
-  niveaux experts » sous la description du monde. Le chemin numérote 1 à 64 sans eux (`numNiveau`, `nomNiveau`).
-- **Vraie progression** (le client : deux niveaux de suite se ressemblaient) : le chemin ne raccourcit jamais, un seul
-  niveau à un coup, et `genererMelange` refuse qu'une orbite revienne dans une suite de coups sur un même axe (U D U′
+  pair qui ouvre un expert le propose en second bouton doré. Sur la carte (le client : « la forme inverse ») : le chemin
+  fait des lacets réguliers (`LACET` : 1 | 2 3 | 4 5 | 6 7 | 8, côté de départ alterné par monde) et la voie dorée en est
+  le **miroir exact**, partie du niveau 2 ; l'expert j se pose en face des niveaux 2j+2 et 2j+3. Les deux voies ne se
+  croisent qu'entre deux paires, là où il n'y a aucun nœud (le parcours de test exige 70 px entre deux nœuds) ; nœuds
+  « E1 » à « E4 », pastille « Voie dorée : niveaux experts » sous la description du monde. Le chemin numérote 1 à 64 sans eux (`numNiveau`, `nomNiveau`).
+- **Vraie progression** (le client : deux niveaux de suite se ressemblaient) : **un coup de plus à chaque niveau** et une
+  orbite de plus à chaque monde : le monde n va de n à n+7 coups, ses experts de n+8 à n+11 sur les mêmes orbites. Le chemin
+  ne raccourcit jamais, un seul niveau à un coup, et `genererMelange` refuse qu'une orbite revienne dans une suite de coups sur un même axe (U D U′
   vaudrait D) ; le vérificateur contrôle les trois. Graine `orbicube3-` ; `CAMPAGNE` reste 2 (jeu pas encore sorti :
   les essais du client gardent leurs étoiles).
 - **Mondes gratuits et étoiles** : le monde 3 demande en plus des étoiles de coups (jaunes), le monde 4 des étoiles de
