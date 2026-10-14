@@ -566,7 +566,7 @@ body{background:
 /* le pulse est un anneau qui grandit et s'efface (transform + opacity : la carte graphique seule, aucun repeint) */
 .parc-niv.courant::after{content:"";grid-area:1/1;width:56px;height:56px;border-radius:50%;border:2px solid rgba(255,255,255,.8);pointer-events:none;
   animation:parc-pulse 2.2s ease-out infinite}
-@keyframes parc-pulse{from{transform:scale(1);opacity:.8}to{transform:scale(1.45);opacity:0}}
+@keyframes parc-pulse{from{transform:scale(1);opacity:.85}to{transform:scale(1.17);opacity:0}}
 .jouer-tag{position:absolute;transform:translate(-50%,-50%);z-index:3;white-space:nowrap;pointer-events:none;
   font-family:var(--f-chiffre);font-weight:700;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#14121f;background:#fff;border-radius:999px;padding:3px 9px;
   box-shadow:0 4px 12px -4px rgba(0,0,0,.7)}
