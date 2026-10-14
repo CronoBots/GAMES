@@ -162,10 +162,10 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   **Écran de jeu au même langage** : boutons à icône seule (`.ico`, partout) en ronds de verre au contour d'accent,
   Annuler/Rejouer en pilules de verre, Niveaux/Accueil en petits ronds avec leur nom dessous (bloc en fin de feuille de style).
 - **Campagne** : l'en-tête de chaque monde et la pastille du haut montrent les deux totaux (`chronoMonde`, `etoilesChrono`).
-  **Nœuds de niveau** (le client, le 14/10/2026 : « tout ») : bouton de 66 px avec une **bille** de 56 px aux couleurs du
-  monde (`.bille`, pleine une fois finie), les orbites du monde en filigrane (`orbitesNoeud`), les **étoiles de coups en
+  **Nœuds de niveau** (le client, le 14/10/2026 : « tout ») : bouton de 66 px avec une **bille** de 56 px en verre sombre,
+  la couleur du monde en reflet et sur l'anneau (`.bille` ; l'aplat de couleur et les orbites en filigrane ont été refusés), les **étoiles de coups en
   arc au-dessus** (`.arc`), les **étoiles de temps en trois arcs bleus** sur le bas de l'anneau (`anneauTemps`). États :
-  à jouer plus grand, pulsant, étiquette « Jouer » (hors du bouton, dans `sects`) ; parfait (3 + 3) anneau doré ;
+  à jouer plus grand, pulsant (anneau qui grandit : transform/opacity, aucun repeint), étiquette « Jouer » (hors du bouton, dans `sects`) ; parfait (3 + 3) anneau doré ;
   verrouillé plus petit et gris ; expert en **losange doré**. Un toucher ouvre la **fiche du niveau** (`ficheNiveau` :
   objectif, record, étoiles, « Jouer ») au lieu de lancer. Au retour d'une victoire, les nouvelles étoiles apparaissent
   une à une (`DERNIER`, posé par `victoire`). Le chemin entre deux niveaux finis passe en trait plein de la couleur du
@@ -193,15 +193,18 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   `mondeFini` lisent le huitième). La victoire du huitième niveau propose « Expert 1 » en second bouton doré. Sur la carte (le client : « la forme inverse », mais pas
   « trop symétrique ») : le chemin garde sa vague naturelle mais jamais au centre (`vague` : au moins 42 % de l'amplitude),
   la voie dorée est sa forme inverse resserrée à 86 % (`inv`), partie du niveau 1 avec le chemin ; l'expert j se pose sur elle, à la
-  hauteur du niveau 2j+3 ou 2j+4 (le plus écarté), donc de l'autre côté, jamais sur un nœud (le parcours de test exige
+  hauteur du niveau 2j+2 (un tous les deux niveaux, le client : ils se collaient), donc de l'autre côté, jamais sur un nœud (le parcours de test exige
   70 px entre deux nœuds). Les lacets réguliers en miroir parfait ont été refusés. **Tant que le chemin du monde n'est
-  pas fini, la voie dorée est discrète** (trait pâle `.voie-discrete`, nœuds `.discret` à 24 %) et ses nœuds ne montrent
+  pas fini, la voie dorée est discrète** (trait atténué `.voie-discrete`, nœuds `.discret` à 55 % : le client la voulait moins effacée) et ses nœuds ne montrent
   qu'un éclat doré, ni « E1 » ni étoiles. La pastille « Voie dorée » est petite, posée sur la bifurcation depuis le
   niveau 1 (`t:"x"`). La condition d'étoiles d'un monde n'est plus écrite sous sa description : le bandeau la montre.
 - **Mémoire de la carte sur iPhone** (Safari fermait la page, « un problème est survenu à plusieurs reprises ») : chaque
   bande d'image d'un monde (4 par monde) était un calque de carte graphique (`will-change`) ; à 8 mondes, 48 calques,
   ≈ 760 Mo. Désormais pas de `will-change` sur les bandes ni sur leurs calques parents, et `parcParallax` ne garde
-  affichées que les bandes à moins d'un demi-écran de la vue (≈ 11 calques, ≈ 140 Mo). Le parcours de test exige au plus
+  affichées que les bandes à moins d'un demi-écran de la vue. **Fluidité** (le client : « pas fluide ») : seules la
+  nébuleuse et les planètes bougent, et seules les bandes visibles deviennent un calque GPU (`translate3d` +
+  `will-change` posés par `parcParallax`, au plus 6) ; étoiles et météores restent fixes ; le ciel animé (`Ciel`) ne se
+  redessine pas sous la carte. Mesuré, processeur ralenti ×4 : 37 → 54 images/s. Le parcours de test exige au plus
   12 bandes affichées. Nœuds « E1 » à « E4 ». Le chemin numérote 1 à 64 sans eux (`numNiveau`, `nomNiveau`).
 - **Vraie progression** (le client : deux niveaux de suite se ressemblaient ; « trouver le bon compromis
   difficulté/progression/orbites ») : une orbite de plus par monde ; dans un monde, un coup de plus tous les deux niveaux

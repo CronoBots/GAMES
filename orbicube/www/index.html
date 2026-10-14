@@ -557,13 +557,16 @@ body{background:
 .parc-niv:not(.verrou):active{transform:translate(-50%,-50%) scale(.92)}
 .parc-niv b{position:relative;z-index:2;font-family:var(--f-titre);font-weight:700;font-size:19px;color:#fff;line-height:1;text-shadow:0 1px 4px rgba(0,0,0,.6)}
 /* fini : la bille prend la couleur de son monde */
-.parc-niv.fait .bille{border-color:rgba(var(--pa),.9);background:radial-gradient(circle at 32% 26%,rgba(255,255,255,.42),rgba(var(--pa),.95) 30%,rgba(var(--pa),.6) 62%,rgba(12,12,24,.95) 100%)}
+.parc-niv.fait .bille{border:2px solid rgba(var(--pa),.95);background:radial-gradient(circle at 34% 26%,rgba(255,255,255,.2),rgba(var(--pa),.32) 38%,rgba(16,16,30,.96) 78%);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 0 16px -4px rgba(var(--pa),.8)}
 /* parfait (3 + 3) : un anneau doré qui luit */
 .parc-niv.parfait .bille{border-color:var(--or);box-shadow:0 0 0 2px rgba(255,207,74,.35),0 0 18px -2px rgba(255,207,74,.7),inset 0 1px 0 rgba(255,255,255,.3)}
 /* à jouer : plus grand, anneau blanc qui pulse, « Jouer » au-dessus */
 .parc-niv.courant.vu{transform:translate(-50%,-50%) scale(1.14)}
-.parc-niv.courant .bille{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.5),0 0 26px -2px rgba(var(--pa),.9),inset 0 1px 0 rgba(255,255,255,.3);animation:parc-pulse 2.2s ease-in-out infinite}
-@keyframes parc-pulse{50%{box-shadow:0 0 0 3px rgba(255,255,255,.75),0 0 38px 0 rgba(var(--pa),1),inset 0 1px 0 rgba(255,255,255,.3)}}
+.parc-niv.courant .bille{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.5),0 0 26px -2px rgba(var(--pa),.9),inset 0 1px 0 rgba(255,255,255,.3)}
+/* le pulse est un anneau qui grandit et s'efface (transform + opacity : la carte graphique seule, aucun repeint) */
+.parc-niv.courant::after{content:"";grid-area:1/1;width:56px;height:56px;border-radius:50%;border:2px solid rgba(255,255,255,.8);pointer-events:none;
+  animation:parc-pulse 2.2s ease-out infinite}
+@keyframes parc-pulse{from{transform:scale(1);opacity:.8}to{transform:scale(1.45);opacity:0}}
 .jouer-tag{position:absolute;transform:translate(-50%,-50%);z-index:3;white-space:nowrap;pointer-events:none;
   font-family:var(--f-chiffre);font-weight:700;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#14121f;background:#fff;border-radius:999px;padding:3px 9px;
   box-shadow:0 4px 12px -4px rgba(0,0,0,.7)}
@@ -584,9 +587,6 @@ body{background:
 .parc-niv .anneau-t{position:absolute;width:66px;height:66px;left:50%;top:50%;transform:translate(-50%,-50%);overflow:visible;pointer-events:none;z-index:1}
 .parc-niv .anneau-t path{fill:none;stroke:rgba(255,255,255,.13);stroke-width:3;stroke-linecap:round}
 .parc-niv .anneau-t path.on{stroke:#4cc9f0;filter:drop-shadow(0 0 3px rgba(76,201,240,.7))}
-/* les orbites du monde en filigrane dans la bille (2 à 9) */
-.parc-niv .atome{width:50px;height:50px;pointer-events:none;z-index:1}
-.parc-niv .atome ellipse{fill:none;stroke:rgba(255,255,255,.16);stroke-width:.8}
 /* au retour d'une victoire, les nouvelles étoiles apparaissent une à une */
 .parc-niv .arc i.pop{animation:et-pop .55s cubic-bezier(.3,1.6,.5,1) both;animation-delay:calc(.45s + var(--d)*.2s)}
 .parc-niv .anneau-t path.pop{animation:t-pop .5s ease both;animation-delay:calc(1.05s + var(--d)*.18s)}
@@ -600,13 +600,12 @@ body{background:
 .parc-niv.expert.fait::before{background:radial-gradient(circle at 30% 30%,rgba(255,240,190,.9),rgba(255,196,80,.95) 40%,rgba(150,100,20,.95))}
 .parc-niv.expert.fait b{color:#2a1c04;text-shadow:none}
 .parc-niv.expert.verrou::before{border-color:rgba(255,196,80,.35);background:rgba(30,24,12,.8);box-shadow:none}
-.parc-niv.expert .atome{display:none}
 /* tant que le chemin du monde n'est pas fini, la voie dorée s'efface : on la devine, on ne la suit pas encore */
-.parc-niv.expert.discret.vu{opacity:.38;outline-color:rgba(255,196,80,.3)}.parc-niv.expert.discret.vu.verrou{opacity:.24}
+.parc-niv.expert.discret.vu,.parc-niv.expert.discret.vu.verrou{opacity:.55}
 .parc-exp{position:absolute;transform:translate(-50%,-50%);z-index:1;pointer-events:none;display:flex;align-items:center;gap:4px;white-space:nowrap;
   font-family:var(--f-chiffre);font-weight:600;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,207,74,.85);
   background:rgba(9,9,16,.78);border:1px solid rgba(255,196,80,.28);border-radius:999px;padding:2px 7px}
-.parc-exp svg{width:8px;height:8px;fill:currentColor}.parc-exp.discret{opacity:.5}
+.parc-exp svg{width:8px;height:8px;fill:currentColor}.parc-exp.discret{opacity:.8}
 .parc-niv .eclat{width:14px;height:14px;fill:rgba(255,207,74,.75)}
 /* monde gratuit fermé par des étoiles : le compte à atteindre sur la bannière, la condition sous la description */
 .parc-cond{display:inline-flex;align-items:center;gap:4px;font-family:var(--f-chiffre);font-weight:600;font-size:12px;color:var(--or)}
@@ -1573,13 +1572,12 @@ function niveauOuvert(w,i){if(!mondeOuvert(w))return false;if(estExpert(i))retur
 function chronoMonde(w){var t=0;for(var i=0;i<MONDES[w].coups.length;i++){var r=PROG.niveaux[(w+1)+"-"+(i+1)];if(r)t+=r.chrono||0;}return t;}
 function etoilesMonde(w){var t=0;for(var i=0;i<MONDES[w].coups.length;i++){var r=PROG.niveaux[(w+1)+"-"+(i+1)];if(r)t+=r.etoiles;}return t;}
 // nœuds de la carte (le client, le 14/10/2026 : « tout ») : l'anneau du temps en trois arcs bleus sur le bas du nœud (le
-// haut reste aux étoiles de coups), les orbites du monde en filigrane dans la bille, le dernier niveau gagné fait
+// haut reste aux étoiles de coups), le dernier niveau gagné fait
 // apparaître ses nouvelles étoiles une à une au retour sur la carte (DERNIER, posé par la victoire)
 var DERNIER=null;
 function arcSvg(a0,a1,r){var p=function(a){a=(a-90)*Math.PI/180;return(r*Math.cos(a)).toFixed(2)+" "+(r*Math.sin(a)).toFixed(2);};return "M"+p(a0)+" A"+r+" "+r+" 0 0 1 "+p(a1);}
 function anneauTemps(t,avant){return '<svg class="anneau-t" viewBox="-32 -32 64 64">'+[[65,135],[145,215],[225,295]].map(function(a,j){
   return '<path class="'+(t>j?"on":"")+(t>j&&j>=avant?" pop":"")+'" style="--d:'+j+'" d="'+arcSvg(a[0],a[1],30)+'"/>';}).join("")+'</svg>';}
-function orbitesNoeud(n){var h='';for(var q=0;q<n;q++)h+='<ellipse rx="21" ry="7" transform="rotate('+(q*180/n).toFixed(1)+')"/>';return '<svg class="atome" viewBox="-28 -28 56 56">'+h+'</svg>';}
 // ===== Carte de campagne : parcours vertical scrollable (façon Candy Crush), nœuds le long d'une traînée orbitale =====
 function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
   document.getElementById("parcEt").textContent=etoilesTotal();document.getElementById("parcEtT").textContent=etoilesChrono();
@@ -1601,7 +1599,7 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
     // faire miroir parfait. Elle part du niveau 1, avec le chemin ; l'expert j se pose en face du niveau 2j+3 ou 2j+4 (le plus écarté du
     // centre), sur la voie : à la hauteur d'un niveau, de l'autre côté, jamais sur lui
     if(M.coups.length>BASE&&xs.length===BASE){var inv=function(q){return cx-vague(ks[q])*amp*.86;},bra=[[xs[0],ys[0]]],der=0;
-      var choix=[[2],[3,4],[5,6],[7]];
+      var choix=[[1],[3],[5],[7]];   // un expert tous les deux niveaux, à hauteur égale (le client : E1 et E2 se collaient)
       for(var j=0;j<M.coups.length-BASE&&j<choix.length;j++){var c=choix[j].filter(function(q){return q>der;}),q=c.reduce(function(m,v){return Math.abs(inv(v)-cx)>Math.abs(inv(m)-cx)?v:m;},c[0]);
         for(var t=der+1;t<=q;t++)bra.push([inv(t),ys[t]]);der=q;
         var ie=BASE+j,r=PROG.niveaux[(w+1)+"-"+(ie+1)];
@@ -1642,8 +1640,8 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
       var bille=ex?"":'<span class="bille"></span>';
       if(cache)inner='<svg class="eclat" viewBox="0 0 24 24">'+ET_PATH+'</svg>';
       else if(!it.ouv)inner=bille+'<svg class="pcad" viewBox="0 0 24 24">'+CAD+'</svg>';
-      // ouvert : les orbites du monde en filigrane, le numéro, l'arc des étoiles de coups au-dessus, l'anneau du temps autour
-      else inner=bille+orbitesNoeud(MONDES[it.w].anneaux.length)+'<b>'+it.num+'</b>'+
+      // ouvert : le numéro, l'arc des étoiles de coups au-dessus, l'anneau du temps autour
+      else inner=bille+'<b>'+it.num+'</b>'+
         '<span class="arc">'+[0,1,2].map(function(j){return '<i class="'+(e>j?"on":"")+(nv&&e>j&&j>=nv.e?" pop":"")+'" style="--d:'+j+'">'+SVG_ET+'</i>';}).join("")+'</span>'+
         anneauTemps(t,nv?nv.c:3);
       if(it.cur&&it.ouv)sects+='<span class="jouer-tag" style="left:'+it.x.toFixed(1)+'px;top:'+(fy-58)+'px">Jouer</span>';
@@ -1653,7 +1651,7 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
   ch.innerHTML='<div class="parc-fond"></div>'
     +'<div class="parc-layer l-bg">'+lbg+'</div><div class="parc-layer l-planets">'+lpl+'</div>'
     +'<div class="parc-layer l-stars">'+lst+'</div><div class="parc-layer l-meteors">'+lme+'</div>'
-    +'<svg class="trail" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" preserveAspectRatio="none"><path d="'+d+'" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 11"/><g fill="none" stroke-width="2.6" stroke-linecap="round">'+fait+'</g><path d="'+de+'" fill="none" stroke="rgba(255,196,80,.55)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 9"/><path class="voie-discrete" d="'+deD+'" fill="none" stroke="rgba(255,196,80,.2)" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="1 9"/></svg>'
+    +'<svg class="trail" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" preserveAspectRatio="none"><path d="'+d+'" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 11"/><g fill="none" stroke-width="2.6" stroke-linecap="round">'+fait+'</g><path d="'+de+'" fill="none" stroke="rgba(255,196,80,.55)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 9"/><path class="voie-discrete" d="'+deD+'" fill="none" stroke="rgba(255,196,80,.42)" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 9"/></svg>'
     +sects+nodes;
   parcRevele(ch);parcParallax();}
 // parallaxe PAR BANDE : chaque bande (BG/Planets/Stars/Meteors de son monde) se décale selon sa distance au
@@ -1667,8 +1665,11 @@ function parcParallax(){var pd=document.getElementById("parcoursDefile");if(!pd)
   function co(sel,sp){[].forEach.call(pd.querySelectorAll(sel),function(el){if(el._t==null){el._t=parseFloat(el.style.top)||0;el._h=parseFloat(el.style.height)||0;}
     var haut=el._t,bas=el._t+el._h,vu=bas>pd.scrollTop-vh*.5&&haut<pd.scrollTop+vh*1.5;
     if(el._vu!==vu){el._vu=vu;el.style.display=vu?"":"none";}
-    if(vu)el.style.transform=C?"":"translateY("+((el._cy||(el._cy=+el.dataset.cy))-sc)*sp+"px)";});}
-  co(".parc-bg",C?0:-.18);co(".parc-planets",C?0:-.09);co(".parc-starsb",C?0:-.02);co(".parc-meteorsb",C?0:.09);}
+    // seules les bandes visibles qui bougent deviennent un calque GPU (translate3d + will-change) : un défilement fluide
+    // sans rouvrir le gouffre de mémoire (au plus 6 calques) ; étoiles et météores restent fixes, peints avec la carte
+    if(vu&&sp){el.style.willChange="transform";el.style.transform="translate3d(0,"+(((el._cy||(el._cy=+el.dataset.cy))-sc)*sp).toFixed(1)+"px,0)";}
+    else if(el.style.willChange){el.style.willChange="";el.style.transform="";}});}
+  co(".parc-bg",C?0:-.18);co(".parc-planets",C?0:-.09);co(".parc-starsb",0);co(".parc-meteorsb",0);}
 // révélation : les nœuds apparaissent (fondu + pop) quand ils entrent dans la fenêtre pendant qu'on monte
 var parcIO=null;function parcRevele(ch){var root=document.getElementById("parcoursDefile");
   if(CALME||!("IntersectionObserver" in window)){[].forEach.call(ch.querySelectorAll(".parc-niv"),function(n){n.classList.add("vu");});return;}
@@ -2164,7 +2165,8 @@ var Ciel=(function(){var cv=document.getElementById("ciel"),cx=cv.getContext("2d
     for(var fi=fils.length-1;fi>=0;fi--){var F=fils[fi],e=(now-F.t0)/900;if(e>=1){fils.splice(fi,1);continue;}
       var d=e*F.v*W*.5,x=F.x+F.dx*d,y=F.y+F.dy*d,l=120*(1-Math.abs(e-.5)),g=cx.createLinearGradient(x,y,x-F.dx*l,y-F.dy*l);
       g.addColorStop(0,"rgba(235,228,255,"+(1-e)*(acc?.55:1)+")");g.addColorStop(1,"rgba(235,228,255,0)");cx.strokeStyle=g;cx.lineWidth=1.6;cx.lineCap="round";cx.beginPath();cx.moveTo(x,y);cx.lineTo(x-F.dx*l,y-F.dy*l);cx.stroke();}}
-  function boucle(now){if(!document.hidden&&now-der>33){der=now;dessin(now);}if(!CALME)requestAnimationFrame(boucle);}
+  // sur la carte, le décor en couches couvre tout le ciel : inutile de le redessiner (fluidité du défilement)
+  function boucle(now){if(!document.hidden&&ECRAN!=="parcours"&&now-der>33){der=now;dessin(now);}if(!CALME)requestAnimationFrame(boucle);}
   addEventListener("resize",taille);taille();if(!CALME)requestAnimationFrame(boucle);return{taille:taille};})();
 
 /* ========== 15 ter. LA BOUTIQUE : un achat unique débloque tout ========== */
