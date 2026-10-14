@@ -22,6 +22,12 @@ async function debordements(p) {
     const r = e.getBoundingClientRect(); return r.width && r.right > innerWidth + 1;
   }).map((e) => e.id || e.className).slice(0, 3));
 }
+// le faux serveur du classement : config.js reçoit son adresse, ses appels lui sont passés
+async function brancherEssai(ctx, essai) {
+  await ctx.addInitScript(() => { let c; Object.defineProperty(window, "ORBICUBE_CONFIG", { configurable: true, get() { return c; }, set(v) { v.classement = { url: "https://essai.orbicube/f", cle: "essai" }; c = v; } }); });
+  await ctx.route("https://essai.orbicube/f", async (r) => { const x = essai.repondre(JSON.parse(r.request().postData() || "{}"));
+    await r.fulfill({ status: x.statut, contentType: "application/json", headers: { "access-control-allow-origin": "*" }, body: JSON.stringify(x.json) }); });
+}
 // joue le tour que l'indice montre, jusqu'à la victoire
 async function resoudre(p) {
   for (let k = 0; k < 40; k++) {
@@ -114,8 +120,8 @@ async function resoudre(p) {
 
     // la boutique, depuis les options : un style ouvert se porte d'un toucher, celui d'un pack non acheté se regarde sans se porter
     await p.tap("#btnStylesOpt"); await p.waitForTimeout(700);
-    (await p.isVisible("#boutique.actif")) && (await p.$$eval("#boutRayon .style", (l) => l.length)) === 11 ? ok("boutique : onze palettes en vitrine, dont « Couleurs du monde » et deux exclusives de la voie dorée") : faute("boutique : rayon des couleurs absent");
-    (await p.textContent('#boutRayons [data-r="palette"] .cpt')) === "3/11" ? ok("boutique : compteur de collection (3/11 palettes pour un débutant)") : faute("compteur de collection faux : " + (await p.textContent('#boutRayons [data-r="palette"] .cpt')));
+    (await p.isVisible("#boutique.actif")) && (await p.$$eval("#boutRayon .style", (l) => l.length)) === 14 ? ok("boutique : quatorze palettes en vitrine, dont « Couleurs du monde », deux exclusives de la voie dorée et trois du rang") : faute("boutique : rayon des couleurs absent");
+    (await p.textContent('#boutRayons [data-r="palette"] .cpt')) === "3/14" ? ok("boutique : compteur de collection (3/14 palettes pour un débutant)") : faute("compteur de collection faux : " + (await p.textContent('#boutRayons [data-r="palette"] .cpt')));
     (await p.textContent("#pack-couleurs")).includes("au lieu de") && (await p.textContent("#pack-couleurs")).includes("3,96") ? ok("boutique : le pack montre ce que coûterait son contenu à l'unité (3,96 €)") : faute("prix barré du pack absent");
     await p.tap('.style[data-id="contraste"]'); await p.waitForTimeout(300);
     (await p.$('.style.porte[data-id="contraste"]')) ? ok("boutique : un style ouvert se porte d'un toucher") : faute("le style choisi n'est pas porté");
@@ -253,9 +259,10 @@ async function resoudre(p) {
     renvoi.c === 1 && renvoi.e.includes("orbicube.premier") ? ok("à l'ouverture : connexion, puis renvoi des succès déjà gagnés") : faute("pas de renvoi à l'ouverture : " + JSON.stringify(renvoi));
     const scores = await p.evaluate(() => window.__scores);
     scores.some((s) => s[0] === "orbicube.classement.etoiles" && s[1] > 0) ? ok("total d'étoiles envoyé au classement de Game Center") : faute("classement des étoiles non envoyé : " + JSON.stringify(scores));
-    await p.click("#btnRang"); await p.waitForTimeout(400);
-    if (await p.isVisible("#btnClassements")) { await p.click("#btnClassements"); await p.waitForTimeout(200); }
-    (await p.evaluate(() => window.__classement)) === "" ? ok("le Profil ouvre les classements de Game Center") : faute("bouton Classements absent ou inactif");
+    // le classement est celui du jeu (le client, le 14/10/2026) : sans serveur réglé, il le dit, sans erreur
+    await p.click("#btnRang"); await p.waitForTimeout(400); await p.click("#btnClassements"); await p.waitForTimeout(500);
+    (await p.isVisible("#classement.actif")) && (await p.textContent("#clListe")).includes("ouvrira") ? ok("le Profil ouvre le classement du jeu (sans serveur : « ouvrira avec la sortie »)") : faute("bouton Classement absent ou inactif");
+    await p.click("#classement [data-retour]"); await p.waitForTimeout(400);
     await p.click("#profil [data-retour]"); await p.waitForTimeout(400);
     await p.click("#btnSucces"); await p.waitForTimeout(400);
     (await p.isVisible("#btnSuccesStore")) && (await p.textContent("#btnSuccesStore")).includes("Game Center") ? ok("bouton « Game Center » sur l'écran des succès") : faute("bouton Game Center absent");
@@ -282,10 +289,70 @@ async function resoudre(p) {
     await ctx.close();
   }
 
+  // le classement, contre un faux serveur (outils/classement-essai.js : mêmes réponses que la fonction Supabase)
+  {
+    console.log("Classement (serveur d'essai, iPhone 13)");
+    const essai = require("./classement-essai")();
+    const nouveau = async (ampoules) => {
+      const ctx = await b.newContext({ ...devices["iPhone 13"], locale: "fr-FR" });
+      await brancherEssai(ctx, essai);
+      if (ampoules) await ctx.addInitScript(() => { if (!localStorage.getItem("orbicube-v1")) localStorage.setItem("orbicube-v1", JSON.stringify({ v: 1, campagne: 2, amp: 99, ampMaj: Date.now() + 1e9, niveaux: {}, tips: {}, succes: {}, stats: { tours: 0, tranches: 0, resolus: 0, indices: 0, meilleur: {} }, jours: {}, options: {} })); });
+      const p = await ctx.newPage(); p.setDefaultTimeout(8000); p.erreurs = [];
+      p.on("pageerror", (e) => p.erreurs.push(e.message));
+      await p.goto(URL + "?capture"); await p.waitForTimeout(1500); return p;
+    };
+    const lire = (p) => p.evaluate(() => JSON.parse(localStorage.getItem("orbicube-v1")));
+    const p = await nouveau(true);
+    /^Player\d{4}$/.test(await p.textContent("#rangTitre")) ? ok("pseudo par défaut « " + (await p.textContent("#rangTitre")) + " » dans la puce de l'accueil") : faute("pseudo par défaut absent : " + (await p.textContent("#rangTitre")));
+    !(await lire(p)).compte && essai.joueurs.size === 6 ? ok("rien n'est envoyé avant la première partie") : faute("un profil est créé avant de jouer");
+    await p.tap("#btnJour"); await p.waitForTimeout(300); await p.tap('#fenetre [data-a="jour"]'); await p.waitForTimeout(2200);
+    const sol = await p.evaluate(() => window.__orbicube.solution());
+    for (const m of sol) { await p.keyboard.press(m.length > 1 ? "Shift+" + m[0] : m[0]); await p.waitForTimeout(450); }
+    await p.waitForTimeout(2600);
+    const moi = (await lire(p)).compte;
+    moi && moi.id && /^ORBI-/.test(moi.code) && essai.joueurs.get(moi.id).pseudo === (await p.textContent("#rangTitre")) ? ok("première victoire : profil créé, même pseudo, code de récupération") : faute("profil non créé : " + JSON.stringify(moi));
+    [...essai.scores.values()].some((x) => x.j === moi.id && x.coups === sol.length) ? ok("défi du jour : coups rejoués et acceptés par le serveur (" + sol.length + " coups)") : faute("score du défi non classé");
+    const faux = await p.evaluate(async (m) => (await fetch("https://essai.orbicube/f", { method: "POST", body: JSON.stringify({ a: "score", id: m.id, jeton: m.jeton, tableau: "jour", cle: m.cle, coups: ["U", "R"], temps: 5000 }) })).status, { ...moi, cle: [...essai.scores.values()][0].t.slice(5) });
+    faux === 422 ? ok("un faux score (coups qui ne résolvent pas le cube) est refusé") : faute("faux score accepté : " + faux);
+    await p.tap('#fenetre [data-a="classement"]'); await p.waitForTimeout(900);
+    (await p.textContent("#clListe .cl-ligne.moi")).includes(moi.pseudo) ? ok("« Voir le classement » : le joueur dans la liste du jour") : faute("joueur absent de la liste du jour");
+    await p.tap('#clOnglets [data-t="etoiles"]'); await p.waitForTimeout(700);
+    (await p.$$eval("#clListe .cl-ligne", (l) => l.length)) >= 6 ? ok("onglet Étoiles : les joueurs classés") : faute("onglet Étoiles vide");
+    const d4 = await debordements(p); d4.length ? faute("débordement au classement : " + d4) : ok("classement sans débordement");
+    await p.tap("#clListe .cl-ligne"); await p.waitForTimeout(700);
+    (await p.textContent("#fenetre")).includes("Signaler ce pseudo") && (await p.textContent("#fenetre")).includes("voies dorées") ? ok("fiche publique d'un joueur (profil limité, « Signaler »)") : faute("fiche publique incomplète");
+    await p.tap('#fenetre [data-a="x"]'); await p.waitForTimeout(300);
+    await p.tap("#classement [data-retour]"); await p.waitForTimeout(500); await p.tap("#btnRang"); await p.waitForTimeout(500);
+    const essaiPseudo = async (v) => { await p.tap("#btnPseudo"); await p.waitForTimeout(300); await p.fill("#champPseudo", v); await p.tap('#fenetre [data-a="ok"]'); await p.waitForTimeout(600); return (await p.isVisible("#voile")) ? await p.textContent("#errPseudo") : ""; };
+    (await essaiPseudo("c0nn4rd")) === "Ce pseudo n’est pas accepté." ? ok("pseudo grossier refusé (« c0nn4rd »)") : faute("pseudo grossier accepté");
+    await p.fill("#champPseudo", "kepler"); await p.tap('#fenetre [data-a="ok"]'); await p.waitForTimeout(600);
+    (await p.textContent("#errPseudo")) === "Ce pseudo est déjà pris." ? ok("pseudo déjà pris refusé (« kepler » contre « Kepler »)") : faute("pseudo pris accepté");
+    await p.fill("#champPseudo", "Comète 42"); await p.tap('#fenetre [data-a="ok"]'); await p.waitForTimeout(700);
+    essai.joueurs.get(moi.id).pseudo === "Comète 42" && (await p.textContent("#rangCarte")).includes("Comète 42") ? ok("nouveau pseudo enregistré et affiché") : faute("le pseudo ne change pas");
+    // un autre téléphone : le code rend pseudo et progression, et détache le premier
+    const q = await nouveau(false);
+    await q.tap("#btnRang"); await q.waitForTimeout(400); await q.tap("#btnRecuperer"); await q.waitForTimeout(300);
+    await q.fill("#champCode", moi.code.toLowerCase().replace(/-/g, " ")); await q.tap('#fenetre [data-a="ok"]'); await q.waitForTimeout(1200);
+    (await q.textContent("#rangTitre")) === "Comète 42" && Object.keys((await lire(q)).jours).length === 1 ? ok("code de récupération sur un autre téléphone : pseudo et progression rendus") : faute("récupération incomplète : " + (await q.textContent("#rangTitre")));
+    await p.reload(); await p.waitForTimeout(5000);
+    !(await lire(p)).compte ? ok("l'ancien téléphone est détaché (un profil, un téléphone)") : faute("l'ancien téléphone garde le profil");
+    // supprimer ses données : effacées du serveur, plus de classement
+    await q.tap("#btnSupprimerCompte"); await q.waitForTimeout(300); await q.tap('#fenetre [data-a="oui"]'); await q.waitForTimeout(800);
+    !essai.joueurs.has(moi.id) && (await lire(q)).classementOff ? ok("« Supprimer mes données » efface le profil du serveur") : faute("données non supprimées");
+    // la route du rang : au rang 20, cadre étoilé et deux ampoules offertes chaque jour (sans le jeu complet)
+    await q.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); v.xp = 8740; v.amp = 1; v.ampJour = ""; v.ampMaj = Date.now(); localStorage.setItem(k, JSON.stringify(v)); });
+    await q.reload(); await q.waitForTimeout(1500); await q.tap("#btnJour"); await q.waitForTimeout(300); await q.tap('#fenetre [data-a="jour"]'); await q.waitForTimeout(2200);
+    const r20 = await q.evaluate(() => ({ cadre: document.getElementById("btnRang").className, amp: +document.getElementById("ampNb").textContent }));
+    /cadre-etoile/.test(r20.cadre) && r20.amp === 3 ? ok("rang 20 : cadre étoilé sur la puce, deux ampoules offertes ce jour") : faute("route du rang : " + JSON.stringify(r20));
+    const e5 = p.erreurs.concat(q.erreurs); e5.length ? faute("erreurs : " + e5.join(" | ")) : ok("aucune erreur de script");
+    await p.context().close(); await q.context().close();
+  }
+
   // chaque langue : tous les écrans et fenêtres sur le plus petit iPhone, phrases manquantes et textes qui débordent
   for (const langue of ["en", "nl", "de", "es"]) {
     console.log("Langue " + langue + " (iPhone SE)");
     const ctx = await b.newContext({ ...devices["iPhone SE"] });
+    await brancherEssai(ctx, require("./classement-essai")());
     const p = await ctx.newPage();
     p.setDefaultTimeout(8000);
     const erreurs = [];
@@ -313,7 +380,12 @@ async function resoudre(p) {
     await go("#parcours [data-retour]"); await go("#btnLibre"); await mesurer("jeu libre"); await go('#fenetre [data-a="10"]'); await mesurer("boutique jeu libre moyen"); await fermer();
     await go("#btnJour"); await mesurer("défis"); await go('#fenetre [data-a="semaine"]', 600); await mesurer("boutique défi de la semaine"); await fermer();
     await go("#btnLibre"); await go('#fenetre [data-a="relax"]'); await mesurer("boutique jeu libre"); await fermer();
-    await go("#btnRang"); await mesurer("profil"); await go("#profil [data-retour]");
+    await go("#btnRang"); await mesurer("profil"); await go("#btnPseudo"); await mesurer("pseudo"); await fermer();
+    await go("#btnRecuperer"); await mesurer("code de récupération"); await fermer(); await go("#btnSupprimerCompte"); await mesurer("supprimer"); await fermer();
+    await go("#btnClassements", 900); await mesurer("classement");
+    for (const t of ["semaine", "sansfin", "etoiles", "rang"]) { await go(`#clOnglets [data-t="${t}"]`, 600); await mesurer("classement " + t); }
+    await go("#clListe .cl-ligne", 700); await mesurer("fiche publique"); await go('#fenetre [data-a="signaler"]'); await mesurer("signaler"); await fermer();
+    await go("#classement [data-retour]"); await go("#profil [data-retour]");
     await go("#btnSucces"); await mesurer("succès"); await go("#succes [data-retour]"); await go("#btnAide"); await mesurer("aide"); await go("#aide [data-retour]");
     await p.waitForTimeout(3200);
     const manques = await p.evaluate(() => window.__orbicube.manques());

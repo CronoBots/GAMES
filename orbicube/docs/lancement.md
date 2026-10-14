@@ -22,8 +22,9 @@ Ils changent : vérifiez-les sur les pages officielles au moment de vous inscrir
 
 - **Prix : 4,99 €** (décision du client, le 13/10/2026). Le joueur voit
   le prix dans sa devise : il vient du store.
-- **Pas de publicité** : l'application ne collecte aucune donnée personnelle. Pas de bandeau de
-  consentement RGPD, une fiche de confidentialité courte, de meilleures notes.
+- **Pas de publicité, pas de suivi.** Depuis le classement du jeu (le client, le 14/10/2026), le serveur garde
+  un pseudo, un identifiant tiré au hasard et les scores (section 3 quinquies) : pas de bandeau de consentement
+  (ni publicité ni suivi), mais une politique de confidentialité qui le dit et des questionnaires à jour (section 6).
 - **La boutique** (le client, le 13/10/2026) vend aussi, en option, des **packs de styles** (couleurs, formes
   des pastilles, effets), deux éditions groupées, des **ampoules** et un **pack soutien** : voir 3 quater. Les
   styles ne changent rien au jeu ; une partie se gagne aussi en jouant (étoiles, rang).
@@ -153,7 +154,12 @@ rouvrir ne fait rien perdre (les succès déjà gagnés sont renvoyés, sans dou
 > Android Studio). `npm run tester` vérifie tout le branchement côté jeu avec un téléphone
 > simulé ; la première compilation dans Xcode et Android Studio est le vrai test du module.
 
-## 3 ter. Les classements dans Game Center et Google Play Jeux **[vous]**
+## 3 ter. Les classements dans Game Center et Google Play Jeux **[facultatif]**
+
+**Remplacés dans le jeu par le classement d'Orbicube** (section 3 quinquies, le client, le 14/10/2026) : le Profil
+et la victoire des défis ouvrent désormais le classement du jeu. Le jeu envoie encore ses résultats à Game Center
+et Google Play Jeux s'ils existent ; sans eux, rien ne se passe. Inutile de les créer, sauf si vous voulez aussi
+les classements du téléphone. Ce qui suit reste valable dans ce cas.
 
 Décidé le 11/10/2026 : pas de compte à nous, les classements passent par le service de jeu du
 téléphone. Le joueur n'a rien à créer, aucune donnée ne nous parvient, et la politique de
@@ -183,6 +189,25 @@ Publiez-les, sinon seuls les testeurs les voient.
 
 **À vérifier sur un vrai téléphone** : réussir le défi du jour puis « Voir le classement » ouvre le
 classement du jour avec son temps ; Profil > « Classements » ouvre la liste des quatre.
+
+---
+
+## 3 quinquies. Le classement du jeu **[vous, puis Claude]**
+
+Le client, le 14/10/2026 : un classement dans le jeu, sans compte Apple ni Google, avec un pseudo « Player… »
+modifiable, un profil public limité (pseudo, rang, étoiles, voies dorées, records) et un code de récupération qui
+rend pseudo, achats et progression sur un autre téléphone. Tout est dans `serveur/` : lire `serveur/LISEZMOI.md`.
+
+**[vous]** : libérer une place de projet gratuit chez Supabase (la limite de deux projets actifs est atteinte),
+ou passer l'organisation au plan Pro. **[Claude]** : créer le projet « Orbicube » (Irlande), appliquer
+`schema.sql`, déployer la fonction, remplir `www/config.js` > `classement`.
+
+**RevenueCat** : le jeu se connecte à RevenueCat avec l'identifiant du profil de joueur (`Purchases.logIn`) ;
+c'est ce qui permet au code de récupération de rendre les achats sur un autre téléphone, même avec un autre
+compte du store. Dans RevenueCat > Project settings > *Restore behavior*, gardez « Transfer to new App User ID ».
+
+**À vérifier sur un vrai téléphone** : réussir le défi du jour, « Voir le classement », changer de pseudo,
+noter le code, le saisir sur un second téléphone (pseudo, progression et achats reviennent ; le premier est détaché).
 
 ---
 
@@ -300,10 +325,17 @@ l'adresse de contact** dans la page avant de la publier.
 - Âge : 4+ (Apple), PEGI 3 / Tout public (Google). Aucune violence, aucun achat aléatoire.
 - Publicité : non.
 - Achats intégrés : oui, un non consommable.
-- Collecte de données : pas de données personnelles collectées par le jeu. Pour les achats,
-  RevenueCat traite un identifiant anonyme et l'historique d'achat : déclarez-les selon le guide
-  « App Privacy » de RevenueCat (*Purchases* et *Identifiers*, non liés à l'identité, sans
-  suivi publicitaire).
+- Collecte de données (depuis le classement, le 14/10/2026) :
+  - **Apple « App Privacy »** : *Identifiers > User ID* (l'identifiant tiré au hasard), *User Content > Other
+    User Content* (le pseudo), *Usage Data > Product Interaction* et *Other Data* (scores, étoiles, sauvegarde),
+    *Purchases > Purchase History* (RevenueCat). Usage : **App Functionality**. Lié à l'identité : **non**
+    (pas de nom ni d'e-mail). Suivi (*tracking*) : **non**.
+  - **Google « Sécurité des données »** : *Identifiants de l'appareil ou autres > ID utilisateur*, *Activité dans
+    l'appli > Autre contenu généré par l'utilisateur* (pseudo) et *Interactions avec l'appli* (scores), *Infos
+    financières > Historique d'achats*. Collecté, non partagé, chiffré en transit, **suppression possible depuis
+    l'appli** (Profil > « Supprimer mes données »), finalité : fonctionnalités de l'appli.
+  - **Contenu généré par les utilisateurs** (Apple 1.2, Google UGC) : les pseudos. Filtre à l'enregistrement,
+    « Signaler ce pseudo » sur chaque fiche, renommage à trois signalements (`serveur/LISEZMOI.md`).
 - Chiffrement (Apple) : aucun chiffrement propre → « Non ».
 
 ---

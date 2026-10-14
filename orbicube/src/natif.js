@@ -148,6 +148,17 @@ window.Natif = {
         .catch((e) => ({ ok: false, annule: !!(e && e.userCancelled), erreur: 'store' }));
     });
   },
+  // le profil du classement (identifiant anonyme d'Orbicube) porte aussi les achats : le code de récupération les rend
+  // sur un autre téléphone, même sans le même compte du store. Rend les droits actifs de ce profil, ou null.
+  identifier(id) {
+    return configurer()
+      .then((ok) => (ok && id ? Purchases.logIn({ appUserID: id }).then((r) => droitsActifs(r.customerInfo)) : null))
+      .catch(() => null);
+  },
+  // le profil est passé sur un autre téléphone : celui-ci revient à un acheteur anonyme (le compte du store reste)
+  oublierIdentite() {
+    return configurer().then((ok) => (ok ? Purchases.logOut().then(() => true) : false)).catch(() => false);
+  },
 };
 function droitsActifs(info) {
   return Object.keys((info && info.entitlements && info.entitlements.active) || {});

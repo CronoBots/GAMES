@@ -33,10 +33,14 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   `docs/fiche-store.md`.
 - **Aucune clé secrète** dans le dépôt. Seules les clés *publiques* du SDK RevenueCat
   (`appl_…`, `goog_…`) vont dans `www/config.js`. Une clé `sk_…` fait échouer le vérificateur.
-- **Aucune donnée personnelle** : le jeu ne collecte rien, et la politique de confidentialité le
-  promet. Ajouter de la publicité ou de l'analyse change la politique, les fiches des stores et
-  impose un consentement RGPD : décision du client, pas une optimisation.
-- **Le jeu ne dépend d'aucun réseau** : polices embarquées, pas de CDN. Une police ou un fichier
+- **Le minimum de données** : depuis le classement (décision du client, le 14/10/2026), le serveur garde un
+  identifiant tiré au hasard, un pseudo, les scores et la sauvegarde ; ni nom, ni e-mail, ni compte Apple ou Google,
+  ni le code de récupération en clair. Rien n'est envoyé avant la première victoire, et « Supprimer mes données »
+  efface tout. Toute donnée de plus change `www/confidentialite.html` et les questionnaires des stores
+  (`docs/lancement.md` 6). Ajouter de la publicité ou de l'analyse impose en plus un consentement RGPD : décision
+  du client, pas une optimisation.
+- **Le jeu ne dépend d'aucun réseau** : polices embarquées, pas de CDN. Le classement est le seul appel réseau :
+  sans adresse dans `config.js` ou sans connexion, tout se replie sans bruit et les scores attendent (`PROG.envois`). Une police ou un fichier
   ajouté va aussi dans la liste `FICHIERS` de `www/sw.js` (le vérificateur le contrôle pour les polices).
 
 ## Ce qu'il faut savoir du code d'Orbicube
@@ -264,7 +268,29 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 - **Les succès des stores** passent par `plugins/succes-natifs` ; sans module ni configuration,
   tout se replie sans bruit. Le module natif n'a jamais été compilé ici : la première build Xcode
   et Android Studio le validera.
-- **Classements** (le client, le 11/10/2026 : « on fera comme tu le dis ») : par Game Center et Google Play Jeux,
+- **Classement du jeu** (le client, le 14/10/2026 : un classement interne, pseudo « PlayerX » modifiable, stats visibles
+  des autres, et il doit marcher sans Game Center) : serveur Supabase dans `orbicube/serveur/` (`LISEZMOI.md` : une
+  fonction `orbicube`, trois tables à RLS fermé). Pas de compte : `PROG.compte` = identifiant, jeton du téléphone, code de
+  récupération (`ORBI-XXXX-XXXX-XXXX`, empreinte seule sur le serveur) et pseudo ; créé à la première victoire
+  (`assurerCompte`) avec le « Player1234 » déjà affiché (`pseudoLocal`). Le code rend pseudo, progression (sauvegarde
+  envoyée au plus une fois par minute, `sauverNuage`) et achats (RevenueCat `logIn` avec l'identifiant, `NATIF.identifier`) ;
+  le saisir ailleurs change le jeton, l'ancien téléphone reçoit 401 « ailleurs » et se détache (`detache`). **Les scores des
+  défis sont vérifiés** : le serveur rejoue les coups (`J.hist` en notation) sur le mélange du défi avec sa copie du moteur
+  (`serveur/fonction/moteur.js`, que le vérificateur compare au jeu). Écran `#classement` (onglets Jour, Semaine, Sans fin,
+  Étoiles, Rang ; sa ligne « Vous » en bas si hors des 50), fiche publique limitée (`profilPublic` : pseudo, cadre, rang,
+  étoiles, voies, sans fin, défis ; « Signaler »), pseudo changé par le crayon de la carte du Profil (la puce de l'accueil
+  affiche le pseudo et ouvre le Profil), filtre des pseudos (`serveur/fonction/filtre.js`), trois signalements = pseudo
+  « Player ». Profil > « Mon profil de joueur » : code, « Utiliser un code », « Supprimer mes données » (`classementOff`).
+  `npm run tester` joue tout contre `outils/classement-essai.js` (faux serveur en mémoire, mêmes réponses). **Mise en
+  ligne en attente** : la limite de deux projets Supabase gratuits est atteinte (le client doit libérer une place) ;
+  `www/config.js` > `classement` reste vide d'ici là, et l'écran dit « ouvrira avec la sortie du jeu ».
+- **Route du rang** (le client, le 14/10/2026 : « à quoi sert le niveau ? ») : `ROUTE`, un style à gagner tous les cinq rangs
+  (Hexagones 5, Poussière d'étoiles 10, Crépuscule 15, Nacre 20, Abysses 25, Braises 30, Solaire 35, Or rose 40), un cadre
+  autour du pseudo à chaque titre (`CADRES`, `cadreDe`, `poserCadre` : bronze, argent, or, étoilé, cristal, légendaire ; sur la
+  puce, la carte du Profil et au classement), et des ampoules offertes chaque jour aux rangs 10 et 20 (`ampoulesDuJour`,
+  en plus de celle du jeu complet). Liste « Route du rang » au Profil (`routeHTML`).
+- **Classements des stores** (le client, le 11/10/2026 : « on fera comme tu le dis ») — **remplacés à l'écran par le
+  classement du jeu le 14/10/2026** ; l'envoi continue sans bruit s'ils existent : par Game Center et Google Play Jeux,
   **pas de compte à nous** (la politique de confidentialité ne change pas). `CLASSEMENTS` (jour, semaine, sansfin,
   etoiles), identifiants dans `www/config.js` > `classementsStores`, contrôlés par le vérificateur ; envoi à la victoire
   et à la connexion (`envoyerClassements`), chrono en millisecondes (le module iOS le passe en centièmes). Bouton

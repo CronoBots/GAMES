@@ -792,6 +792,52 @@ body.sobre #plateau{transition:none}
 .bout-pied{margin:0;text-align:center;color:var(--sourd);font-size:12px;line-height:1.45}
 #boutique.attente .bout button{pointer-events:none;opacity:.6}
 /* le pack soutien : un liseré doré sur la puce du rang et la carte du profil */
+/* cadres du rang : autour de la puce et de la carte du profil (et du pseudo au classement) */
+.cadre-bronze{box-shadow:0 0 0 1.5px #c98a55,0 0 14px -6px #c98a55}
+.cadre-argent{box-shadow:0 0 0 1.5px #d8e0ee,0 0 16px -6px #d8e0ee}
+.cadre-or{box-shadow:0 0 0 1.5px #ffcf4a,0 0 18px -6px #ffcf4a}
+.cadre-etoile{box-shadow:0 0 0 1.5px #ffcf4a,0 0 0 4px rgba(255,207,74,.18),0 0 22px -6px #ffcf4a}
+.cadre-cristal{box-shadow:0 0 0 1.5px #9fe8ff,0 0 0 4px rgba(178,130,255,.25),0 0 24px -6px #9fe8ff}
+.cadre-legende{box-shadow:0 0 0 1.5px #ffb0aa,0 0 0 4px rgba(255,207,74,.3),0 0 28px -4px #ff9db5;animation:legende 3s ease-in-out infinite alternate}
+@keyframes legende{to{box-shadow:0 0 0 1.5px #ffcf4a,0 0 0 4px rgba(255,157,181,.3),0 0 28px -4px #ffcf4a}}
+.route{display:grid;grid-template-columns:38px 1fr 24px;align-items:center;gap:10px;padding:10px 4px;border-top:1px solid rgba(255,255,255,.07)}
+.route:first-child{border-top:0}
+.route-r{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid var(--bord);font:600 13px var(--f-chiffre);color:var(--pale)}
+.route b{display:block;font-size:13.5px;font-weight:600;color:var(--pale)}.route b+b{font-size:12px;font-weight:500;opacity:.8}
+.route.ok b{color:var(--encre)}.route.ok .route-r{border-color:rgba(var(--acc),.8);color:var(--encre);background:rgba(var(--acc),.18)}
+.route.proch .route-r{border-color:var(--or);color:var(--or)}
+.route .coche svg{width:18px;height:18px;fill:none;stroke:rgb(var(--acc));stroke-width:2.4}
+/* le classement (le client, le 14/10/2026) */
+#classement>.tete+.defile{padding-bottom:120px}
+.cl-onglets{position:relative;z-index:1;display:flex;gap:6px;max-width:520px;margin:0 auto 10px;padding:4px 0 8px;overflow-x:auto;scrollbar-width:none}.cl-onglets::-webkit-scrollbar{display:none}
+.cl-onglets button{flex:1 1 auto;min-width:0;white-space:nowrap;min-height:38px;padding:0 9px;border-radius:99px;border:1px solid var(--bord);background:rgba(14,14,24,.55);color:var(--pale);font:600 13px var(--f-texte);cursor:pointer}
+.cl-onglets button.actif{background:rgba(var(--acc),.25);border-color:rgba(var(--acc),.8);color:var(--encre)}
+.cl-sous{margin:0 4px 12px;color:var(--pale);font-size:13px;text-align:center}
+.cl-ligne{display:grid;grid-template-columns:30px 34px minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;min-height:54px;padding:8px 12px;margin-bottom:6px;border-radius:16px;border:1px solid var(--trait);background:var(--carte);color:var(--encre);text-align:left;cursor:pointer;font:inherit}
+.cl-ligne.moi{border-color:rgba(var(--acc),.8);background:rgba(var(--acc),.16)}
+.cl-ligne.mecene b{color:var(--or)}
+.cl-ligne b{font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cl-place{font:700 15px var(--f-chiffre);text-align:center;color:var(--pale)}
+.cl-niv{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:1px solid var(--bord);font:600 12px var(--f-chiffre);background:rgba(255,255,255,.04)}
+.cl-niv.grand{width:64px;height:64px;font-size:22px;margin:0 auto 6px}
+.cl-val{display:flex;gap:10px;font:600 13px var(--f-chiffre);color:var(--pale);white-space:nowrap}
+.cl-val span{display:inline-flex;align-items:center;gap:4px}.cl-val svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2}.cl-val svg.etoile{fill:var(--or);stroke:none}
+.cl-vide,.cl-total,.cl-astuce{color:var(--pale);text-align:center;font-size:13.5px;margin:18px 8px}
+.cl-moi{position:absolute;left:0;right:0;bottom:0;padding:12px 16px max(14px,env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(10,10,18,0),rgba(10,10,18,.92) 30%)}
+.cl-moi .cl-ligne{margin:0 auto;max-width:520px}.cl-moi .cl-astuce{margin:6px 0 0}
+.pp-tete{text-align:center;margin-bottom:12px}.pp-tete h3{margin:2px 0 0}.pp-tete p{margin:2px 0 4px}
+.pp-grille{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.pp-st{padding:10px 8px;border-radius:14px;background:rgba(255,255,255,.05);text-align:center}
+.pp-st b{display:inline-flex;align-items:center;gap:4px;font:700 17px var(--f-chiffre)}.pp-st b svg{width:15px;height:15px}
+.pp-st span{display:block;overflow-wrap:anywhere;hyphens:auto;font-size:11.5px;color:var(--pale);margin-top:2px}
+.rc-pseudo{display:inline-flex;align-items:center;gap:8px;margin-top:6px;padding:4px 12px;border-radius:99px;border:1px solid var(--bord);background:rgba(255,255,255,.05);color:var(--encre);cursor:pointer;font:inherit;max-width:100%}
+.rc-pseudo b{font:600 19px var(--f-titre);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc-pseudo svg{flex:none;width:17px;height:17px;fill:none;stroke:rgb(var(--acc));stroke-width:1.8}
+.rang-carte h3.rc-titre{margin:0;font-size:14px;color:var(--pale);font-family:var(--f-texte);font-weight:600;letter-spacing:.04em}
+.code-rec{min-height:44px;padding:0 12px;border-radius:12px;border:1px dashed rgba(var(--acc),.7);background:rgba(var(--acc),.1);color:var(--encre);font:600 12.5px var(--f-chiffre);letter-spacing:.06em;cursor:pointer;white-space:nowrap}
+.champ{width:100%;min-height:50px;padding:0 16px;border-radius:14px;border:1px solid rgba(var(--acc),.6);background:rgba(0,0,0,.3);color:var(--encre);font:600 17px var(--f-texte);text-align:center;outline:none}
+.champ:focus{border-color:rgb(var(--acc));box-shadow:0 0 0 3px rgba(var(--acc),.25)}
+.champ-err{min-height:1.4em;margin:6px 0 4px!important;color:#ff9aa2!important;font-size:13px}
 .puce-rang.mecene{box-shadow:0 0 0 1px rgba(255,207,74,.7),0 0 18px -6px rgba(255,207,74,.7)}
 .rang-carte.mecene{box-shadow:0 0 0 1px rgba(255,207,74,.6),0 0 30px -10px rgba(255,207,74,.6)}
 .mecene-titre{display:inline-block;margin-top:4px;font:600 11px var(--f-titre);letter-spacing:.14em;text-transform:uppercase;color:var(--or)}
@@ -809,7 +855,7 @@ body.sobre #plateau{transition:none}
     <div class="astres" aria-hidden="true"><i class="astre verte"></i><i class="astre rousse"></i><i class="astre roc r1"></i><i class="astre roc r2"></i><i class="astre roc r3"></i></div>
     <div class="acc-haut">
       <button class="ico" id="btnAide" type="button" aria-label="Comment jouer"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.8"/><path d="M12 17.2v.1"/></svg></button>
-      <button class="puce-rang" id="btnRang" type="button" aria-label="Profil, rang et missions"><span class="anneau-rang notrad" id="rangAnneau"></span><b id="rangTitre">Novice</b><span class="rb-mis" id="rangMissions"></span></button>
+      <button class="puce-rang" id="btnRang" type="button" aria-label="Profil, rang et missions"><span class="anneau-rang notrad" id="rangAnneau"></span><b id="rangTitre" class="notrad">Novice</b><span class="rb-mis" id="rangMissions"></span></button>
       <div class="acc-droite">
       <button class="ico" id="btnOptions" type="button" aria-label="Options"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
       </div>
@@ -914,13 +960,35 @@ body.sobre #plateau{transition:none}
     </div>
     <div class="defile"><div class="centre cascade">
       <div class="rang-carte" id="rangCarte"></div>
-      <button class="bouton" id="btnClassements" type="button" hidden style="width:100%;justify-content:center;margin-bottom:14px"><svg viewBox="0 0 24 24"><path d="M4 20V11h4v9M10 20V5h4v15M16 20v-6h4v6"/></svg><span>Classements</span></button>
+      <button class="bouton" id="btnClassements" type="button" style="width:100%;justify-content:center;margin-bottom:14px"><svg viewBox="0 0 24 24"><path d="M4 20V11h4v9M10 20V5h4v15M16 20v-6h4v6"/></svg><span>Classement</span></button>
       <div class="groupe"><h4>Missions du jour</h4><div id="listeMissions"></div></div>
       <div class="groupe"><h4>Comment monter</h4><div class="ligne"><div class="lt"><b>Résoudre un cube</b><span>De l’expérience selon sa longueur, plus pour chaque étoile.</span></div></div>
         <div class="ligne"><div class="lt"><b>Missions du jour</b><span>Trois par jour ; les trois réussies offrent une ampoule.</span></div></div>
         <div class="ligne"><div class="lt"><b>Défis</b><span>Le défi du jour et celui de la semaine rapportent le plus.</span></div></div>
         <div class="ligne"><div class="lt"><b>Chaque rang</b><span>Une ampoule gagnée.</span></div></div></div>
+      <div class="groupe"><h4>Route du rang</h4><div id="listeRoute"></div></div>
+      <div class="groupe" id="grpCompte"><h4>Mon profil de joueur</h4>
+        <div class="ligne"><div class="lt"><b>Code de récupération</b><span>Notez-le : sur un autre téléphone, il rend votre pseudo, votre place, vos achats et votre progression.</span></div>
+          <button class="code-rec notrad" id="btnCode" type="button">—</button></div>
+        <div class="ligne"><div class="lt"><b>Utiliser un code</b><span>Reprendre un profil depuis un autre téléphone. L’autre téléphone en sera détaché.</span></div>
+          <button class="danger" id="btnRecuperer" type="button" style="color:var(--encre);border-color:var(--trait-vif);background:var(--carte2)">Saisir</button></div>
+        <div class="ligne"><div class="lt"><b>Supprimer mes données</b><span>Efface du serveur votre pseudo, vos scores et votre sauvegarde. Votre partie reste sur ce téléphone.</span></div>
+          <button class="danger" id="btnSupprimerCompte" type="button">Supprimer</button></div></div>
     </div></div>
+  </section>
+
+  <section class="ecran" id="classement" aria-label="Classement">
+    <div class="tete">
+      <button class="ico" data-retour="profil" id="clRetour" type="button" aria-label="Retour"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2>Classement</h2><span class="ico vide"></span>
+    </div>
+    <div class="defile"><div class="cl-onglets" id="clOnglets" role="tablist">
+      <button type="button" data-t="jour" class="actif">Jour</button><button type="button" data-t="semaine">Semaine</button><button type="button" data-t="sansfin">Sans fin</button><button type="button" data-t="etoiles">Étoiles</button><button type="button" data-t="rang">Rang</button>
+    </div><div class="centre">
+      <p class="cl-sous" id="clSous"></p>
+      <div class="cl-liste" id="clListe"></div>
+    </div></div>
+    <div class="cl-moi" id="clMoi" hidden></div>
   </section>
 
   <section class="ecran" id="options" aria-label="Options">
@@ -1051,7 +1119,11 @@ var PALETTES={classique:["#FF7A1E","#FA3A47","#FBD101","#F4F4F6","#2DCC4B","#009
   joyaux:["#E0115F","#0FA968","#1F5CFF","#9B30FF","#FFB000","#F5F0E6"],   // rubis, émeraude, saphir, améthyste, topaze, perle
   // styles exclusifs de la voie dorée (le client, le 14/10/2026) : ils ne se vendent pas, ils se gagnent
   emeraude:["#0FB86B","#6EF0C2","#C6FF3D","#FFD54A","#0B6E8C","#F2FFF8"],   // monde 1 : émeraude, menthe, citron vert, or, sarcelle, écume
-  nebuleuse:["#FF5E5B","#FFB86B","#D7263D","#FFE8D6","#7A1FA2","#2EC4B6"]};  // monde 6 : corail, ambre, carmin, nacre, pourpre, lagon
+  nebuleuse:["#FF5E5B","#FFB86B","#D7263D","#FFE8D6","#7A1FA2","#2EC4B6"],  // monde 6 : corail, ambre, carmin, nacre, pourpre, lagon
+  // styles du rang (le client, le 14/10/2026 : que le rang serve à quelque chose) : un tous les cinq rangs
+  crepuscule:["#FF8C5A","#E8436E","#FFC857","#FBE9E0","#6BBF8A","#5B6CF0"],   // rang 15 : pêche, framboise, miel, rosé, sauge, indigo
+  abysses:["#1FD1C1","#FF6B9E","#C7F464","#E6FBFF","#2D7FF9","#8A5CF6"],     // rang 25 : lagon, corail, plancton, écume, bleu profond, méduse
+  solaire:["#FF7B00","#FF3D3D","#FFD000","#FFF6D6","#B8E000","#FFA94D"]};    // rang 35 : flamme, rouge, soleil, lumière, tilleul, mandarine  // monde 6 : corail, ambre, carmin, nacre, pourpre, lagon
 /* ========== LA BOUTIQUE : packs vendus et styles (le client, le 13/10/2026) ==========
    Chaque pack est un droit (« entitlement » RevenueCat) vendu par un produit des stores ; une édition groupée active
    plusieurs droits (réglé dans RevenueCat). Les ampoules sont consommables : le jeu les crédite lui-même.
@@ -1069,13 +1141,14 @@ var PACKS={
 var STYLES={
   palette:[{id:"monde",nom:"Couleurs du monde"},{id:"classique",nom:"Classique"},{id:"contraste",nom:"Daltonien"},{id:"pastel",nom:"Pastel",ouv:{etoiles:45}},{id:"neon",nom:"Néon",ouv:{chrono:45}},
     {id:"aurore",nom:"Aurore",ouv:{pack:"couleurs"}},{id:"galaxie",nom:"Galaxie",ouv:{pack:"couleurs"}},{id:"glace",nom:"Glace",ouv:{pack:"couleurs"}},{id:"joyaux",nom:"Joyaux",ouv:{pack:"couleurs"}},
-    {id:"emeraude",nom:"Émeraude",ouv:{voie:0}},{id:"nebuleuse",nom:"Nébuleuse",ouv:{voie:5}}],
-  forme:[{id:"astral",nom:"Style du monde"},{id:"facettes",nom:"Facettes"},{id:"perles",nom:"Perles"},{id:"hexagones",nom:"Hexagones",ouv:{rang:8}},
+    {id:"emeraude",nom:"Émeraude",ouv:{voie:0}},{id:"nebuleuse",nom:"Nébuleuse",ouv:{voie:5}},
+    {id:"crepuscule",nom:"Crépuscule",ouv:{rang:15}},{id:"abysses",nom:"Abysses",ouv:{rang:25}},{id:"solaire",nom:"Solaire",ouv:{rang:35}}],
+  forme:[{id:"astral",nom:"Style du monde"},{id:"facettes",nom:"Facettes"},{id:"perles",nom:"Perles"},{id:"hexagones",nom:"Hexagones",ouv:{rang:5}},
     {id:"gemmes",nom:"Gemmes",ouv:{pack:"formes"}},{id:"etoiles",nom:"Étoiles",ouv:{pack:"formes"}},{id:"cristaux",nom:"Cristaux",ouv:{pack:"formes"}},
     {id:"ecailles",nom:"Écailles",ouv:{voie:2}},{id:"eclats",nom:"Éclats",ouv:{voie:6}}],
-  trainee:[{id:"halo",nom:"Halo"},{id:"poussiere",nom:"Poussière d’étoiles",ouv:{rang:12}},{id:"comete",nom:"Comète",ouv:{pack:"effets"}},{id:"sillage",nom:"Sillage",ouv:{voie:1}}],
+  trainee:[{id:"halo",nom:"Halo"},{id:"poussiere",nom:"Poussière d’étoiles",ouv:{rang:10}},{id:"comete",nom:"Comète",ouv:{pack:"effets"}},{id:"sillage",nom:"Sillage",ouv:{voie:1}},{id:"braises",nom:"Braises",ouv:{rang:30}}],
   orbite:[{id:"accent",nom:"Couleur du monde"},{id:"argent",nom:"Argent",ouv:{pack:"effets"}},{id:"arcenciel",nom:"Arc-en-ciel",ouv:{pack:"effets"}},
-    {id:"amethyste",nom:"Améthyste",ouv:{voie:3}},{id:"couronne",nom:"Couronne",ouv:{voie:7}}],
+    {id:"amethyste",nom:"Améthyste",ouv:{voie:3}},{id:"couronne",nom:"Couronne",ouv:{voie:7}},{id:"nacre",nom:"Nacre",ouv:{rang:20}},{id:"orrose",nom:"Or rose",ouv:{rang:40}}],
   victoire:[{id:"confettis",nom:"Confettis"},{id:"pluie",nom:"Pluie d’étoiles",ouv:{chrono:30}},{id:"feux",nom:"Feu d’artifice",ouv:{pack:"effets"}},{id:"supernova",nom:"Supernova",ouv:{voie:4}}]};
 // les styles portés, recalculés par appliquerOptions() (le dessin les lit à chaque image)
 var STY={palette:"monde",forme:"astral",trainee:"halo",orbite:"accent",victoire:"confettis"};
@@ -1093,7 +1166,9 @@ var DESC_STYLE={monde:"Les couleurs du cube, accordées au monde où vous jouez.
   emeraude:"Les verts profonds d’une forêt de cristal.",nebuleuse:"Le corail et le pourpre d’une nébuleuse lointaine.",
   ecailles:"Des écailles de dragon, polies comme du métal.",eclats:"De longs éclats de verre taillés en pointe.",
   sillage:"Un sillage bleu glacé derrière chaque pièce.",amethyste:"Des orbites d’améthyste, d’un violet profond.",
-  couronne:"Des orbites d’or, la marque des maîtres.",supernova:"Une étoile explose au cœur du plateau à chaque victoire."};
+  couronne:"Des orbites d’or, la marque des maîtres.",supernova:"Une étoile explose au cœur du plateau à chaque victoire.",
+  crepuscule:"Les teintes chaudes d’un coucher de soleil.",abysses:"Les couleurs vives des grands fonds.",solaire:"Toute la chaleur d’une étoile.",
+  braises:"Des escarbilles orange qui s’éteignent derrière les pièces.",nacre:"Des orbites de nacre, pâles et irisées.",orrose:"Des orbites d’or rose, la marque des légendes."};
 function style(k,id){var l=STYLES[k];for(var i=0;i<l.length;i++)if(l[i].id===id)return l[i];return l[0];}
 function aDroit(d){return d==="complet"?complet():!!(PROG.droits&&PROG.droits[d]);}
 // un style exclusif s'ouvre en finissant la voie dorée d'un monde (son dernier expert) ; la barre compte ses experts gagnés
@@ -1213,7 +1288,7 @@ function formeA(p,i){if(!p.m)return FORME[i];
   var au1=ch1<=ch2?c1:c2,d1=ch1<=ch2?A1[1]:Math.PI-A1[1],e=p.t,au=au0+(au1-auF)*e,d=d0+(d1-d0)*e;
   return{u:[Math.cos(au),Math.sin(au)],v:[Math.cos(au+d),Math.sin(au+d)]};}
 // couleur des orbites au repos : celle du monde, l'argent, ou une teinte par famille de cercles (arc-en-ciel)
-function couleurOrbite(st,a){return st==="argent"?"214,222,238":st==="amethyste"?"178,120,255":st==="couronne"?"255,207,74":st==="arcenciel"?["255,138,150","120,226,170","128,172,255"][a]:ACC;}
+function couleurOrbite(st,a){return st==="argent"?"214,222,238":st==="amethyste"?"178,120,255":st==="couronne"?"255,207,74":st==="nacre"?"236,228,255":st==="orrose"?"255,176,170":st==="arcenciel"?["255,138,150","120,226,170","128,172,255"][a]:ACC;}
 // formes de la boutique : même construction que la facette (corps noir, pastille de couleur encastrée, reflet),
 // orientées sur les tangentes des deux cercles qui se croisent sous la pastille
 function pastille(cx,q,f,h,coul,forme){var U=[f.u[0]*h,-f.u[1]*h],V=[f.v[0]*h,-f.v[1]*h],ang=Math.atan2(U[1],U[0]),pts=[],k,a;
@@ -1317,12 +1392,13 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
     cx.restore();
     // traînée : les positions des images précédentes
     // traînée : Halo (les positions des images précédentes), Comète (plus longue, cœur blanc), Poussière d'étoiles (éclats)
-    var lgT=TR==="comete"?10:TR==="sillage"?12:TR==="poussiere"?7:5;this.trace.push(t);while(this.trace.length>lgT)this.trace.shift();
+    var lgT=TR==="comete"?10:TR==="sillage"||TR==="braises"?12:TR==="poussiere"?7:5;this.trace.push(t);while(this.trace.length>lgT)this.trace.shift();
     for(var h=0;h<this.trace.length-1;h++){var tp=this.positionsA(this.trace[h]),fr=(h+1)/this.trace.length;
       for(i=0;i<tp.length;i++){if(!tp[i].m)continue;q=this.vers(tp[i].xy);
         if(TR==="poussiere"){for(var z=0;z<2;z++){var jx=Math.sin(i*7.1+h*3.3+z*5)*rp*.9,jy=Math.cos(i*4.3+h*5.1+z*3)*rp*.9;
             cx.globalAlpha=fr*.75*SB;cx.beginPath();cx.arc(q[0]+jx,q[1]+jy,Math.max(.8,rp*.16*fr),0,6.283);cx.fillStyle=z?"#fff":CL[tp[i].c];cx.fill();}}
         else if(TR==="sillage"){cx.globalAlpha=fr*.55*SB;cx.beginPath();cx.arc(q[0],q[1],rp*(.18+.3*fr),0,6.283);cx.fillStyle=h%2?"#bdeeff":"#5cc8ff";cx.fill();}   // sillage : un fil de bulles bleu glacé
+        else if(TR==="braises"){cx.globalAlpha=fr*.7*SB;var jb=Math.sin(i*5.3+h*2.1)*rp*.5;cx.beginPath();cx.arc(q[0]+jb,q[1]-jb*.6,rp*(.12+.22*fr),0,6.283);cx.fillStyle=h%3?"#ffb347":"#ff5e3a";cx.fill();}   // braises : des escarbilles orange qui s'éteignent
         else{cx.globalAlpha=fr*(TR==="comete"?.34:.26)*SB;cx.beginPath();cx.arc(q[0],q[1],rp*(.5+.4*fr),0,Math.PI*2);cx.fillStyle=CL[tp[i].c];cx.fill();
           if(TR==="comete"){cx.globalAlpha=fr*.5*SB;cx.beginPath();cx.arc(q[0],q[1],rp*.22*fr,0,6.283);cx.fillStyle="#fff";cx.fill();}}}}
     cx.globalAlpha=1;}
@@ -1503,6 +1579,7 @@ var CAMPAGNE=2;
 function fusion(a,b){if(!b||typeof b!=="object")return a;var r=JSON.parse(JSON.stringify(a));if(b.achat)r.achat=true;
   r.droits=r.droits||{};Object.keys(b.droits||{}).forEach(function(k){if(b.droits[k])r.droits[k]=true;});
   r.stylesVus=r.stylesVus||{};Object.keys(b.stylesVus||{}).forEach(function(k){r.stylesVus[k]=true;});   // achats : on n'en perd jamais
+  if(!r.compte&&b.compte)r.compte=b.compte;if(!r.pseudoLocal&&b.pseudoLocal){r.pseudoLocal=b.pseudoLocal;r.pseudoChoisi=b.pseudoChoisi;}   // le profil de joueur non plus
   if(b.campagne===CAMPAGNE)Object.keys(b.niveaux||{}).forEach(function(k){var x=r.niveaux[k],y=b.niveaux[k];if(!x){r.niveaux[k]=y;return;}
     r.niveaux[k]={etoiles:Math.max(x.etoiles||0,y.etoiles||0),chrono:Math.max(x.chrono||0,y.chrono||0),coups:Math.min(x.coups||1e9,y.coups||1e9),temps:Math.min(x.temps||1e12,y.temps||1e12),sansIndice:!!(x.sansIndice||y.sansIndice)};});
   ["tips","succes"].forEach(function(f){Object.keys(b[f]||{}).forEach(function(k){if(!r[f][k])r[f][k]=b[f][k];});});
@@ -1940,7 +2017,9 @@ function cheminSolution(){var tout=J.def.melange.slice(),ch=[];J.hist.forEach(fu
 // 3 étoiles de coups et 3 de temps ; le jeu complet en offre une par jour ; à zéro, une revient après 10 minutes.
 var RECHARGE_AMP=10*60000;
 function ampoules(){if(!PROG.amp&&PROG.ampVide&&Date.now()-PROG.ampVide>=RECHARGE_AMP){PROG.amp=1;PROG.ampVide=0;PROG.ampMaj=Date.now();sauver();}
-  if(complet()&&PROG.ampJour!==cleJour()){PROG.amp=(PROG.amp||0)+1;PROG.ampJour=cleJour();PROG.ampVide=0;PROG.ampMaj=Date.now();sauver();}return PROG.amp||0;}
+  var cj=ampoulesDuJour();if(cj&&PROG.ampJour!==cleJour()){PROG.amp=(PROG.amp||0)+cj;PROG.ampJour=cleJour();PROG.ampVide=0;PROG.ampMaj=Date.now();sauver();}return PROG.amp||0;}
+// ampoules offertes chaque jour : une avec le jeu complet, une de plus au rang 10, une encore au rang 20
+function ampoulesDuJour(){var r=rangDe(PROG.xp).r;return (complet()?1:0)+(r>=10?1:0)+(r>=20?1:0);}
 function majAmpoules(){var n=ampoules(),b=document.getElementById("ampNb");b.textContent=n;b.classList.toggle("vide",!n);}
 function gagnerAmpoule(){PROG.amp=ampoules()+1;PROG.ampVide=0;PROG.ampMaj=Date.now();majAmpoules();setTimeout(function(){toast("Ampoule gagnée","+1");},900);}
 // ampoules achetées en boutique (consommables) : créditées tout de suite, comme celles qu'on gagne
@@ -1976,7 +2055,7 @@ function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length
   if(d.mode==="sansfin")envoyerClassement("sansfin",d.etape);
   if(d.mode==="campagne")envoyerClassement("etoiles",etoilesTotal()+etoilesChrono());
   J.xp=xpVictoire(d,e,eT,!av);gagnerXp(J.xp);missionsVictoire(d,e,eT,temps);
-  sauver();majJeu();var jeton=J,t0=performance.now();
+  sauver();majJeu();apresVictoireClassement(d,temps);var jeton=J,t0=performance.now();
   // vague de victoire : les cercles s'allument l'un après l'autre, les pastilles sautent du centre vers le bord
   JeuP.vague=t0;S.forEach(function(s,i){JeuP.pops[i]=t0+250+Math.hypot(s.xy[0],s.xy[1])*380;});Ticker.reveiller();
   // impact de la résolution : un grave profond + une secousse brève du plateau (juice, respecte CALME)
@@ -2013,10 +2092,10 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
   if(d.mode==="libre")html+='<button class="bouton principal" data-a="encore" type="button"><span>Nouveau mélange</span></button>';
   if(d.mode==="sansfin")html+='<button class="bouton principal" data-a="etape" type="button"><span>Étape suivante</span></button>';
   if(d.mode==="jour"||d.mode==="semaine")html+='<button class="bouton principal" data-a="partager" type="button"><span>Partager mon résultat</span></button>';
-  if((d.mode==="jour"||d.mode==="semaine"||d.mode==="sansfin")&&classementsDispo()&&idClassement(d.mode))html+='<button class="bouton" data-a="classement" type="button" style="justify-content:center">Voir le classement</button>';
+  if((d.mode==="jour"||d.mode==="semaine"||d.mode==="sansfin")&&enLigne()&&!PROG.classementOff)html+='<button class="bouton" data-a="classement" type="button" style="justify-content:center">Voir le classement</button>';
   html+='<div class="rangee2"><button class="bouton" data-a="rejouer" type="button">Rejouer</button><button class="bouton" data-a="menu" type="button">'+(d.mode==="campagne"?"Niveaux":"Accueil")+'</button></div>'+
     (J.hist.length?'<button class="bouton" data-a="revoir" type="button" style="justify-content:center;min-height:46px;font-size:14px;color:var(--pale)">Revoir ma partie</button>':"")+'</div>';
-  ouvrirFenetre(html,function(a){if(a==="partager"){partager(e,n,temps);return;}if(a==="classement"){sonClic();NATIF.classementsAfficher(idClassement(d.mode));return;}fermerFenetre();if(a==="revoir"){revoir(e,n,temps);return;}
+  ouvrirFenetre(html,function(a){if(a==="partager"){partager(e,n,temps);return;}if(a==="classement"){fermerFenetre();ouvrirClassement(d.mode,"accueil");return;}fermerFenetre();if(a==="revoir"){revoir(e,n,temps);return;}
     if(a==="etape"){var k=d.etape+1;if(k>5&&!complet())ouvrirBoutique("libre");else lancer(sansFinDef(k));return;}if(a==="experts"){lancer(niveauDef(d.w,experts));return;}if(a==="suivant"){if(mondePaye(suiv.w))ouvrirBoutique("monde");else lancer(niveauDef(suiv.w,suiv.i));}
     else if(a==="encore")lancer(libreDef(d.n));else if(a==="rejouer")lancer(d.mode==="libre"?libreDef(d.n):d.mode==="sansfin"?sansFinDef(d.etape):d);
     else if(d.mode==="campagne")ouvrirParcours();else montrer("accueil");},"menu");
@@ -2261,7 +2340,8 @@ function opt(k,v){PROG.options[k]=v;PROG.options.maj=Date.now();sauver();appliqu
 document.getElementById("optVitesse").addEventListener("click",function(e){var b=e.target.closest("button");if(b){opt("vitesse",+b.dataset.v);sonClic();}});
 document.getElementById("optVolMusique").addEventListener("click",function(e){var b=e.target.closest("button");if(b){opt("volMusique",+b.dataset.v);sonClic();}});
 document.getElementById("btnEffacer").addEventListener("click",function(){ouvrirFenetre('<h3>Tout effacer ?</h3><p>Étoiles, succès, records et série seront perdus. Les options et les achats sont gardés.</p><div class="menu"><button class="bouton" data-a="non" type="button" style="justify-content:center">Garder ma progression</button><button class="danger" data-a="oui" type="button">Effacer définitivement</button></div>',
-  function(a){fermerFenetre();if(a==="oui"){var o=PROG.options,ach=PROG.achat,dr=PROG.droits;PROG=progVide();PROG.options=o;PROG.achat=ach;PROG.droits=dr||{};sauver();if(Distant.doc)envoyer();rafraichirAccueil();avertir("Progression","Tout a été effacé.");}},"non");});
+  function(a){fermerFenetre();if(a==="oui"){var o=PROG.options,ach=PROG.achat,dr=PROG.droits,cp=PROG.compte,pl=PROG.pseudoLocal,pc=PROG.pseudoChoisi,off=PROG.classementOff;
+    PROG=progVide();PROG.options=o;PROG.achat=ach;PROG.droits=dr||{};PROG.compte=cp;PROG.pseudoLocal=pl;PROG.pseudoChoisi=pc;PROG.classementOff=off;sauver();sauverNuage(true);envoyerStats();rafraichirAccueil();avertir("Progression","Tout a été effacé.");}},"non");});
 
 /* ========== 15. AIDE ET ACCUEIL ========== */
 var AideP=new Plateau(document.getElementById("aideCanvas"));AideP.continu=true;AideP.lent=true;AideP.prochain=0;AideP.etape=0;Ticker.actifs.push(AideP);
@@ -2385,9 +2465,10 @@ function vignette(cv,k,id){var d=Math.min(DPR,2.5),W=64;cv.width=W*d;cv.height=W
       cx.beginPath();cx.arc(x-h*.22,y-h*.24,h*.28,0,6.283);cx.fillStyle="rgba(255,255,255,.34)";cx.fill();}
     else if(fo==="facettes")facette(cx,[x,y],f,h,col);else if(fo==="astral")pastilleMonde(cx,[x,y],f,h,col,THEME_COURANT);else pastille(cx,[x,y],f,h,col,fo);}
   if(k==="forme"){piece(21,22,11,pal[0],id);piece(44,24,11,pal[2],id);piece(32,44,11,pal[5],id);return;}
-  if(k==="trainee"){var r=22,a0=-2.3,n=id==="comete"?9:id==="sillage"?11:id==="poussiere"?7:5;
+  if(k==="trainee"){var r=22,a0=-2.3,n=id==="comete"?9:id==="sillage"||id==="braises"?11:id==="poussiere"?7:5;
     for(var t=n;t>=1;t--){var aa=a0+t*.2,x=c[0]+Math.cos(aa)*r,y=c[1]+18+Math.sin(aa)*r-18,fr=1-t/(n+1);
       if(id==="sillage"){cx.globalAlpha=fr*.8;cx.beginPath();cx.arc(x,y,1.2+2.2*fr,0,6.283);cx.fillStyle=t%2?"#bdeeff":"#5cc8ff";cx.fill();}
+      else if(id==="braises"){cx.globalAlpha=fr*.9;cx.beginPath();cx.arc(x+Math.sin(t*5)*3,y-Math.sin(t*5)*2,1+2*fr,0,6.283);cx.fillStyle=t%3?"#ffb347":"#ff5e3a";cx.fill();}
       else if(id==="poussiere"){for(var z=0;z<2;z++){cx.globalAlpha=fr;cx.beginPath();cx.arc(x+Math.sin(t*5+z*3)*4,y+Math.cos(t*3+z*5)*4,1.3,0,6.283);cx.fillStyle=z?"#fff":pal[1];cx.fill();}}
       else{cx.globalAlpha=fr*(id==="comete"?.5:.35);cx.beginPath();cx.arc(x,y,5*fr+2,0,6.283);cx.fillStyle=pal[1];cx.fill();
         if(id==="comete"){cx.globalAlpha=fr*.8;cx.beginPath();cx.arc(x,y,1.6*fr+.6,0,6.283);cx.fillStyle="#fff";cx.fill();}}}
@@ -2507,12 +2588,24 @@ NATIF.surRetour(function(){if(!document.getElementById("voile").hidden){if(FEN.e
 var RANGS=[[1,"Novice"],[5,"Apprenti"],[10,"Navigateur"],[15,"Astronome"],[20,"Gardien des orbites"],[30,"Maître des cercles"],[40,"Légende"]];
 function xpPour(r){return 60+r*40;}                       // pour passer du rang r au rang r+1
 function rangDe(xp){var r=1;xp=xp||0;while(xp>=xpPour(r)){xp-=xpPour(r);r++;}return{r:r,xp:xp,besoin:xpPour(r)};}
+// la route du rang (le client, le 14/10/2026 : « à quoi sert le niveau ? ») : tous les cinq rangs un style à gagner,
+// un cadre autour du pseudo à chaque titre, et des ampoules offertes chaque jour aux rangs 10 et 20
+var ROUTE=[{r:5,l:["Forme Hexagones","Cadre de bronze"]},{r:10,l:["Traînée Poussière d’étoiles","Cadre d’argent","+1 ampoule par jour"]},
+  {r:15,l:["Couleurs Crépuscule","Cadre d’or"]},{r:20,l:["Orbites de nacre","Cadre étoilé","+1 ampoule par jour"]},{r:25,l:["Couleurs Abysses"]},
+  {r:30,l:["Traînée Braises","Cadre de cristal"]},{r:35,l:["Couleurs Solaire"]},{r:40,l:["Orbites d’or rose","Cadre légendaire"]}];
+var CADRES=[[5,"bronze"],[10,"argent"],[15,"or"],[20,"etoile"],[30,"cristal"],[40,"legende"]];
+function cadreDe(r){var c="";CADRES.forEach(function(x){if(r>=x[0])c=x[1];});return c;}
+function poserCadre(el,r){CADRES.forEach(function(x){el.classList.remove("cadre-"+x[1]);});var c=cadreDe(r);if(c)el.classList.add("cadre-"+c);}
+function routeHTML(){var r=rangDe(PROG.xp).r;return ROUTE.map(function(e){var ok=r>=e.r;return '<div class="route'+(ok?" ok":"")+(!ok&&ROUTE.filter(function(x){return x.r>r;})[0]===e?" proch":"")+'">'+
+  '<span class="route-r notrad">'+e.r+'</span><div>'+e.l.map(function(t){return '<b>'+t+'</b>';}).join("")+'</div><span class="coche">'+(ok?'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>':"")+'</span></div>';}).join("");}
 function titreRang(r){var t=RANGS[0][1];RANGS.forEach(function(x){if(r>=x[0])t=x[1];});return t;}
 function anneauRang(xp,epais){var R=rangDe(xp),f=R.xp/R.besoin,c=2*Math.PI*16;
   return '<svg viewBox="0 0 38 38"><circle cx="19" cy="19" r="16" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="'+(epais||3)+'"/><circle cx="19" cy="19" r="16" fill="none" stroke="url(#gRang)" stroke-width="'+(epais||3)+'" stroke-linecap="round" stroke-dasharray="'+(c*f).toFixed(1)+' '+c.toFixed(1)+'"/>'+
     '<defs><linearGradient id="gRang" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="rgb('+ACC+')"/><stop offset="1" stop-color="rgb('+ACC_CLAIR+')"/></linearGradient></defs></svg><span>'+R.r+'</span>';}
 function gagnerXp(n){if(!n)return;var avant=rangDe(PROG.xp).r;PROG.xp=(PROG.xp||0)+n;var apres=rangDe(PROG.xp).r;
-  for(var r=avant+1;r<=apres;r++){(function(r){setTimeout(function(){toast("Rang "+r,titreRang(r));},400);})(r);gagnerAmpoule();}
+  for(var r=avant+1;r<=apres;r++){(function(r){var e=ROUTE.filter(function(x){return x.r===r;})[0];
+    setTimeout(function(){toast("Rang "+r,e?e.l[0]:titreRang(r));},400);})(r);gagnerAmpoule();}
+  if(apres>avant&&typeof appliquerOptions==="function")appliquerOptions();
 }
 // expérience d'un cube résolu : sa longueur, puis ses étoiles ; les défis comptent double la première fois
 function xpVictoire(d,e,eT,premier){if(d.relax)return 12;var x=d.mode==="sansfin"?6*d.etape+6:Math.min(70,10+4*d.par);x+=5*e+(PROG.options.zen?5:5*eT);
@@ -2538,20 +2631,23 @@ function avancerMissions(v,max){var M=missionsDuJour(),fini=[];
 function missionsVictoire(d,e,eT,temps){avancerMissions(function(m){return{cubes:1,etT:d.relax?0:eT,jour:d.mode==="jour"?1:0,parfait:d.mode==="campagne"&&e===3?1:0,
     libre:d.mode==="libre"||d.mode==="sansfin"||d.relax?1:0}[m.id]||0;});
   avancerMissions(function(m){return m.id==="sansfin"&&d.mode==="sansfin"?d.etape:m.id==="vite"&&temps<=m.but*1000?m.but:0;},true);}
-function majRang(){var R=rangDe(PROG.xp),M=missionsDuJour();document.getElementById("btnRang").classList.toggle("mecene",aDroit("soutien"));document.getElementById("rangAnneau").innerHTML=anneauRang(PROG.xp);
-  document.getElementById("rangTitre").textContent=titreRang(R.r);
+function majRang(){var R=rangDe(PROG.xp),M=missionsDuJour();document.getElementById("btnRang").classList.toggle("mecene",aDroit("soutien"));document.getElementById("rangAnneau").innerHTML=anneauRang(PROG.xp);poserCadre(document.getElementById("btnRang"),R.r);
+  document.getElementById("rangTitre").textContent=pseudo();   // le pseudo du joueur (le titre est au profil)
   // les missions du jour : une cible et « 1/3 » (les trois points seuls ne disaient pas ce qu'ils comptaient), dorés à 3/3
   var nm=M.l.filter(missionFinie).length,rm=document.getElementById("rangMissions");rm.classList.toggle("fini",nm===M.l.length);
   rm.innerHTML='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg>'+nm+'/'+M.l.length;}
 function rafraichirProfil(){var R=rangDe(PROG.xp),M=missionsDuJour();
-  var rc=document.getElementById("rangCarte");rc.classList.toggle("mecene",aDroit("soutien"));
-  rc.innerHTML='<span class="anneau-rang notrad">'+anneauRang(PROG.xp,2.4)+'</span><h3>'+titreRang(R.r)+'</h3>'+(aDroit("soutien")?'<span class="mecene-titre">Mécène d’Orbicube</span>':"")+(voieFinie(MONDES.length-1)?'<span class="mecene-titre maitre">Maître des orbites</span>':"")+
+  var rc=document.getElementById("rangCarte");rc.classList.toggle("mecene",aDroit("soutien"));poserCadre(rc,R.r);
+  document.getElementById("listeRoute").innerHTML=routeHTML();majCompte();
+  rc.innerHTML='<span class="anneau-rang notrad">'+anneauRang(PROG.xp,2.4)+'</span><button class="rc-pseudo" id="btnPseudo" type="button" aria-label="Changer de pseudo"><b class="notrad">'+echapper(pseudo())+'</b>'+
+    '<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/></svg></button><h3 class="rc-titre">'+titreRang(R.r)+'</h3>'+(aDroit("soutien")?'<span class="mecene-titre">Mécène d’Orbicube</span>':"")+(voieFinie(MONDES.length-1)?'<span class="mecene-titre maitre">Maître des orbites</span>':"")+
     '<span class="xp notrad">'+R.xp+' / '+R.besoin+' XP</span><span class="rc-et notrad">'+SVG_ET+etoilesTotal()+' '+SVG_ETT+etoilesChrono()+'</span>';
   document.getElementById("listeMissions").innerHTML=M.l.map(function(m){var ok=missionFinie(m);return '<div class="mission'+(ok?" ok":"")+'"><span class="coche">'+(ok?'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>':"")+'</span>'+
     '<div><b>'+texteMission(m)+'</b><i class="mb"><i style="width:'+(100*m.p/m.but).toFixed(0)+'%"></i></i></div><span class="mx notrad">'+(m.id==="vite"||m.id==="sansfin"?(ok?"✓":""):m.p+"/"+m.but)+'</span></div>';}).join("")+
     '<p class="mission-bonus">'+(M.bonus?"Les trois sont réussies : ampoule gagnée. Nouvelles missions demain.":"Les trois réussies : une ampoule. +"+XP_MISSION+" XP chacune.")+'</p>';}
-document.getElementById("btnClassements").addEventListener("click",function(){sonClic();NATIF.classementsAfficher("");});
+document.getElementById("btnClassements").addEventListener("click",function(){sonClic();ouvrirClassement(null,"profil");});
 document.getElementById("btnRang").addEventListener("click",function(){sonClic();montrer("profil");});
+document.getElementById("rangCarte").addEventListener("click",function(e){if(e.target.closest("#btnPseudo")){sonClic();changerPseudo();}});
 
 // le défi de la semaine : un long mélange, le même pour tous du lundi au dimanche
 function cleSemaine(d){d=new Date(d||Date.now());d.setHours(0,0,0,0);d.setDate(d.getDate()+3-(d.getDay()+6)%7);var a=new Date(d.getFullYear(),0,4);
@@ -2564,8 +2660,129 @@ function ouvrirDefis(){var j=PROG.jours[cleJour()],w=(PROG.semaines||{})[cleSema
     '<button class="bouton or" data-a="jour" type="button"><span>Défi du jour</span><span class="droite">'+(j?"réussi":PROG.serie>1&&estHier(PROG.dernierJour)?"série de "+PROG.serie:"nouveau")+'</span></button>'+
     (complet()?'<button class="bouton" data-a="semaine" type="button"><span>Défi de la semaine</span><span class="droite">'+(w?"record "+fmt(w.temps):"2 ampoules")+'</span></button>':
       carteReserve([["semaine","Défi de la semaine","Un grand mélange de 14 coups, le même pour tous, deux ampoules à la clé"]]))+
+    (enLigne()?'<button class="bouton" data-a="classement" type="button"><span>Classement</span><span class="droite">'+SVG_COUPE+'</span></button>':"")+
     '<button class="bouton" data-a="x" type="button" style="justify-content:center;color:var(--pale)">Fermer</button></div>',
-    function(a){fermerFenetre();if(a==="jour")lancer(jourDef());else if(a==="acheter")ouvrirBoutique("semaine");else if(a==="semaine"){if(complet())lancer(semaineDef());else ouvrirBoutique("semaine");}},"x");}
+    function(a){fermerFenetre();if(a==="classement")ouvrirClassement("jour","accueil");else if(a==="jour")lancer(jourDef());else if(a==="acheter")ouvrirBoutique("semaine");else if(a==="semaine"){if(complet())lancer(semaineDef());else ouvrirBoutique("semaine");}},"x");}
+
+/* ========== 15 sexies. LE CLASSEMENT, LE PSEUDO, LE CODE DE RÉCUPÉRATION ==========
+   Le client, le 14/10/2026 : un classement dans le jeu, sans compte Apple ni Google. Un identifiant tiré au hasard,
+   un pseudo « Player4821 » modifiable, un code de récupération qui rend pseudo, achats et progression sur un autre
+   téléphone (et détache l'ancien). Le serveur (serveur/fonction, Supabase) rejoue les coups des défis avant de les
+   classer. Sans adresse dans config.js, ou sans réseau, le jeu ne change pas : tout se replie sans bruit. */
+var SRV=CFG.classement||{};
+function enLigne(){return !!SRV.url;}
+function appel(a,d){if(!SRV.url)return Promise.resolve({erreur:"hors"});d=d||{};d.a=a;var c=PROG.compte;if(c&&c.id&&!d.code){d.id=c.id;d.jeton=c.jeton;}
+  var ctl=window.AbortController?new AbortController():null,t=setTimeout(function(){if(ctl)ctl.abort();},9000);
+  return fetch(SRV.url,{method:"POST",headers:{"Content-Type":"application/json",apikey:SRV.cle||""},body:JSON.stringify(d),signal:ctl?ctl.signal:undefined})
+    .then(function(r){return r.json().catch(function(){return{erreur:"serveur"};}).then(function(j){if(r.status===401&&j.erreur==="ailleurs")detache();return j||{erreur:"serveur"};});})
+    .catch(function(){return{erreur:"reseau"};}).then(function(j){clearTimeout(t);return j;});}
+// le pseudo : celui du profil, sinon celui que ce téléphone a tiré (« Player » et quatre chiffres) en attendant le serveur
+function pseudoLocal(){if(!PROG.pseudoLocal){PROG.pseudoLocal="Player"+(1000+Math.floor(Math.random()*9000));sauver();}return PROG.pseudoLocal;}
+function pseudo(){return(PROG.compte&&PROG.compte.pseudo)||pseudoLocal();}
+// le profil de joueur, créé à la première victoire ou au premier passage par le classement (rien n'est envoyé avant)
+function assurerCompte(){var c=PROG.compte;if(c&&c.id)return Promise.resolve(c);if(PROG.classementOff||!enLigne())return Promise.resolve(null);
+  if(assurerCompte.p)return assurerCompte.p;
+  return assurerCompte.p=appel("inscrire",{pseudo:pseudoLocal()}).then(function(r){assurerCompte.p=null;if(!r.id)return null;
+    PROG.compte={id:r.id,jeton:r.jeton,code:r.code,pseudo:r.pseudo};sauver();
+    if(PROG.pseudoChoisi)appel("pseudo",{nom:PROG.pseudoLocal}).then(function(x){if(x.pseudo){PROG.compte.pseudo=x.pseudo;}else{PROG.pseudoChoisi=false;PROG.pseudoLocal=r.pseudo;}sauver();majRang();});
+    if(NATIF.identifier)NATIF.identifier(r.id).then(function(l){if(l)appliquerDroits(l);});
+    envoyerStats();viderEnvois();sauverNuage(true);majRang();return PROG.compte;});}
+// le code de récupération a servi sur un autre téléphone : celui-ci n'est plus relié au profil (sa partie reste)
+function detache(){if(!PROG.compte)return;PROG.compte=null;PROG.pseudoLocal=null;PROG.pseudoChoisi=false;PROG.envois=[];sauver();
+  if(NATIF.oublierIdentite)NATIF.oublierIdentite();majRang();toast("Profil sur un autre téléphone","Ce téléphone n’est plus relié à votre profil de joueur.");}
+function nbVoies(){var n=0;for(var w=0;w<MONDES.length;w++)if(voieFinie(w))n++;return n;}
+function envoyerStats(){clearTimeout(envoyerStats.t);envoyerStats.t=setTimeout(function(){if(!PROG.compte)return;
+  appel("stats",{rang:rangDe(PROG.xp).r,xp:PROG.xp||0,etoiles:etoilesTotal(),etoilesT:etoilesChrono(),voies:nbVoies(),sansfin:PROG.stats.sansFin||0,mecene:aDroit("soutien")});},1200);}
+// la sauvegarde sur le serveur (au plus une fois par minute), sans le profil lui-même
+function sauverNuage(vite){if(!PROG.compte)return;var now=Date.now();if(!vite&&now-(sauverNuage.d||0)<60000)return;sauverNuage.d=now;
+  var c=JSON.parse(JSON.stringify(PROG));delete c.compte;delete c.envois;appel("sauver",{sauvegarde:c});}
+// les défis réussis : envoyés avec leurs coups (le serveur les rejoue) ; gardés tant que le réseau manque
+function envoyerScore(d,temps){if(d.mode!=="jour"&&d.mode!=="semaine")return;PROG.envois=(PROG.envois||[]).filter(function(e){return e.tableau!==d.mode||e.cle!==d.id;});
+  PROG.envois.push({tableau:d.mode,cle:d.id,coups:J.hist.map(nomDe),temps:Math.round(temps)});sauver();assurerCompte().then(viderEnvois);}
+function viderEnvois(){if(!PROG.compte||!(PROG.envois||[]).length||viderEnvois.en)return;viderEnvois.en=true;var e=PROG.envois[0];
+  appel("score",e).then(function(r){viderEnvois.en=false;if(r.erreur==="reseau"||r.erreur==="serveur"||r.erreur==="hors"||r.erreur==="ailleurs")return;
+    PROG.envois=PROG.envois.filter(function(x){return x!==e;});sauver();viderEnvois();});}
+function apresVictoireClassement(d,temps){if(d.mode==="jour"||d.mode==="semaine")envoyerScore(d,temps);else assurerCompte();envoyerStats();sauverNuage();}
+
+// ---- l'écran du classement ----
+var SVG_COUPE='<svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8"><path d="M4 20V11h4v9M10 20V5h4v15M16 20v-6h4v6"/></svg>';
+var CL={t:"jour"},MEDAILLES=["#ffcf4a","#d8e0ee","#c98a55"];
+var SOUS_CL={jour:"Défi du jour : le moins de coups, puis le plus rapide.",semaine:"Défi de la semaine : le moins de coups, puis le plus rapide.",
+  sansfin:"L’étape la plus haute atteinte en sans fin.",etoiles:"Toutes les étoiles de la campagne, de coups et de temps.",rang:"Le rang de joueur, gagné en résolvant des cubes."};
+var SVG_COUPS='<svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4"/></svg>',SVG_HORLOGE='<svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>';
+function ouvrirClassement(t,depuis){if(t)CL.t=t;document.getElementById("clRetour").setAttribute("data-retour",depuis||"profil");montrer("classement");chargerClassement();}
+function valeurCl(t,x){if(t==="jour"||t==="semaine")return '<span class="notrad">'+SVG_COUPS+x.valeur+'</span><span class="notrad">'+SVG_HORLOGE+fmt(x.temps)+'</span>';
+  if(t==="etoiles")return '<span class="notrad">'+SVG_ET+x.valeur+'</span>';if(t==="sansfin")return '<span>Étape '+x.valeur+'</span>';return '<span>'+titreRang(x.valeur)+'</span>';}
+function ligneCl(t,x,moi){var c=cadreDe(x.niveau||1);return '<button class="cl-ligne'+(moi?" moi":"")+(x.mecene?" mecene":"")+'" type="button" data-pid="'+x.pid+'">'+
+  '<span class="cl-place notrad"'+(x.place<=3?' style="color:'+MEDAILLES[x.place-1]+'"':"")+'>'+x.place+'</span>'+
+  '<span class="cl-niv notrad'+(c?" cadre-"+c:"")+'">'+(x.niveau||1)+'</span><b class="notrad">'+echapper(x.pseudo||"")+'</b><span class="cl-val">'+valeurCl(t,x)+'</span></button>';}
+function echapper(t){return String(t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function chargerClassement(){var t=CL.t,L=document.getElementById("clListe"),M=document.getElementById("clMoi");
+  document.querySelectorAll("#clOnglets button").forEach(function(b){b.classList.toggle("actif",b.getAttribute("data-t")===t);});
+  document.getElementById("clSous").textContent=SOUS_CL[t];M.hidden=true;
+  if(!enLigne()){L.innerHTML='<p class="cl-vide">Le classement ouvrira avec la sortie du jeu.</p>';return;}
+  if(PROG.classementOff){L.innerHTML='<p class="cl-vide">Vous n’apparaissez pas au classement.</p><button class="bouton" id="clRevenir" type="button" style="justify-content:center;width:100%">Revenir au classement</button>';
+    document.getElementById("clRevenir").onclick=function(){sonClic();PROG.classementOff=false;sauver();chargerClassement();};return;}
+  L.innerHTML='<p class="cl-vide">Chargement…</p>';var cle=t==="jour"?cleJour():t==="semaine"?cleSemaine():"";
+  assurerCompte().then(function(){return appel("classement",{tableau:t,cle:cle});}).then(function(r){if(CL.t!==t)return;
+    if(!r.liste){L.innerHTML='<p class="cl-vide">'+(r.erreur==="reseau"?"Pas de connexion. Le classement revient dès que le téléphone est en ligne.":"Le classement ne répond pas. Réessayez plus tard.")+'</p>';return;}
+    var mien=PROG.compte&&PROG.compte.id;
+    L.innerHTML=r.liste.length?r.liste.map(function(x){return ligneCl(t,x,x.pid===mien);}).join("")+'<p class="cl-total">'+(r.total>1?r.total+" joueurs classés":"1 joueur classé")+'</p>':
+      '<p class="cl-vide">Personne pour l’instant : soyez le premier !</p>';
+    if(r.moi&&!r.liste.some(function(x){return x.pid===mien;})){M.innerHTML=ligneCl(t,{pid:mien,place:r.moi.place,niveau:rangDe(PROG.xp).r,pseudo:pseudo(),valeur:r.moi.valeur,temps:r.moi.temps,mecene:aDroit("soutien")},true);M.hidden=false;}
+    else if(!r.moi&&(t==="jour"||t==="semaine")){M.innerHTML='<p class="cl-astuce">'+(t==="jour"?"Réussissez le défi du jour pour entrer au classement.":"Réussissez le défi de la semaine pour entrer au classement.")+'</p>';M.hidden=false;}});}
+document.getElementById("clOnglets").addEventListener("click",function(e){var b=e.target.closest("[data-t]");if(!b)return;sonClic();CL.t=b.getAttribute("data-t");chargerClassement();});
+function surLigne(e){var b=e.target.closest("[data-pid]");if(b){sonClic();profilPublic(b.getAttribute("data-pid"));}}
+document.getElementById("clListe").addEventListener("click",surLigne);document.getElementById("clMoi").addEventListener("click",surLigne);
+// la fiche publique d'un joueur (profil limité) ; « Signaler » pour un pseudo choquant
+function profilPublic(pid){appel("profil",{pid:pid}).then(function(r){if(!r.pseudo){avertir("Classement","Ce profil n’est pas disponible.");return;}
+  var c=cadreDe(r.niveau||1),moi=PROG.compte&&PROG.compte.id===pid,sj=(r.scores||[]).filter(function(x){return x.tableau==="jour:"+cleJour();})[0],
+    sw=(r.scores||[]).filter(function(x){return x.tableau==="semaine:"+cleSemaine();})[0];
+  function st(v,l){return '<div class="pp-st"><b class="notrad">'+v+'</b><span>'+l+'</span></div>';}
+  ouvrirFenetre('<div class="pp-tete'+(r.mecene?" mecene":"")+'"><span class="cl-niv grand notrad'+(c?" cadre-"+c:"")+'">'+r.niveau+'</span><h3 class="notrad">'+echapper(r.pseudo)+'</h3><p>'+titreRang(r.niveau)+'</p>'+
+    (r.mecene?'<span class="mecene-titre">Mécène d’Orbicube</span>':"")+'</div><div class="pp-grille">'+st(SVG_ET+r.etoiles,"étoiles de coups")+st(SVG_ETT+r.etoilesT,"étoiles de temps")+
+    st(r.voies+"/"+MONDES.length,"voies dorées")+st(r.sansfin||"–","étape en sans fin")+
+    st(sj?sj.coups+" · "+fmt(sj.temps_ms):"–","défi du jour")+st(sw?sw.coups+" · "+fmt(sw.temps_ms):"–","défi de la semaine")+'</div>'+
+    '<div class="menu">'+(moi?"":'<button class="bouton" data-a="signaler" type="button" style="justify-content:center;color:var(--pale)">Signaler ce pseudo</button>')+
+    '<button class="bouton" data-a="x" type="button" style="justify-content:center">Fermer</button></div>',function(a){
+      if(a==="signaler"){ouvrirFenetre('<h3>Signaler ce pseudo ?</h3><p>S’il est choquant, il sera remplacé par un pseudo « Player ».</p><div class="menu"><button class="bouton" data-a="non" type="button" style="justify-content:center">Annuler</button><button class="danger" data-a="oui" type="button">Signaler</button></div>',
+        function(b){fermerFenetre();if(b==="oui")assurerCompte().then(function(){return appel("signaler",{pid:pid});}).then(function(x){avertir("Signalement",x.ok?"Merci, c’est noté.":"Réessayez plus tard.");});},"non");return;}
+      fermerFenetre();},"x");});}
+
+// ---- le pseudo, modifiable depuis l'accueil (la puce du haut ouvre le profil, le crayon le change) ----
+var ERR_PSEUDO={longueur:"Entre 3 et 16 signes.",signes:"Lettres, chiffres, espace, point, tiret ou souligné seulement.",reserve:"Ce pseudo est réservé.",
+  grossier:"Ce pseudo n’est pas accepté.",pris:"Ce pseudo est déjà pris.",reseau:"Pas de connexion. Réessayez plus tard.",serveur:"Le serveur ne répond pas. Réessayez plus tard."};
+function changerPseudo(){ouvrirFenetre('<h3>Votre pseudo</h3><p>C’est le nom que les autres joueurs voient au classement.</p>'+
+    '<input class="champ notrad" id="champPseudo" maxlength="16" autocomplete="off" autocapitalize="off" spellcheck="false" value="'+echapper(pseudo())+'"><p class="champ-err" id="errPseudo"></p>'+
+    '<div class="menu"><button class="bouton" data-a="ok" type="button" style="justify-content:center">Valider</button><button class="bouton" data-a="x" type="button" style="justify-content:center;color:var(--pale)">Annuler</button></div>',
+  function(a){if(a!=="ok"){fermerFenetre();return;}var v=document.getElementById("champPseudo").value.trim().replace(/\s+/g," "),err=document.getElementById("errPseudo");
+    function dire(k){err.textContent=ERR_PSEUDO[k]||ERR_PSEUDO.serveur;}
+    if(v.length<3||v.length>16)return dire("longueur");if(!/^[\p{L}\p{N} ._-]+$/u.test(v))return dire("signes");if(v===pseudo()){fermerFenetre();return;}
+    if(!enLigne()||PROG.classementOff){PROG.pseudoLocal=v;PROG.pseudoChoisi=true;sauver();majRang();rafraichirProfil();fermerFenetre();return;}
+    err.textContent="…";assurerCompte().then(function(c){if(!c)return{erreur:"reseau"};return appel("pseudo",{nom:v});}).then(function(r){if(!r.pseudo)return dire(r.erreur);
+      PROG.compte.pseudo=r.pseudo;PROG.pseudoLocal=r.pseudo;PROG.pseudoChoisi=true;sauver();majRang();rafraichirProfil();fermerFenetre();toast("Pseudo enregistré","");});},"x");
+  setTimeout(function(){var c=document.getElementById("champPseudo");if(c){c.focus();c.select();}},80);}
+
+// ---- le profil de joueur : code de récupération, reprise sur un autre téléphone, suppression ----
+function majCompte(){var c=PROG.compte;document.getElementById("btnCode").textContent=c&&c.code?c.code:enLigne()&&!PROG.classementOff?"Afficher":"—";
+  document.getElementById("grpCompte").hidden=!enLigne();}
+document.getElementById("btnCode").addEventListener("click",function(){sonClic();assurerCompte().then(function(c){majCompte();if(!c||!c.code){avertir("Classement",ERR_PSEUDO.reseau);return;}
+  if(navigator.clipboard)navigator.clipboard.writeText(c.code).then(function(){toast("Code copié","");},function(){});});});
+document.getElementById("btnRecuperer").addEventListener("click",function(){sonClic();ouvrirFenetre('<h3>Utiliser un code</h3><p>Le code de récupération noté sur votre autre téléphone. Le profil de ce téléphone sera remplacé.</p>'+
+    '<input class="champ notrad" id="champCode" maxlength="24" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ORBI-XXXX-XXXX-XXXX"><p class="champ-err" id="errCode"></p>'+
+    '<div class="menu"><button class="bouton" data-a="ok" type="button" style="justify-content:center">Récupérer</button><button class="bouton" data-a="x" type="button" style="justify-content:center;color:var(--pale)">Annuler</button></div>',
+  function(a){if(a!=="ok"){fermerFenetre();return;}var code=document.getElementById("champCode").value,err=document.getElementById("errCode");err.textContent="…";
+    appel("recuperer",{code:code}).then(function(r){if(!r.id){err.textContent=r.erreur==="code"?"Ce code n’existe pas.":ERR_PSEUDO[r.erreur]||ERR_PSEUDO.serveur;return;}
+      PROG.compte={id:r.id,jeton:r.jeton,code:String(code).toUpperCase().trim(),pseudo:r.pseudo};PROG.pseudoLocal=r.pseudo;PROG.pseudoChoisi=true;PROG.classementOff=false;
+      if(r.sauvegarde){var cp=PROG.compte;PROG=fusion(PROG,r.sauvegarde);PROG.compte=cp;}sauver();appliquerOptions();rafraichirAccueil();rafraichirProfil();majRang();
+      if(NATIF.identifier)NATIF.identifier(r.id).then(function(l){if(l)appliquerDroits(l);});fermerFenetre();toast("Profil retrouvé","");});},"x");});
+document.getElementById("btnSupprimerCompte").addEventListener("click",function(){sonClic();ouvrirFenetre('<h3>Supprimer mes données ?</h3><p>Votre pseudo, vos scores et votre sauvegarde seront effacés du serveur, et vous n’apparaîtrez plus au classement. Votre partie et vos achats restent sur ce téléphone.</p>'+
+    '<div class="menu"><button class="bouton" data-a="non" type="button" style="justify-content:center">Garder mon profil</button><button class="danger" data-a="oui" type="button">Supprimer définitivement</button></div>',
+  function(a){fermerFenetre();if(a!=="oui")return;var fin=function(){PROG.compte=null;PROG.envois=[];PROG.classementOff=true;sauver();majRang();rafraichirProfil();avertir("Classement","Vos données ont été supprimées.");};
+    if(!PROG.compte){fin();return;}appel("supprimer").then(function(r){if(r.ok)fin();else avertir("Classement",ERR_PSEUDO[r.erreur]||ERR_PSEUDO.serveur);});},"non");});
+// au lancement : ce qui attendait le réseau part, le profil public se met à jour
+setTimeout(function(){if(PROG.compte){viderEnvois();envoyerStats();}},2500);
+window.addEventListener("online",viderEnvois);
 
 /* ========== 15 quater. LES LANGUES ==========
    Le français est la langue source : chaque texte affiché est cherché tel quel dans le dictionnaire de la langue

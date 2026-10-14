@@ -196,5 +196,29 @@ else {
   pas && G.MONDES[G.MONDES.length - 1].anneaux.length === 9 ? ok(G.MONDES.length + " mondes : une orbite de plus à chaque monde, jusqu'aux neuf") : faute("les mondes n'ajoutent pas une orbite à la fois jusqu'aux neuf");
 }
 
+// le serveur du classement rejoue les coups des défis avec sa copie du moteur (serveur/fonction/moteur.js) : elle doit
+// donner les mêmes mélanges que le jeu, accepter la vraie solution et refuser une fausse
+{
+  const ctxJ = { window: { matchMedia: () => ({ matches: false }) }, matchMedia: () => ({ matches: false }), console };
+  vm.createContext(ctxJ);
+  vm.runInContext(jeu.slice(debut, fin) + "\n" + jeu.slice(debN, finN) + "\nthis.__=({genererMelange,graine,SIXFACES,inverse,nomDe});", ctxJ);
+  const GJ = ctxJ.__, ctxS = {};
+  vm.createContext(ctxS);
+  vm.runInContext(fs.readFileSync(path.join(RACINE, "serveur", "fonction", "moteur.js"), "utf8"), ctxS);
+  const M = ctxS.Moteur, txt = (l) => JSON.stringify(l.map((m) => [m.a, m.L, m.q]));
+  let memes = true, juste = true;
+  for (const [t, cle] of [["jour", "20261014"], ["jour", "20270301"], ["semaine", "2026-S42"], ["semaine", "2027-S01"]]) {
+    const jeuM = GJ.genererMelange(GJ.graine(t + "-" + cle), GJ.SIXFACES, t === "jour" ? 8 : 14);
+    if (txt(jeuM) !== txt(M.melangeDefi(t, cle))) memes = false;
+    const sol = jeuM.slice().reverse().map((m) => GJ.nomDe(GJ.inverse(m)));
+    if (M.verifier(t, cle, sol) !== sol.length || M.verifier(t, cle, sol.slice(1)) !== -1 || M.verifier(t, cle, ["X"]) !== -1) juste = false;
+  }
+  memes ? ok("serveur : même mélange des défis que le jeu") : faute("serveur/fonction/moteur.js ne donne plus les mêmes défis que le jeu");
+  juste ? ok("serveur : la solution d'un défi est acceptée, une fausse refusée") : faute("serveur : la vérification des coups est fausse");
+}
+// la clé de service de Supabase ne quitte jamais le serveur : aucune trace dans le jeu
+const cleService = [...new Set(aRelire.concat(fs.readdirSync(WWW).filter((f) => /\.(js|html)$/.test(f)).map((f) => path.join(WWW, f))))]
+  .filter((p) => /service_role|SERVICE_ROLE_KEY|sb_secret_/.test(fs.readFileSync(p, "utf8")));
+cleService.length ? faute("clé de service Supabase dans : " + cleService.join(", ")) : ok("aucune clé de service Supabase dans le jeu");
 console.log(fautes ? "\n" + fautes + " faute(s)." : "\nTout est en ordre.");
 process.exit(fautes ? 1 : 0);

@@ -45,6 +45,10 @@ window.ORBICUBE_CONFIG = {
     android: { jour: "", semaine: "", sansfin: "", etoiles: "" }
   },
 
+  // Classement interne (serveur Supabase, voir serveur/LISEZMOI.md) : l'adresse de la fonction « orbicube » et la clé
+  // PUBLIABLE du projet (sb_publishable_…, faite pour être dans l'app ; jamais la clé de service). Vides = pas de classement.
+  classement: { url: "", cle: "" },
+
   // Liens affichés dans la version web (laisser vides tant que l'app n'est pas publiée).
   liens: { appStore: "", googlePlay: "", confidentialite: "confidentialite.html" }
 };
