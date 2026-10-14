@@ -641,6 +641,13 @@ body.sobre #plateau{transition:none}
 .bout-ligne .btn-or{width:auto;min-height:40px;font-size:14px;padding:0 16px;flex:none}
 .bout-ligne .ic{width:38px;height:38px;flex:none;display:grid;place-items:center;border-radius:50%;background:rgba(255,207,74,.12)}
 .bout-ligne .ic svg{width:20px;height:20px;stroke:var(--or);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.bout-ligne{flex-wrap:wrap}
+.pack-contenu{flex-basis:100%;display:flex;gap:6px;margin-top:2px;padding-top:10px;border-top:1px solid rgba(255,207,74,.14)}
+.pack-contenu .pc{flex:1;min-width:0;display:grid;justify-items:center;gap:3px}
+.pack-contenu canvas{width:42px;height:42px;display:block}
+.pack-contenu i{font:500 10.5px var(--f-texte);font-style:normal;color:var(--pale);text-align:center;line-height:1.15;overflow-wrap:anywhere}
+.pack-puces{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;padding-top:10px;border-top:1px solid rgba(255,207,74,.14)}
+.pack-puces span{display:inline-block;font:600 11px var(--f-titre);letter-spacing:.02em;color:var(--or);border:1px solid rgba(255,207,74,.35);border-radius:99px;padding:4px 10px;margin:0}
 .bout-ligne.acquis{border-color:rgba(var(--acc),.28);background:rgba(12,13,28,.72)}
 .bout-ligne.appel{animation:appel 1.2s ease-in-out 2}
 @keyframes appel{50%{box-shadow:0 0 0 2px var(--or),0 0 30px -4px rgba(255,207,74,.8)}}
@@ -669,7 +676,7 @@ body.sobre #plateau{transition:none}
 .style.porte{border-color:rgb(var(--acc));box-shadow:0 0 0 1px rgb(var(--acc)),0 0 22px -8px rgba(var(--acc),.85)}
 .style.porte small{color:rgb(var(--acc));font-weight:600}
 .style.vu:not(.porte){border-color:rgba(255,255,255,.45)}
-.style.ferme canvas{opacity:.5;filter:saturate(.7)}
+.style.ferme canvas{opacity:.92}
 .style.ferme small{color:var(--or)}
 .style .cad{position:absolute;top:7px;right:7px;width:15px;height:15px;fill:none;stroke:var(--or);stroke-width:2;stroke-linecap:round}
 .bout-amp{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -918,11 +925,12 @@ var PALETTES={classique:["#FF7A1E","#FA3A47","#FBD101","#F4F4F6","#2DCC4B","#009
   contraste:["#E69F00","#CC79A7","#F0E442","#FFFFFF","#009E73","#0072B2"],
   pastel:["#FFB27A","#F28B9B","#FFE38A","#F4F1EA","#8FD9A8","#8DB8F2"],
   neon:["#FF7A00","#FF2E63","#F5F500","#E8FFFF","#00FF9C","#00C8FF"],
-  // pack « Palettes cosmiques » : six teintes toujours bien distinctes (une par face), dans des ambiances nouvelles
-  aurore:["#FF9E6D","#FF5E8A","#FFD86E","#F7F3FF","#5EF0B4","#7A8CFF"],
-  galaxie:["#FF8A3D","#E0457B","#F2C14E","#E9E4FF","#3FD0C9","#8A63FF"],
-  glace:["#FFB38A","#FF6F91","#FFF3A6","#FFFFFF","#7FE7D6","#5AB8FF"],
-  joyaux:["#E8742C","#D0143A","#E8B923","#EDE6D6","#12A35E","#2457E0"]};
+  // pack « Palettes cosmiques » (refaites le 14/10/2026 : trop proches du classique) : chacune quitte les six teintes du
+  // cube pour une ambiance à elle, en gardant six couleurs bien distinctes (une par face) et lisibles sur fond sombre
+  aurore:["#00F5A0","#00C2FF","#7B61FF","#FF4FD8","#FFE45E","#FFFFFF"],    // aurore boréale : menthe, cyan, violet, magenta
+  galaxie:["#9D4EDD","#FF4D9D","#FFD60A","#4CC9F0","#F8F0FF","#FF7B00"],   // nébuleuse : pourpre, rose, or, azur
+  glace:["#FFFFFF","#9AD9FF","#2F6BFF","#2EE6C8","#B48CFF","#8E9AAF"],     // banquise : blanc, ciel, bleu profond, givre
+  joyaux:["#E0115F","#0FA968","#1F5CFF","#9B30FF","#FFB000","#F5F0E6"]};   // rubis, émeraude, saphir, améthyste, topaze, perle
 /* ========== LA BOUTIQUE : packs vendus et styles (le client, le 13/10/2026) ==========
    Chaque pack est un droit (« entitlement » RevenueCat) vendu par un produit des stores ; une édition groupée active
    plusieurs droits (réglé dans RevenueCat). Les ampoules sont consommables : le jeu les crédite lui-même.
@@ -2024,7 +2032,9 @@ function redimApercu(){var w=document.querySelector("#boutique .bout").clientWid
 function vignette(cv,k,id){var d=Math.min(DPR,2.5),W=64;cv.width=W*d;cv.height=W*d;var cx=cv.getContext("2d");cx.setTransform(d,0,0,d,0,0);cx.clearRect(0,0,W,W);
   var pal=k==="palette"?PALETTES[id]:PALETTES[VU.palette||STY.palette],c=[32,32];
   if(k==="palette"){var top=[[32,10],[51,21],[32,32],[13,21]],gauche=[[13,21],[32,32],[32,55],[13,44]],droite=[[32,32],[51,21],[51,44],[32,55]];
-    [[top,pal[2]],[gauche,pal[1]],[droite,pal[5]]].forEach(function(f){var P=f[0];for(var a=0;a<3;a++)for(var b=0;b<3;b++){
+    // les trois faces montrées : les teintes qui font l'identité de la palette (sinon jaune, rouge, bleu)
+    var fc={galaxie:[0,1,3],joyaux:[2,0,4],aurore:[2,1,0]}[id]||[2,1,5];
+    [[top,pal[fc[0]]],[gauche,pal[fc[1]]],[droite,pal[fc[2]]]].forEach(function(f){var P=f[0];for(var a=0;a<3;a++)for(var b=0;b<3;b++){
       var lerp=function(p,q,t){return[p[0]+(q[0]-p[0])*t,p[1]+(q[1]-p[1])*t];},pt=function(u,v){var A=lerp(P[0],P[1],u),B=lerp(P[3],P[2],u);return lerp(A,B,v);};
       var m=.12,q=[pt(a/3+m/3,b/3+m/3),pt((a+1)/3-m/3,b/3+m/3),pt((a+1)/3-m/3,(b+1)/3-m/3),pt(a/3+m/3,(b+1)/3-m/3)];
       cx.beginPath();q.forEach(function(p,i){if(i)cx.lineTo(p[0],p[1]);else cx.moveTo(p[0],p[1]);});cx.closePath();cx.fillStyle=f[1];cx.fill();}});
@@ -2053,9 +2063,13 @@ function condition(st){var o=st.ouv||{};if(o.etoiles)return'<small class="notrad
 function carteStyle(k,st){var ouv=styleOuvert(k,st.id),porte=STY[k]===st.id,vu=VU[k]===st.id;
   return'<button class="style'+(porte?" porte":"")+(vu?" vu":"")+(ouv?"":" ferme")+'" type="button" data-k="'+k+'" data-id="'+st.id+'"><canvas></canvas><b>'+st.nom+'</b>'+
     (porte?'<small>Porté</small>':ouv?'<small>Choisir</small>':condition(st))+(ouv?"":'<svg class="cad" viewBox="0 0 24 24">'+CADENAS+'</svg>')+'</button>';}
+function contenuPack(cle){var l=[];Object.keys(STYLES).forEach(function(k){STYLES[k].forEach(function(st){if(st.ouv&&st.ouv.pack===cle)l.push([k,st]);});});
+  if(l.length)return'<div class="pack-contenu">'+l.map(function(x){return'<span class="pc"><canvas data-k="'+x[0]+'" data-id="'+x[1].id+'"></canvas><i>'+x[1].nom+'</i></span>';}).join("")+'</div>';
+  var P=PACKS[cle];if(!P.droits)return"";
+  return'<div class="pack-puces">'+P.droits.map(function(d){var n=d==="complet"?"Orbicube complet":PACKS[d.replace("pack_","")].nom;return'<span>'+n+'</span>';}).join("")+'</div>';}
 function lignePack(cle,ic){var P=PACKS[cle],a=P.droit?aDroit(P.droit):(P.droits||[]).every(aDroit);
   return'<div class="bout-ligne'+(a?" acquis":"")+'" id="pack-'+cle+'"><span class="ic"><svg viewBox="0 0 24 24">'+ic+'</svg></span><div class="lt"><b>'+P.nom+'</b><span>'+P.desc+'</span></div>'+
-    (a?'<span class="bout-acquis">'+COCHE+'Acquis</span>':'<button class="btn-or" type="button" data-achat="'+cle+'"><span class="px notrad">'+PRIXP[cle]+'</span></button>')+'</div>';}
+    (a?'<span class="bout-acquis">'+COCHE+'Acquis</span>':'<button class="btn-or" type="button" data-achat="'+cle+'"><span class="px notrad">'+PRIXP[cle]+'</span></button>')+contenuPack(cle)+'</div>';}
 var IC={couleurs:'<circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><circle cx="12" cy="16" r="3"/>',formes:'<path d="M12 3l4 5-4 13-4-13z"/><path d="M8 8h8"/>',
   effets:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',cœur:'<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>',
   couronne:'<path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/>'};
@@ -2082,6 +2096,7 @@ function rendreBoutique(){var c=complet(),tous=["pack_couleurs","pack_formes","p
       return'<div class="bout-sous">'+g[1]+'</div><div class="bout-grille">'+STYLES[g[0]].map(function(st){return carteStyle(g[0],st);}).join("")+'</div>';}).join("");
   var el=document.getElementById("boutRayon");el.innerHTML=r;
   el.querySelectorAll(".style").forEach(function(b){vignette(b.querySelector("canvas"),b.dataset.k,b.dataset.id);});
+  document.querySelectorAll("#boutHero .pack-contenu canvas").forEach(function(cv){vignette(cv,cv.dataset.k,cv.dataset.id);});
   document.getElementById("boutAmpoules").innerHTML=["amp10","amp30"].map(function(k){return'<button class="bout-carte" type="button" data-achat="'+k+'">'+(k==="amp30"?'<span class="eco">Le plus avantageux</span>':"")+
       '<svg viewBox="0 0 24 24">'+'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/>'+'</svg><b>'+PACKS[k].nom+'</b><span class="px notrad">'+PRIXP[k]+'</span></button>';}).join("");
   document.getElementById("boutSoutien").innerHTML=aDroit("soutien")?'<div class="bout-ligne acquis"><span class="ic"><svg viewBox="0 0 24 24">'+IC.cœur+'</svg></span><div class="lt"><b>Merci pour votre soutien !</b><span>Votre liseré doré brille sur votre profil.</span></div></div>':lignePack("soutien",IC.cœur);

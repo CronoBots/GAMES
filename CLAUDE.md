@@ -79,7 +79,10 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   Formes / Effets (traînée, orbites, victoire) en vignettes dessinées (`vignette`), ampoules, pack soutien, restauration.
   **Catalogue** : `STYLES` (ouverture : libre, `etoiles`, `chrono`, `rang` ou `pack`), `PACKS` (produit des stores + droit
   RevenueCat ; éditions groupées = plusieurs droits ; ampoules consommables créditées par `crediterAmpoules` ; **chaque style
-  d'un pack s'achète aussi seul** : `PACKS.s_<id>`, produit `orbicube_style_<id>`, droit `style_<id>`, 0,99 €). Le style
+  d'un pack s'achète aussi seul** : `PACKS.s_<id>`, produit `orbicube_style_<id>`, droit `style_<id>`, 0,99 €). Chaque ligne de pack
+  montre son **contenu exact** (`contenuPack` : vignette et nom de chaque style ; puces des packs pour les éditions groupées).
+  **Les palettes du pack Couleurs quittent les six teintes du cube** (le client, le 14/10/2026 : trop ressemblantes) : chacune
+  a son ambiance (Aurore, Galaxie, Glace, Joyaux), six couleurs distinctes ; leur vignette montre leurs teintes typiques. Le style
   porté est dans `PROG.options` et lu par `STY` (recalculé par `appliquerOptions`, un style reperdu retombe sur le premier) ;
   les achats dans `PROG.droits` (jamais perdus par `fusion`, gardés par « Tout effacer »). Le dessin (`dessiner`, `pastille`,
   `couleurOrbite`, `confettis(v)`) lit les styles du plateau (`pal`, `forme`, `trainee`, `orbite`) ou `STY`. Le pont natif

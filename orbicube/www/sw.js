@@ -1,6 +1,6 @@
 // Version web (PWA) : tout le jeu est mis en cache pour se jouer hors ligne.
 // Incrémenter V à chaque publication, sinon les joueurs gardent l'ancienne version.
-var V = "orbicube-v114";
+var V = "orbicube-v115";
 var FICHIERS = ["./", "index.html", "config.js", "natif.js", "langues.js", "manifest.webmanifest", "confidentialite.html",
   "img/fond-1.webp", "img/fond-2.webp", "img/fond-3.webp", "img/fond-4.webp",
   "img/bg-1.webp", "img/bg-2.webp", "img/bg-3.webp", "img/bg-4.webp",
