@@ -1546,20 +1546,21 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
     y+=28;items.push({t:"s",acc:acc,w:w,nom:M.nom,y:y});y+=136;
     // le chemin : les huit niveaux, en lacets
     var xs=[],ys=[];
-    // lacets réguliers : deux niveaux d'un côté, deux de l'autre (1 | 2 3 | 4 5 | 6 7 | 8), côté de départ alterné d'un
-    // monde à l'autre ; aucun nœud au centre, là où le chemin et sa voie dorée se croisent
-    var LACET=[-1,1,1,-1,-1,1,1,-1],cote=w%2?-1:1;
-    for(var i=0;i<Math.min(BASE,M.coups.length);i++){var x=cx+cote*LACET[i%8]*amp*.8,r=PROG.niveaux[(w+1)+"-"+(i+1)];
+    // la vague naturelle du chemin (le client : les lacets réguliers faisaient trop symétrique), mais jamais au centre :
+    // c'est là que le chemin et sa voie dorée se croisent
+    var vague=function(q){var v=Math.sin(q*.66);return (v<0?-1:1)*(.42+.58*Math.abs(v));},ks=[];
+    for(var i=0;i<Math.min(BASE,M.coups.length);i++){var x=cx+vague(k)*amp,r=PROG.niveaux[(w+1)+"-"+(i+1)];ks.push(k);
       items.push({t:"n",x:x,y:y,w:w,i:i,num:numNiveau(w,i),r:r,ouv:niveauOuvert(w,i),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===i),acc:acc});
       pts.push([x,y]);xs.push(x);ys.push(y);y+=GAP;k++;}
-    // la voie dorée des experts (le client, le 14/10/2026) : le miroir exact du chemin, sa forme inverse. Elle part du
-    // niveau 2 et suit le reflet des niveaux suivants ; l'expert j se pose entre les niveaux 2j+2 et 2j+3, en face d'eux :
-    // les deux voies s'enlacent et ne se croisent qu'entre deux paires de niveaux, là où il n'y a aucun nœud
-    if(M.coups.length>BASE&&xs.length===BASE){var bra=[[xs[1],ys[1]],[2*cx-xs[1],ys[1]+GAP/2]];
-      for(var i=2;i<BASE;i++)bra.push([2*cx-xs[i],ys[i]]);
-      for(var j=0;j<M.coups.length-BASE;j++){var a=2*j+1,ye=ys[a]+GAP/2,xe=2*cx-xs[a],ie=BASE+j,r=PROG.niveaux[(w+1)+"-"+(ie+1)];
-        items.push({t:"n",x:xe,y:ye,w:w,i:ie,num:"E"+numNiveau(w,ie),r:r,ouv:niveauOuvert(w,ie),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===ie),acc:acc});}
-      bra.push([2*cx-xs[BASE-1],ys[BASE-1]+GAP/2]);
+    // la voie dorée des experts (le client, le 14/10/2026) : la forme inverse du chemin, un peu plus resserrée pour ne pas
+    // faire miroir parfait. Elle part du niveau 2 ; l'expert j se pose en face du niveau 2j+3 ou 2j+4 (le plus écarté du
+    // centre), sur la voie : à la hauteur d'un niveau, de l'autre côté, jamais sur lui
+    if(M.coups.length>BASE&&xs.length===BASE){var inv=function(q){return cx-vague(ks[q])*amp*.86;},bra=[[xs[1],ys[1]]],der=1;
+      var choix=[[2],[3,4],[5,6],[7]];
+      for(var j=0;j<M.coups.length-BASE&&j<choix.length;j++){var c=choix[j].filter(function(q){return q>der;}),q=c.reduce(function(m,v){return Math.abs(inv(v)-cx)>Math.abs(inv(m)-cx)?v:m;},c[0]);
+        for(var t=der+1;t<=q;t++)bra.push([inv(t),ys[t]]);der=q;
+        var ie=BASE+j,r=PROG.niveaux[(w+1)+"-"+(ie+1)];
+        items.push({t:"n",x:inv(q),y:ys[q],w:w,i:ie,num:"E"+numNiveau(w,ie),r:r,ouv:niveauOuvert(w,ie),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===ie),acc:acc});}
       branches.push(bra);}
     wreg.push({w:w,acc:acc,y0:y0,y1:y});y+=18;}
   var H=y+60,de="",nodes="",sects="",d="";
