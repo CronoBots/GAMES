@@ -141,7 +141,7 @@ async function resoudre(p) {
     // mémoire de l'iPhone : la carte n'affiche que les bandes d'image proches de la vue (Safari fermait la page à 32 bandes)
     const bandes = await p.evaluate(() => [...document.querySelectorAll(".parc-bg,.parc-planets,.parc-starsb,.parc-meteorsb")].filter((e) => getComputedStyle(e).display !== "none").length);
     bandes <= 12 ? ok("carte : " + bandes + " bandes d'image affichées sur 32 (mémoire de l'iPhone)") : faute("carte : " + bandes + " bandes d'image affichées, Safari risque de fermer la page");
-    exp.m2 && exp.e1 && exp.e2 && exp.titres === 8 && exp.total === 96 && exp.ecart >= 70 ? ok("experts : 96 niveaux, une voie dorée de quatre experts par monde (E1 ouvert à la fin du chemin), aucun nœud n'en touche un autre (" + exp.ecart + " px)") : faute("niveaux experts : " + JSON.stringify(exp));
+    exp.m2 && exp.e1 && exp.e2 && exp.titres === 1 && exp.total === 96 && exp.ecart >= 70 ? ok("experts : 96 niveaux, une voie dorée de quatre experts par monde (E1 ouvert à la fin du chemin), aucun nœud n'en touche un autre (" + exp.ecart + " px)") : faute("niveaux experts : " + JSON.stringify(exp));
 
     // un expert gagné sous une ancienne règle n'ouvre pas le suivant tant que le chemin du monde n'est pas fini
     const exp2 = await p.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); return v; });

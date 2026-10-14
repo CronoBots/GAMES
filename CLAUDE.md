@@ -200,7 +200,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   règle ouvrait le suivant, plus grand et cliquable, le client l'a vu), en option, sans jamais bloquer le monde suivant (`mondeOuvert`,
   `mondeFini` lisent le huitième). La victoire du huitième niveau propose « Expert 1 » en second bouton doré. Sur la carte (le client : « la forme inverse », mais pas
   « trop symétrique ») : le chemin garde sa vague naturelle mais jamais au centre (`vague` : au moins 42 % de l'amplitude),
-  la voie dorée est sa forme inverse resserrée à 86 % (`inv`), partie du niveau 1 avec le chemin ; l'expert j se pose sur elle, à la
+  la voie dorée est sa forme inverse resserrée à 86 % (`inv`), partie du niveau 1 avec le chemin pour le monde 1, puis **continue d'un monde à l'autre** (le client : la voie d'un monde
+  part du dernier expert du monde d'avant, `finVoie` ; la pastille « Voie dorée » n'est qu'au monde 1) ; l'expert j se pose sur elle, à la
   hauteur du niveau 2j+2 (un tous les deux niveaux, le client : ils se collaient), donc de l'autre côté, jamais sur un nœud (le parcours de test exige
   70 px entre deux nœuds). Les lacets réguliers en miroir parfait ont été refusés. **Tant que le chemin du monde n'est
   pas fini, la voie dorée est discrète** (trait atténué `.voie-discrete`, nœuds `.discret` à 55 % : le client la voulait moins effacée) et ses nœuds ne montrent

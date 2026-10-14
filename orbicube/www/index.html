@@ -1640,6 +1640,7 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
   // on empile du niveau 1 au dernier ; les y sont ensuite retournés pour que la progression MONTE (bas -> haut, façon Candy Crush)
   var wreg=[];
   // la couleur d'un monde sur la carte est celle de son décor, comme en jeu (le client : « pourquoi mauve alors que le thème est vert ? »)
+  var finVoie=null;
   for(var w=0;w<MONDES.length;w++){var M=MONDES[w],acc=THEME_ACC[themeFond(w)-1],y0=y;
     y+=28;items.push({t:"s",acc:acc,w:w,nom:M.nom,y:y});y+=136;
     // le chemin : les huit niveaux, en lacets
@@ -1653,14 +1654,16 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
     // la voie dorée des experts (le client, le 14/10/2026) : la forme inverse du chemin, un peu plus resserrée pour ne pas
     // faire miroir parfait. Elle part du niveau 1, avec le chemin ; l'expert j se pose en face du niveau 2j+3 ou 2j+4 (le plus écarté du
     // centre), sur la voie : à la hauteur d'un niveau, de l'autre côté, jamais sur lui
-    if(M.coups.length>BASE&&xs.length===BASE){var inv=function(q){return cx-vague(ks[q])*amp*.86;},bra=[[xs[0],ys[0]]],der=0;
+    // la voie dorée est continue (le client, le 14/10/2026) : celle d'un monde part du dernier expert du monde d'avant ;
+    // seule celle du monde 1 part de son niveau 1. Les conditions d'ouverture ne changent pas.
+    if(M.coups.length>BASE&&xs.length===BASE){var inv=function(q){return cx-vague(ks[q])*amp*.86;},bra=[finVoie||[xs[0],ys[0]]],der=0;
       var choix=[[1],[3],[5],[7]];   // un expert tous les deux niveaux, à hauteur égale (le client : E1 et E2 se collaient)
       for(var j=0;j<M.coups.length-BASE&&j<choix.length;j++){var c=choix[j].filter(function(q){return q>der;}),q=c.reduce(function(m,v){return Math.abs(inv(v)-cx)>Math.abs(inv(m)-cx)?v:m;},c[0]);
         for(var t=der+1;t<=q;t++)bra.push([inv(t),ys[t]]);der=q;
         var ie=BASE+j,r=PROG.niveaux[(w+1)+"-"+(ie+1)];
         bra[bra.length-1].noeud=true;items.push({t:"n",x:inv(q),y:ys[q],w:w,i:ie,num:"E"+numNiveau(w,ie),r:r,ouv:niveauOuvert(w,ie),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===ie),acc:acc});}
-      if(bra.length>1)items.push({t:"x",w:w,x:(bra[0][0]+bra[1][0])/2,y:(bra[0][1]+bra[1][1])/2});
-      bra[0].noeud=true;branches.push({w:w,pts:bra});}
+      if(!finVoie&&bra.length>1)items.push({t:"x",w:w,x:(bra[0][0]+bra[1][0])/2,y:(bra[0][1]+bra[1][1])/2});
+      bra[0].noeud=true;finVoie=bra[bra.length-1].noeud?bra[bra.length-1]:null;branches.push({w:w,pts:bra});}
     wreg.push({w:w,acc:acc,y0:y0,y1:y});y+=18;}
   var H=y+60,de="",nodes="",sects="",d="";
   // FONDS CRAFTPIX (Space Vertical Game Backgrounds, 4 thèmes cyclés par monde), en COUCHES parallaxe :
