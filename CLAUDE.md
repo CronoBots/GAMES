@@ -185,12 +185,12 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   est fini, puis l'un après l'autre (`niveauOuvert`), en option, sans jamais bloquer le monde suivant (`mondeOuvert`,
   `mondeFini` lisent le huitième). La victoire du huitième niveau propose « Expert 1 » en second bouton doré. Sur la carte (le client : « la forme inverse », mais pas
   « trop symétrique ») : le chemin garde sa vague naturelle mais jamais au centre (`vague` : au moins 42 % de l'amplitude),
-  la voie dorée est sa forme inverse resserrée à 86 % (`inv`), partie du niveau 2 ; l'expert j se pose sur elle, à la
+  la voie dorée est sa forme inverse resserrée à 86 % (`inv`), partie du niveau 1 avec le chemin ; l'expert j se pose sur elle, à la
   hauteur du niveau 2j+3 ou 2j+4 (le plus écarté), donc de l'autre côté, jamais sur un nœud (le parcours de test exige
   70 px entre deux nœuds). Les lacets réguliers en miroir parfait ont été refusés. **Tant que le chemin du monde n'est
   pas fini, la voie dorée est discrète** (trait pâle `.voie-discrete`, nœuds `.discret` à 24 %) et ses nœuds ne montrent
   qu'un éclat doré, ni « E1 » ni étoiles. La pastille « Voie dorée » est petite, posée sur la bifurcation depuis le
-  niveau 2 (`t:"x"`). La condition d'étoiles d'un monde n'est plus écrite sous sa description : le bandeau la montre.
+  niveau 1 (`t:"x"`). La condition d'étoiles d'un monde n'est plus écrite sous sa description : le bandeau la montre.
 - **Mémoire de la carte sur iPhone** (Safari fermait la page, « un problème est survenu à plusieurs reprises ») : chaque
   bande d'image d'un monde (4 par monde) était un calque de carte graphique (`will-change`) ; à 8 mondes, 48 calques,
   ≈ 760 Mo. Désormais pas de `will-change` sur les bandes ni sur leurs calques parents, et `parcParallax` ne garde
