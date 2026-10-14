@@ -162,7 +162,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   **Écran de jeu au même langage** : boutons à icône seule (`.ico`, partout) en ronds de verre au contour d'accent,
   Annuler/Rejouer en pilules de verre, Niveaux/Accueil en petits ronds avec leur nom dessous (bloc en fin de feuille de style).
 - **Campagne** : l'en-tête de chaque monde et la pastille du haut montrent les deux totaux (`chronoMonde`, `etoilesChrono`).
-  **Nœuds de niveau** (le client, le 14/10/2026 : « tout ») : bouton de 66 px avec une **bille** de 56 px en verre sombre,
+  **Nœuds de niveau** (le client, le 14/10/2026 : « tout ») : la couleur d'un monde sur la carte est celle de son décor
+  (`THEME_ACC[themeFond(w)-1]`, comme en jeu ; l'ancienne palette `ACCENTS` donnait du lilas au monde vert). Bouton de 66 px avec une **bille** de 56 px en verre sombre,
   la couleur du monde en reflet et sur l'anneau (`.bille` ; l'aplat de couleur et les orbites en filigrane ont été refusés), les **étoiles de coups en
   arc au-dessus** (`.arc`), les **étoiles de temps en trois arcs bleus** sur le bas de l'anneau (`anneauTemps`). États :
   à jouer plus grand, pulsant (anneau qui grandit : transform/opacity, aucun repeint), étiquette « Jouer » (hors du bouton, dans `sects`) ; parfait (3 + 3) anneau doré ;

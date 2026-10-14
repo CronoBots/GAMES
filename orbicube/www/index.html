@@ -1585,7 +1585,8 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
     cx=W/2,amp=Math.min(W*.3,118),GAP=96,pn=prochainNiveau(),y=150,k=0,items=[],pts=[],branches=[];
   // on empile du niveau 1 au dernier ; les y sont ensuite retournés pour que la progression MONTE (bas -> haut, façon Candy Crush)
   var wreg=[];
-  for(var w=0;w<MONDES.length;w++){var M=MONDES[w],acc=ACCENTS[w%ACCENTS.length],y0=y;
+  // la couleur d'un monde sur la carte est celle de son décor, comme en jeu (le client : « pourquoi mauve alors que le thème est vert ? »)
+  for(var w=0;w<MONDES.length;w++){var M=MONDES[w],acc=THEME_ACC[themeFond(w)-1],y0=y;
     y+=28;items.push({t:"s",acc:acc,w:w,nom:M.nom,y:y});y+=136;
     // le chemin : les huit niveaux, en lacets
     var xs=[],ys=[];
