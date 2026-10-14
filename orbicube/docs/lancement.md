@@ -14,7 +14,7 @@ Ils changent : vérifiez-les sur les pages officielles au moment de vous inscrir
 
 | | Gratuit | Orbicube complet (achat unique) |
 |---|---|---|
-| Mondes | 1 à 3 (45 niveaux, experts compris) | les 6 (90 niveaux) |
+| Mondes | 1 à 4 (60 niveaux, experts compris ; le 3 demande 45 étoiles de coups, le 4 40 étoiles de temps) | les 6 (90 niveaux) |
 | Défi du jour | oui | oui |
 | Partie libre | Facile | Facile, Moyen, Difficile, Expert |
 | Publicité | aucune | aucune |

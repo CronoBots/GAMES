@@ -132,6 +132,16 @@ async function resoudre(p) {
     const exp = await p.evaluate(() => { const n = (w, i) => document.querySelector('.parc-niv[data-w="' + w + '"][data-i="' + i + '"]'); return { m2: !n(1, 0).classList.contains("verrou"), e1: n(0, 10).classList.contains("expert") && !n(0, 10).classList.contains("verrou"), e2: n(0, 11).classList.contains("verrou"), titres: document.querySelectorAll(".parc-exp").length, total: document.querySelectorAll(".parc-niv").length }; });
     exp.m2 && exp.e1 && exp.e2 && exp.titres === 6 && exp.total === 90 ? ok("experts : 90 niveaux, cinq experts par monde, ouverts après le dixième sans bloquer le monde suivant") : faute("niveaux experts : " + JSON.stringify(exp));
 
+    // monde 3 gratuit mais fermé par 45 étoiles de coups : 40 ne suffisent pas, 46 l'ouvrent
+    const poser = (n1) => p.evaluate((n1) => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); for (let i = 1; i <= 10; i++) v.niveaux["2-" + i] = { etoiles: i <= n1 ? 3 : 1, chrono: 1, coups: 9, temps: 60000, sansIndice: true }; localStorage.setItem(k, JSON.stringify(v)); }, n1);
+    await poser(0); await p.reload(); await p.waitForTimeout(1200);
+    const att = await p.textContent("#jouerMonde");
+    await p.tap("#btnJouer"); await p.waitForTimeout(600);
+    const ferme = await p.evaluate(() => document.querySelector('.parc-niv[data-w="2"][data-i="0"]').classList.contains("verrou") && !!document.querySelector(".parc-cond"));
+    att.includes("encore 5 étoiles de coups") && ferme ? ok("étoiles : le monde 3 attend 45 étoiles de coups (il en manque 5), l'accueil et la carte le disent") : faute("condition d'étoiles : « " + att + " », fermé " + ferme);
+    await poser(3); await p.reload(); await p.waitForTimeout(1200); await p.tap("#btnJouer"); await p.waitForTimeout(600);
+    (await p.evaluate(() => !document.querySelector('.parc-niv[data-w="2"][data-i="0"]').classList.contains("verrou"))) ? ok("étoiles : à 46 étoiles de coups, le monde 3 s'ouvre") : faute("le monde 3 reste fermé à 46 étoiles");
+
     // paysage
     if (appareil === "iPhone 13") {
       await p.setViewportSize({ width: 844, height: 390 });

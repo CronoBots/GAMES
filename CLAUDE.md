@@ -175,6 +175,10 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   (`prochainNiveau`), une ampoule pour le chemin d'un monde et une pour ses experts. Sur la carte : anneau doré et
   intertitre « Niveaux experts ». **Les neuf anneaux ne vont jamais dans un monde gratuit** : le vérificateur le contrôle,
   et l'empreinte des 60 niveaux d'origine (les étoiles des joueurs y sont attachées).
+- **Mondes gratuits et étoiles** (le client, le 14/10/2026) : tous les mondes d'avant les neuf anneaux sont gratuits
+  (`mondesGratuits: 4`, contrôlé par le vérificateur) ; certains demandent en plus des étoiles comptées sur toute la campagne
+  (`MONDES[w].etoiles`, `condEtoiles`) : le monde 3 45 étoiles de coups (jaunes), le monde 4 40 étoiles de temps (bleues),
+  achat ou non. Un monde déjà commencé reste ouvert. La carte, l'accueil (`mondeAttend`) et la victoire disent ce qui manque.
 - Les niveaux de campagne sont tirés d'une graine fixe (`orbicube-<monde>-<niveau>`) : changer
   `genererMelange()` change tous les niveaux des joueurs. Ne le faire qu'avec une nouvelle graine.
 - La progression est dans `localStorage` (clé `orbicube-v1`) et, sur téléphone, dans

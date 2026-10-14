@@ -177,6 +177,9 @@ else {
   // les neuf anneaux ne vont jamais dans un monde gratuit : ils restent l'avantage du jeu complet (le client, le 14/10/2026)
   const neufLibres = G.MONDES.map((M, w) => w < CFG.mondesGratuits && M.anneaux.length === 9 ? w + 1 : 0).filter(Boolean);
   neufLibres.length ? faute("monde gratuit à neuf anneaux : " + neufLibres.join(", ")) : ok("aucun monde gratuit à neuf anneaux");
+  // et tous les mondes d'avant les neuf anneaux sont gratuits (le client, le 14/10/2026)
+  const premierNeuf = G.MONDES.findIndex((M) => M.anneaux.length === 9);
+  CFG.mondesGratuits === premierNeuf ? ok("les " + premierNeuf + " mondes d'avant les neuf anneaux sont gratuits") : faute("mondesGratuits vaut " + CFG.mondesGratuits + " : les mondes gratuits doivent aller jusqu'au premier monde à neuf anneaux (" + premierNeuf + ")");
 }
 
 console.log(fautes ? "\n" + fautes + " faute(s)." : "\nTout est en ordre.");

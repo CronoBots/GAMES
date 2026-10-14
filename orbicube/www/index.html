@@ -564,6 +564,10 @@ body{background:
   font-family:var(--f-chiffre);font-weight:600;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--or);
   background:rgba(9,9,16,.82);border:1px solid rgba(255,196,80,.4);border-radius:999px;padding:4px 11px;text-shadow:0 1px 6px rgba(0,0,0,.9)}
 .parc-exp svg{width:11px;height:11px;fill:var(--or)}
+/* monde gratuit fermé par des étoiles : le compte à atteindre sur la bannière, la condition sous la description */
+.parc-cond{display:inline-flex;align-items:center;gap:4px;font-family:var(--f-chiffre);font-weight:600;font-size:12px;color:var(--or)}
+.parc-cond svg{width:12px;height:12px;fill:var(--or)}.parc-cond.t{color:#4cc9f0}.parc-cond.t svg{fill:#4cc9f0}
+.parc-desc .cond{display:block;margin-top:4px;font-weight:600;color:var(--or)}.parc-desc .cond.t{color:#4cc9f0}
 .parc-sect.paye{border-color:rgba(255,207,74,.5);cursor:pointer}
 .parc-sect .pscad{width:14px;height:14px;stroke:var(--or);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;margin-left:2px}
 /* décor cosmique par monde EN COUCHES (parallaxe) : fond teinté, nébuleuses lointaines, planètes+anneaux, orbites, étincelles */
@@ -1303,8 +1307,8 @@ function accentTheme(t){ACC=THEME_ACC[(((t-1)%4)+4)%4];ACC_CLAIR=eclaircir(ACC,.
 var MONDES=[
   {nom:"Premier cercle",desc:"Deux cercles, U et R. Le geste s’apprend ici.",anneaux:["U","R"],coups:[1,1,2,2,2,3,3,3,4,4,5,5,6,6,7]},
   {nom:"Trois faces",desc:"U, R et F se croisent : chaque pastille hésite entre deux chemins.",anneaux:["U","R","F"],coups:[2,2,3,3,3,4,4,4,5,5,6,6,7,7,8]},
-  {nom:"Les tranches",desc:"Les cercles du milieu, M, E et S, n’ont pas de face à eux.",anneaux:["M","E","S"],coups:[1,2,2,3,3,3,4,4,5,5,6,6,7,7,8]},
-  {nom:"Six faces",desc:"Toutes les faces, sans les tranches.",anneaux:["U","D","L","R","F","B"],coups:[3,3,4,4,4,5,5,5,6,6,7,7,8,8,9]},
+  {nom:"Les tranches",desc:"Les cercles du milieu, M, E et S, n’ont pas de face à eux.",anneaux:["M","E","S"],etoiles:{jaunes:45},coups:[1,2,2,3,3,3,4,4,5,5,6,6,7,7,8]},
+  {nom:"Six faces",desc:"Toutes les faces, sans les tranches.",anneaux:["U","D","L","R","F","B"],etoiles:{bleues:40},coups:[3,3,4,4,4,5,5,5,6,6,7,7,8,8,9]},
   {nom:"Orbite complète",desc:"Les neuf cercles à la fois.",anneaux:TOUS,coups:[4,5,5,6,6,6,7,7,8,8,9,9,10,10,11]},
   {nom:"Grand maître",desc:"Des mélanges longs, jusqu’à vingt-cinq coups.",anneaux:TOUS,coups:[9,10,10,11,12,13,14,15,17,20,21,22,23,24,25]}];
 // les dix premiers niveaux de chaque monde font le chemin ; les cinq suivants sont des niveaux experts (le client,
@@ -1358,7 +1362,7 @@ function fusion(a,b){if(!b||typeof b!=="object")return a;var r=JSON.parse(JSON.s
   return r;}
 var PROG=progVide();
 try{var brut=localStorage.getItem(CLE_LOCALE);if(brut)PROG=fusion(progVide(),JSON.parse(brut));}catch(e){}
-var CFG=window.ORBICUBE_CONFIG||{modele:"essai",mondesGratuits:3,libresGratuits:[5],prixAffiche:"4,99 €",liens:{}};
+var CFG=window.ORBICUBE_CONFIG||{modele:"essai",mondesGratuits:4,libresGratuits:[5],prixAffiche:"4,99 €",liens:{}};
 var NATIF=window.Natif||{natif:false,vibrer:function(){return false;},lire:function(){return Promise.resolve(null);},ecrire:function(){},demarrer:function(){},surRetour:function(){},quitter:function(){},
   achatsDisponibles:function(){return Promise.resolve(false);},prix:function(){return Promise.resolve(null);},etatAchat:function(){return Promise.resolve(null);},
   acheter:function(){return Promise.resolve({ok:false,erreur:"indisponible"});},succesDisponibles:function(){return false;},restaurer:function(){return Promise.resolve({ok:false,erreur:"indisponible"});}};
@@ -1462,12 +1466,12 @@ Logo.demarrer=function(){var box=this.cv.parentNode.parentNode.getBoundingClient
   if(!this.sol.length&&!this.pause)melangerLogo();dessinerLogoCube();};
 function etoilesTotal(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t+=PROG.niveaux[k].etoiles||0;});return t;}
 // le chemin d'abord (les dix premiers niveaux des mondes ouverts), puis les experts ouverts, puis la suite payante
-function prochainNiveau(){var t=[function(w,i){return !estExpert(i)&&!mondePaye(w);},function(w,i){return estExpert(i)&&niveauOuvert(w,i);},function(w,i){return true;}];
+function prochainNiveau(){var t=[function(w,i){return !estExpert(i)&&niveauOuvert(w,i);},function(w,i){return estExpert(i)&&niveauOuvert(w,i);},function(w,i){return true;}];
   for(var k=0;k<t.length;k++)for(var w=0;w<MONDES.length;w++)for(var i=0;i<MONDES[w].coups.length;i++)if(!PROG.niveaux[(w+1)+"-"+(i+1)]&&t[k](w,i))return{w:w,i:i};return null;}
 function estHier(k){var d=new Date();d.setDate(d.getDate()-1);return k===cleJour(d);}
 function rafraichirAccueil(){var pn=prochainNiveau(),fait=Object.keys(PROG.niveaux).length;
   // la suite de la campagne peut être dans le jeu complet : le bouton dit alors « Campagne », pas « Continuer »
-  var bloque=pn&&fait&&mondePaye(pn.w);
+  var bloque=pn&&fait&&mondePaye(pn.w),att=mondeAttend(),cA=att>=0&&(!pn||estExpert(pn.i)||pn.w>=att)?condEtoiles(att):null;
   document.getElementById("jouerTxt").textContent=!fait?"Jouer":(bloque||!pn)?"Campagne":"Continuer";
   document.getElementById("jouerSous").innerHTML=fait?SVG_ET+etoilesTotal():"";
   // défi du jour : réussi, il dit dans combien de temps vient le suivant ; sinon la série en cours, sinon « nouveau »
@@ -1480,7 +1484,7 @@ function rafraichirAccueil(){var pn=prochainNiveau(),fait=Object.keys(PROG.nivea
   document.getElementById("jourPoint").hidden=!!j;
   // sous « Continuer » : le monde en cours et ses étoiles, dans sa couleur
   // la seconde ligne du bouton dit où l'on en est, sans phrase en plus sous le bouton
-  document.getElementById("jouerMonde").textContent=!fait?"Premier niveau":bloque?"Suite dans le jeu complet":!pn?"Campagne terminée":"Niveau "+numNiveau(pn.w,pn.i)+" · "+MONDES[pn.w].nom;
+  document.getElementById("jouerMonde").textContent=!fait?"Premier niveau":cA?(cA.jaunes?"Monde "+(att+1)+" : encore "+cA.manque+" étoiles de coups":"Monde "+(att+1)+" : encore "+cA.manque+" étoiles de temps"):bloque?"Suite dans le jeu complet":!pn?"Campagne terminée":"Niveau "+numNiveau(pn.w,pn.i)+" · "+MONDES[pn.w].nom;
   // la campagne en une ligne dans le bas du bouton : niveaux finis sur le total (pas le rang, qui reste en haut)
   var tot=0,fin=0;MONDES.forEach(function(M,w){M.coups.forEach(function(c,i){tot++;if(PROG.niveaux[(w+1)+"-"+(i+1)])fin++;});});
   document.getElementById("jouerProg").style.width=(100*fin/tot).toFixed(1)+"%";document.querySelector(".prog-camp").hidden=!fin;
@@ -1494,7 +1498,14 @@ var SVG_ET='<svg viewBox="0 0 24 24" class="etoile">'+ET_PATH+'</svg>',SVG_ET_OF
 var CAD='<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>';
 function complet(){return CFG.modele==="complet"||PROG.achat===true;}
 function mondePaye(w){return !complet()&&w>=CFG.mondesGratuits;}
-function mondeOuvert(w){return !mondePaye(w)&&(w===0||!!PROG.niveaux[w+"-"+BASE]);}
+// un monde gratuit peut demander, en plus du dixième niveau du précédent, des étoiles de coups (jaunes) ou de temps
+// (bleues), comptées sur toute la campagne (le client, le 14/10/2026). Un monde déjà commencé reste ouvert.
+function condEtoiles(w){var c=MONDES[w].etoiles;if(!c)return null;var j=!!c.jaunes,faut=c.jaunes||c.bleues,a=j?etoilesTotal():etoilesChrono();
+  return a>=faut||PROG.niveaux[(w+1)+"-1"]?null:{jaunes:j,faut:faut,a:a,manque:faut-a};}
+function texteCond(c){return c.jaunes?"Pour ouvrir ce monde : "+c.faut+" étoiles de coups, il en manque "+c.manque+".":"Pour ouvrir ce monde : "+c.faut+" étoiles de temps, il en manque "+c.manque+".";}
+// le monde où le chemin attend des étoiles (le dixième niveau du précédent est fait), ou -1
+function mondeAttend(){for(var w=1;w<MONDES.length;w++)if(!mondePaye(w)&&PROG.niveaux[w+"-"+BASE]&&condEtoiles(w))return w;return -1;}
+function mondeOuvert(w){return !mondePaye(w)&&(w===0||(!!PROG.niveaux[w+"-"+BASE]&&!condEtoiles(w)));}
 function niveauOuvert(w,i){return mondeOuvert(w)&&(i===0||!!PROG.niveaux[(w+1)+"-"+i]);}
 function chronoMonde(w){var t=0;for(var i=0;i<MONDES[w].coups.length;i++){var r=PROG.niveaux[(w+1)+"-"+(i+1)];if(r)t+=r.chrono||0;}return t;}
 function etoilesMonde(w){var t=0;for(var i=0;i<MONDES[w].coups.length;i++){var r=PROG.niveaux[(w+1)+"-"+(i+1)];if(r)t+=r.etoiles;}return t;}
@@ -1524,11 +1535,11 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
     lme+='<div class="parc-meteorsb'+st+'meteors-'+t+'.webp)"></div>';});
   pts.forEach(function(p,j){d+=(j?"L":"M")+p[0].toFixed(1)+" "+(H-p[1])+" ";});
   items.forEach(function(it){var fy=H-it.y;
-    if(it.t==="s"){var pa=mondePaye(it.w),etM=etoilesMonde(it.w),etTM=chronoMonde(it.w),maxM=MONDES[it.w].coups.length*3;
+    if(it.t==="s"){var pa=mondePaye(it.w),cE=!pa&&condEtoiles(it.w),etM=etoilesMonde(it.w),etTM=chronoMonde(it.w),maxM=MONDES[it.w].coups.length*3;
       sects+='<div class="parc-sep" style="--pa:'+it.acc+';top:'+fy+'px"></div>'
         +'<div class="parc-sect'+(pa?" paye":"")+'" style="--pa:'+it.acc+';top:'+fy+'px"><b>Monde '+(it.w+1)+'</b><small>'+it.nom+'</small>'
-        +(pa?'<svg class="pscad" viewBox="0 0 24 24">'+CAD+'</svg>':'<span class="parc-et"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etM+'/'+maxM+'<svg class="t" viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etTM+'/'+maxM+'</span>')+'</div>'
-        +'<div class="parc-desc" style="top:'+(fy+30)+'px">'+MONDES[it.w].desc+'</div>';}
+        +(pa?'<svg class="pscad" viewBox="0 0 24 24">'+CAD+'</svg>':cE?'<span class="parc-cond'+(cE.jaunes?"":" t")+'"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+cE.a+' / '+cE.faut+'</span>':'<span class="parc-et"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etM+'/'+maxM+'<svg class="t" viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etTM+'/'+maxM+'</span>')+'</div>'
+        +'<div class="parc-desc" style="top:'+(fy+30)+'px">'+MONDES[it.w].desc+(cE?'<b class="cond'+(cE.jaunes?"":" t")+'">'+texteCond(cE)+'</b>':"")+'</div>';}
     else if(it.t==="x")sects+='<div class="parc-exp" style="top:'+fy+'px"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>Niveaux experts</div>';
     else{var cls="parc-niv"+(estExpert(it.i)?" expert":"")+(it.r?" fait":"")+(!it.ouv?" verrou":"")+(it.paye?" paye":"")+(it.cur?" courant":""),
       inner=it.ouv?('<b>'+it.num+'</b><span class="pet"><i>'+[0,1,2].map(function(j){return it.r&&it.r.etoiles>j?SVG_ET:SVG_ET_OFF;}).join("")+'</i><i class="t">'+[0,1,2].map(function(j){return it.r&&(it.r.chrono||0)>j?SVG_ETT:SVG_ET_OFF;}).join("")+'</i></span>'):('<svg class="pcad" viewBox="0 0 24 24">'+CAD+'</svg>');
@@ -1724,6 +1735,8 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
   var experts=d.mode==="campagne"&&d.i===BASE-1&&MONDES[d.w].coups.length>BASE;
   if(d.mode==="campagne"){var dern=MONDES[d.w].coups.length-1,mSuiv=d.w+1<MONDES.length?{w:d.w+1,i:0}:null;
     if(d.i===BASE-1||d.i===dern)suiv=mSuiv&&!PROG.niveaux[(d.w+2)+"-1"]?mSuiv:d.i<dern?{w:d.w,i:d.i+1}:mSuiv;else suiv={w:d.w,i:d.i+1};
+    var cS=suiv&&suiv.w!==d.w&&!mondePaye(suiv.w)?condEtoiles(suiv.w):null;
+    if(cS)suiv=d.i<dern?{w:d.w,i:d.i+1}:null;
     if(suiv&&suiv.w===d.w&&suiv.i===BASE)experts=false;}
   var titre=d.relax?"Résolu":e===3?"Parfait":e===2?"Bien joué":"Résolu",xpTxt=J.xp?'<span class="xp-gain notrad">+'+J.xp+' XP</span>':"";
   if(d.relax){var hr='<h3>'+titre+'</h3>'+xpTxt+'<p>'+n+' coups · '+fmt(temps)+'</p><div class="menu"><button class="bouton principal" data-a="encore" type="button"><span>Nouveau mélange</span></button>'+
@@ -1733,7 +1746,7 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
     '<div class="resume"><div>Coups<b>'+n+' / '+d.par+'</b><i class="mini-et">'+[0,1,2].map(function(k){return k<e?SVG_ET:SVG_ET_OFF;}).join("")+'</i></div>'+
     '<div>Temps<b>'+fmt(temps)+' / '+fmt(objectifTemps(d.par))+'</b><i class="mini-et">'+[0,1,2].map(function(k){return k<J.eT?SVG_ETT:SVG_ET_OFF;}).join("")+'</i></div></div>'+
     (e<3?'<p>'+(J.indice?"L’indice limite le niveau à deux étoiles.":"Trois étoiles en "+d.par+" coups ou moins.")+'</p>':"")+
-    (experts?'<p class="experts">Cinq niveaux experts sont ouverts dans ce monde.</p>':"")+
+    (experts?'<p class="experts">Cinq niveaux experts sont ouverts dans ce monde.</p>':"")+(cS?'<p class="experts">'+texteCond(cS)+'</p>':"")+
     (d.mode==="jour"?'<p class="serie">Série : '+PROG.serie+' · record : '+Math.max(PROG.serieMax||0,PROG.serie)+'</p>':"")+'<div class="menu">';
   if(suiv)html+='<button class="bouton principal" data-a="suivant" type="button"><span>'+(suiv.w!==d.w?"Monde "+(suiv.w+1):estExpert(suiv.i)&&!estExpert(d.i)?"Niveaux experts":"Niveau suivant")+'</span></button>';
   if(experts)html+='<button class="bouton" data-a="experts" type="button" style="justify-content:center">Niveaux experts</button>';
@@ -2034,9 +2047,9 @@ function majAchat(){var c=complet();document.getElementById("btnBoutique").hidde
   document.getElementById("achatEtat").textContent=c?"Débloqué. Merci pour votre soutien !":"Les 6 mondes, toute la partie libre"+(PRIX?" · "+PRIX:"")+".";
   var b=document.getElementById("btnAchatOpt");b.textContent=c?"Débloqué":"Débloquer";b.disabled=c;
   document.getElementById("optPied").textContent="Orbicube "+(CFG.version||"")+(c||CFG.modele==="complet"?"":" · version d’essai");}
-var POURQUOI={indice:"Le jeu complet en offre une chaque jour.",monde:"Les mondes 3 à 6 font partie du jeu complet.",libre:"Ce niveau de partie libre fait partie du jeu complet.",accueil:""};
+var POURQUOI={indice:"Le jeu complet en offre une chaque jour.",monde:"Les mondes à neuf anneaux font partie du jeu complet.",libre:"Ce niveau de partie libre fait partie du jeu complet.",accueil:""};
 function ouvrirBoutique(raison){var web=!NATIF.natif,li=CFG.liens||{};
-  var avantages=[["40 niveaux de plus","Les tranches, les six faces, l’orbite complète et le Grand maître."],["Toute la partie libre","Moyen, difficile et expert, avec chrono et records."],["Une ampoule offerte chaque jour","Pour un indice quand vous bloquez."],["Un seul achat, pour toujours","Sans publicité, sans abonnement."]];
+  var avantages=[["30 niveaux de plus","L’orbite complète et le Grand maître, avec les neuf anneaux."],["Toute la partie libre","Moyen, difficile et expert, avec chrono et records."],["Une ampoule offerte chaque jour","Pour un indice quand vous bloquez."],["Un seul achat, pour toujours","Sans publicité, sans abonnement."]];
   var html='<h3>Orbicube complet</h3>'+(POURQUOI[raison]?'<p>'+POURQUOI[raison]+'</p>':'<p>Vous avez joué la version d’essai. La suite vous attend.</p>')+
     '<div style="display:grid;gap:10px;text-align:left;margin:4px 0 16px">'+avantages.map(function(a){return '<div style="display:flex;gap:10px;align-items:flex-start"><svg viewBox="0 0 24 24" style="width:20px;height:20px;flex:none;margin-top:1px;stroke:var(--or);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b style="display:block">'+a[0]+'</b><span style="color:var(--pale);font-size:13px">'+a[1]+'</span></div></div>';}).join("")+'</div><div class="menu">';
   if(web){html+='<p style="margin:0 0 6px">L’achat se fait dans l’application, sur iPhone ou Android.</p>'+
