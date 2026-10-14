@@ -82,7 +82,13 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   d'un pack s'achète aussi seul** : `PACKS.s_<id>`, produit `orbicube_style_<id>`, droit `style_<id>`, 0,99 €). Chaque ligne de pack
   montre son **contenu exact** (`contenuPack` : vignette et nom de chaque style ; puces des packs pour les éditions groupées).
   **Les palettes du pack Couleurs quittent les six teintes du cube** (le client, le 14/10/2026 : trop ressemblantes) : chacune
-  a son ambiance (Aurore, Galaxie, Glace, Joyaux), six couleurs distinctes ; leur vignette montre leurs teintes typiques. Le style
+  a son ambiance (Aurore, Galaxie, Glace, Joyaux), six couleurs distinctes ; leur vignette montre leurs teintes typiques.
+  **Pour donner envie et comprendre** (le client, le 14/10/2026) : phrase d'accueil (gagner en jouant ou acheter), compteur de
+  collection sur chaque onglet (« 4/8 »), fiche avec une phrase par style (`DESC_STYLE`) et, pour un style à gagner, sa barre de
+  progression (`progresStyle`) ; badge « Nouveau » sur les styles gagnés pas encore vus (`PROG.stylesVus`, `nouveauxStyles`) et
+  point doré sur le rond Boutique de l'accueil ; prix barré « au lieu de » sur chaque pack et édition (`prixSomme`, calculé avec
+  les prix du store, rien d'affiché si un prix manque) ; un style acheté seul est porté aussitôt ; ampoules expliquées ; pied
+  de page rassurant (paiement par le store, restaurable). Le style
   porté est dans `PROG.options` et lu par `STY` (recalculé par `appliquerOptions`, un style reperdu retombe sur le premier) ;
   les achats dans `PROG.droits` (jamais perdus par `fusion`, gardés par « Tout effacer »). Le dessin (`dessiner`, `pastille`,
   `couleurOrbite`, `confettis(v)`) lit les styles du plateau (`pal`, `forme`, `trainee`, `orbite`) ou `STY`. Le pont natif

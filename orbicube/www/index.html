@@ -662,6 +662,20 @@ body.sobre #plateau{transition:none}
 .fiche-etat{display:flex;align-items:center;gap:6px;color:rgb(var(--acc));font:600 14px var(--f-titre)}.fiche-etat svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.6}
 .fiche-cond{color:var(--pale);font-size:13px;text-align:center;padding:0 12px}
 .fiche-pack{background:none;border:0;color:var(--or);font:500 12.5px var(--f-texte);text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:4px 8px}
+.bout-intro{margin:-2px 4px 0;text-align:center;color:var(--pale);font-size:13.5px;line-height:1.45}
+.bout-note{margin:-8px 4px 0;color:var(--pale);font-size:12.5px;line-height:1.4}
+.bout-rayons button{display:flex;align-items:center;justify-content:center;gap:6px}
+.bout-rayons button{min-width:0}
+@media (max-width:380px){.bout-rayons button{flex-direction:column;gap:2px;padding:6px 4px}.bout-rayons .cpt{padding:1px 5px}}
+.bout-rayons .cpt{font:600 10.5px var(--f-chiffre);font-style:normal;color:var(--sourd);background:rgba(255,255,255,.06);border-radius:99px;padding:2px 6px}
+.bout-rayons button.on .cpt{color:rgb(var(--acc));background:rgba(var(--acc),.14)}
+.fiche-desc{margin:0 14px 4px;color:var(--encre);opacity:.85;font-size:13px;text-align:center;line-height:1.4}
+.fiche-prog{width:min(200px,70%);height:6px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:4px}
+.fiche-prog i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,rgba(var(--acc),.7),rgb(var(--acc)))}
+.fiche-chiffre{font:600 12px var(--f-chiffre);color:var(--pale)}
+.style .neuf{position:absolute;top:7px;left:7px;font:700 9px var(--f-titre);letter-spacing:.1em;text-transform:uppercase;color:#05221a;background:#3ee6a6;border-radius:99px;padding:2px 6px;z-index:1}
+.eco-ligne{display:block;margin-top:3px;font-size:12px;color:var(--pale)}.eco-ligne s{color:var(--sourd)}
+.bout-hero .eco-ligne{text-align:center;margin-top:8px}
 .bout-apercu .nom{font:600 12px var(--f-titre);letter-spacing:.16em;text-transform:uppercase;color:var(--pale)}
 .bout-rayons{width:100%}.bout-rayons button{flex:1}
 .bout-sous{margin:6px 2px -4px;font:600 11px var(--f-titre);letter-spacing:.18em;text-transform:uppercase;color:rgb(var(--acc))}
@@ -729,7 +743,7 @@ body.sobre #plateau{transition:none}
             <span class="nom">Partie libre</span><span class="sous">chrono</span></button>
           <button class="item" id="btnSucces" type="button"><i class="rond"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M8.5 14l-1.5 7 5-3 5 3-1.5-7"/></svg></i>
             <span class="nom">Succès</span><span class="sous notrad" id="succesSous"></span></button>
-          <button class="item or" id="btnBoutique" type="button" hidden><i class="rond"><svg viewBox="0 0 24 24"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/></svg></i>
+          <button class="item or" id="btnBoutique" type="button" hidden><i class="rond"><b class="point" id="boutPoint" hidden></b><svg viewBox="0 0 24 24"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/></svg></i>
             <span class="nom">Boutique</span><span class="sous" id="stylesAccueil">Styles</span></button>
           </nav>
         </div>
@@ -790,16 +804,18 @@ body.sobre #plateau{transition:none}
       <span class="puce bout-reserve" aria-label="Ampoules"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg><span class="notrad" id="boutAmpNb">3</span></span>
     </div>
     <div class="defile"><div class="bout">
-      <div class="segment bout-rayons" id="boutRayons"><button type="button" data-r="palette" class="on">Couleurs</button><button type="button" data-r="forme">Formes</button><button type="button" data-r="effets">Effets</button></div>
+      <p class="bout-intro">Habillez votre plateau. Certains styles se gagnent en jouant, les autres s’achètent seuls ou en pack.</p>
+      <div class="segment bout-rayons" id="boutRayons"><button type="button" data-r="palette" class="on"><span>Couleurs</span><i class="cpt notrad"></i></button><button type="button" data-r="forme"><span>Formes</span><i class="cpt notrad"></i></button><button type="button" data-r="effets"><span>Effets</span><i class="cpt notrad"></i></button></div>
       <div class="bout-apercu"><canvas id="apercu" aria-label="Aperçu du style"></canvas><div class="nom" id="apercuNom"></div><div class="fiche" id="apercuFiche"></div></div>
       <div class="bout" id="boutRayon"></div>
       <div class="bout-sous">Packs et offres</div>
       <div class="bout" id="boutHero"></div>
       <div class="bout-sous">Ampoules</div>
+      <p class="bout-note">Une ampoule = un indice : le prochain tour s’affiche sur le plateau.</p>
       <div class="bout-amp" id="boutAmpoules"></div>
       <div id="boutSoutien"></div>
       <button class="bout-lien" id="boutRestaurer" type="button">Restaurer mes achats</button>
-      <p class="bout-pied">Achats uniques, sans abonnement ni publicité. Les styles ne changent rien au jeu : ils l’habillent.</p>
+      <p class="bout-pied">Paiement sécurisé par l’App Store ou Google Play. Achats uniques, sans abonnement ni publicité, restaurables sur un nouvel appareil. Les styles ne changent rien au jeu : ils l’habillent.</p>
     </div></div>
   </section>
 
@@ -957,8 +973,19 @@ var STYLES={
 var STY={palette:"classique",forme:"facettes",trainee:"halo",orbite:"accent",victoire:"confettis"};
 // chaque style d'un pack s'achète aussi à l'unité (le client, le 14/10/2026) : produit orbicube_style_<id>, droit style_<id>
 Object.keys(STYLES).forEach(function(k){STYLES[k].forEach(function(st){if(st.ouv&&st.ouv.pack)PACKS["s_"+st.id]={produit:"orbicube_style_"+st.id,droit:"style_"+st.id,nom:st.nom,unite:true};});});
+// une phrase par style, pour la fiche de l'aperçu : on sait ce qu'on porte ou ce qu'on achète
+var DESC_STYLE={classique:"Les six couleurs du cube 3×3.",contraste:"Des teintes distinctes pour tous les yeux.",pastel:"Des couleurs douces, tout en légèreté.",
+  neon:"Des couleurs vives qui brillent dans la nuit.",aurore:"Les voiles d’une aurore boréale.",galaxie:"Le pourpre, le rose et l’or d’une nébuleuse.",
+  glace:"Les bleus froids de la banquise.",joyaux:"Rubis, émeraude, saphir et topaze.",facettes:"Des facettes taillées qui suivent les cercles.",
+  perles:"Des billes de verre rondes et brillantes.",hexagones:"Des alvéoles nettes et régulières.",gemmes:"Des pierres taillées qui accrochent la lumière.",
+  etoiles:"Chaque pastille devient une étoile.",cristaux:"Des éclats de cristal effilés.",halo:"Un léger halo suit les pièces.",
+  poussiere:"Une poussière d’étoiles scintille derrière elles.",comete:"Une longue queue de comète au cœur blanc.",accent:"Les orbites prennent la couleur du monde.",
+  argent:"Des orbites d’argent, sobres et élégantes.",arcenciel:"Une couleur par famille de cercles.",confettis:"Une pluie de confettis à chaque victoire.",
+  pluie:"Des étoiles d’or tombent du ciel à chaque victoire.",feux:"Quatre gerbes de feu d’artifice à chaque victoire."};
 function style(k,id){var l=STYLES[k];for(var i=0;i<l.length;i++)if(l[i].id===id)return l[i];return l[0];}
 function aDroit(d){return d==="complet"?complet():!!(PROG.droits&&PROG.droits[d]);}
+function progresStyle(o){return o.etoiles?[etoilesTotal(),o.etoiles,"étoiles de coups"]:o.chrono?[etoilesChrono(),o.chrono,"étoiles de temps"]:o.rang?[rangDe(PROG.xp).r,o.rang,"rang"]:null;}
+function nouveauxStyles(){var v=PROG.stylesVus||{},l=[];Object.keys(STYLES).forEach(function(k){STYLES[k].forEach(function(st){if(st.ouv&&!v[st.id]&&styleOuvert(k,st.id))l.push(st.id);});});return l;}
 function styleOuvert(k,id){var o=style(k,id).ouv;if(!o)return true;if(o.etoiles)return etoilesTotal()>=o.etoiles;if(o.chrono)return etoilesChrono()>=o.chrono;
   if(o.rang)return rangDe(PROG.xp).r>=o.rang;if(o.pack)return aDroit(PACKS[o.pack].droit)||aDroit("style_"+id);return false;}
 // le style porté (un style reperdu, ou d'un pack pas encore restauré, retombe sur le premier de son rayon)
@@ -1299,10 +1326,11 @@ function etoilesChrono(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t
 
 /* ========== 6. LA PROGRESSION (appareil, et compte si connecté) ========== */
 var CLE_LOCALE="orbicube-v1";
-function progVide(){return{v:1,niveaux:{},tips:{},succes:{},stats:{tours:0,tranches:0,resolus:0,indices:0,meilleur:{}},jours:{},serie:0,dernierJour:"",amp:3,ampVide:0,ampJour:"",ampMaj:0,xp:0,semaines:{},missions:null,droits:{},
+function progVide(){return{v:1,niveaux:{},tips:{},succes:{},stats:{tours:0,tranches:0,resolus:0,indices:0,meilleur:{}},jours:{},serie:0,dernierJour:"",amp:3,ampVide:0,ampJour:"",ampMaj:0,xp:0,semaines:{},missions:null,droits:{},stylesVus:{},
   options:{musique:true,volMusique:2,son:true,vib:true,anims:true,vitesse:1,palette:"classique",cube:true,pave:false,horaire:true,langue:"auto",maj:0}};}
 function fusion(a,b){if(!b||typeof b!=="object")return a;var r=JSON.parse(JSON.stringify(a));if(b.achat)r.achat=true;
-  r.droits=r.droits||{};Object.keys(b.droits||{}).forEach(function(k){if(b.droits[k])r.droits[k]=true;});   // achats : on n'en perd jamais
+  r.droits=r.droits||{};Object.keys(b.droits||{}).forEach(function(k){if(b.droits[k])r.droits[k]=true;});
+  r.stylesVus=r.stylesVus||{};Object.keys(b.stylesVus||{}).forEach(function(k){r.stylesVus[k]=true;});   // achats : on n'en perd jamais
   Object.keys(b.niveaux||{}).forEach(function(k){var x=r.niveaux[k],y=b.niveaux[k];if(!x){r.niveaux[k]=y;return;}
     r.niveaux[k]={etoiles:Math.max(x.etoiles||0,y.etoiles||0),chrono:Math.max(x.chrono||0,y.chrono||0),coups:Math.min(x.coups||1e9,y.coups||1e9),temps:Math.min(x.temps||1e12,y.temps||1e12),sansIndice:!!(x.sansIndice||y.sansIndice)};});
   ["tips","succes"].forEach(function(f){Object.keys(b[f]||{}).forEach(function(k){if(!r[f][k])r[f][k]=b[f][k];});});
@@ -1981,7 +2009,7 @@ NATIF.prix().then(function(p){if(p){PRIX=p;majAchat();}});
 NATIF.etatAchat().then(function(ok){if(ok===true&&!PROG.achat){PROG.achat=true;sauver();majAchat();rafraichirAccueil();}
   else if(ok===false&&PROG.achat){PROG.achat=false;sauver();majAchat();rafraichirAccueil();}});
 // la pastille d'achat n'apparaît qu'une fois le monde 1 fini : avant, elle parle d'un jeu qu'on ne connaît pas encore
-function majAchat(){var c=complet();document.getElementById("btnBoutique").hidden=!Object.keys(PROG.niveaux).length;   // dès le premier niveau fini (le client, le 14/10/2026)
+function majAchat(){var c=complet();document.getElementById("btnBoutique").hidden=!Object.keys(PROG.niveaux).length;document.getElementById("boutPoint").hidden=!nouveauxStyles().length;   // dès le premier niveau fini (le client, le 14/10/2026)
   document.getElementById("grpAchat").hidden=CFG.modele==="complet";
   document.getElementById("achatEtat").textContent=c?"Débloqué. Merci pour votre soutien !":"Les 6 mondes, toute la partie libre"+(PRIX?" · "+PRIX:"")+".";
   var b=document.getElementById("btnAchatOpt");b.textContent=c?"Débloqué":"Débloquer";b.disabled=c;
@@ -2012,7 +2040,7 @@ document.getElementById("btnRestaurer").addEventListener("click",function(){sonC
 // prix affichés tant que le store n'a pas répondu (config.js > prixPacks) ; le vrai prix vient du store
 var PRIXP=Object.assign({style:"0,99 €",couleurs:"1,99 €",formes:"1,99 €",effets:"1,99 €",collection:"3,99 €",integrale:"7,99 €",soutien:"2,99 €",amp10:"0,99 €",amp30:"1,99 €"},CFG.prixPacks||{});
 Object.keys(PACKS).forEach(function(k){if(PACKS[k].unite&&!PRIXP[k])PRIXP[k]=PRIXP.style;});
-var RAYON="palette",VU={},COCHE='<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',CADENAS='<path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z"/>';
+var RAYON="palette",VU={},NOUV={},COCHE='<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',CADENAS='<path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z"/>';
 // l'aperçu : un vrai plateau qui joue trois tours puis les défait, habillé du style regardé (sans le porter)
 var ApercuP=new Plateau(document.getElementById("apercu"),{etiquettes:false});ApercuP.continu=true;ApercuP.prochain=0;ApercuP.sol=[];Ticker.actifs.push(ApercuP);
 ApercuP.apres=function(now){if(this.occupe()||now<this.prochain)return;
@@ -2020,12 +2048,14 @@ ApercuP.apres=function(now){if(this.occupe()||now<this.prochain)return;
     this.sol=mv.slice().reverse().map(inverse);mv.forEach(function(x){ApercuP.jouer(x,560);});this.prochain=now+900;return;}
   this.jouer(this.sol.shift(),560);this.prochain=now+(this.sol.length?250:1500);};
 function habillerApercu(){var vu=function(k){return VU[k]||STY[k];};ApercuP.pal=PALETTES[vu("palette")];ApercuP.forme=vu("forme");ApercuP.trainee=vu("trainee");ApercuP.orbite=vu("orbite");
-  var k=RAYON==="effets"?(VU.dernier||"trainee"):RAYON,st=style(k,vu(k)),o=st.ouv||{},f;document.getElementById("apercuNom").textContent=st.nom;
-  if(STY[k]===st.id)f='<span class="fiche-etat">'+COCHE+'Porté</span>';
-  else if(styleOuvert(k,st.id))f='<button class="bouton petit" type="button" data-porter="'+k+'" data-id="'+st.id+'">Porter</button>';
-  else if(o.pack)f='<button class="btn-or" type="button" data-achat="s_'+st.id+'"><span>Acheter</span><span class="px notrad">'+PRIXP["s_"+st.id]+'</span></button>'+
+  var k=RAYON==="effets"?(VU.dernier||"trainee"):RAYON,st=style(k,vu(k)),o=st.ouv||{},f,pr;document.getElementById("apercuNom").textContent=st.nom;
+  f='<p class="fiche-desc">'+DESC_STYLE[st.id]+'</p>';
+  if(STY[k]===st.id)f+='<span class="fiche-etat">'+COCHE+'Porté</span>';
+  else if(styleOuvert(k,st.id))f+='<button class="bouton petit" type="button" data-porter="'+k+'" data-id="'+st.id+'">Porter</button>';
+  else if(o.pack)f+='<button class="btn-or" type="button" data-achat="s_'+st.id+'"><span>Acheter</span><span class="px notrad">'+PRIXP["s_"+st.id]+'</span></button>'+
     '<button class="fiche-pack" type="button" data-achat="'+o.pack+'">ou le pack '+PACKS[o.pack].nom+'</button>';
-  else f='<span class="fiche-cond">'+(o.etoiles?"Se gagne à {0} étoiles de coups".replace("{0}",o.etoiles):o.chrono?"Se gagne à {0} étoiles de temps".replace("{0}",o.chrono):"Se gagne au rang {0}".replace("{0}",o.rang))+'</span>';
+  else{pr=progresStyle(o);f+='<span class="fiche-cond">'+(o.etoiles?"Se gagne à {0} étoiles de coups".replace("{0}",o.etoiles):o.chrono?"Se gagne à {0} étoiles de temps".replace("{0}",o.chrono):"Se gagne au rang {0}".replace("{0}",o.rang))+'</span>'+
+    '<div class="fiche-prog"><i style="width:'+Math.min(100,100*pr[0]/pr[1]).toFixed(0)+'%"></i></div><span class="fiche-chiffre notrad">'+Math.min(pr[0],pr[1])+' / '+pr[1]+'</span>';}
   document.getElementById("apercuFiche").innerHTML=f;ApercuP.dessiner();}
 function redimApercu(){var w=document.querySelector("#boutique .bout").clientWidth;if(w)ApercuP.dimension(Math.round(Math.min(w-40,innerHeight<700?160:190)));}
 // vignettes : un petit dessin par style, avec la palette portée (ou celle du style pour les couleurs)
@@ -2061,14 +2091,21 @@ function vignette(cv,k,id){var d=Math.min(DPR,2.5),W=64;cv.width=W*d;cv.height=W
 function condition(st){var o=st.ouv||{};if(o.etoiles)return'<small class="notrad">'+SVG_ET+o.etoiles+'</small>';if(o.chrono)return'<small class="notrad">'+SVG_ETT+o.chrono+'</small>';
   if(o.rang)return'<small>Rang '+o.rang+'</small>';return'<small class="notrad">'+PRIXP["s_"+st.id]+'</small>';}
 function carteStyle(k,st){var ouv=styleOuvert(k,st.id),porte=STY[k]===st.id,vu=VU[k]===st.id;
-  return'<button class="style'+(porte?" porte":"")+(vu?" vu":"")+(ouv?"":" ferme")+'" type="button" data-k="'+k+'" data-id="'+st.id+'"><canvas></canvas><b>'+st.nom+'</b>'+
+  return'<button class="style'+(porte?" porte":"")+(vu?" vu":"")+(ouv?"":" ferme")+'" type="button" data-k="'+k+'" data-id="'+st.id+'">'+(NOUV[st.id]?'<span class="neuf">Nouveau</span>':"")+'<canvas></canvas><b>'+st.nom+'</b>'+
     (porte?'<small>Porté</small>':ouv?'<small>Choisir</small>':condition(st))+(ouv?"":'<svg class="cad" viewBox="0 0 24 24">'+CADENAS+'</svg>')+'</button>';}
 function contenuPack(cle){var l=[];Object.keys(STYLES).forEach(function(k){STYLES[k].forEach(function(st){if(st.ouv&&st.ouv.pack===cle)l.push([k,st]);});});
   if(l.length)return'<div class="pack-contenu">'+l.map(function(x){return'<span class="pc"><canvas data-k="'+x[0]+'" data-id="'+x[1].id+'"></canvas><i>'+x[1].nom+'</i></span>';}).join("")+'</div>';
   var P=PACKS[cle];if(!P.droits)return"";
   return'<div class="pack-puces">'+P.droits.map(function(d){var n=d==="complet"?"Orbicube complet":PACKS[d.replace("pack_","")].nom;return'<span>'+n+'</span>';}).join("")+'</div>';}
+// prix lus dans la devise du store : « 0,99 € », « $0.99 »… ; la somme s'écrit au même format que le premier
+function prixVal(t){var m=String(t||"").match(/(\d+)[.,](\d{2})/);return m?+(m[1]+"."+m[2]):null;}
+function prixSomme(cles,ref){var n=0,ok=true;cles.forEach(function(c){var v=c==="complet"?prixVal(PRIX):prixVal(PRIXP[c]);if(v===null)ok=false;else n+=v;});
+  var m=String(ref||"").match(/\d+([.,])\d{2}/);if(!ok||!m||n<=prixVal(ref))return"";return String(ref).replace(/\d+[.,]\d{2}/,n.toFixed(2).replace(".",m[1]));}
+function contenuCles(cle){var P=PACKS[cle];if(P.droits)return P.droits.map(function(d){return d==="complet"?"complet":d.replace("pack_","");});
+  var l=[];Object.keys(PACKS).forEach(function(k){var st=PACKS[k].unite&&k.slice(2);if(!st)return;Object.keys(STYLES).forEach(function(r){STYLES[r].forEach(function(x){if(x.id===st&&x.ouv&&x.ouv.pack===cle)l.push(k);});});});return l;}
+function auLieuDe(cle){var t=prixSomme(contenuCles(cle),PRIXP[cle]);return t?'<span class="eco-ligne">au lieu de <s class="notrad">'+t+'</s></span>':"";}
 function lignePack(cle,ic){var P=PACKS[cle],a=P.droit?aDroit(P.droit):(P.droits||[]).every(aDroit);
-  return'<div class="bout-ligne'+(a?" acquis":"")+'" id="pack-'+cle+'"><span class="ic"><svg viewBox="0 0 24 24">'+ic+'</svg></span><div class="lt"><b>'+P.nom+'</b><span>'+P.desc+'</span></div>'+
+  return'<div class="bout-ligne'+(a?" acquis":"")+'" id="pack-'+cle+'"><span class="ic"><svg viewBox="0 0 24 24">'+ic+'</svg></span><div class="lt"><b>'+P.nom+'</b><span>'+P.desc+'</span>'+(a?"":auLieuDe(cle))+'</div>'+
     (a?'<span class="bout-acquis">'+COCHE+'Acquis</span>':'<button class="btn-or" type="button" data-achat="'+cle+'"><span class="px notrad">'+PRIXP[cle]+'</span></button>')+contenuPack(cle)+'</div>';}
 var IC={couleurs:'<circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><circle cx="12" cy="16" r="3"/>',formes:'<path d="M12 3l4 5-4 13-4-13z"/><path d="M8 8h8"/>',
   effets:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',cœur:'<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>',
@@ -2078,17 +2115,19 @@ function rendreBoutique(){var c=complet(),tous=["pack_couleurs","pack_formes","p
   var puce=function(t){return'<li><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>'+t+'</span></li>';};
   if(!c&&CFG.modele!=="complet")h='<div class="bout-hero"><span class="etiq">Meilleure offre</span><h3>'+PACKS.integrale.nom+'</h3><p>Tout Orbicube, en un seul achat, pour toujours.</p><ul>'+
       puce("Les 6 mondes et toute la partie libre")+puce("Une ampoule offerte chaque jour")+puce("Les 3 packs : 4 palettes, 3 formes, 4 effets")+'</ul>'+
-      '<button class="btn-or" type="button" data-achat="integrale"><span>Tout débloquer</span><span class="px notrad">'+PRIXP.integrale+'</span></button></div>'+
+      '<button class="btn-or" type="button" data-achat="integrale"><span>Tout débloquer</span><span class="px notrad">'+PRIXP.integrale+'</span></button>'+auLieuDe("integrale")+'</div>'+
       '<div class="bout-ligne" id="pack-complet"><span class="ic"><svg viewBox="0 0 24 24">'+IC.couronne+'</svg></span><div class="lt"><b>Orbicube complet</b><span>Les 6 mondes, toute la partie libre, une ampoule par jour.</span></div>'+
       '<button class="btn-or" type="button" data-achat="complet"><span class="px notrad">'+PRIX+'</span></button></div>'+(tous?"":lignePack("collection",IC.effets));
   else if(!tous)h='<div class="bout-hero"><span class="etiq">Collection</span><h3>'+PACKS.collection.nom+'</h3><p>Les trois packs de styles, en un seul achat.</p><ul>'+
       puce("4 palettes : Aurore, Galaxie, Glace, Joyaux")+puce("3 formes : Gemmes, Étoiles, Cristaux")+puce("4 effets : comète, argent, arc-en-ciel, feu d’artifice")+'</ul>'+
-      '<button class="btn-or" type="button" data-achat="collection"><span>Tout le style</span><span class="px notrad">'+PRIXP.collection+'</span></button></div>';
+      '<button class="btn-or" type="button" data-achat="collection"><span>Tout le style</span><span class="px notrad">'+PRIXP.collection+'</span></button>'+auLieuDe("collection")+'</div>';
   else h='<div class="bout-hero merci"><span class="etiq">Merci</span><h3>Vous avez tout Orbicube</h3><p>Tous les mondes et tous les styles sont à vous. Bon voyage dans les orbites.</p></div>';
   // en bas de la boutique, toutes les offres : l'édition phare, puis chaque pack (chacun ouvre aussi ses styles un par un)
   h+=lignePack("couleurs",IC.couleurs)+lignePack("formes",IC.formes)+lignePack("effets",IC.effets);
   document.getElementById("boutHero").innerHTML=h;
-  document.querySelectorAll("#boutRayons button").forEach(function(b){b.classList.toggle("on",b.dataset.r===RAYON);});
+  document.querySelectorAll("#boutRayons button").forEach(function(b){b.classList.toggle("on",b.dataset.r===RAYON);
+    var ks=b.dataset.r==="effets"?["trainee","orbite","victoire"]:[b.dataset.r],n=0,t=0;ks.forEach(function(k){STYLES[k].forEach(function(st){t++;if(styleOuvert(k,st.id))n++;});});
+    b.querySelector(".cpt").textContent=n+"/"+t;});
   var r="";
   if(RAYON==="palette")r='<div class="bout-grille">'+STYLES.palette.map(function(st){return carteStyle("palette",st);}).join("")+'</div>';
   else if(RAYON==="forme")r='<div class="bout-grille">'+STYLES.forme.map(function(st){return carteStyle("forme",st);}).join("")+'</div>';
@@ -2100,7 +2139,10 @@ function rendreBoutique(){var c=complet(),tous=["pack_couleurs","pack_formes","p
   document.getElementById("boutAmpoules").innerHTML=["amp10","amp30"].map(function(k){return'<button class="bout-carte" type="button" data-achat="'+k+'">'+(k==="amp30"?'<span class="eco">Le plus avantageux</span>':"")+
       '<svg viewBox="0 0 24 24">'+'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/>'+'</svg><b>'+PACKS[k].nom+'</b><span class="px notrad">'+PRIXP[k]+'</span></button>';}).join("");
   document.getElementById("boutSoutien").innerHTML=aDroit("soutien")?'<div class="bout-ligne acquis"><span class="ic"><svg viewBox="0 0 24 24">'+IC.cœur+'</svg></span><div class="lt"><b>Merci pour votre soutien !</b><span>Votre liseré doré brille sur votre profil.</span></div></div>':lignePack("soutien",IC.cœur);
-  habillerApercu();}
+  habillerApercu();
+  // tout ce qui est ouvert est désormais vu : le point du rond Boutique s'éteint (les badges restent jusqu'à la sortie)
+  PROG.stylesVus=PROG.stylesVus||{};var nv=false;Object.keys(STYLES).forEach(function(k){STYLES[k].forEach(function(st){if(st.ouv&&!PROG.stylesVus[st.id]&&styleOuvert(k,st.id)){PROG.stylesVus[st.id]=true;nv=true;}});});
+  if(nv){sauver();majAchat();}}
 // les droits que le store confirme (achat, restauration, ouverture) ; P : le pack qu'on vient d'acheter (filet si les droits tardent)
 function appliquerDroits(liste,P){PROG.droits=PROG.droits||{};var avant=complet();
   (liste||[]).forEach(function(d){if(d===(CFG.droit||"complet"))PROG.achat=true;else PROG.droits[d]=true;});
@@ -2116,9 +2158,11 @@ function acheterPack(cle){sonClic();
   NATIF.acheterProduit(P.produit).then(function(r){document.getElementById("boutique").classList.remove("attente");
     if(!r.ok){if(!r.annule)avertir("Achat",r.erreur==="indisponible"?"Le store ne répond pas. Réessayez plus tard.":"L’achat n’a pas abouti.");return;}
     if(P.ampoules){crediterAmpoules(P.ampoules);toast("Merci !","+{0} ampoules".replace("{0}",P.ampoules));}
-    else{appliquerDroits(r.droits,P);toast("Merci !",P.nom);confettis();}
+    else{appliquerDroits(r.droits,P);toast("Merci !",P.nom);confettis();
+      if(P.unite)Object.keys(STYLES).forEach(function(k){STYLES[k].forEach(function(st){if("s_"+st.id===cle)opt(k,st.id);});});}
     sonVictoire();vibrer([20,40,20]);rendreBoutique();});}
-function ouvrirMagasin(depuis){document.getElementById("boutRetour").setAttribute("data-retour",depuis||"accueil");VU={};montrer("boutique");}
+function ouvrirMagasin(depuis){document.getElementById("boutRetour").setAttribute("data-retour",depuis||"accueil");VU={};NOUV={};
+  nouveauxStyles().forEach(function(id){NOUV[id]=1;});montrer("boutique");}
 document.getElementById("boutRayons").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;sonClic();RAYON=b.dataset.r;rendreBoutique();});
 document.getElementById("boutique").addEventListener("click",function(e){var a=e.target.closest("[data-achat]");if(a){acheterPack(a.dataset.achat);return;}
   var pt=e.target.closest("[data-porter]");if(pt){opt(pt.dataset.porter,pt.dataset.id);sonClic();vibrer(8);rendreBoutique();return;}
@@ -2127,9 +2171,7 @@ document.getElementById("boutique").addEventListener("click",function(e){var a=e
   var ap=document.querySelector(".bout-apercu").getBoundingClientRect();if(ap.top<60||ap.bottom>innerHeight)document.querySelector(".bout-apercu").scrollIntoView({behavior:CALME?"auto":"smooth",block:"center"});
   if(k==="victoire")confettis(id);
   if(styleOuvert(k,id)){if(STY[k]!==id){opt(k,id);vibrer(8);}sonClic();}
-  else{vibrer(20);var o=st.ouv;
-    if(o.pack){}   // la fiche sous l'aperçu propose le style seul ou son pack
-    else toast(st.nom,o.etoiles?"Se gagne à {0} étoiles de coups".replace("{0}",o.etoiles):o.chrono?"Se gagne à {0} étoiles de temps".replace("{0}",o.chrono):"Se gagne au rang {0}".replace("{0}",o.rang));}
+  else vibrer(20);   // la fiche sous l'aperçu dit comment l'obtenir (achat à l'unité, pack, ou progression) : pas de message en plus
   rendreBoutique();});
 document.getElementById("boutRestaurer").addEventListener("click",function(){sonClic();if(!NATIF.natif){avertir("Restaurer","Les achats se restaurent dans l’application.");return;}restaurer();});
 document.getElementById("btnStylesOpt").addEventListener("click",function(){sonClic();ouvrirMagasin("options");});
