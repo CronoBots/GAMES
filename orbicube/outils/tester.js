@@ -138,6 +138,9 @@ async function resoudre(p) {
     (await p.textContent("#jouerMonde")).includes("Niveau 9") ? ok("experts : le bouton principal mène au monde 2 (niveau 9), pas aux experts") : faute("bouton principal : " + (await p.textContent("#jouerMonde")));
     await p.tap("#btnJouer"); await p.waitForTimeout(600);
     const exp = await p.evaluate(() => { const n = (w, i) => document.querySelector('.parc-niv[data-w="' + w + '"][data-i="' + i + '"]'); return { m2: !n(1, 0).classList.contains("verrou"), e1: n(0, 8).classList.contains("expert") && !n(0, 8).classList.contains("verrou"), e2: n(0, 9).classList.contains("verrou"), titres: document.querySelectorAll(".parc-exp").length, total: document.querySelectorAll(".parc-niv").length, ecart: (() => { const q = [...document.querySelectorAll(".parc-niv")].map((e) => [parseFloat(e.style.left), parseFloat(e.style.top)]); let m = 1e9; q.forEach((a, i) => q.slice(i + 1).forEach((b) => { m = Math.min(m, Math.hypot(a[0] - b[0], a[1] - b[1])); })); return Math.round(m); })() }; });
+    // mémoire de l'iPhone : la carte n'affiche que les bandes d'image proches de la vue (Safari fermait la page à 32 bandes)
+    const bandes = await p.evaluate(() => [...document.querySelectorAll(".parc-bg,.parc-planets,.parc-starsb,.parc-meteorsb")].filter((e) => getComputedStyle(e).display !== "none").length);
+    bandes <= 12 ? ok("carte : " + bandes + " bandes d'image affichées sur 32 (mémoire de l'iPhone)") : faute("carte : " + bandes + " bandes d'image affichées, Safari risque de fermer la page");
     exp.m2 && exp.e1 && exp.e2 && exp.titres === 8 && exp.total === 96 && exp.ecart >= 70 ? ok("experts : 96 niveaux, une voie dorée de quatre experts par monde (E1 ouvert au niveau 2), aucun nœud n'en touche un autre (" + exp.ecart + " px)") : faute("niveaux experts : " + JSON.stringify(exp));
 
     // monde 3 gratuit mais fermé par 32 étoiles de coups (deux par niveau du chemin d'avant) : 24 ne suffisent pas, 32 l'ouvrent

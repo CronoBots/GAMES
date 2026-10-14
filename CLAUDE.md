@@ -188,10 +188,19 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   « trop symétrique ») : le chemin garde sa vague naturelle mais jamais au centre (`vague` : au moins 42 % de l'amplitude),
   la voie dorée est sa forme inverse resserrée à 86 % (`inv`), partie du niveau 2 ; l'expert j se pose sur elle, à la
   hauteur du niveau 2j+3 ou 2j+4 (le plus écarté), donc de l'autre côté, jamais sur un nœud (le parcours de test exige
-  70 px entre deux nœuds). Les lacets réguliers en miroir parfait ont été refusés. Nœuds « E1 » à « E4 », pastille
+  70 px entre deux nœuds). Les lacets réguliers en miroir parfait ont été refusés. **Tant que le chemin du monde n'est
+  pas fini, la voie dorée est discrète** (trait pâle `.voie-discrete`, nœuds `.discret` à 38 %, 24 % verrouillés).
+- **Mémoire de la carte sur iPhone** (Safari fermait la page, « un problème est survenu à plusieurs reprises ») : chaque
+  bande d'image d'un monde (4 par monde) était un calque de carte graphique (`will-change`) ; à 8 mondes, 48 calques,
+  ≈ 760 Mo. Désormais pas de `will-change` sur les bandes ni sur leurs calques parents, et `parcParallax` ne garde
+  affichées que les bandes à moins d'un demi-écran de la vue (≈ 11 calques, ≈ 140 Mo). Le parcours de test exige au plus
+  12 bandes affichées. Nœuds « E1 » à « E4 », pastille
   « Voie dorée : niveaux experts » sous la description du monde. Le chemin numérote 1 à 64 sans eux (`numNiveau`, `nomNiveau`).
-- **Vraie progression** (le client : deux niveaux de suite se ressemblaient) : **un coup de plus à chaque niveau** et une
-  orbite de plus à chaque monde : le monde n va de n à n+7 coups, ses experts de n+8 à n+11 sur les mêmes orbites. Le chemin
+- **Vraie progression** (le client : deux niveaux de suite se ressemblaient ; « trouver le bon compromis
+  difficulté/progression/orbites ») : une orbite de plus par monde ; dans un monde, un coup de plus tous les deux niveaux
+  (les trois premiers montent d'un coup chacun), pente plus raide avec les orbites ; chaque monde repart un peu plus bas
+  que la fin du précédent ; les experts partent de la fin du chemin (monde 1 : 1→5, experts 5→7 ; monde 8 : 5→12, experts
+  12→18). « Un coup de plus à chaque niveau » a été essayé et retiré : 8 coups sur 2 orbites, trop dur. Le chemin
   ne raccourcit jamais, un seul niveau à un coup, et `genererMelange` refuse qu'une orbite revienne dans une suite de coups sur un même axe (U D U′
   vaudrait D) ; le vérificateur contrôle les trois. Graine `orbicube3-` ; `CAMPAGNE` reste 2 (jeu pas encore sorti :
   les essais du client gardent leurs étoiles).

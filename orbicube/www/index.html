@@ -569,6 +569,8 @@ body{background:
 /* niveaux experts (E1 à E4 de chaque monde) : un second anneau doré autour du nœud, la voie dorée sous la description */
 .parc-niv.expert{outline:1.5px solid rgba(255,196,80,.75);outline-offset:3px}
 .parc-niv.expert.verrou{outline-color:rgba(255,196,80,.35)}
+/* tant que le chemin du monde n'est pas fini, la voie dorée s'efface : on la devine, on ne la suit pas encore */
+.parc-niv.expert.discret.vu{opacity:.38;outline-color:rgba(255,196,80,.3)}.parc-niv.expert.discret.vu.verrou{opacity:.24}
 .parc-exp{display:flex;width:max-content;margin:7px auto 0;align-items:center;gap:6px;white-space:nowrap;
   font-family:var(--f-chiffre);font-weight:600;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--or);
   background:rgba(9,9,16,.82);border:1px solid rgba(255,196,80,.4);border-radius:999px;padding:3px 10px}
@@ -581,12 +583,12 @@ body{background:
 .parc-sect .pscad{width:14px;height:14px;stroke:var(--or);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;margin-left:2px}
 /* décor cosmique par monde EN COUCHES (parallaxe) : fond teinté, nébuleuses lointaines, planètes+anneaux, orbites, étincelles */
 .parc-fond{position:absolute;inset:0;z-index:0;pointer-events:none;background:#06060c}
-.parc-layer{position:absolute;inset:0;z-index:0;pointer-events:none;will-change:transform}
+.parc-layer{position:absolute;inset:0;z-index:0;pointer-events:none}
 .parc-layer.near{z-index:2}
 /* fond-images (pack CC0) : bande de nébuleuse peinte par monde + starfield superposé en screen */
 /* chaque monde a ses 4 couches (BG/Planets/Stars/Meteors), bandes transparentes masquées aux bords ;
    chacune translate à sa propre vitesse (parallaxe par bande) */
-.parc-bg,.parc-planets,.parc-starsb,.parc-meteorsb{position:absolute;left:-3%;right:-3%;z-index:0;will-change:transform;
+.parc-bg,.parc-planets,.parc-starsb,.parc-meteorsb{position:absolute;left:-3%;right:-3%;z-index:0;
   background-size:cover;background-position:center;background-repeat:no-repeat;
   -webkit-mask-image:linear-gradient(to bottom,transparent,#000 10%,#000 90%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 10%,#000 90%,transparent)}
 .parc-neb{position:absolute;transform:translate(-50%,-50%);max-width:94vw;border-radius:50%;pointer-events:none;
@@ -1314,16 +1316,18 @@ function poserFond(t,nebuleuse){var el=document.getElementById("fondMonde");if(e
 var THEME_ACC=["80,226,150","92,180,255","255,110,120","178,130,255"];
 function accentTheme(t){ACC=THEME_ACC[(((t-1)%4)+4)%4];ACC_CLAIR=eclaircir(ACC,.65);document.documentElement.style.setProperty("--acc",ACC);}
 var MONDES=[
-  {nom:"Premier cercle",desc:"Deux orbites, U et R. Le geste s’apprend ici.",anneaux:["U","R"],coups:[1,2,3,4,5,6,7,8,9,10,11,12]},
-  {nom:"Trois faces",desc:"Une troisième orbite, F : chaque pastille hésite entre deux chemins.",anneaux:["U","R","F"],coups:[2,3,4,5,6,7,8,9,10,11,12,13]},
-  {nom:"Face cachée",desc:"D, la face du dessous, tourne sur le même axe que U.",anneaux:["U","D","R","F"],etoiles:{jaunes:2},coups:[3,4,5,6,7,8,9,10,11,12,13,14]},
-  {nom:"Face à face",desc:"L rejoint R : cinq orbites, deux faces opposées.",anneaux:["U","D","L","R","F"],etoiles:{bleues:2},coups:[4,5,6,7,8,9,10,11,12,13,14,15]},
-  {nom:"Six faces",desc:"Les six faces du cube, sans les tranches.",anneaux:["U","D","L","R","F","B"],coups:[5,6,7,8,9,10,11,12,13,14,15,16]},
-  {nom:"Première tranche",desc:"M, l’orbite du milieu, n’a pas de face à elle.",anneaux:["U","D","L","R","F","B","M"],coups:[6,7,8,9,10,11,12,13,14,15,16,17]},
-  {nom:"Deux tranches",desc:"E se glisse entre U et D : huit orbites.",anneaux:["U","D","L","R","F","B","M","E"],coups:[7,8,9,10,11,12,13,14,15,16,17,18]},
-  {nom:"Grand maître",desc:"Les neuf orbites à la fois, jusqu’à dix-neuf coups.",anneaux:TOUS,coups:[8,9,10,11,12,13,14,15,16,17,18,19]}];
-// une orbite de plus à chaque monde et un coup de plus à chaque niveau (le client, le 14/10/2026) : le monde n va de n à
-// n+7 coups, ses experts de n+8 à n+11, sur les mêmes orbites. Les quatre premiers mondes sont gratuits, les neuf orbites à la
+  {nom:"Premier cercle",desc:"Deux orbites, U et R. Le geste s’apprend ici.",anneaux:["U","R"],coups:[1,2,3,3,4,4,5,5,5,6,6,7]},
+  {nom:"Trois faces",desc:"Une troisième orbite, F : chaque pastille hésite entre deux chemins.",anneaux:["U","R","F"],coups:[2,3,3,4,4,5,5,6,6,7,7,8]},
+  {nom:"Face cachée",desc:"D, la face du dessous, tourne sur le même axe que U.",anneaux:["U","D","R","F"],etoiles:{jaunes:2},coups:[3,3,4,4,5,5,6,6,7,7,8,9]},
+  {nom:"Face à face",desc:"L rejoint R : cinq orbites, deux faces opposées.",anneaux:["U","D","L","R","F"],etoiles:{bleues:2},coups:[3,4,4,5,5,6,6,7,7,8,9,10]},
+  {nom:"Six faces",desc:"Les six faces du cube, sans les tranches.",anneaux:["U","D","L","R","F","B"],coups:[4,4,5,5,6,7,7,8,8,9,10,11]},
+  {nom:"Première tranche",desc:"M, l’orbite du milieu, n’a pas de face à elle.",anneaux:["U","D","L","R","F","B","M"],coups:[4,5,5,6,7,7,8,9,9,10,11,12]},
+  {nom:"Deux tranches",desc:"E se glisse entre U et D : huit orbites.",anneaux:["U","D","L","R","F","B","M","E"],coups:[5,5,6,7,7,8,9,10,10,11,12,13]},
+  {nom:"Grand maître",desc:"Les neuf orbites à la fois, jusqu’à dix-huit coups.",anneaux:TOUS,coups:[5,6,7,8,9,10,11,12,12,14,16,18]}];
+// une orbite de plus à chaque monde (le client, le 14/10/2026). Longueurs : un coup de plus tous les deux niveaux (les trois
+// premiers montent d'un coup chacun), une pente qui se raidit avec les orbites ; chaque monde repart un peu plus bas que la
+// fin du précédent (une orbite de plus à apprivoiser) ; ses experts partent de la fin de son chemin. Un coup de plus à
+// chaque niveau a été essayé : huit coups sur deux orbites, c'était trop dur. Les quatre premiers mondes sont gratuits, les neuf orbites à la
 // fois ne se jouent qu'avec le jeu complet. Les huit premiers niveaux de chaque monde font le chemin ; les quatre suivants
 // sont des niveaux experts, sur une voie dorée parallèle (le client) : l'expert j s'ouvre avec le niveau 2j du chemin (et
 // l'expert d'avant), en option, sans jamais bloquer le monde suivant. Le vérificateur contrôle l'orbite de plus par monde et qu'aucun monde gratuit n'a les neuf orbites.
@@ -1561,7 +1565,7 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
         for(var t=der+1;t<=q;t++)bra.push([inv(t),ys[t]]);der=q;
         var ie=BASE+j,r=PROG.niveaux[(w+1)+"-"+(ie+1)];
         items.push({t:"n",x:inv(q),y:ys[q],w:w,i:ie,num:"E"+numNiveau(w,ie),r:r,ouv:niveauOuvert(w,ie),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===ie),acc:acc});}
-      branches.push(bra);}
+      branches.push({w:w,pts:bra});}
     wreg.push({w:w,acc:acc,y0:y0,y1:y});y+=18;}
   var H=y+60,de="",nodes="",sects="",d="";
   // FONDS CRAFTPIX (Space Vertical Game Backgrounds, 4 thèmes cyclés par monde), en COUCHES parallaxe :
@@ -1576,29 +1580,36 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
     lme+='<div class="parc-meteorsb'+st+'meteors-'+t+'.webp)"></div>';});
   pts.forEach(function(p,j){d+=(j?"L":"M")+p[0].toFixed(1)+" "+(H-p[1])+" ";});
   // la voie dorée se trace comme le chemin (même trait, en miroir)
-  branches.forEach(function(b){b.forEach(function(p,j){de+=(j?"L":"M")+p[0].toFixed(1)+" "+(H-p[1])+" ";});});
+  // la voie dorée reste discrète tant que le chemin de son monde n'est pas fini (le client, le 14/10/2026)
+  var deD="";branches.forEach(function(b){var t="";b.pts.forEach(function(p,j){t+=(j?"L":"M")+p[0].toFixed(1)+" "+(H-p[1])+" ";});if(mondeFini(b.w))de+=t;else deD+=t;});
   items.forEach(function(it){var fy=H-it.y;
     if(it.t==="s"){var pa=mondePaye(it.w),cE=!pa&&condEtoiles(it.w),etM=etoilesMonde(it.w),etTM=chronoMonde(it.w),maxM=MONDES[it.w].coups.length*3;
       sects+='<div class="parc-sep" style="--pa:'+it.acc+';top:'+fy+'px"></div>'
         +'<div class="parc-sect'+(pa?" paye":"")+'" style="--pa:'+it.acc+';top:'+fy+'px"><b>Monde '+(it.w+1)+'</b><small>'+it.nom+'</small>'
         +(pa?'<svg class="pscad" viewBox="0 0 24 24">'+CAD+'</svg>':cE?'<span class="parc-cond'+(cE.jaunes?"":" t")+'"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+cE.a+' / '+cE.faut+'</span>':'<span class="parc-et"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etM+'/'+maxM+'<svg class="t" viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etTM+'/'+maxM+'</span>')+'</div>'
         +'<div class="parc-desc" style="top:'+(fy+30)+'px">'+MONDES[it.w].desc+(MONDES[it.w].coups.length>BASE?'<span class="parc-exp"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>Voie dorée : niveaux experts</span>':"")+(cE?'<b class="cond'+(cE.jaunes?"":" t")+'">'+texteCond(cE)+'</b>':"")+'</div>';}
-    else{var cls="parc-niv"+(estExpert(it.i)?" expert":"")+(it.r?" fait":"")+(!it.ouv?" verrou":"")+(it.paye?" paye":"")+(it.cur?" courant":""),
+    else{var cls="parc-niv"+(estExpert(it.i)?" expert"+(mondeFini(it.w)?"":" discret"):"")+(it.r?" fait":"")+(!it.ouv?" verrou":"")+(it.paye?" paye":"")+(it.cur?" courant":""),
       inner=it.ouv?('<b>'+it.num+'</b><span class="pet"><i>'+[0,1,2].map(function(j){return it.r&&it.r.etoiles>j?SVG_ET:SVG_ET_OFF;}).join("")+'</i><i class="t">'+[0,1,2].map(function(j){return it.r&&(it.r.chrono||0)>j?SVG_ETT:SVG_ET_OFF;}).join("")+'</i></span>'):('<svg class="pcad" viewBox="0 0 24 24">'+CAD+'</svg>');
       nodes+='<button type="button" class="'+cls+'" style="--pa:'+it.acc+';left:'+it.x.toFixed(1)+'px;top:'+fy+'px" data-w="'+it.w+'" data-i="'+it.i+'" aria-label="Monde '+(it.w+1)+' '+nomNiveau(it.w,it.i)+'">'+inner+'</button>';}});
   ch.style.height=H+"px";
   ch.innerHTML='<div class="parc-fond"></div>'
     +'<div class="parc-layer l-bg">'+lbg+'</div><div class="parc-layer l-planets">'+lpl+'</div>'
     +'<div class="parc-layer l-stars">'+lst+'</div><div class="parc-layer l-meteors">'+lme+'</div>'
-    +'<svg class="trail" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" preserveAspectRatio="none"><path d="'+d+'" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 11"/><path d="'+de+'" fill="none" stroke="rgba(255,196,80,.55)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 9"/></svg>'
+    +'<svg class="trail" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" preserveAspectRatio="none"><path d="'+d+'" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 11"/><path d="'+de+'" fill="none" stroke="rgba(255,196,80,.55)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 9"/><path class="voie-discrete" d="'+deD+'" fill="none" stroke="rgba(255,196,80,.2)" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="1 9"/></svg>'
     +sects+nodes;
   parcRevele(ch);parcParallax();}
 // parallaxe PAR BANDE : chaque bande (BG/Planets/Stars/Meteors de son monde) se décale selon sa distance au
 // centre de la fenêtre × la vitesse de sa couche. Centrée => décalage 0 (position native du monde) ; le décalage
 // est borné (±vh/2×vitesse) donc la bande reste dans son monde — 4 vitesses = 4 profondeurs, sans dérive.
 var parcRaf=0;
-function parcParallax(){var pd=document.getElementById("parcoursDefile");if(!pd)return;var sc=pd.scrollTop+pd.clientHeight/2,C=CALME;
-  function co(sel,sp){[].forEach.call(pd.querySelectorAll(sel),function(el){el.style.transform=C?"":"translateY("+((el._cy||(el._cy=+el.dataset.cy))-sc)*sp+"px)";});}
+// mémoire (le client, le 14/10/2026 : Safari fermait la page à l'ouverture de la carte) : chaque bande d'image est un
+// calque de la carte graphique ; à huit mondes, 32 calques de plus de mille pixels plantaient l'iPhone. Seules les bandes
+// des mondes à moins d'un écran de la vue restent affichées, les autres sont retirées du rendu.
+function parcParallax(){var pd=document.getElementById("parcoursDefile");if(!pd)return;var sc=pd.scrollTop+pd.clientHeight/2,C=CALME,vh=pd.clientHeight;
+  function co(sel,sp){[].forEach.call(pd.querySelectorAll(sel),function(el){if(el._t==null){el._t=parseFloat(el.style.top)||0;el._h=parseFloat(el.style.height)||0;}
+    var haut=el._t,bas=el._t+el._h,vu=bas>pd.scrollTop-vh*.5&&haut<pd.scrollTop+vh*1.5;
+    if(el._vu!==vu){el._vu=vu;el.style.display=vu?"":"none";}
+    if(vu)el.style.transform=C?"":"translateY("+((el._cy||(el._cy=+el.dataset.cy))-sc)*sp+"px)";});}
   co(".parc-bg",C?0:-.18);co(".parc-planets",C?0:-.09);co(".parc-starsb",C?0:-.02);co(".parc-meteorsb",C?0:.09);}
 // révélation : les nœuds apparaissent (fondu + pop) quand ils entrent dans la fenêtre pendant qu'on monte
 var parcIO=null;function parcRevele(ch){var root=document.getElementById("parcoursDefile");
