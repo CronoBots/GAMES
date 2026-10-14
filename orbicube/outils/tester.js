@@ -141,7 +141,7 @@ async function resoudre(p) {
     // mémoire de l'iPhone : la carte n'affiche que les bandes d'image proches de la vue (Safari fermait la page à 32 bandes)
     const bandes = await p.evaluate(() => [...document.querySelectorAll(".parc-bg,.parc-planets,.parc-starsb,.parc-meteorsb")].filter((e) => getComputedStyle(e).display !== "none").length);
     bandes <= 12 ? ok("carte : " + bandes + " bandes d'image affichées sur 32 (mémoire de l'iPhone)") : faute("carte : " + bandes + " bandes d'image affichées, Safari risque de fermer la page");
-    exp.m2 && exp.e1 && exp.e2 && exp.titres === 8 && exp.total === 96 && exp.ecart >= 70 ? ok("experts : 96 niveaux, une voie dorée de quatre experts par monde (E1 ouvert au niveau 2), aucun nœud n'en touche un autre (" + exp.ecart + " px)") : faute("niveaux experts : " + JSON.stringify(exp));
+    exp.m2 && exp.e1 && exp.e2 && exp.titres === 8 && exp.total === 96 && exp.ecart >= 70 ? ok("experts : 96 niveaux, une voie dorée de quatre experts par monde (E1 ouvert à la fin du chemin), aucun nœud n'en touche un autre (" + exp.ecart + " px)") : faute("niveaux experts : " + JSON.stringify(exp));
 
     // monde 3 gratuit mais fermé par 32 étoiles de coups (deux par niveau du chemin d'avant) : 24 ne suffisent pas, 32 l'ouvrent
     const poser = (n1) => p.evaluate((n1) => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); for (let i = 1; i <= 8; i++) v.niveaux["1-" + i].etoiles = 2; for (let i = 1; i <= 8; i++) v.niveaux["2-" + i] = { etoiles: i <= n1 ? 3 : 1, chrono: 1, coups: 9, temps: 60000, sansIndice: true }; localStorage.setItem(k, JSON.stringify(v)); }, n1);

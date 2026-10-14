@@ -181,21 +181,21 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   (`orbicube2-<monde>-<niveau>`) et `CAMPAGNE=2` : `fusion` ne reprend pas les niveaux d'une sauvegarde d'une autre
   campagne (achats, expérience et succès, si).
 - **Niveaux experts** : 12 niveaux par monde, 96 en tout ; les huit premiers font le chemin (`BASE`), les quatre derniers
-  (`estExpert`) forment **une voie dorée parallèle qui avance avec le monde** (le client, le 14/10/2026) : l'expert j s'ouvre
-  avec le niveau 2j+2 du chemin et l'expert d'avant (`niveauOuvert`), il est un peu plus long que les niveaux qui l'entourent,
-  en option, sans jamais bloquer le monde suivant (`mondeOuvert`, `mondeFini` lisent le huitième). La victoire d'un niveau
-  pair qui ouvre un expert le propose en second bouton doré. Sur la carte (le client : « la forme inverse », mais pas
+  (`estExpert`) forment **une voie dorée parallèle** (le client, le 14/10/2026) : ils s'ouvrent quand le chemin du monde
+  est fini, puis l'un après l'autre (`niveauOuvert`), en option, sans jamais bloquer le monde suivant (`mondeOuvert`,
+  `mondeFini` lisent le huitième). La victoire du huitième niveau propose « Expert 1 » en second bouton doré. Sur la carte (le client : « la forme inverse », mais pas
   « trop symétrique ») : le chemin garde sa vague naturelle mais jamais au centre (`vague` : au moins 42 % de l'amplitude),
   la voie dorée est sa forme inverse resserrée à 86 % (`inv`), partie du niveau 2 ; l'expert j se pose sur elle, à la
   hauteur du niveau 2j+3 ou 2j+4 (le plus écarté), donc de l'autre côté, jamais sur un nœud (le parcours de test exige
   70 px entre deux nœuds). Les lacets réguliers en miroir parfait ont été refusés. **Tant que le chemin du monde n'est
-  pas fini, la voie dorée est discrète** (trait pâle `.voie-discrete`, nœuds `.discret` à 38 %, 24 % verrouillés).
+  pas fini, la voie dorée est discrète** (trait pâle `.voie-discrete`, nœuds `.discret` à 24 %) et ses nœuds ne montrent
+  qu'un éclat doré, ni « E1 » ni étoiles. La pastille « Voie dorée » est petite, posée sur la bifurcation depuis le
+  niveau 2 (`t:"x"`). La condition d'étoiles d'un monde n'est plus écrite sous sa description : le bandeau la montre.
 - **Mémoire de la carte sur iPhone** (Safari fermait la page, « un problème est survenu à plusieurs reprises ») : chaque
   bande d'image d'un monde (4 par monde) était un calque de carte graphique (`will-change`) ; à 8 mondes, 48 calques,
   ≈ 760 Mo. Désormais pas de `will-change` sur les bandes ni sur leurs calques parents, et `parcParallax` ne garde
   affichées que les bandes à moins d'un demi-écran de la vue (≈ 11 calques, ≈ 140 Mo). Le parcours de test exige au plus
-  12 bandes affichées. Nœuds « E1 » à « E4 », pastille
-  « Voie dorée : niveaux experts » sous la description du monde. Le chemin numérote 1 à 64 sans eux (`numNiveau`, `nomNiveau`).
+  12 bandes affichées. Nœuds « E1 » à « E4 ». Le chemin numérote 1 à 64 sans eux (`numNiveau`, `nomNiveau`).
 - **Vraie progression** (le client : deux niveaux de suite se ressemblaient ; « trouver le bon compromis
   difficulté/progression/orbites ») : une orbite de plus par monde ; dans un monde, un coup de plus tous les deux niveaux
   (les trois premiers montent d'un coup chacun), pente plus raide avec les orbites ; chaque monde repart un peu plus bas
