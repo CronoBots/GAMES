@@ -1662,15 +1662,18 @@ var parcRaf=0;
 // mémoire (le client, le 14/10/2026 : Safari fermait la page à l'ouverture de la carte) : chaque bande d'image est un
 // calque de la carte graphique ; à huit mondes, 32 calques de plus de mille pixels plantaient l'iPhone. Seules les bandes
 // des mondes à moins d'un écran de la vue restent affichées, les autres sont retirées du rendu.
-function parcParallax(){var pd=document.getElementById("parcoursDefile");if(!pd)return;var sc=pd.scrollTop+pd.clientHeight/2,C=CALME,vh=pd.clientHeight;
-  function co(sel,sp){[].forEach.call(pd.querySelectorAll(sel),function(el){if(el._t==null){el._t=parseFloat(el.style.top)||0;el._h=parseFloat(el.style.height)||0;}
-    var haut=el._t,bas=el._t+el._h,vu=bas>pd.scrollTop-vh*.5&&haut<pd.scrollTop+vh*1.5;
-    if(el._vu!==vu){el._vu=vu;el.style.display=vu?"":"none";}
-    // seules les bandes visibles qui bougent deviennent un calque GPU (translate3d + will-change) : un défilement fluide
-    // sans rouvrir le gouffre de mémoire (au plus 6 calques) ; étoiles et météores restent fixes, peints avec la carte
-    if(vu&&sp){el.style.willChange="transform";el.style.transform="translate3d(0,"+(((el._cy||(el._cy=+el.dataset.cy))-sc)*sp).toFixed(1)+"px,0)";}
-    else if(el.style.willChange){el.style.willChange="";el.style.transform="";}});}
-  co(".parc-bg",C?0:-.18);co(".parc-planets",C?0:-.09);co(".parc-starsb",0);co(".parc-meteorsb",0);}
+// à chaque image du défilement : aucune recherche dans la page (les bandes sont listées une fois par carte, PARC_BANDES),
+// aucune écriture inutile (un style n'est touché que s'il change), une seule lecture de la position
+var PARC_BANDES=null,PARC_VIT={"parc-bg":-.18,"parc-planets":-.09,"parc-starsb":0,"parc-meteorsb":0};
+function parcParallax(){var pd=document.getElementById("parcoursDefile");if(!pd)return;
+  if(!PARC_BANDES||!PARC_BANDES.length||!PARC_BANDES[0].isConnected)PARC_BANDES=[].map.call(pd.querySelectorAll(".parc-bg,.parc-planets,.parc-starsb,.parc-meteorsb"),function(el){
+    return{el:el,t:parseFloat(el.style.top)||0,h:parseFloat(el.style.height)||0,cy:+el.dataset.cy,sp:PARC_VIT[el.className.split(" ")[0]]||0,vu:null,y:null};});
+  var st=pd.scrollTop,vh=pd.clientHeight,sc=st+vh/2,C=CALME;
+  PARC_BANDES.forEach(function(b){var vu=b.t+b.h>st-vh*.5&&b.t<st+vh*1.5;
+    if(b.vu!==vu){b.vu=vu;b.el.style.display=vu?"":"none";
+      // seules les bandes visibles qui bougent deviennent un calque GPU : fluide, sans rouvrir le gouffre de mémoire (au plus 6)
+      b.el.style.willChange=vu&&b.sp&&!C?"transform":"";if(!vu){b.el.style.transform="";b.y=null;}}
+    if(vu&&b.sp&&!C){var y=Math.round((b.cy-sc)*b.sp*2)/2;if(y!==b.y){b.y=y;b.el.style.transform="translate3d(0,"+y+"px,0)";}}});}
 // révélation : les nœuds apparaissent (fondu + pop) quand ils entrent dans la fenêtre pendant qu'on monte
 var parcIO=null;function parcRevele(ch){var root=document.getElementById("parcoursDefile");
   if(CALME||!("IntersectionObserver" in window)){[].forEach.call(ch.querySelectorAll(".parc-niv"),function(n){n.classList.add("vu");});return;}

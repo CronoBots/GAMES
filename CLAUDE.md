@@ -205,7 +205,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   affichées que les bandes à moins d'un demi-écran de la vue. **Fluidité** (le client : « pas fluide ») : seules la
   nébuleuse et les planètes bougent, et seules les bandes visibles deviennent un calque GPU (`translate3d` +
   `will-change` posés par `parcParallax`, au plus 6) ; étoiles et météores restent fixes ; le ciel animé (`Ciel`) ne se
-  redessine pas sous la carte. Mesuré, processeur ralenti ×4 : 37 → 54 images/s. Le parcours de test exige au plus
+  redessine pas sous la carte ; `parcParallax` ne cherche rien dans la page à chaque image (`PARC_BANDES`, listées une
+  fois par carte) et ne touche un style que s'il change. Mesuré, processeur ralenti ×4 : 37 → 57 images/s. Le parcours de test exige au plus
   12 bandes affichées. Nœuds « E1 » à « E4 ». Le chemin numérote 1 à 64 sans eux (`numNiveau`, `nomNiveau`).
 - **Vraie progression** (le client : deux niveaux de suite se ressemblaient ; « trouver le bon compromis
   difficulté/progression/orbites ») : une orbite de plus par monde ; dans un monde, un coup de plus tous les deux niveaux
