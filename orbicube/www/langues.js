@@ -74,6 +74,8 @@
     ["Style exclusif « {0} » débloqué, et 3 ampoules.", "Exclusive style “{0}” unlocked, plus 3 bulbs.", "Exclusieve stijl “{0}” ontgrendeld, plus 3 lampjes.", "Exklusiver Stil „{0}“ freigeschaltet, dazu 3 Glühbirnen.", "Estilo exclusivo «{0}» desbloqueado y 3 bombillas."],
     ["Maître des orbites", "Master of orbits", "Meester van de banen", "Meister der Bahnen", "Maestro de las órbitas"],
     ["Finir la voie dorée des huit mondes.", "Finish the golden path of all eight worlds.", "Voltooi het gouden pad van alle acht werelden.", "Schließe den goldenen Pfad aller acht Welten ab.", "Termina el camino dorado de los ocho mundos."],
+    ["Couleurs du monde", "World colours", "Kleuren van de wereld", "Farben der Welt", "Colores del mundo"],
+    ["Les teintes du monde où vous jouez, en accord avec son décor.", "The colours of the world you play in, matching its scenery.", "De kleuren van de wereld waarin je speelt, passend bij het decor.", "Die Farben der Welt, in der du spielst, passend zu ihrer Kulisse.", "Los colores del mundo en el que juegas, a juego con su decorado."],
     ["Six faces", "Six faces", "Zes vlakken", "Sechs Seiten", "Seis caras"],
     ["Face cachée", "Hidden face", "Verborgen vlak", "Verborgene Seite", "Cara oculta"],
     ["Face à face", "Face to face", "Oog in oog", "Gegenüber", "Cara a cara"],

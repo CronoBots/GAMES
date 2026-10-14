@@ -83,6 +83,10 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   montre son **contenu exact** (`contenuPack` : vignette et nom de chaque style ; puces des packs pour les éditions groupées).
   **Les palettes du pack Couleurs quittent les six teintes du cube** (le client, le 14/10/2026 : trop ressemblantes) : chacune
   a son ambiance (Aurore, Galaxie, Glace, Joyaux), six couleurs distinctes ; leur vignette montre leurs teintes typiques.
+  **Couleurs des pastilles par défaut : « Couleurs du monde »** (le client, le 14/10/2026 : que le cube ne jure pas avec le
+  décor) : `PAL_THEME`, une palette par thème (`PALETTES.monde` la lit selon `THEME_COURANT`, posé par `accent`/`accentTheme` via
+  `suivreTheme` ; menus = thème 2) ; « Classique » reste un choix gratuit. Migration une fois (`PROG.options.pal2`) : l'ancien
+  défaut classique passe à « monde ».
   **Pour donner envie et comprendre** (le client, le 14/10/2026) : phrase d'accueil (gagner en jouant ou acheter), compteur de
   collection sur chaque onglet (« 4/8 »), fiche avec une phrase par style (`DESC_STYLE`) et, pour un style à gagner, sa barre de
   progression (`progresStyle`) ; badge « Nouveau » sur les styles gagnés pas encore vus (`PROG.stylesVus`, `nouveauxStyles`) et

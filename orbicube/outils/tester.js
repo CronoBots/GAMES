@@ -114,8 +114,8 @@ async function resoudre(p) {
 
     // la boutique, depuis les options : un style ouvert se porte d'un toucher, celui d'un pack non acheté se regarde sans se porter
     await p.tap("#btnStylesOpt"); await p.waitForTimeout(700);
-    (await p.isVisible("#boutique.actif")) && (await p.$$eval("#boutRayon .style", (l) => l.length)) === 10 ? ok("boutique : dix palettes en vitrine, dont deux exclusives de la voie dorée") : faute("boutique : rayon des couleurs absent");
-    (await p.textContent('#boutRayons [data-r="palette"] .cpt')) === "2/10" ? ok("boutique : compteur de collection (2/10 palettes pour un débutant)") : faute("compteur de collection faux : " + (await p.textContent('#boutRayons [data-r="palette"] .cpt')));
+    (await p.isVisible("#boutique.actif")) && (await p.$$eval("#boutRayon .style", (l) => l.length)) === 11 ? ok("boutique : onze palettes en vitrine, dont « Couleurs du monde » et deux exclusives de la voie dorée") : faute("boutique : rayon des couleurs absent");
+    (await p.textContent('#boutRayons [data-r="palette"] .cpt')) === "3/11" ? ok("boutique : compteur de collection (3/11 palettes pour un débutant)") : faute("compteur de collection faux : " + (await p.textContent('#boutRayons [data-r="palette"] .cpt')));
     (await p.textContent("#pack-couleurs")).includes("au lieu de") && (await p.textContent("#pack-couleurs")).includes("3,96") ? ok("boutique : le pack montre ce que coûterait son contenu à l'unité (3,96 €)") : faute("prix barré du pack absent");
     await p.tap('.style[data-id="contraste"]'); await p.waitForTimeout(300);
     (await p.$('.style.porte[data-id="contraste"]')) ? ok("boutique : un style ouvert se porte d'un toucher") : faute("le style choisi n'est pas porté");
