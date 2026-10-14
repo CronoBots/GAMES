@@ -304,6 +304,8 @@
     ["Expert {0}", "Expert {0}", "Expert {0}", "Experte {0}", "Experto {0}"],
     ["Avec le jeu complet", "With the full game", "Met het volledige spel", "Mit der Vollversion", "Con el juego completo"],
     ["{0} orbites", "{0} orbits", "{0} banen", "{0} Bahnen", "{0} órbitas"],
+    ["Monde {0} · {1}", "World {0} · {1}", "Wereld {0} · {1}", "Welt {0} · {1}", "Mundo {0} · {1}"],
+    ["objectif {0}", "target {0}", "doel {0}", "Ziel {0}", "objetivo {0}"],
     ["Les neuf orbites, un mélange au hasard, le chrono tourne.", "All nine orbits, a random scramble, the clock is running.", "Alle negen banen, een willekeurige husseling, de klok loopt.", "Alle neun Bahnen, eine zufällige Mischung, die Uhr läuft.", "Las nueve órbitas, una mezcla al azar, el reloj corre."],
     ["Un mélange au hasard, le chrono tourne.", "A random scramble, the clock is running.", "Een willekeurige husseling, de klok loopt.", "Eine zufällige Mischung, die Uhr läuft.", "Una mezcla al azar, el reloj corre."],
     ["Moyen, difficile, expert", "Medium, hard, expert", "Gemiddeld, moeilijk, expert", "Mittel, schwer, Experte", "Medio, difícil, experto"],

@@ -592,7 +592,20 @@ body{background:
 .parc-niv .anneau-t path.pop{animation:t-pop .5s ease both;animation-delay:calc(1.05s + var(--d)*.18s)}
 @keyframes et-pop{from{opacity:0;scale:0}to{opacity:1;scale:1}}
 @keyframes t-pop{from{opacity:0;stroke-width:8}to{opacity:1;stroke-width:3}}
-.fenetre .fiche-monde{margin:-6px 0 12px;font-family:var(--f-chiffre);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--pale)}
+/* fiche d'un niveau : couleur du monde, deux cartes (coups, temps) avec le record en grand et l'objectif dessous */
+.fiche{display:grid;justify-items:center;gap:2px;margin-bottom:6px}
+.fiche-monde{font-family:var(--f-chiffre);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:rgb(var(--acc))}
+.fiche h3{margin:2px 0 0}
+.fiche-orb{font-size:12.5px;color:var(--pale);margin-bottom:12px}
+.fiche-cartes{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+.fiche-carte{display:grid;justify-items:center;gap:3px;padding:12px 6px 10px;border-radius:16px;border:1px solid rgba(var(--acc),.35);
+  background:linear-gradient(180deg,rgba(var(--acc),.14),rgba(var(--acc),.03))}
+.fiche-carte small{font-family:var(--f-chiffre);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--pale)}
+.fiche-carte b{font-family:var(--f-chiffre);font-size:26px;font-weight:600;line-height:1.1;color:#fff}
+.fiche-carte .obj{font-size:12px;color:var(--pale)}
+.fiche-carte .mini-et{margin-top:4px}
+.fiche-mot{margin:12px 0 0;color:var(--pale)}
+.fenetre:has(.fiche){border-color:rgba(var(--acc),.45);background:linear-gradient(180deg,rgba(var(--acc),.1),rgba(20,20,31,.98) 40%),#14141f}
 /* niveaux experts (E1 à E4 de chaque monde) : un second anneau doré autour du nœud, la voie dorée sous la description */
 .parc-niv.expert .bille{display:none}
 .parc-niv.expert::before{content:"";grid-area:1/1;width:42px;height:42px;border-radius:9px;transform:rotate(45deg);z-index:0;
@@ -1472,6 +1485,8 @@ var ECRAN="accueil";
 function montrer(id,sens){var prevEcran=ECRAN;sens=sens||1;document.querySelectorAll(".ecran").forEach(function(e){
     if(e.id===id){e.style.transition="none";e.style.setProperty("--dx",(sens*28)+"px");void e.offsetWidth;e.style.transition="";e.classList.add("actif");}
     else{if(e.classList.contains("actif"))e.style.setProperty("--dx",(-sens*28)+"px");e.classList.remove("actif");}});ECRAN=id;
+  // l'accueil et les menus gardent le lilas ; la carte et le jeu prennent la couleur de leur monde
+  if(id!=="jeu"&&id!=="parcours")accent(null);
   numeroter(document.getElementById(id));
   Logo.visible=id==="accueil";AideP.visible=id==="aide";JeuP.visible=id==="jeu";if(typeof ApercuP!=="undefined"){ApercuP.visible=id==="boutique";if(id==="boutique"){redimApercu();rendreBoutique();}}
   if(id==="accueil"){FOND_ACC=2;poserFond(FOND_ACC,true);accentTheme(FOND_ACC);rafraichirAccueil();majRang();Logo.demarrer();}  // accueil toujours en thème bleu
@@ -1680,7 +1695,9 @@ var parcIO=null;function parcRevele(ch){var root=document.getElementById("parcou
   if(parcIO)parcIO.disconnect();
   parcIO=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add("vu");parcIO.unobserve(en.target);}});},{root:root,rootMargin:"60px 0px"});
   [].forEach.call(ch.querySelectorAll(".parc-niv"),function(n){parcIO.observe(n);});}
-function ouvrirParcours(){accent(null);montrer("parcours");requestAnimationFrame(function(){buildParcours();
+// la carte prend la couleur du monde où l'on en est (son décor), pas le lilas de l'accueil (le client : « menu toujours mauve »)
+function accentCarte(){var pn=prochainNiveau();accentTheme(themeFond(pn?pn.w:0));}
+function ouvrirParcours(){accentCarte();montrer("parcours");requestAnimationFrame(function(){buildParcours();
   var c=document.querySelector(".parc-niv.courant")||document.querySelector(".parc-niv:not(.verrou)"),dd=document.getElementById("parcoursDefile");
   if(c&&dd)dd.scrollTop=Math.max(0,c.offsetTop-dd.clientHeight*.55);});}
 document.getElementById("chemin").addEventListener("click",function(e){
@@ -1690,14 +1707,17 @@ document.getElementById("chemin").addEventListener("click",function(e){
   if(b.classList.contains("verrou")){vibrer(20);return;}sonClic();ficheNiveau(+b.dataset.w,+b.dataset.i);});
 // la fiche d'un niveau avant de le jouer (le client) : son objectif, votre meilleur score, vos étoiles, puis « Jouer »
 function ficheNiveau(w,i){var r=PROG.niveaux[(w+1)+"-"+(i+1)],par=MONDES[w].coups[i],e=r?r.etoiles||0:0,t=r?r.chrono||0:0;
-  var et=function(n,on){return [0,1,2].map(function(k){return k<n?on:SVG_ET_OFF;}).join("");};
-  ouvrirFenetre('<h3>'+nomNiveau(w,i)+'</h3><p class="fiche-monde">'+MONDES[w].nom+'</p>'+
-    '<div class="resume"><div>Coups<b>'+(r?r.coups:"–")+' / '+par+'</b><i class="mini-et">'+et(e,SVG_ET)+'</i></div>'+
-    '<div>Temps<b>'+(r?fmt(r.temps):"–")+' / '+fmt(objectifTemps(par))+'</b><i class="mini-et">'+et(t,SVG_ETT)+'</i></div></div>'+
-    '<p>'+(e===3&&t===3?"Parfait : toutes les étoiles sont à vous.":r?"Battez votre record pour gagner plus d’étoiles.":"Trois étoiles en "+par+" coups ou moins.")+'</p>'+
+  // la fiche prend la couleur du monde (son décor), pas le lilas de l'accueil (le client)
+  accentTheme(themeFond(w));
+  var et=function(n,on){return [0,1,2].map(function(k){return k<n?on:SVG_ET_OFF;}).join("");},
+    carte=function(nom,val,obj,etoiles){return '<div class="fiche-carte"><small>'+nom+'</small><b>'+val+'</b><span class="obj">objectif '+obj+'</span><i class="mini-et">'+etoiles+'</i></div>';};
+  ouvrirFenetre('<div class="fiche"><span class="fiche-monde">Monde '+(w+1)+' · '+MONDES[w].nom+'</span><h3>'+nomNiveau(w,i)+'</h3>'+
+    '<span class="fiche-orb">'+MONDES[w].anneaux.length+' orbites</span>'+
+    '<div class="fiche-cartes">'+carte("Coups",r?r.coups:"–",par,et(e,SVG_ET))+carte("Temps",r?fmt(r.temps):"–",fmt(objectifTemps(par)),et(t,SVG_ETT))+'</div>'+
+    '<p class="fiche-mot">'+(e===3&&t===3?"Parfait : toutes les étoiles sont à vous.":r?"Battez votre record pour gagner plus d’étoiles.":"Trois étoiles en "+par+" coups ou moins.")+'</p></div>'+
     '<div class="menu"><button class="bouton principal" data-a="jouer" type="button"><span>Jouer</span></button>'+
     '<button class="bouton" data-a="x" type="button" style="justify-content:center;color:var(--pale)">Fermer</button></div>',
-    function(a){fermerFenetre();if(a==="jouer")lancer(niveauDef(w,i));},"x");}
+    function(a){fermerFenetre();if(a==="jouer")lancer(niveauDef(w,i));else accentCarte();},"x");}
 document.getElementById("parcoursDefile").addEventListener("scroll",function(){if(parcRaf)return;parcRaf=requestAnimationFrame(function(){parcRaf=0;parcParallax();});},{passive:true});
 // (ancien écran de sélection #mondes/#niveaux retiré : la carte de campagne #parcours le remplace)
 

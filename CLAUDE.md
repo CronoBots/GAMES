@@ -168,7 +168,9 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   arc au-dessus** (`.arc`), les **étoiles de temps en trois arcs bleus** sur le bas de l'anneau (`anneauTemps`). États :
   à jouer plus grand, pulsant (anneau qui grandit : transform/opacity, aucun repeint), étiquette « Jouer » (hors du bouton, dans `sects`) ; parfait (3 + 3) anneau doré ;
   verrouillé plus petit et gris ; expert en **losange doré**. Un toucher ouvre la **fiche du niveau** (`ficheNiveau` :
-  objectif, record, étoiles, « Jouer ») au lieu de lancer. Au retour d'une victoire, les nouvelles étoiles apparaissent
+  objectif, record, étoiles, « Jouer ») au lieu de lancer : deux cartes Coups et Temps (record en grand, « objectif » dessous),
+  aux couleurs du monde. La carte (`accentCarte` : le monde où l'on en est) et la fiche prennent la couleur du décor ;
+  `montrer` rend le lilas à l'accueil et aux menus (le client : « menu toujours mauve »). Au retour d'une victoire, les nouvelles étoiles apparaissent
   une à une (`DERNIER`, posé par `victoire`). Le chemin entre deux niveaux finis passe en trait plein de la couleur du
   monde, coupé au bord des billes. Les décorations tiennent dans le bouton : le test des débordements reste exigeant. Options : les réglages à plusieurs choix
   (`.ligne.empile`) prennent toute la largeur du cadre.
