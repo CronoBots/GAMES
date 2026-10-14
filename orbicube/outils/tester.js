@@ -62,7 +62,7 @@ async function resoudre(p) {
     await p.waitForTimeout(1200);
 
     !/rubik/i.test(await p.textContent("#accueil")) ? ok("accueil sans la marque") : faute("« Rubik » sur l'accueil");
-    (await p.isHidden("#btnBoutique")) ? ok("pastille « Jeu complet » discrète tant que le monde 1 n'est pas fini") : faute("pastille d'achat affichée trop tôt");
+    (await p.isHidden("#btnBoutique")) ? ok("rond « Boutique » caché tant qu'aucun niveau n'est fini") : faute("rond « Boutique » affiché avant le premier niveau");
     (await p.textContent("#ampNb")) === "3" ? ok("trois ampoules au départ") : faute("ampoules au départ : " + (await p.textContent("#ampNb")));
 
     await p.tap("#btnJouer"); await p.waitForTimeout(1600);

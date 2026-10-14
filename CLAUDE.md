@@ -71,7 +71,7 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   (`etoilesTempsPour`, objectif `(par×4+6) s`, trois sous l'objectif, deux sous le double). Le chrono part
   au premier contact avec le plateau et avance seul (`majTemps`, toutes les 250 ms).
 - **Boutique** (`#boutique`, le client, le 13/10/2026 : « le plus professionnellement possible ») : écran ouvert par le
-  rond doré du dock (« Boutique », après dix niveaux ; son prix tant que le jeu n'est pas complet, puis « Styles ») et par
+  rond doré du dock (« Boutique », dès le premier niveau fini depuis le 14/10/2026 ; son prix tant que le jeu n'est pas complet, puis « Styles ») et par
   Options > Styles (le dock n'affiche plus de prix, le client le 14/10/2026). **En haut la vitrine, en bas toutes les offres**
   (Édition intégrale ou Collection, Orbicube complet, Collection, les 3 packs, ampoules, soutien). **Aperçu en direct** sur un
   vrai plateau (`ApercuP`, fixe sous les onglets — collant, il recouvrait les vignettes ; un style regardé n'est pas porté), avec
@@ -145,7 +145,7 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   le ciel animé baisse ses étoiles et n'envoie qu'une étoile filante pâle toutes les 6 à 12 s.
   **Menu du bas** : le bouton principal en pilule (accent, sans gloss plastique), puis un **dock** de raccourcis ronds
   (`.dock`, icône + nom + état : Défis avec un point doré tant que le défi du jour n'est pas joué, « +1 ampoule » dessous, Partie libre, Succès,
-  et « Boutique » en doré après dix niveaux). Plus de bouton musique sur l'accueil : il est dans les options.
+  et « Boutique » en doré dès le premier niveau fini). Plus de bouton musique sur l'accueil : il est dans les options.
   **Le bouton principal en pilule est celui de tout le jeu** (fenêtres de pause, victoire, boutique…), avec des boutons
   secondaires en pilule de verre sombre au contour d'accent, texte centré (`.fenetre .bouton`).
   **Écran de jeu au même langage** : boutons à icône seule (`.ico`, partout) en ronds de verre au contour d'accent,
@@ -158,7 +158,7 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 - **Logo** : les trois anneaux (`ANNEAUX` dans `outils/icones.py`) pour l'icône, le démarrage natif et le logo du
   mélange (`.anneaux`). **L'écran de chargement web montre les neuf orbites du plateau** (`.orbites`, SVG, un éclat de
   couleur par orbite, sans filtre CSS) puis se dissout sur l'accueil (le client, le 13/10/2026) ; les médailles des succès gardent le plateau. Accueil : la devise disparaît après le
-  premier niveau, le rond « Boutique » n'apparaît qu'après dix niveaux. Quand la suite de la campagne est payante, le bouton
+  premier niveau, le rond « Boutique » n'apparaît qu'après le premier niveau fini. Quand la suite de la campagne est payante, le bouton
   principal dit « Campagne » (et non « Continuer ») et la ligne dessous le dit.
 - **Le mélange ne se montre jamais** (le client, le 11/10/2026) : au lancement, le plateau se trouble en tournant
   (`.brouille`, flou, posé SANS transition dans `lancer()` : sinon le plateau et le cube se voyaient nets puis disparaissaient), les couleurs changent hors de vue puis il se dévoile. Animer les coups un par un permettait
