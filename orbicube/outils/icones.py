@@ -180,7 +180,8 @@ def main():
 # --- images des succès (Game Center : 1024 × 1024 ; Google Play Jeux : 512 × 512) ---
 # Une médaille par succès : le plateau, un cercle allumé en or propre au succès, et 1 à 3 étoiles selon sa valeur.
 SUCCES = [("premier", 10), ("m1", 25), ("m3", 50), ("m5", 75), ("m6", 100), ("p10", 50), ("pm", 75),
-          ("p60", 100), ("eclair", 50), ("jour", 25), ("serie3", 75), ("expert", 100), ("axes", 50), ("tours", 100)]
+          ("p60", 100), ("eclair", 50), ("jour", 25), ("serie3", 75), ("expert", 100), ("axes", 50), ("tours", 100),
+          ("voies", 100)]
 OR, OR_CLAIR = (255, 207, 74), (255, 236, 170)
 
 

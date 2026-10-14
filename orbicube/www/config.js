@@ -21,7 +21,7 @@ window.ORBICUBE_CONFIG = {
   revenuecat: { ios: "", android: "" },
   droit: "complet",           // identifiant de l'« entitlement » RevenueCat
 
-  // Succès des stores : identifiant de chacun des 14 succès du jeu dans Game Center (iOS) et Google Play Jeux
+  // Succès des stores : identifiant de chacun des 15 succès du jeu dans Game Center (iOS) et Google Play Jeux
   // (Android). Les identifiants Apple sont choisis par nous et créés tels quels dans App Store Connect ;
   // ceux de Google sont donnés par la Play Console à la création (« CgkI… ») : à recopier ici.
   // Un identifiant vide = ce succès reste local sur cette plateforme. Voir docs/lancement.md, section 3 bis.
@@ -30,11 +30,11 @@ window.ORBICUBE_CONFIG = {
       premier: "orbicube.premier", m1: "orbicube.monde1", m3: "orbicube.tranches", m5: "orbicube.orbite",
       m6: "orbicube.grandmaitre", p10: "orbicube.precision", pm: "orbicube.perfectionniste", p60: "orbicube.sansfaute",
       eclair: "orbicube.eclair", jour: "orbicube.rendezvous", serie3: "orbicube.serie3", expert: "orbicube.expert",
-      axes: "orbicube.troisaxes", tours: "orbicube.milletours"
+      axes: "orbicube.troisaxes", tours: "orbicube.milletours", voies: "orbicube.voiedoree"
     },
     android: {
       premier: "", m1: "", m3: "", m5: "", m6: "", p10: "", pm: "", p60: "",
-      eclair: "", jour: "", serie3: "", expert: "", axes: "", tours: ""
+      eclair: "", jour: "", serie3: "", expert: "", axes: "", tours: "", voies: ""
     }
   },
 

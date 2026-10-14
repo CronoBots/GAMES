@@ -98,7 +98,7 @@ Le jeu lit le prix, achète, restaure et vérifie le droit « complet » par `sr
 
 ## 3 bis. Les succès dans Game Center et Google Play Jeux **[vous]**
 
-Les 14 succès du jeu sont aussi déclarés au service de jeu du téléphone : Game Center sur
+Les 15 succès du jeu sont aussi déclarés au service de jeu du téléphone : Game Center sur
 iPhone, Google Play Jeux sur Android. Le joueur les retrouve dans l'app Jeux d'Apple ou dans
 Google Play Jeux, avec la bannière « Succès déverrouillé » du système. Le code est prêt :
 `plugins/succes-natifs` (Swift et Java), branché par `src/natif.js`. Sans configuration, rien
@@ -124,6 +124,7 @@ de la marge pour des succès futurs.
 | expert | `orbicube.expert` | Expert | Résoudre une partie de 25 coups en jeu libre. | 100 |
 | axes | `orbicube.troisaxes` | Trois axes | Tourner M, E et S dans une même partie résolue. | 50 |
 | tours | `orbicube.milletours` | Mille tours | Tourner les cercles 1 000 fois. | 100 |
+| voies | `orbicube.voiedoree` | Voie dorée | Finir la voie dorée des huit mondes. | 100 |
 
 Les noms et descriptions traduits sont dans `www/langues.js` : recopiez-les dans chaque langue
 de la fiche. Aucun succès n'est caché.

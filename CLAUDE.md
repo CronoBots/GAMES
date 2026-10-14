@@ -206,6 +206,14 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   pas fini, la voie dorée est discrète** (trait atténué `.voie-discrete`, nœuds `.discret` à 55 % : le client la voulait moins effacée) et ses nœuds ne montrent
   qu'un éclat doré, ni « E1 » ni étoiles. La pastille « Voie dorée » est petite, posée sur la bifurcation depuis le
   niveau 1 (`t:"x"`). La condition d'étoiles d'un monde n'est plus écrite sous sa description : le bandeau la montre.
+- **Récompense de la voie dorée** (le client, le 14/10/2026 : « tout ») : finir le dernier expert d'un monde (`voieFinie`)
+  ouvre un **style exclusif, jamais vendu** (`ouv:{voie:w}` ; Émeraude, Sillage, Écailles, Améthyste, Supernova, Nébuleuse,
+  Éclats, Couronne, du monde 1 au 8 ; `styleVoie`), donne 3 ampoules en tout (`J.voie`), pose une **couronne** sur le
+  bandeau du monde et illumine sa voie en trait d'or plein (coupé au bord des nœuds) ; la voie du monde 8 donne le titre
+  « Maître des orbites » au Profil. Dans la boutique, ces styles montrent « Exclusif : se gagne en finissant la voie dorée
+  du monde N » et une barre des experts gagnés. Succès « Voie dorée » (`voies`, les huit voies ; `orbicube.voiedoree`,
+  image `ressources/succes/*/voies.png`). `npm run icones` réécrit aussi les icônes de l'app (mêmes images, autres
+  octets) : ne committer que ce qui a vraiment changé.
 - **Mémoire de la carte sur iPhone** (Safari fermait la page, « un problème est survenu à plusieurs reprises ») : chaque
   bande d'image d'un monde (4 par monde) était un calque de carte graphique (`will-change`) ; à 8 mondes, 48 calques,
   ≈ 760 Mo. Désormais pas de `will-change` sur les bandes ni sur leurs calques parents, et `parcParallax` ne garde

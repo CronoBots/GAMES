@@ -588,6 +588,13 @@ body{background:
 .parc-niv.verrou.vu{transform:translate(-50%,-50%) scale(.82);opacity:.72}
 .parc-niv .pcad{width:20px;height:20px;stroke:rgba(255,255,255,.6);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .parc-niv .pcad.or{position:relative;z-index:1;stroke:rgba(255,207,74,.85)}
+.parc-sect .couronne-ic{width:16px;height:16px;fill:var(--or);margin-right:6px;flex:none;filter:drop-shadow(0 0 6px rgba(255,207,74,.8))}
+.parc-sect.couronne{border-color:rgba(255,207,74,.75);box-shadow:0 0 22px -6px rgba(255,207,74,.7)}
+.fenetre .voie-gain{margin:10px 0 4px;padding:10px 12px;border-radius:14px;border:1px solid rgba(255,207,74,.5);background:linear-gradient(160deg,rgba(255,207,74,.16),rgba(255,207,74,.03))}
+.fenetre .voie-gain b{display:block;font-family:var(--f-chiffre);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--or)}
+.fenetre .voie-gain span{font-size:14px}
+.mecene-titre.maitre{color:var(--or);border-color:rgba(255,207,74,.6)}
+.bout .style .voie-cond{color:var(--or)}
 .parc-desc .parc-meta{display:block;margin-top:5px;font-family:var(--f-chiffre);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgb(var(--pa))}
 .parc-niv.paye.vu{opacity:.8}.parc-niv.paye .pcad{stroke:var(--or)}
 /* les étoiles de coups en arc au-dessus du nœud, l'anneau du temps en trois arcs bleus sur le bas */
@@ -1028,7 +1035,10 @@ var PALETTES={classique:["#FF7A1E","#FA3A47","#FBD101","#F4F4F6","#2DCC4B","#009
   aurore:["#00F5A0","#00C2FF","#7B61FF","#FF4FD8","#FFE45E","#FFFFFF"],    // aurore boréale : menthe, cyan, violet, magenta
   galaxie:["#9D4EDD","#FF4D9D","#FFD60A","#4CC9F0","#F8F0FF","#FF7B00"],   // nébuleuse : pourpre, rose, or, azur
   glace:["#FFFFFF","#9AD9FF","#2F6BFF","#2EE6C8","#B48CFF","#8E9AAF"],     // banquise : blanc, ciel, bleu profond, givre
-  joyaux:["#E0115F","#0FA968","#1F5CFF","#9B30FF","#FFB000","#F5F0E6"]};   // rubis, émeraude, saphir, améthyste, topaze, perle
+  joyaux:["#E0115F","#0FA968","#1F5CFF","#9B30FF","#FFB000","#F5F0E6"],   // rubis, émeraude, saphir, améthyste, topaze, perle
+  // styles exclusifs de la voie dorée (le client, le 14/10/2026) : ils ne se vendent pas, ils se gagnent
+  emeraude:["#0FB86B","#6EF0C2","#C6FF3D","#FFD54A","#0B6E8C","#F2FFF8"],   // monde 1 : émeraude, menthe, citron vert, or, sarcelle, écume
+  nebuleuse:["#FF5E5B","#FFB86B","#D7263D","#FFE8D6","#7A1FA2","#2EC4B6"]};  // monde 6 : corail, ambre, carmin, nacre, pourpre, lagon
 /* ========== LA BOUTIQUE : packs vendus et styles (le client, le 13/10/2026) ==========
    Chaque pack est un droit (« entitlement » RevenueCat) vendu par un produit des stores ; une édition groupée active
    plusieurs droits (réglé dans RevenueCat). Les ampoules sont consommables : le jeu les crédite lui-même.
@@ -1045,12 +1055,15 @@ var PACKS={
 // ouv : rien (ouvert), {etoiles:n} de coups, {chrono:n} de temps, {rang:n}, ou {pack:clé}
 var STYLES={
   palette:[{id:"classique",nom:"Classique"},{id:"contraste",nom:"Daltonien"},{id:"pastel",nom:"Pastel",ouv:{etoiles:45}},{id:"neon",nom:"Néon",ouv:{chrono:45}},
-    {id:"aurore",nom:"Aurore",ouv:{pack:"couleurs"}},{id:"galaxie",nom:"Galaxie",ouv:{pack:"couleurs"}},{id:"glace",nom:"Glace",ouv:{pack:"couleurs"}},{id:"joyaux",nom:"Joyaux",ouv:{pack:"couleurs"}}],
+    {id:"aurore",nom:"Aurore",ouv:{pack:"couleurs"}},{id:"galaxie",nom:"Galaxie",ouv:{pack:"couleurs"}},{id:"glace",nom:"Glace",ouv:{pack:"couleurs"}},{id:"joyaux",nom:"Joyaux",ouv:{pack:"couleurs"}},
+    {id:"emeraude",nom:"Émeraude",ouv:{voie:0}},{id:"nebuleuse",nom:"Nébuleuse",ouv:{voie:5}}],
   forme:[{id:"facettes",nom:"Facettes"},{id:"perles",nom:"Perles"},{id:"hexagones",nom:"Hexagones",ouv:{rang:8}},
-    {id:"gemmes",nom:"Gemmes",ouv:{pack:"formes"}},{id:"etoiles",nom:"Étoiles",ouv:{pack:"formes"}},{id:"cristaux",nom:"Cristaux",ouv:{pack:"formes"}}],
-  trainee:[{id:"halo",nom:"Halo"},{id:"poussiere",nom:"Poussière d’étoiles",ouv:{rang:12}},{id:"comete",nom:"Comète",ouv:{pack:"effets"}}],
-  orbite:[{id:"accent",nom:"Couleur du monde"},{id:"argent",nom:"Argent",ouv:{pack:"effets"}},{id:"arcenciel",nom:"Arc-en-ciel",ouv:{pack:"effets"}}],
-  victoire:[{id:"confettis",nom:"Confettis"},{id:"pluie",nom:"Pluie d’étoiles",ouv:{chrono:30}},{id:"feux",nom:"Feu d’artifice",ouv:{pack:"effets"}}]};
+    {id:"gemmes",nom:"Gemmes",ouv:{pack:"formes"}},{id:"etoiles",nom:"Étoiles",ouv:{pack:"formes"}},{id:"cristaux",nom:"Cristaux",ouv:{pack:"formes"}},
+    {id:"ecailles",nom:"Écailles",ouv:{voie:2}},{id:"eclats",nom:"Éclats",ouv:{voie:6}}],
+  trainee:[{id:"halo",nom:"Halo"},{id:"poussiere",nom:"Poussière d’étoiles",ouv:{rang:12}},{id:"comete",nom:"Comète",ouv:{pack:"effets"}},{id:"sillage",nom:"Sillage",ouv:{voie:1}}],
+  orbite:[{id:"accent",nom:"Couleur du monde"},{id:"argent",nom:"Argent",ouv:{pack:"effets"}},{id:"arcenciel",nom:"Arc-en-ciel",ouv:{pack:"effets"}},
+    {id:"amethyste",nom:"Améthyste",ouv:{voie:3}},{id:"couronne",nom:"Couronne",ouv:{voie:7}}],
+  victoire:[{id:"confettis",nom:"Confettis"},{id:"pluie",nom:"Pluie d’étoiles",ouv:{chrono:30}},{id:"feux",nom:"Feu d’artifice",ouv:{pack:"effets"}},{id:"supernova",nom:"Supernova",ouv:{voie:4}}]};
 // les styles portés, recalculés par appliquerOptions() (le dessin les lit à chaque image)
 var STY={palette:"classique",forme:"facettes",trainee:"halo",orbite:"accent",victoire:"confettis"};
 // chaque style d'un pack s'achète aussi à l'unité (le client, le 14/10/2026) : produit orbicube_style_<id>, droit style_<id>
@@ -1063,13 +1076,21 @@ var DESC_STYLE={classique:"Les six couleurs du cube 3×3.",contraste:"Des teinte
   etoiles:"Chaque pastille devient une étoile.",cristaux:"Des éclats de cristal effilés.",halo:"Un léger halo suit les pièces.",
   poussiere:"Une poussière d’étoiles scintille derrière elles.",comete:"Une longue queue de comète au cœur blanc.",accent:"Les orbites prennent la couleur du monde.",
   argent:"Des orbites d’argent, sobres et élégantes.",arcenciel:"Une couleur par famille de cercles.",confettis:"Une pluie de confettis à chaque victoire.",
-  pluie:"Des étoiles d’or tombent du ciel à chaque victoire.",feux:"Quatre gerbes de feu d’artifice à chaque victoire."};
+  pluie:"Des étoiles d’or tombent du ciel à chaque victoire.",feux:"Quatre gerbes de feu d’artifice à chaque victoire.",
+  emeraude:"Les verts profonds d’une forêt de cristal.",nebuleuse:"Le corail et le pourpre d’une nébuleuse lointaine.",
+  ecailles:"Des écailles de dragon, polies comme du métal.",eclats:"De longs éclats de verre taillés en pointe.",
+  sillage:"Un sillage bleu glacé derrière chaque pièce.",amethyste:"Des orbites d’améthyste, d’un violet profond.",
+  couronne:"Des orbites d’or, la marque des maîtres.",supernova:"Une étoile explose au cœur du plateau à chaque victoire."};
 function style(k,id){var l=STYLES[k];for(var i=0;i<l.length;i++)if(l[i].id===id)return l[i];return l[0];}
 function aDroit(d){return d==="complet"?complet():!!(PROG.droits&&PROG.droits[d]);}
-function progresStyle(o){return o.etoiles?[etoilesTotal(),o.etoiles,"étoiles de coups"]:o.chrono?[etoilesChrono(),o.chrono,"étoiles de temps"]:o.rang?[rangDe(PROG.xp).r,o.rang,"rang"]:null;}
+// un style exclusif s'ouvre en finissant la voie dorée d'un monde (son dernier expert) ; la barre compte ses experts gagnés
+function styleVoie(w){var r=null;Object.keys(STYLES).forEach(function(k){STYLES[k].forEach(function(st){if(st.ouv&&st.ouv.voie===w)r=st;});});return r;}
+function voieFinie(w){return !!PROG.niveaux[(w+1)+"-"+MONDES[w].coups.length];}
+function expertsGagnes(w){var n=0;for(var i=BASE;i<MONDES[w].coups.length;i++)if(PROG.niveaux[(w+1)+"-"+(i+1)])n++;return n;}
+function progresStyle(o){return o.voie!=null?[expertsGagnes(o.voie),MONDES[o.voie].coups.length-BASE,"experts"]:o.etoiles?[etoilesTotal(),o.etoiles,"étoiles de coups"]:o.chrono?[etoilesChrono(),o.chrono,"étoiles de temps"]:o.rang?[rangDe(PROG.xp).r,o.rang,"rang"]:null;}
 function nouveauxStyles(){var v=PROG.stylesVus||{},l=[];Object.keys(STYLES).forEach(function(k){STYLES[k].forEach(function(st){if(st.ouv&&!v[st.id]&&styleOuvert(k,st.id))l.push(st.id);});});return l;}
 function styleOuvert(k,id){var o=style(k,id).ouv;if(!o)return true;if(o.etoiles)return etoilesTotal()>=o.etoiles;if(o.chrono)return etoilesChrono()>=o.chrono;
-  if(o.rang)return rangDe(PROG.xp).r>=o.rang;if(o.pack)return aDroit(PACKS[o.pack].droit)||aDroit("style_"+id);return false;}
+  if(o.rang)return rangDe(PROG.xp).r>=o.rang;if(o.voie!=null)return voieFinie(o.voie);if(o.pack)return aDroit(PACKS[o.pack].droit)||aDroit("style_"+id);return false;}
 // le style porté (un style reperdu, ou d'un pack pas encore restauré, retombe sur le premier de son rayon)
 function styleActif(k){var v=PROG.options[k];return v&&style(k,v).id===v&&styleOuvert(k,v)?v:STYLES[k][0].id;}
 var COUL=PALETTES.classique;
@@ -1176,18 +1197,20 @@ function formeA(p,i){if(!p.m)return FORME[i];
   var au1=ch1<=ch2?c1:c2,d1=ch1<=ch2?A1[1]:Math.PI-A1[1],e=p.t,au=au0+(au1-auF)*e,d=d0+(d1-d0)*e;
   return{u:[Math.cos(au),Math.sin(au)],v:[Math.cos(au+d),Math.sin(au+d)]};}
 // couleur des orbites au repos : celle du monde, l'argent, ou une teinte par famille de cercles (arc-en-ciel)
-function couleurOrbite(st,a){return st==="argent"?"214,222,238":st==="arcenciel"?["255,138,150","120,226,170","128,172,255"][a]:ACC;}
+function couleurOrbite(st,a){return st==="argent"?"214,222,238":st==="amethyste"?"178,120,255":st==="couronne"?"255,207,74":st==="arcenciel"?["255,138,150","120,226,170","128,172,255"][a]:ACC;}
 // formes de la boutique : même construction que la facette (corps noir, pastille de couleur encastrée, reflet),
 // orientées sur les tangentes des deux cercles qui se croisent sous la pastille
 function pastille(cx,q,f,h,coul,forme){var U=[f.u[0]*h,-f.u[1]*h],V=[f.v[0]*h,-f.v[1]*h],ang=Math.atan2(U[1],U[0]),pts=[],k,a;
   if(forme==="hexagones")for(k=0;k<6;k++){a=ang+k*Math.PI/3;pts.push([Math.cos(a)*h*.92,Math.sin(a)*h*.92]);}
   else if(forme==="etoiles")for(k=0;k<10;k++){a=ang-Math.PI/2+k*Math.PI/5;var rr=k%2?h*.5:h*1.1;pts.push([Math.cos(a)*rr,Math.sin(a)*rr]);}
+  else if(forme==="ecailles"){for(k=0;k<=8;k++){a=ang-Math.PI*.5+k*Math.PI/8;pts.push([Math.cos(a)*h*.95,Math.sin(a)*h*.95]);}pts.push([-U[0]*1.2,-U[1]*1.2]);}   // écaille : un dôme et une pointe
+  else if(forme==="eclats")pts=[[U[0]*1.3,U[1]*1.3],[V[0]*.42,V[1]*.42],[-U[0]*1.3,-U[1]*1.3],[-V[0]*.42,-V[1]*.42]];   // éclat : un losange effilé
   else if(forme==="cristaux")pts=[[U[0]*1.08,U[1]*1.08],[U[0]*.4+V[0]*.8,U[1]*.4+V[1]*.8],[-U[0]*.4+V[0]*.8,-U[1]*.4+V[1]*.8],[-U[0]*1.08,-U[1]*1.08],[-U[0]*.4-V[0]*.8,-U[1]*.4-V[1]*.8],[U[0]*.4-V[0]*.8,U[1]*.4-V[1]*.8]];
   else pts=[[1,1],[1,-1],[-1,-1],[-1,1]].map(function(m){return[(m[0]*U[0]+m[1]*V[0])*.92,(m[0]*U[1]+m[1]*V[1])*.92];});   // gemmes
   function tracer(sc){cx.beginPath();pts.forEach(function(p,i){var x=q[0]+p[0]*sc,y=q[1]+p[1]*sc;if(i)cx.lineTo(x,y);else cx.moveTo(x,y);});cx.closePath();}
   tracer(1);cx.fillStyle="#0b0b0e";cx.fill();cx.lineWidth=Math.max(1,h*.14);cx.strokeStyle="#0b0b0e";cx.lineJoin="round";cx.stroke();
   tracer(.8);cx.fillStyle=coul;cx.fill();if(h<=4)return;
-  if(forme==="gemmes"||forme==="cristaux"){   // taille de pierre : facettes claires et sombres depuis le centre
+  if(forme==="gemmes"||forme==="cristaux"||forme==="eclats"||forme==="ecailles"){   // taille de pierre : facettes claires et sombres depuis le centre
     for(var i=0;i<pts.length;i++){var A=pts[i],B=pts[(i+1)%pts.length];cx.beginPath();cx.moveTo(q[0],q[1]);cx.lineTo(q[0]+A[0]*.8,q[1]+A[1]*.8);cx.lineTo(q[0]+B[0]*.8,q[1]+B[1]*.8);cx.closePath();
       cx.fillStyle=i%2?"rgba(0,0,0,.16)":"rgba(255,255,255,.22)";cx.fill();}
     cx.beginPath();cx.arc(q[0]-h*.18,q[1]-h*.2,h*.1,0,6.283);cx.fillStyle="rgba(255,255,255,.75)";cx.fill();}
@@ -1252,11 +1275,12 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
     cx.restore();
     // traînée : les positions des images précédentes
     // traînée : Halo (les positions des images précédentes), Comète (plus longue, cœur blanc), Poussière d'étoiles (éclats)
-    var lgT=TR==="comete"?10:TR==="poussiere"?7:5;this.trace.push(t);while(this.trace.length>lgT)this.trace.shift();
+    var lgT=TR==="comete"?10:TR==="sillage"?12:TR==="poussiere"?7:5;this.trace.push(t);while(this.trace.length>lgT)this.trace.shift();
     for(var h=0;h<this.trace.length-1;h++){var tp=this.positionsA(this.trace[h]),fr=(h+1)/this.trace.length;
       for(i=0;i<tp.length;i++){if(!tp[i].m)continue;q=this.vers(tp[i].xy);
         if(TR==="poussiere"){for(var z=0;z<2;z++){var jx=Math.sin(i*7.1+h*3.3+z*5)*rp*.9,jy=Math.cos(i*4.3+h*5.1+z*3)*rp*.9;
             cx.globalAlpha=fr*.75*SB;cx.beginPath();cx.arc(q[0]+jx,q[1]+jy,Math.max(.8,rp*.16*fr),0,6.283);cx.fillStyle=z?"#fff":CL[tp[i].c];cx.fill();}}
+        else if(TR==="sillage"){cx.globalAlpha=fr*.55*SB;cx.beginPath();cx.arc(q[0],q[1],rp*(.18+.3*fr),0,6.283);cx.fillStyle=h%2?"#bdeeff":"#5cc8ff";cx.fill();}   // sillage : un fil de bulles bleu glacé
         else{cx.globalAlpha=fr*(TR==="comete"?.34:.26)*SB;cx.beginPath();cx.arc(q[0],q[1],rp*(.5+.4*fr),0,Math.PI*2);cx.fillStyle=CL[tp[i].c];cx.fill();
           if(TR==="comete"){cx.globalAlpha=fr*.5*SB;cx.beginPath();cx.arc(q[0],q[1],rp*.22*fr,0,6.283);cx.fillStyle="#fff";cx.fill();}}}}
     cx.globalAlpha=1;}
@@ -1634,9 +1658,9 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
       for(var j=0;j<M.coups.length-BASE&&j<choix.length;j++){var c=choix[j].filter(function(q){return q>der;}),q=c.reduce(function(m,v){return Math.abs(inv(v)-cx)>Math.abs(inv(m)-cx)?v:m;},c[0]);
         for(var t=der+1;t<=q;t++)bra.push([inv(t),ys[t]]);der=q;
         var ie=BASE+j,r=PROG.niveaux[(w+1)+"-"+(ie+1)];
-        items.push({t:"n",x:inv(q),y:ys[q],w:w,i:ie,num:"E"+numNiveau(w,ie),r:r,ouv:niveauOuvert(w,ie),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===ie),acc:acc});}
+        bra[bra.length-1].noeud=true;items.push({t:"n",x:inv(q),y:ys[q],w:w,i:ie,num:"E"+numNiveau(w,ie),r:r,ouv:niveauOuvert(w,ie),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===ie),acc:acc});}
       if(bra.length>1)items.push({t:"x",w:w,x:(bra[0][0]+bra[1][0])/2,y:(bra[0][1]+bra[1][1])/2});
-      branches.push({w:w,pts:bra});}
+      bra[0].noeud=true;branches.push({w:w,pts:bra});}
     wreg.push({w:w,acc:acc,y0:y0,y1:y});y+=18;}
   var H=y+60,de="",nodes="",sects="",d="";
   // FONDS CRAFTPIX (Space Vertical Game Backgrounds, 4 thèmes cyclés par monde), en COUCHES parallaxe :
@@ -1656,11 +1680,16 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
     fait+='<path d="M'+(q[0]+dx*c).toFixed(1)+" "+(H-(q[1]+dy*c)).toFixed(1)+" L"+(p[0]-dx*c).toFixed(1)+" "+(H-(p[1]-dy*c)).toFixed(1)+'" stroke="rgba('+p[3]+',.75)"/>';});
   // la voie dorée se trace comme le chemin (même trait, en miroir)
   // la voie dorée reste discrète tant que le chemin de son monde n'est pas fini (le client, le 14/10/2026)
-  var deD="";branches.forEach(function(b){var t="";b.pts.forEach(function(p,j){t+=(j?"L":"M")+p[0].toFixed(1)+" "+(H-p[1])+" ";});if(mondeFini(b.w))de+=t;else deD+=t;});
+  // une voie dorée finie s'illumine entièrement : trait plein et lumineux (le client, le 14/10/2026)
+  // (le trait plein est coupé au bord des nœuds, comme le chemin parcouru : il les relie sans passer dessus)
+  var deD="",deOr="";branches.forEach(function(b){var t="";b.pts.forEach(function(p,j){t+=(j?"L":"M")+p[0].toFixed(1)+" "+(H-p[1])+" ";});
+    if(voieFinie(b.w))b.pts.forEach(function(p,j){if(!j)return;var q=b.pts[j-1],dx=p[0]-q[0],dy=p[1]-q[1],L=Math.hypot(dx,dy),c0=q.noeud?34/L:0,c1=p.noeud?34/L:0;if(c0+c1>=1)return;
+      deOr+="M"+(q[0]+dx*c0).toFixed(1)+" "+(H-(q[1]+dy*c0)).toFixed(1)+"L"+(p[0]-dx*c1).toFixed(1)+" "+(H-(p[1]-dy*c1)).toFixed(1)+" ";});
+    else if(mondeFini(b.w))de+=t;else deD+=t;});
   items.forEach(function(it){var fy=H-it.y;
     if(it.t==="s"){var pa=mondePaye(it.w),cE=!pa&&condEtoiles(it.w),etM=etoilesMonde(it.w),etTM=chronoMonde(it.w),maxM=MONDES[it.w].coups.length*3;
       sects+='<div class="parc-sep" style="--pa:'+it.acc+';top:'+fy+'px"></div>'
-        +'<div class="parc-sect'+(pa?" paye":"")+'" style="--pa:'+it.acc+';top:'+fy+'px"><b>Monde '+(it.w+1)+'</b><small>'+it.nom+'</small>'
+        +'<div class="parc-sect'+(pa?" paye":"")+(voieFinie(it.w)?" couronne":"")+'" style="--pa:'+it.acc+';top:'+fy+'px">'+(voieFinie(it.w)?'<svg class="couronne-ic" viewBox="0 0 24 24"><path d="M3 18h18l-1.5-10-4.5 4-3-7-3 7-4.5-4z"/></svg>':"")+'<b>Monde '+(it.w+1)+'</b><small>'+it.nom+'</small>'
         +(pa?'<svg class="pscad" viewBox="0 0 24 24">'+CAD+'</svg>':cE?'<span class="parc-cond'+(cE.jaunes?"":" t")+'"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+cE.a+' / '+cE.faut+'</span>':'<span class="parc-et"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etM+'/'+maxM+'<svg class="t" viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etTM+'/'+maxM+'</span>')+'</div>'
         +'<div class="parc-desc" style="--pa:'+it.acc+';top:'+(fy+30)+'px">'+MONDES[it.w].desc+'<span class="parc-meta">'+MONDES[it.w].anneaux.length+' orbites · '+MONDES[it.w].coups[0]+' à '+MONDES[it.w].coups[BASE-1]+' coups</span></div>';}
     // la pastille de la voie dorée, discrète, posée sur la bifurcation (le client, le 14/10/2026)
@@ -1682,7 +1711,7 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
   ch.innerHTML='<div class="parc-fond"></div>'
     +'<div class="parc-layer l-bg">'+lbg+'</div><div class="parc-layer l-planets">'+lpl+'</div>'
     +'<div class="parc-layer l-stars">'+lst+'</div><div class="parc-layer l-meteors">'+lme+'</div>'
-    +'<svg class="trail" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" preserveAspectRatio="none"><path d="'+d+'" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 11"/><g fill="none" stroke-width="2.6" stroke-linecap="round">'+fait+'</g><path d="'+de+'" fill="none" stroke="rgba(255,196,80,.55)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 9"/><path class="voie-discrete" d="'+deD+'" fill="none" stroke="rgba(255,196,80,.42)" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 9"/></svg>'
+    +'<svg class="trail" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" preserveAspectRatio="none"><path d="'+d+'" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 11"/><g fill="none" stroke-width="2.6" stroke-linecap="round">'+fait+'</g><path d="'+de+'" fill="none" stroke="rgba(255,196,80,.55)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 9"/><path d="'+deOr+'" fill="none" stroke="rgba(255,207,74,.25)" stroke-width="7" stroke-linecap="round"/><path d="'+deOr+'" fill="none" stroke="rgba(255,214,100,.95)" stroke-width="2.4" stroke-linecap="round"/><path class="voie-discrete" d="'+deD+'" fill="none" stroke="rgba(255,196,80,.42)" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 9"/></svg>'
     +sects+nodes;
   parcRevele(ch);parcParallax();}
 // parallaxe PAR BANDE : chaque bande (BG/Planets/Stars/Meteors de son monde) se décale selon sa distance au
@@ -1880,7 +1909,9 @@ function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length
     record=record||eT>((av&&av.chrono)||0);
     var gain=(e===3&&eT===3&&!(av&&av.etoiles===3&&av.chrono===3)),finMonde=!av&&MONDES[d.w].coups.every(function(c,i){return estExpert(i)!==estExpert(d.i)||i===d.i||PROG.niveaux[(d.w+1)+"-"+(i+1)];});
     PROG.niveaux[d.id]=av?{etoiles:Math.max(av.etoiles,e),chrono:Math.max(av.chrono||0,eT),coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),sansIndice:av.sansIndice||!J.indice}:{etoiles:e,chrono:eT,coups:n,temps:temps,sansIndice:!J.indice};
-    if(n>=3&&temps<10000)PROG.tips.eclair=1;if(gain)gagnerAmpoule();if(finMonde)gagnerAmpoule();}
+    if(n>=3&&temps<10000)PROG.tips.eclair=1;if(gain)gagnerAmpoule();if(finMonde)gagnerAmpoule();
+    // la voie dorée finie (son dernier expert, la première fois) : trois ampoules en tout et le style exclusif du monde
+    J.voie=!av&&d.i===MONDES[d.w].coups.length-1;if(J.voie){gagnerAmpoule();gagnerAmpoule();}}
   else if(d.mode==="jour"){av=PROG.jours[d.id];record=!av;if(!av)gagnerAmpoule();PROG.jours[d.id]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),etoiles:Math.max(av.etoiles,e)}:{coups:n,temps:temps,etoiles:e};
     if(PROG.dernierJour!==d.id){PROG.serie=estHier(PROG.dernierJour)?PROG.serie+1:1;PROG.dernierJour=d.id;
       // palier de série : une ampoule à 3 jours d'affilée, puis à chaque semaine (7, 14, 21…)
@@ -1924,7 +1955,8 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
     '<div class="resume"><div>Coups<b>'+n+' / '+d.par+'</b><i class="mini-et">'+[0,1,2].map(function(k){return k<e?SVG_ET:SVG_ET_OFF;}).join("")+'</i></div>'+
     '<div>Temps<b>'+fmt(temps)+' / '+fmt(objectifTemps(d.par))+'</b><i class="mini-et">'+[0,1,2].map(function(k){return k<J.eT?SVG_ETT:SVG_ET_OFF;}).join("")+'</i></div></div>'+
     (e<3?'<p>'+(J.indice?"L’indice limite le niveau à deux étoiles.":"Trois étoiles en "+d.par+" coups ou moins.")+'</p>':"")+
-    (experts!=null?'<p class="experts">La voie dorée s’ouvre : quatre niveaux experts vous attendent.</p>':"")+(cS?'<p class="experts">'+texteCond(cS)+'</p>':"")+
+    (experts!=null?'<p class="experts">La voie dorée s’ouvre : quatre niveaux experts vous attendent.</p>':"")+
+    (J.voie?'<div class="voie-gain"><b>Voie dorée terminée</b><span>Style exclusif « '+styleVoie(d.w).nom+' » débloqué, et 3 ampoules.</span></div>':"")+(cS?'<p class="experts">'+texteCond(cS)+'</p>':"")+
     (d.mode==="jour"?'<p class="serie">Série : '+PROG.serie+' · record : '+Math.max(PROG.serieMax||0,PROG.serie)+'</p>':"")+'<div class="menu">';
   if(suiv)html+='<button class="bouton principal" data-a="suivant" type="button"><span>'+(suiv.w!==d.w?"Monde "+(suiv.w+1):estExpert(suiv.i)?nomNiveau(suiv.w,suiv.i):"Niveau suivant")+'</span></button>';
   if(experts!=null)html+='<button class="bouton or" data-a="experts" type="button" style="justify-content:center">'+nomNiveau(d.w,experts)+'</button>';
@@ -2099,6 +2131,8 @@ function confettis(v){if(CALME)return;v=v||STY.victoire;var cv=document.getEleme
       c:["#ffcf4a","#fff3c4","#4cc9f0","#ffffff"][i%4],g:.03});duree=3000;}
   else if(v==="feux"){for(k=0;k<4;k++){var bx=W*(.2+.6*Math.random()),by=H*(.18+.3*Math.random()),t=k*380;
       for(i=0;i<60;i++){var an=i/60*6.283,sp=3.5+Math.random()*3.5;ps.push({x:bx,y:by,vx:Math.cos(an)*sp,vy:Math.sin(an)*sp,r:3.2,c:COUL[(k+i)%6],g:.06,t:t,fr:.965,fade:1});}}duree=2900;}
+  else if(v==="supernova"){for(i=0;i<150;i++){var an2=i/150*6.283+Math.random()*.05,sp2=5+Math.random()*7;   // une étoile qui explose au centre, en anneaux
+      ps.push({x:W/2,y:H*.42,vx:Math.cos(an2)*sp2,vy:Math.sin(an2)*sp2,r:2+Math.random()*2.6,c:["#ffffff","#ffe08a","#c9a2ff","#7fdcff"][i%4],g:0,fr:.955,t:(i%3)*120,fade:1});}duree=2400;}
   else for(i=0;i<140;i++)ps.push({x:W/2+(Math.random()-.5)*60,y:H*.42,vx:(Math.random()-.5)*12,vy:-Math.random()*14-4,r:Math.random()*5+3,c:COUL[i%6],g:.38,fr:.99});
   function etoile(x,y,r,a){cx.beginPath();for(var n=0;n<10;n++){var aa=a+n*Math.PI/5,rr=n%2?r*.45:r;cx.lineTo(x+Math.cos(aa)*rr,y+Math.sin(aa)*rr);}cx.closePath();cx.fill();}
   var t0=performance.now();(function f(now){var e=now-t0;cx.clearRect(0,0,W,H);
@@ -2125,7 +2159,8 @@ var SUCCES=[
   {id:"serie3",nom:"Trois jours de suite",desc:"Réussir le défi du jour trois jours d’affilée.",ok:function(){return PROG.serie>=3;}},
   {id:"expert",nom:"Expert",desc:"Résoudre une partie de 25 coups en jeu libre.",ok:function(){return !!PROG.stats.meilleur[25];}},
   {id:"axes",nom:"Trois axes",desc:"Tourner M, E et S dans une même partie résolue.",ok:function(){return !!PROG.tips.troisTranches;}},
-  {id:"tours",nom:"Mille tours",desc:"Tourner les cercles 1 000 fois.",ok:function(){return PROG.stats.tours>=1000;}}];
+  {id:"tours",nom:"Mille tours",desc:"Tourner les cercles 1 000 fois.",ok:function(){return PROG.stats.tours>=1000;}},
+  {id:"voies",nom:"Voie dorée",desc:"Finir la voie dorée des huit mondes.",ok:function(){for(var w=0;w<MONDES.length;w++)if(!voieFinie(w))return false;return true;}}];
 // les succès gagnés sont aussi déclarés à Game Center ou Google Play Jeux, quand l'app est configurée pour
 function idStore(id){var m=(CFG.succesStores||{})[NATIF.plateforme]||{};return m[id]||"";}
 function versStore(id){if(NATIF.succesDebloquer&&idStore(id))NATIF.succesDebloquer(idStore(id));}
@@ -2278,7 +2313,7 @@ function habillerApercu(){var vu=function(k){return VU[k]||STY[k];};ApercuP.pal=
   else if(styleOuvert(k,st.id))f+='<button class="bouton petit" type="button" data-porter="'+k+'" data-id="'+st.id+'">Porter</button>';
   else if(o.pack)f+='<button class="btn-or" type="button" data-achat="s_'+st.id+'"><span>Acheter</span><span class="px notrad">'+PRIXP["s_"+st.id]+'</span></button>'+
     '<button class="fiche-pack" type="button" data-achat="'+o.pack+'">ou le pack '+PACKS[o.pack].nom+'</button>';
-  else{pr=progresStyle(o);f+='<span class="fiche-cond">'+(o.etoiles?"Se gagne à {0} étoiles de coups".replace("{0}",o.etoiles):o.chrono?"Se gagne à {0} étoiles de temps".replace("{0}",o.chrono):"Se gagne au rang {0}".replace("{0}",o.rang))+'</span>'+
+  else{pr=progresStyle(o);f+='<span class="fiche-cond">'+(o.etoiles?"Se gagne à {0} étoiles de coups".replace("{0}",o.etoiles):o.chrono?"Se gagne à {0} étoiles de temps".replace("{0}",o.chrono):o.voie!=null?"Exclusif : se gagne en finissant la voie dorée du monde {0}".replace("{0}",o.voie+1):"Se gagne au rang {0}".replace("{0}",o.rang))+'</span>'+
     '<div class="fiche-prog"><i style="width:'+Math.min(100,100*pr[0]/pr[1]).toFixed(0)+'%"></i></div><span class="fiche-chiffre notrad">'+Math.min(pr[0],pr[1])+' / '+pr[1]+'</span>';}
   document.getElementById("apercuFiche").innerHTML=f;ApercuP.dessiner();}
 function redimApercu(){var w=document.querySelector("#boutique .bout").clientWidth;if(w)ApercuP.dimension(Math.round(Math.min(w-40,innerHeight<700?160:190)));}
@@ -2298,22 +2333,26 @@ function vignette(cv,k,id){var d=Math.min(DPR,2.5),W=64;cv.width=W*d;cv.height=W
       cx.beginPath();cx.arc(x-h*.22,y-h*.24,h*.28,0,6.283);cx.fillStyle="rgba(255,255,255,.34)";cx.fill();}
     else if(fo==="facettes")facette(cx,[x,y],f,h,col);else pastille(cx,[x,y],f,h,col,fo);}
   if(k==="forme"){piece(21,22,11,pal[0],id);piece(44,24,11,pal[2],id);piece(32,44,11,pal[5],id);return;}
-  if(k==="trainee"){var r=22,a0=-2.3,n=id==="comete"?9:id==="poussiere"?7:5;
+  if(k==="trainee"){var r=22,a0=-2.3,n=id==="comete"?9:id==="sillage"?11:id==="poussiere"?7:5;
     for(var t=n;t>=1;t--){var aa=a0+t*.2,x=c[0]+Math.cos(aa)*r,y=c[1]+18+Math.sin(aa)*r-18,fr=1-t/(n+1);
-      if(id==="poussiere"){for(var z=0;z<2;z++){cx.globalAlpha=fr;cx.beginPath();cx.arc(x+Math.sin(t*5+z*3)*4,y+Math.cos(t*3+z*5)*4,1.3,0,6.283);cx.fillStyle=z?"#fff":pal[1];cx.fill();}}
+      if(id==="sillage"){cx.globalAlpha=fr*.8;cx.beginPath();cx.arc(x,y,1.2+2.2*fr,0,6.283);cx.fillStyle=t%2?"#bdeeff":"#5cc8ff";cx.fill();}
+      else if(id==="poussiere"){for(var z=0;z<2;z++){cx.globalAlpha=fr;cx.beginPath();cx.arc(x+Math.sin(t*5+z*3)*4,y+Math.cos(t*3+z*5)*4,1.3,0,6.283);cx.fillStyle=z?"#fff":pal[1];cx.fill();}}
       else{cx.globalAlpha=fr*(id==="comete"?.5:.35);cx.beginPath();cx.arc(x,y,5*fr+2,0,6.283);cx.fillStyle=pal[1];cx.fill();
         if(id==="comete"){cx.globalAlpha=fr*.8;cx.beginPath();cx.arc(x,y,1.6*fr+.6,0,6.283);cx.fillStyle="#fff";cx.fill();}}}
     cx.globalAlpha=1;piece(c[0]+Math.cos(a0)*r,c[1]+Math.sin(a0)*r,9,pal[1],STY.forme);return;}
   if(k==="orbite"){[[32,24],[23,39],[41,39]].forEach(function(p,a){cx.beginPath();cx.arc(p[0],p[1],15,0,6.283);var oc=couleurOrbite(id,a);
       cx.lineWidth=4;cx.strokeStyle="rgba("+oc+",.18)";cx.stroke();cx.lineWidth=1.6;cx.strokeStyle="rgba("+oc+",.95)";cx.stroke();});return;}
-  if(k==="victoire"){if(id==="feux"){[[22,24,pal[0]],[42,30,pal[5]],[30,46,pal[2]]].forEach(function(b){for(var j=0;j<10;j++){var an=j/10*6.283;cx.beginPath();
+  if(k==="victoire"){if(id==="supernova"){for(var j=0;j<24;j++){var an=j/24*6.283,r1=j%2?8:12,r2=j%2?20:27;cx.beginPath();cx.moveTo(32+Math.cos(an)*r1,32+Math.sin(an)*r1);
+        cx.lineTo(32+Math.cos(an)*r2,32+Math.sin(an)*r2);cx.lineWidth=1.8;cx.lineCap="round";cx.strokeStyle=["#ffffff","#ffe08a","#c9a2ff","#7fdcff"][j%4];cx.stroke();}
+      cx.beginPath();cx.arc(32,32,5,0,6.283);cx.fillStyle="#fff";cx.fill();}
+    else if(id==="feux"){[[22,24,pal[0]],[42,30,pal[5]],[30,46,pal[2]]].forEach(function(b){for(var j=0;j<10;j++){var an=j/10*6.283;cx.beginPath();
         cx.moveTo(b[0]+Math.cos(an)*3,b[1]+Math.sin(an)*3);cx.lineTo(b[0]+Math.cos(an)*9,b[1]+Math.sin(an)*9);cx.lineWidth=1.6;cx.lineCap="round";cx.strokeStyle=b[2];cx.stroke();}});}
     else if(id==="pluie"){[[16,14,5],[40,10,4],[28,30,6],[50,34,4],[18,46,4],[42,52,5]].forEach(function(e,j){cx.beginPath();for(var n=0;n<10;n++){var aa=-Math.PI/2+n*Math.PI/5,rr=n%2?e[2]*.45:e[2];
         cx.lineTo(e[0]+Math.cos(aa)*rr,e[1]+Math.sin(aa)*rr);}cx.closePath();cx.fillStyle=j%2?"#4cc9f0":"#ffcf4a";cx.fill();});}
     else{for(var j=0;j<16;j++){cx.beginPath();cx.arc(10+((j*37)%46),10+((j*23)%46),2.4+(j%3),0,6.283);cx.fillStyle=pal[j%6];cx.fill();}}}}
 // une condition lisible pour ce qui n'est pas encore ouvert
 function condition(st){var o=st.ouv||{};if(o.etoiles)return'<small class="notrad">'+SVG_ET+o.etoiles+'</small>';if(o.chrono)return'<small class="notrad">'+SVG_ETT+o.chrono+'</small>';
-  if(o.rang)return'<small>Rang '+o.rang+'</small>';return'<small class="notrad">'+PRIXP["s_"+st.id]+'</small>';}
+  if(o.rang)return'<small>Rang '+o.rang+'</small>';if(o.voie!=null)return'<small class="voie-cond">Monde '+(o.voie+1)+'</small>';return'<small class="notrad">'+PRIXP["s_"+st.id]+'</small>';}
 function carteStyle(k,st){var ouv=styleOuvert(k,st.id),porte=STY[k]===st.id,vu=VU[k]===st.id;
   return'<button class="style'+(porte?" porte":"")+(vu?" vu":"")+(ouv?"":" ferme")+'" type="button" data-k="'+k+'" data-id="'+st.id+'">'+(NOUV[st.id]?'<span class="neuf">Nouveau</span>':"")+'<canvas></canvas><b>'+st.nom+'</b>'+
     (porte?'<small>Porté</small>':ouv?'<small>Choisir</small>':condition(st))+(ouv?"":'<svg class="cad" viewBox="0 0 24 24">'+CADENAS+'</svg>')+'</button>';}
@@ -2454,7 +2493,7 @@ function majRang(){var R=rangDe(PROG.xp),M=missionsDuJour();document.getElementB
   rm.innerHTML='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg>'+nm+'/'+M.l.length;}
 function rafraichirProfil(){var R=rangDe(PROG.xp),M=missionsDuJour();
   var rc=document.getElementById("rangCarte");rc.classList.toggle("mecene",aDroit("soutien"));
-  rc.innerHTML='<span class="anneau-rang notrad">'+anneauRang(PROG.xp,2.4)+'</span><h3>'+titreRang(R.r)+'</h3>'+(aDroit("soutien")?'<span class="mecene-titre">Mécène d’Orbicube</span>':"")+
+  rc.innerHTML='<span class="anneau-rang notrad">'+anneauRang(PROG.xp,2.4)+'</span><h3>'+titreRang(R.r)+'</h3>'+(aDroit("soutien")?'<span class="mecene-titre">Mécène d’Orbicube</span>':"")+(voieFinie(MONDES.length-1)?'<span class="mecene-titre maitre">Maître des orbites</span>':"")+
     '<span class="xp notrad">'+R.xp+' / '+R.besoin+' XP</span><span class="rc-et notrad">'+SVG_ET+etoilesTotal()+' '+SVG_ETT+etoilesChrono()+'</span>';
   document.getElementById("listeMissions").innerHTML=M.l.map(function(m){var ok=missionFinie(m);return '<div class="mission'+(ok?" ok":"")+'"><span class="coche">'+(ok?'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>':"")+'</span>'+
     '<div><b>'+texteMission(m)+'</b><i class="mb"><i style="width:'+(100*m.p/m.but).toFixed(0)+'%"></i></i></div><span class="mx notrad">'+(m.id==="vite"||m.id==="sansfin"?(ok?"✓":""):m.p+"/"+m.but)+'</span></div>';}).join("")+

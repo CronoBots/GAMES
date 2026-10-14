@@ -31,7 +31,7 @@ elles. Regroupez chaque couleur pour gagner.
 • Des rangs à gravir, trois missions chaque jour et des ciels à débloquer
 • Un jeu libre chronométré, de facile à expert, un mode sans fin et un mode relax
 • Des étoiles de coups et des étoiles de temps, chacune avec ses récompenses
-• 14 succès, aussi dans Game Center et Google Play Jeux
+• 15 succès, aussi dans Game Center et Google Play Jeux
 • En français, anglais, néerlandais, allemand et espagnol
 • Des gestes faits pour le pouce : glisser, lancer, enchaîner les tours sans lever le doigt
 • Une palette lisible par les daltoniens
@@ -72,7 +72,7 @@ twelve dots turn, and the 3D cube turns with them. Group every colour to win.
 • A daily challenge, the same for everyone
 • Timed free play, from easy to expert, and an endless mode
 • Move stars and time stars, each with its own rewards
-• 14 achievements, also in Game Center and Google Play Games
+• 15 achievements, also in Game Center and Google Play Games
 • In English, French, Dutch, German and Spanish
 • Gestures made for your thumb: swipe, flick, chain turns without lifting your finger
 • A colour-blind friendly palette
@@ -106,7 +106,7 @@ twaalf bolletjes draaien, en de 3D-kubus draait mee. Breng elke kleur samen om t
 • Drie sterren voor zo weinig mogelijk zetten
 • Elke dag een nieuwe uitdaging, voor iedereen dezelfde
 • Vrij spel op tijd, van makkelijk tot expert
-• 14 prestaties, ook in Game Center en Google Play Games
+• 15 prestaties, ook in Game Center en Google Play Games
 • Een palet voor kleurenblinden · in 5 talen
 • Offline, zonder reclame, zonder account, zonder gegevensverzameling
 
@@ -137,7 +137,7 @@ um zu gewinnen.
 • Drei Sterne für möglichst wenige Züge
 • Jeden Tag ein neues Rätsel, für alle gleich
 • Freies Spiel mit Zeit, von leicht bis Experte
-• 14 Erfolge, auch in Game Center und Google Play Spiele
+• 15 Erfolge, auch in Game Center und Google Play Spiele
 • Eine Palette für Farbenblinde · in 5 Sprachen
 • Offline, ohne Werbung, ohne Konto, ohne Datensammlung
 
@@ -167,7 +167,7 @@ círculo: giran doce bolitas, y el cubo en 3D gira con ellas. Reúne cada color 
 • Tres estrellas con el mínimo de movimientos
 • Un reto diario, el mismo para todos
 • Juego libre cronometrado, de fácil a experto
-• 14 logros, también en Game Center y Google Play Juegos
+• 15 logros, también en Game Center y Google Play Juegos
 • Una paleta apta para daltónicos · en 5 idiomas
 • Sin conexión, sin anuncios, sin cuenta, sin recogida de datos
 

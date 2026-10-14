@@ -114,8 +114,8 @@ async function resoudre(p) {
 
     // la boutique, depuis les options : un style ouvert se porte d'un toucher, celui d'un pack non acheté se regarde sans se porter
     await p.tap("#btnStylesOpt"); await p.waitForTimeout(700);
-    (await p.isVisible("#boutique.actif")) && (await p.$$eval("#boutRayon .style", (l) => l.length)) === 8 ? ok("boutique : huit palettes en vitrine") : faute("boutique : rayon des couleurs absent");
-    (await p.textContent('#boutRayons [data-r="palette"] .cpt')) === "2/8" ? ok("boutique : compteur de collection (2/8 palettes pour un débutant)") : faute("compteur de collection faux : " + (await p.textContent('#boutRayons [data-r="palette"] .cpt')));
+    (await p.isVisible("#boutique.actif")) && (await p.$$eval("#boutRayon .style", (l) => l.length)) === 10 ? ok("boutique : dix palettes en vitrine, dont deux exclusives de la voie dorée") : faute("boutique : rayon des couleurs absent");
+    (await p.textContent('#boutRayons [data-r="palette"] .cpt')) === "2/10" ? ok("boutique : compteur de collection (2/10 palettes pour un débutant)") : faute("compteur de collection faux : " + (await p.textContent('#boutRayons [data-r="palette"] .cpt')));
     (await p.textContent("#pack-couleurs")).includes("au lieu de") && (await p.textContent("#pack-couleurs")).includes("3,96") ? ok("boutique : le pack montre ce que coûterait son contenu à l'unité (3,96 €)") : faute("prix barré du pack absent");
     await p.tap('.style[data-id="contraste"]'); await p.waitForTimeout(300);
     (await p.$('.style.porte[data-id="contraste"]')) ? ok("boutique : un style ouvert se porte d'un toucher") : faute("le style choisi n'est pas porté");
@@ -154,6 +154,17 @@ async function resoudre(p) {
     const avis = await p.evaluate(() => { const a = document.getElementById("avis"); return a.classList.contains("vu") ? a.textContent : ""; });
     avis.includes("verrouillé") && avis.includes("Gagnez") ? ok("carte : un niveau fermé dit comment l'ouvrir") : faute("notification de verrou absente : « " + avis + " »");
     await p.tap("#avis"); await p.waitForTimeout(500);
+    // voie dorée finie : couronne sur le bandeau du monde, et son style exclusif (Émeraude) s'ouvre dans la boutique
+    const sauve = await p.evaluate(() => localStorage.getItem("orbicube-v1"));
+    await p.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); for (let i = 1; i <= 12; i++) v.niveaux["1-" + i] = { etoiles: 3, chrono: 3, coups: 5, temps: 9000 }; localStorage.setItem(k, JSON.stringify(v)); });
+    await p.reload(); await p.waitForTimeout(1200);
+    await p.tap("#btnOptions"); await p.waitForTimeout(400); await p.tap("#btnStylesOpt"); await p.waitForTimeout(800);
+    const emer = await p.evaluate(() => { const b = document.querySelector('.style[data-id="emeraude"]'); return !!b && !b.classList.contains("ferme"); });
+    await p.tap("#boutRetour"); await p.waitForTimeout(400); await p.tap("#options [data-retour]"); await p.waitForTimeout(400);
+    await p.tap("#btnJouer"); await p.waitForTimeout(800);
+    const cour = await p.evaluate(() => document.querySelectorAll(".parc-sect.couronne").length);
+    emer && cour === 1 ? ok("voie dorée finie : couronne sur le monde 1 et style Émeraude ouvert") : faute("récompense de la voie dorée : style " + emer + ", couronnes " + cour);
+    await p.evaluate((v) => localStorage.setItem("orbicube-v1", v), sauve); await p.reload(); await p.waitForTimeout(1200); await p.tap("#btnJouer"); await p.waitForTimeout(800);
     // un nœud ouvre la fiche du niveau (objectif, record, étoiles) avant de jouer, pas le niveau directement
     await p.evaluate(() => document.querySelector('.parc-niv[data-w="0"][data-i="2"]').click()); await p.waitForTimeout(500);
     const fiche = await p.evaluate(() => { const f = document.querySelector("#fenetre"); return !!f && f.textContent.includes("Niveau 3") && !!f.querySelector('[data-a="jouer"]') && document.querySelector(".ecran.actif").id === "parcours"; });
