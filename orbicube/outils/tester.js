@@ -132,13 +132,13 @@ async function resoudre(p) {
     const restants = await p.$$eval(".parc-sect.paye", (l) => l.length);
     restants === 0 ? ok("jeu complet : plus aucun monde réservé, progression gardée") : faute(restants + " mondes encore réservés");
 
-    // niveaux experts : après le huitième niveau du monde 1, le monde 2 ET le premier expert s'ouvrent, le second expert attend
+    // niveaux experts : après le chemin du monde 1, le monde 2 ET le premier expert sont ouverts, le second expert attend le premier
     await p.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); for (let i = 1; i <= 8; i++) v.niveaux["1-" + i] = { etoiles: 3, chrono: 3, coups: 1, temps: 9000, sansIndice: true }; localStorage.setItem(k, JSON.stringify(v)); });
     await p.reload(); await p.waitForTimeout(1200);
     (await p.textContent("#jouerMonde")).includes("Niveau 9") ? ok("experts : le bouton principal mène au monde 2 (niveau 9), pas aux experts") : faute("bouton principal : " + (await p.textContent("#jouerMonde")));
     await p.tap("#btnJouer"); await p.waitForTimeout(600);
-    const exp = await p.evaluate(() => { const n = (w, i) => document.querySelector('.parc-niv[data-w="' + w + '"][data-i="' + i + '"]'); return { m2: !n(1, 0).classList.contains("verrou"), e1: n(0, 8).classList.contains("expert") && !n(0, 8).classList.contains("verrou"), e2: n(0, 9).classList.contains("verrou"), titres: document.querySelectorAll(".parc-exp").length, total: document.querySelectorAll(".parc-niv").length }; });
-    exp.m2 && exp.e1 && exp.e2 && exp.titres === 8 && exp.total === 96 ? ok("experts : 96 niveaux, quatre experts par monde sur une voie à part, ouverts après le huitième sans bloquer le monde suivant") : faute("niveaux experts : " + JSON.stringify(exp));
+    const exp = await p.evaluate(() => { const n = (w, i) => document.querySelector('.parc-niv[data-w="' + w + '"][data-i="' + i + '"]'); return { m2: !n(1, 0).classList.contains("verrou"), e1: n(0, 8).classList.contains("expert") && !n(0, 8).classList.contains("verrou"), e2: n(0, 9).classList.contains("verrou"), titres: document.querySelectorAll(".parc-exp").length, total: document.querySelectorAll(".parc-niv").length, ecart: (() => { const q = [...document.querySelectorAll(".parc-niv")].map((e) => [parseFloat(e.style.left), parseFloat(e.style.top)]); let m = 1e9; q.forEach((a, i) => q.slice(i + 1).forEach((b) => { m = Math.min(m, Math.hypot(a[0] - b[0], a[1] - b[1])); })); return Math.round(m); })() }; });
+    exp.m2 && exp.e1 && exp.e2 && exp.titres === 8 && exp.total === 96 && exp.ecart >= 70 ? ok("experts : 96 niveaux, une voie dorée de quatre experts par monde (E1 ouvert au niveau 2), aucun nœud n'en touche un autre (" + exp.ecart + " px)") : faute("niveaux experts : " + JSON.stringify(exp));
 
     // monde 3 gratuit mais fermé par 32 étoiles de coups (deux par niveau du chemin d'avant) : 24 ne suffisent pas, 32 l'ouvrent
     const poser = (n1) => p.evaluate((n1) => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); for (let i = 1; i <= 8; i++) v.niveaux["1-" + i].etoiles = 2; for (let i = 1; i <= 8; i++) v.niveaux["2-" + i] = { etoiles: i <= n1 ? 3 : 1, chrono: 1, coups: 9, temps: 60000, sansIndice: true }; localStorage.setItem(k, JSON.stringify(v)); }, n1);

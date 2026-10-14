@@ -173,12 +173,23 @@ else {
   let empreinte = "";
   for (let w = 0; w < 8; w++) for (let i = 0; i < 8; i++) { const d = G.niveauDef(w, i); empreinte += d.id + ":" + d.melange.map((m) => m.a + "," + m.L + "," + m.q).join(";") + "|"; }
   empreinte = require("crypto").createHash("sha256").update(empreinte).digest("hex").slice(0, 16);
-  empreinte === "3a4918a635a3b0f9" ? ok("les 64 niveaux du chemin sont inchangés") : faute("les 64 niveaux du chemin ont changé (empreinte " + empreinte + ")");
+  empreinte === "74fee1046c1c4b57" ? ok("les 64 niveaux du chemin sont inchangés") : faute("les 64 niveaux du chemin ont changé (empreinte " + empreinte + ")");
   // les neuf anneaux ne vont jamais dans un monde gratuit : ils restent l'avantage du jeu complet (le client, le 14/10/2026)
   const neufLibres = G.MONDES.map((M, w) => w < CFG.mondesGratuits && M.anneaux.length === 9 ? w + 1 : 0).filter(Boolean);
   neufLibres.length ? faute("monde gratuit à neuf anneaux : " + neufLibres.join(", ")) : ok("aucun monde gratuit à neuf anneaux");
   // une orbite de plus à chaque monde, de deux jusqu'aux neuf (le client, le 14/10/2026) : chaque monde garde celles du précédent
   const pas = G.MONDES.every((M, w) => M.anneaux.length === w + 2 && (w === 0 || G.MONDES[w - 1].anneaux.every((a) => M.anneaux.includes(a))));
+  // une vraie progression (le client, le 14/10/2026) : le chemin ne raccourcit jamais, un seul niveau à un coup, et aucun
+  // mélange ne se réduit (dans une suite de coups sur un même axe, une orbite ne revient pas : U D U′ vaudrait D)
+  const reduits = [], plats = [];
+  G.MONDES.forEach((M, w) => M.coups.forEach((n, i) => {
+    let axe = -1, vues = new Set(), red = false;
+    for (const m of G.niveauDef(w, i).melange) { if (m.a !== axe) { axe = m.a; vues = new Set(); } if (vues.has(m.L)) red = true; vues.add(m.L); }
+    if (red) reduits.push(G.niveauDef(w, i).id);
+    if (i > 0 && i < 8 && n < M.coups[i - 1]) plats.push(G.niveauDef(w, i).id);
+  }));
+  const unCoup = G.MONDES.reduce((t, M) => t + M.coups.filter((n) => n === 1).length, 0);
+  !reduits.length && !plats.length && unCoup <= 1 ? ok("progression : aucun mélange réductible, le chemin ne raccourcit jamais, un seul niveau à un coup") : faute("progression : réductibles " + reduits.join(" ") + " ; plus courts que le précédent " + plats.join(" ") + " ; niveaux à un coup : " + unCoup);
   // les seuils d'étoiles des mondes : jamais toutes les étoiles du chemin d'avant, au plus les trois quarts (le client)
   const seuilsTrop = G.MONDES.map((M, w) => { const c = M.etoiles; return c && (c.jaunes || c.bleues) > 3 * 0.75 ? w + 1 : 0; }).filter(Boolean);
   seuilsTrop.length ? faute("seuil d'étoiles trop haut (plus des trois quarts) : monde " + seuilsTrop.join(", ")) : ok("seuils d'étoiles : au plus les trois quarts des étoiles du chemin d'avant");

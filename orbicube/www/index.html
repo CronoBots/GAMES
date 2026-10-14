@@ -566,12 +566,12 @@ body{background:
 .parc-niv.verrou b{display:none}
 .parc-niv .pcad{width:20px;height:20px;stroke:rgba(255,255,255,.6);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .parc-niv.paye{opacity:.85}.parc-niv.paye .pcad{stroke:var(--or)}
-/* niveaux experts (11 à 15 de chaque monde) : un second anneau doré autour du nœud, et un intertitre au début */
+/* niveaux experts (E1 à E4 de chaque monde) : un second anneau doré autour du nœud, la voie dorée sous la description */
 .parc-niv.expert{outline:1.5px solid rgba(255,196,80,.75);outline-offset:3px}
 .parc-niv.expert.verrou{outline-color:rgba(255,196,80,.35)}
-.parc-exp{position:absolute;left:50%;transform:translate(-50%,-50%);z-index:3;pointer-events:none;white-space:nowrap;display:flex;align-items:center;gap:6px;
-  font-family:var(--f-chiffre);font-weight:600;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--or);
-  background:rgba(9,9,16,.82);border:1px solid rgba(255,196,80,.4);border-radius:999px;padding:4px 11px;text-shadow:0 1px 6px rgba(0,0,0,.9)}
+.parc-exp{display:flex;width:max-content;margin:7px auto 0;align-items:center;gap:6px;white-space:nowrap;
+  font-family:var(--f-chiffre);font-weight:600;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--or);
+  background:rgba(9,9,16,.82);border:1px solid rgba(255,196,80,.4);border-radius:999px;padding:3px 10px}
 .parc-exp svg{width:11px;height:11px;fill:var(--or)}
 /* monde gratuit fermé par des étoiles : le compte à atteindre sur la bannière, la condition sous la description */
 .parc-cond{display:inline-flex;align-items:center;gap:4px;font-family:var(--f-chiffre);font-weight:600;font-size:12px;color:var(--or)}
@@ -1314,32 +1314,36 @@ function poserFond(t,nebuleuse){var el=document.getElementById("fondMonde");if(e
 var THEME_ACC=["80,226,150","92,180,255","255,110,120","178,130,255"];
 function accentTheme(t){ACC=THEME_ACC[(((t-1)%4)+4)%4];ACC_CLAIR=eclaircir(ACC,.65);document.documentElement.style.setProperty("--acc",ACC);}
 var MONDES=[
-  {nom:"Premier cercle",desc:"Deux orbites, U et R. Le geste s’apprend ici.",anneaux:["U","R"],coups:[1,1,2,2,3,3,4,4,5,5,6,7]},
-  {nom:"Trois faces",desc:"Une troisième orbite, F : chaque pastille hésite entre deux chemins.",anneaux:["U","R","F"],coups:[2,2,3,3,4,4,5,5,6,6,7,8]},
-  {nom:"Face cachée",desc:"D, la face du dessous, tourne sur le même axe que U.",anneaux:["U","D","R","F"],etoiles:{jaunes:2},coups:[2,3,3,4,4,5,5,6,6,7,7,8]},
-  {nom:"Face à face",desc:"L rejoint R : cinq orbites, deux faces opposées.",anneaux:["U","D","L","R","F"],etoiles:{bleues:2},coups:[3,3,4,4,5,5,6,6,7,7,8,9]},
-  {nom:"Six faces",desc:"Les six faces du cube, sans les tranches.",anneaux:["U","D","L","R","F","B"],coups:[3,4,4,5,5,6,6,7,8,8,9,10]},
-  {nom:"Première tranche",desc:"M, l’orbite du milieu, n’a pas de face à elle.",anneaux:["U","D","L","R","F","B","M"],coups:[4,4,5,5,6,6,7,7,8,9,10,11]},
-  {nom:"Deux tranches",desc:"E se glisse entre U et D : huit orbites.",anneaux:["U","D","L","R","F","B","M","E"],coups:[4,5,5,6,6,7,7,8,9,10,11,12]},
-  {nom:"Grand maître",desc:"Les neuf orbites à la fois, jusqu’à vingt-cinq coups.",anneaux:TOUS,coups:[6,7,8,10,12,14,16,20,21,22,24,25]}];
+  {nom:"Premier cercle",desc:"Deux orbites, U et R. Le geste s’apprend ici.",anneaux:["U","R"],coups:[1,2,3,4,4,5,5,6,4,6,7,8]},
+  {nom:"Trois faces",desc:"Une troisième orbite, F : chaque pastille hésite entre deux chemins.",anneaux:["U","R","F"],coups:[2,3,3,4,4,5,6,6,5,6,7,9]},
+  {nom:"Face cachée",desc:"D, la face du dessous, tourne sur le même axe que U.",anneaux:["U","D","R","F"],etoiles:{jaunes:2},coups:[2,3,4,4,5,5,6,7,5,6,7,9]},
+  {nom:"Face à face",desc:"L rejoint R : cinq orbites, deux faces opposées.",anneaux:["U","D","L","R","F"],etoiles:{bleues:2},coups:[3,4,4,5,5,6,6,7,6,7,8,10]},
+  {nom:"Six faces",desc:"Les six faces du cube, sans les tranches.",anneaux:["U","D","L","R","F","B"],coups:[3,4,5,5,6,6,7,8,7,8,9,11]},
+  {nom:"Première tranche",desc:"M, l’orbite du milieu, n’a pas de face à elle.",anneaux:["U","D","L","R","F","B","M"],coups:[4,5,5,6,6,7,8,9,7,8,10,12]},
+  {nom:"Deux tranches",desc:"E se glisse entre U et D : huit orbites.",anneaux:["U","D","L","R","F","B","M","E"],coups:[4,5,6,6,7,8,9,10,8,9,11,13]},
+  {nom:"Grand maître",desc:"Les neuf orbites à la fois, jusqu’à vingt-cinq coups.",anneaux:TOUS,coups:[6,8,10,12,14,16,18,20,12,16,20,25]}];
 // une orbite de plus à chaque monde (le client, le 14/10/2026) : les quatre premiers sont gratuits, les neuf orbites à la
 // fois ne se jouent qu'avec le jeu complet. Les huit premiers niveaux de chaque monde font le chemin ; les quatre suivants
-// sont des niveaux experts, sur une voie à part, en option : ils s'ouvrent après le huitième et ne bloquent pas le monde
-// suivant. Le vérificateur contrôle l'orbite de plus par monde et qu'aucun monde gratuit n'a les neuf orbites.
+// sont des niveaux experts, sur une voie dorée parallèle (le client) : l'expert j s'ouvre avec le niveau 2j du chemin (et
+// l'expert d'avant), en option, sans jamais bloquer le monde suivant. Le vérificateur contrôle l'orbite de plus par monde et qu'aucun monde gratuit n'a les neuf orbites.
 var BASE=8;function estExpert(i){return i>=BASE;}
 var NB_NIV=MONDES.reduce(function(s,m){return s+m.coups.length;},0);
 function graine(str){var h=1779033703^str.length;for(var i=0;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=h<<13|h>>>19;}
   return function(){h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);h^=h>>>16;return (h>>>0)/4294967296;};}
-function genererMelange(rnd,anneaux,n){var out=[];for(var essai=0;essai<50;essai++){out=[];var prec=null,col=resoluCol();
-  for(var i=0;i<n;i++){var b;do{b=anneaux[Math.floor(rnd()*anneaux.length)];}while(b===prec&&anneaux.length>1);prec=b;
-    var m=MV[b],mv={a:m[0],L:m[1],q:rnd()<.5?1:-1};out.push(mv);col=appliquer(col,mv);}
+// un mélange de n coups vaut vraiment n coups (le client, le 14/10/2026 : deux niveaux de suite se ressemblaient) : deux
+// orbites d'un même axe tournent indépendamment (U et D commutent), donc dans une suite de coups sur un même axe, une
+// orbite ne revient jamais (U D U′ se réduirait à D)
+function genererMelange(rnd,anneaux,n){var out=[];for(var essai=0;essai<50;essai++){out=[];var prec=null,axe=-1,vues={},col=resoluCol();
+  for(var i=0;i<n;i++){var b,m,k=0;do{b=anneaux[Math.floor(rnd()*anneaux.length)];m=MV[b];k++;}while(k<200&&anneaux.length>1&&(b===prec||(m[0]===axe&&vues[m[1]])));
+    if(m[0]!==axe){axe=m[0];vues={};}vues[m[1]]=true;prec=b;
+    var mv={a:m[0],L:m[1],q:rnd()<.5?1:-1};out.push(mv);col=appliquer(col,mv);}
   if(!estResolu(col))return out;}return out;}
 // numéro affiché d'un niveau du chemin : continu sur toute la campagne (1 à 64), comme sur la carte, et non remis à 1 par
 // monde ; les experts, sur leur voie à part, sont numérotés dans leur monde (« Expert 1 » à « Expert 5 »)
 function numNiveau(w,i){if(estExpert(i))return i-BASE+1;var n=i+1;for(var k=0;k<w;k++)n+=Math.min(BASE,MONDES[k].coups.length);return n;}
 function nomNiveau(w,i){return(estExpert(i)?"Expert ":"Niveau ")+numNiveau(w,i);}
 function niveauDef(w,i){var M=MONDES[w];return{mode:"campagne",w:w,i:i,id:(w+1)+"-"+(i+1),anneaux:M.anneaux,par:M.coups[i],
-  melange:genererMelange(graine("orbicube2-"+w+"-"+i),M.anneaux,M.coups[i]),titre:"Monde "+(w+1)+" · "+nomNiveau(w,i),sous:estExpert(i)?"Niveau expert":M.nom};}
+  melange:genererMelange(graine("orbicube3-"+w+"-"+i),M.anneaux,M.coups[i]),titre:"Monde "+(w+1)+" · "+nomNiveau(w,i),sous:estExpert(i)?"Niveau expert":M.nom};}
 function cleJour(d){d=d||new Date();return d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0");}
 function jourDef(){var k=cleJour(),d=new Date();return{mode:"jour",id:k,anneaux:SIXFACES,par:8,melange:genererMelange(graine("jour-"+k),SIXFACES,8),
   titre:"Défi du jour",sous:d.toLocaleDateString(locale(),{weekday:"long",day:"numeric",month:"long"})};}
@@ -1525,7 +1529,9 @@ function texteCond(c){return c.jaunes?"Pour ouvrir ce monde : "+c.faut+" étoile
 // le monde où le chemin attend des étoiles (le dixième niveau du précédent est fait), ou -1
 function mondeAttend(){for(var w=1;w<MONDES.length;w++)if(!mondePaye(w)&&PROG.niveaux[w+"-"+BASE]&&condEtoiles(w))return w;return -1;}
 function mondeOuvert(w){return !mondePaye(w)&&(w===0||(!!PROG.niveaux[w+"-"+BASE]&&!condEtoiles(w)));}
-function niveauOuvert(w,i){return mondeOuvert(w)&&(i===0||!!PROG.niveaux[(w+1)+"-"+i]);}
+// l'expert j (0 à 3) s'ouvre avec le niveau 2j+2 du chemin et l'expert d'avant : la voie dorée avance avec le monde
+function niveauOuvert(w,i){if(!mondeOuvert(w))return false;if(estExpert(i)){var j=i-BASE;return !!PROG.niveaux[(w+1)+"-"+(2*j+2)]&&(j===0||!!PROG.niveaux[(w+1)+"-"+i]);}
+  return i===0||!!PROG.niveaux[(w+1)+"-"+i];}
 function chronoMonde(w){var t=0;for(var i=0;i<MONDES[w].coups.length;i++){var r=PROG.niveaux[(w+1)+"-"+(i+1)];if(r)t+=r.chrono||0;}return t;}
 function etoilesMonde(w){var t=0;for(var i=0;i<MONDES[w].coups.length;i++){var r=PROG.niveaux[(w+1)+"-"+(i+1)];if(r)t+=r.etoiles;}return t;}
 // ===== Carte de campagne : parcours vertical scrollable (façon Candy Crush), nœuds le long d'une traînée orbitale =====
@@ -1536,21 +1542,23 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
   // on empile du niveau 1 au dernier ; les y sont ensuite retournés pour que la progression MONTE (bas -> haut, façon Candy Crush)
   var wreg=[];
   for(var w=0;w<MONDES.length;w++){var M=MONDES[w],acc=ACCENTS[w%ACCENTS.length],y0=y;
-    y+=28;items.push({t:"s",acc:acc,w:w,nom:M.nom,y:y});y+=112;
-    // le chemin : les dix premiers niveaux, en lacets
-    var x10=cx,y10=y;
+    y+=28;items.push({t:"s",acc:acc,w:w,nom:M.nom,y:y});y+=136;
+    // le chemin : les huit niveaux, en lacets
+    var xs=[],ys=[];
     for(var i=0;i<Math.min(BASE,M.coups.length);i++){var x=cx+Math.sin(k*.66)*amp,r=PROG.niveaux[(w+1)+"-"+(i+1)];
       items.push({t:"n",x:x,y:y,w:w,i:i,num:numNiveau(w,i),r:r,ouv:niveauOuvert(w,i),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===i),acc:acc});
-      pts.push([x,y]);x10=x;y10=y;y+=GAP;k++;}
-    // les experts (le client, le 14/10/2026) : une voie parallèle, en option, qui part du dixième niveau sur le côté libre
-    // pendant que le chemin file tout droit vers le monde suivant
-    // côté : à l'opposé du premier niveau du monde suivant, pour que le chemin ne traverse pas la voie des experts
-    if(M.coups.length>BASE){var xs=w+1<MONDES.length?Math.sin(k*.66):-(x10-cx),cote=xs>0?-1:1,xb=cx+cote*amp*.95,bra=[[x10,y10]],ye=y10+70;
-      items.push({t:"x",y:ye,x:Math.max(96,Math.min(W-96,xb))});ye+=62;
-      for(var i=BASE;i<M.coups.length;i++){var x=xb-cote*Math.abs(Math.sin((i-BASE)*1.1))*amp*.32,r=PROG.niveaux[(w+1)+"-"+(i+1)];
-        items.push({t:"n",x:x,y:ye,w:w,i:i,num:"E"+numNiveau(w,i),r:r,ouv:niveauOuvert(w,i),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===i),acc:acc});
-        bra.push([x,ye]);ye+=84;}
-      branches.push(bra);y=Math.max(y,ye+50);}
+      pts.push([x,y]);xs.push(x);ys.push(y);y+=GAP;k++;}
+    // la voie dorée des experts (le client, le 14/10/2026) : parallèle au chemin, elle avance avec lui et le croise. Elle
+    // part du niveau 2 ; l'expert j se pose juste après le niveau 2j+2 qui l'ouvre, du côté opposé au chemin, sans place
+    // perdue entre deux mondes
+    if(M.coups.length>BASE){var bra=[[xs[1],ys[1]]];
+      for(var j=0;j<M.coups.length-BASE&&2*j+1<ys.length;j++){var a=2*j+1,i=BASE+j,ye=ys[a]+GAP/2,
+          // le côté le plus loin de ses deux voisins du chemin (au-dessus et au-dessous)
+          voi=[xs[a]].concat(a+1<xs.length?[xs[a+1]]:[]),ecart=function(x){return Math.min.apply(null,voi.map(function(v){return Math.abs(v-x);}));},
+          xg=cx-amp*.95,xd=cx+amp*.95,xe=ecart(xg)>=ecart(xd)?xg:xd,r=PROG.niveaux[(w+1)+"-"+(i+1)];
+        items.push({t:"n",x:xe,y:ye,w:w,i:i,num:"E"+numNiveau(w,i),r:r,ouv:niveauOuvert(w,i),paye:mondePaye(w),cur:!!(pn&&pn.w===w&&pn.i===i),acc:acc});
+        bra.push([xe,ye]);}
+      branches.push(bra);}
     wreg.push({w:w,acc:acc,y0:y0,y1:y});y+=18;}
   var H=y+60,de="",nodes="",sects="",d="";
   // FONDS CRAFTPIX (Space Vertical Game Backgrounds, 4 thèmes cyclés par monde), en COUCHES parallaxe :
@@ -1564,14 +1572,15 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
     lst+='<div class="parc-starsb'+st+'stars-'+t+'.webp)"></div>';
     lme+='<div class="parc-meteorsb'+st+'meteors-'+t+'.webp)"></div>';});
   pts.forEach(function(p,j){d+=(j?"L":"M")+p[0].toFixed(1)+" "+(H-p[1])+" ";});
-  branches.forEach(function(b){b.forEach(function(p,j){de+=(j?"L":"M")+p[0].toFixed(1)+" "+(H-p[1])+" ";});});
+  // la voie dorée en courbes en S (départ et arrivée verticaux) : elle croise le chemin sans passer sur ses nœuds
+  branches.forEach(function(b){b.forEach(function(p,j){var Y=H-p[1];if(!j){de+="M"+p[0].toFixed(1)+" "+Y+" ";return;}
+    var q=b[j-1],Yq=H-q[1],c1=(Yq+(Y-Yq)*.85).toFixed(1),c2=(Y-(Y-Yq)*.85).toFixed(1);de+="C"+q[0].toFixed(1)+" "+c1+" "+p[0].toFixed(1)+" "+c2+" "+p[0].toFixed(1)+" "+Y+" ";});});
   items.forEach(function(it){var fy=H-it.y;
     if(it.t==="s"){var pa=mondePaye(it.w),cE=!pa&&condEtoiles(it.w),etM=etoilesMonde(it.w),etTM=chronoMonde(it.w),maxM=MONDES[it.w].coups.length*3;
       sects+='<div class="parc-sep" style="--pa:'+it.acc+';top:'+fy+'px"></div>'
         +'<div class="parc-sect'+(pa?" paye":"")+'" style="--pa:'+it.acc+';top:'+fy+'px"><b>Monde '+(it.w+1)+'</b><small>'+it.nom+'</small>'
         +(pa?'<svg class="pscad" viewBox="0 0 24 24">'+CAD+'</svg>':cE?'<span class="parc-cond'+(cE.jaunes?"":" t")+'"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+cE.a+' / '+cE.faut+'</span>':'<span class="parc-et"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etM+'/'+maxM+'<svg class="t" viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etTM+'/'+maxM+'</span>')+'</div>'
-        +'<div class="parc-desc" style="top:'+(fy+30)+'px">'+MONDES[it.w].desc+(cE?'<b class="cond'+(cE.jaunes?"":" t")+'">'+texteCond(cE)+'</b>':"")+'</div>';}
-    else if(it.t==="x")sects+='<div class="parc-exp" style="top:'+fy+'px;left:'+it.x.toFixed(1)+'px"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>Niveaux experts</div>';
+        +'<div class="parc-desc" style="top:'+(fy+30)+'px">'+MONDES[it.w].desc+(MONDES[it.w].coups.length>BASE?'<span class="parc-exp"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>Voie dorée : niveaux experts</span>':"")+(cE?'<b class="cond'+(cE.jaunes?"":" t")+'">'+texteCond(cE)+'</b>':"")+'</div>';}
     else{var cls="parc-niv"+(estExpert(it.i)?" expert":"")+(it.r?" fait":"")+(!it.ouv?" verrou":"")+(it.paye?" paye":"")+(it.cur?" courant":""),
       inner=it.ouv?('<b>'+it.num+'</b><span class="pet"><i>'+[0,1,2].map(function(j){return it.r&&it.r.etoiles>j?SVG_ET:SVG_ET_OFF;}).join("")+'</i><i class="t">'+[0,1,2].map(function(j){return it.r&&(it.r.chrono||0)>j?SVG_ETT:SVG_ET_OFF;}).join("")+'</i></span>'):('<svg class="pcad" viewBox="0 0 24 24">'+CAD+'</svg>');
       nodes+='<button type="button" class="'+cls+'" style="--pa:'+it.acc+';left:'+it.x.toFixed(1)+'px;top:'+fy+'px" data-w="'+it.w+'" data-i="'+it.i+'" aria-label="Monde '+(it.w+1)+' '+nomNiveau(it.w,it.i)+'">'+inner+'</button>';}});
@@ -1762,13 +1771,14 @@ function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length
     PIVOT={y:base.y+ease(k)*Math.PI*2,x:base.x};dessinerMini();if(k<1)requestAnimationFrame(tour);else{PIVOT=base;dessinerMini();}})(t0);
   setTimeout(function(){if(J!==jeton)return;sonVictoire();vibrer([20,40,20]);confettis();fenetreVictoire(e,n,temps,record);verifierSucces();},CALME?300:1150);}
 function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
-  // au dixième niveau, le bouton principal mène au monde suivant et un second ouvre les niveaux experts
-  var experts=d.mode==="campagne"&&d.i===BASE-1&&MONDES[d.w].coups.length>BASE;
-  if(d.mode==="campagne"){var dern=MONDES[d.w].coups.length-1,mSuiv=d.w+1<MONDES.length?{w:d.w+1,i:0}:null;
-    if(d.i===BASE-1||d.i===dern)suiv=mSuiv&&!PROG.niveaux[(d.w+2)+"-1"]?mSuiv:d.i<dern?{w:d.w,i:d.i+1}:mSuiv;else suiv={w:d.w,i:d.i+1};
-    var cS=suiv&&suiv.w!==d.w&&!mondePaye(suiv.w)?condEtoiles(suiv.w):null;
-    if(cS)suiv=d.i<dern?{w:d.w,i:d.i+1}:null;
-    if(suiv&&suiv.w===d.w&&suiv.i===BASE)experts=false;}
+  // campagne : le bouton principal suit le chemin ; un niveau pair du chemin qui ouvre un expert le propose en second
+  var experts=null,cS=null;
+  if(d.mode==="campagne"){var nb=MONDES[d.w].coups.length,mSuiv=d.w+1<MONDES.length?{w:d.w+1,i:0}:null,fait=function(w,i){return !!PROG.niveaux[(w+1)+"-"+(i+1)];};
+    if(!estExpert(d.i)){if(d.i%2===1){var ie=BASE+(d.i-1)/2;if(ie<nb&&niveauOuvert(d.w,ie)&&!fait(d.w,ie))experts=ie;}
+      suiv=d.i+1<BASE?{w:d.w,i:d.i+1}:mSuiv;}
+    else{if(d.i+1<nb&&niveauOuvert(d.w,d.i+1)&&!fait(d.w,d.i+1))suiv={w:d.w,i:d.i+1};
+      else{for(var i=0;i<BASE&&!suiv;i++)if(!fait(d.w,i)&&niveauOuvert(d.w,i))suiv={w:d.w,i:i};if(!suiv&&fait(d.w,BASE-1))suiv=mSuiv;}}
+    cS=suiv&&suiv.w!==d.w&&!mondePaye(suiv.w)?condEtoiles(suiv.w):null;if(cS)suiv=null;}
   var titre=d.relax?"Résolu":e===3?"Parfait":e===2?"Bien joué":"Résolu",xpTxt=J.xp?'<span class="xp-gain notrad">+'+J.xp+' XP</span>':"";
   if(d.relax){var hr='<h3>'+titre+'</h3>'+xpTxt+'<p>'+n+' coups · '+fmt(temps)+'</p><div class="menu"><button class="bouton principal" data-a="encore" type="button"><span>Nouveau mélange</span></button>'+
       '<button class="bouton" data-a="menu" type="button" style="justify-content:center">Accueil</button></div>';
@@ -1777,10 +1787,10 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
     '<div class="resume"><div>Coups<b>'+n+' / '+d.par+'</b><i class="mini-et">'+[0,1,2].map(function(k){return k<e?SVG_ET:SVG_ET_OFF;}).join("")+'</i></div>'+
     '<div>Temps<b>'+fmt(temps)+' / '+fmt(objectifTemps(d.par))+'</b><i class="mini-et">'+[0,1,2].map(function(k){return k<J.eT?SVG_ETT:SVG_ET_OFF;}).join("")+'</i></div></div>'+
     (e<3?'<p>'+(J.indice?"L’indice limite le niveau à deux étoiles.":"Trois étoiles en "+d.par+" coups ou moins.")+'</p>':"")+
-    (experts?'<p class="experts">Cinq niveaux experts sont ouverts dans ce monde.</p>':"")+(cS?'<p class="experts">'+texteCond(cS)+'</p>':"")+
+    (experts!=null?'<p class="experts">Un niveau expert vient de s’ouvrir sur la voie dorée.</p>':"")+(cS?'<p class="experts">'+texteCond(cS)+'</p>':"")+
     (d.mode==="jour"?'<p class="serie">Série : '+PROG.serie+' · record : '+Math.max(PROG.serieMax||0,PROG.serie)+'</p>':"")+'<div class="menu">';
-  if(suiv)html+='<button class="bouton principal" data-a="suivant" type="button"><span>'+(suiv.w!==d.w?"Monde "+(suiv.w+1):estExpert(suiv.i)&&!estExpert(d.i)?"Niveaux experts":"Niveau suivant")+'</span></button>';
-  if(experts)html+='<button class="bouton" data-a="experts" type="button" style="justify-content:center">Niveaux experts</button>';
+  if(suiv)html+='<button class="bouton principal" data-a="suivant" type="button"><span>'+(suiv.w!==d.w?"Monde "+(suiv.w+1):estExpert(suiv.i)?nomNiveau(suiv.w,suiv.i):"Niveau suivant")+'</span></button>';
+  if(experts!=null)html+='<button class="bouton or" data-a="experts" type="button" style="justify-content:center">'+nomNiveau(d.w,experts)+'</button>';
   if(d.mode==="libre")html+='<button class="bouton principal" data-a="encore" type="button"><span>Nouveau mélange</span></button>';
   if(d.mode==="sansfin")html+='<button class="bouton principal" data-a="etape" type="button"><span>Étape suivante</span></button>';
   if(d.mode==="jour"||d.mode==="semaine")html+='<button class="bouton principal" data-a="partager" type="button"><span>Partager mon résultat</span></button>';
@@ -1788,7 +1798,7 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
   html+='<div class="rangee2"><button class="bouton" data-a="rejouer" type="button">Rejouer</button><button class="bouton" data-a="menu" type="button">'+(d.mode==="campagne"?"Niveaux":"Accueil")+'</button></div>'+
     (J.hist.length?'<button class="bouton" data-a="revoir" type="button" style="justify-content:center;min-height:46px;font-size:14px;color:var(--pale)">Revoir ma partie</button>':"")+'</div>';
   ouvrirFenetre(html,function(a){if(a==="partager"){partager(e,n,temps);return;}if(a==="classement"){sonClic();NATIF.classementsAfficher(idClassement(d.mode));return;}fermerFenetre();if(a==="revoir"){revoir(e,n,temps);return;}
-    if(a==="etape"){var k=d.etape+1;if(k>5&&!complet())ouvrirBoutique("libre");else lancer(sansFinDef(k));return;}if(a==="experts"){lancer(niveauDef(d.w,BASE));return;}if(a==="suivant"){if(mondePaye(suiv.w))ouvrirBoutique("monde");else lancer(niveauDef(suiv.w,suiv.i));}
+    if(a==="etape"){var k=d.etape+1;if(k>5&&!complet())ouvrirBoutique("libre");else lancer(sansFinDef(k));return;}if(a==="experts"){lancer(niveauDef(d.w,experts));return;}if(a==="suivant"){if(mondePaye(suiv.w))ouvrirBoutique("monde");else lancer(niveauDef(suiv.w,suiv.i));}
     else if(a==="encore")lancer(libreDef(d.n));else if(a==="rejouer")lancer(d.mode==="libre"?libreDef(d.n):d.mode==="sansfin"?sansFinDef(d.etape):d);
     else if(d.mode==="campagne")ouvrirParcours();else montrer("accueil");},"menu");
   document.querySelectorAll("#fenetre .gros-et svg").forEach(function(s,k){setTimeout(function(){s.classList.add("vu");if(k<e)sonEtoile(k);},250+k*260);});}

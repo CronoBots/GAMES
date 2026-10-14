@@ -181,12 +181,17 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   (`orbicube2-<monde>-<niveau>`) et `CAMPAGNE=2` : `fusion` ne reprend pas les niveaux d'une sauvegarde d'une autre
   campagne (achats, expérience et succès, si).
 - **Niveaux experts** : 12 niveaux par monde, 96 en tout ; les huit premiers font le chemin (`BASE`), les quatre derniers
-  (`estExpert`) sont plus longs, ouverts après le huitième, en option : ils ne bloquent pas le monde suivant (`mondeOuvert`,
-  `mondeFini` lisent le huitième), le bouton principal passe d'abord par le chemin (`prochainNiveau`), une ampoule pour le
-  chemin d'un monde et une pour ses experts. Sur la carte, **une voie parallèle** (le client) : elle part du huitième
-  niveau, côté opposé au monde suivant, en pointillé doré, nœuds « E1 » à « E4 » à anneau doré et intertitre « Niveaux
-  experts » ; le chemin numérote 1 à 64 sans eux (`numNiveau`, `nomNiveau` : « Expert 3 »). 150 px d'air sous le monde 1,
-  112 entre chaque bandeau et son premier niveau.
+  (`estExpert`) forment **une voie dorée parallèle qui avance avec le monde** (le client, le 14/10/2026) : l'expert j s'ouvre
+  avec le niveau 2j+2 du chemin et l'expert d'avant (`niveauOuvert`), il est un peu plus long que les niveaux qui l'entourent,
+  en option, sans jamais bloquer le monde suivant (`mondeOuvert`, `mondeFini` lisent le huitième). La victoire d'un niveau
+  pair qui ouvre un expert le propose en second bouton doré. Sur la carte, la voie part du niveau 2 et se pose après le
+  niveau qui ouvre chaque expert, du côté le plus loin de ses deux voisins, en courbes en S qui croisent le chemin sans
+  toucher ses nœuds (le parcours de test exige 70 px entre deux nœuds) ; nœuds « E1 » à « E4 », pastille « Voie dorée :
+  niveaux experts » sous la description du monde. Le chemin numérote 1 à 64 sans eux (`numNiveau`, `nomNiveau`).
+- **Vraie progression** (le client : deux niveaux de suite se ressemblaient) : le chemin ne raccourcit jamais, un seul
+  niveau à un coup, et `genererMelange` refuse qu'une orbite revienne dans une suite de coups sur un même axe (U D U′
+  vaudrait D) ; le vérificateur contrôle les trois. Graine `orbicube3-` ; `CAMPAGNE` reste 2 (jeu pas encore sorti :
+  les essais du client gardent leurs étoiles).
 - **Mondes gratuits et étoiles** : le monde 3 demande en plus des étoiles de coups (jaunes), le monde 4 des étoiles de
   temps (bleues), comptées sur toute la campagne, achat ou non. **Règle unique** (le client : logique, jamais 100 %) : deux
   étoiles par niveau du chemin des mondes d'avant (`MONDES[w].etoiles` = 2, `seuilEtoiles` : 32 puis 48), le vérificateur
