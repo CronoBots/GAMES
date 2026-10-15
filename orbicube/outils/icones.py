@@ -220,7 +220,7 @@ def cube(im,cx,cy,s,cols=((245,245,240),(0,166,81),(215,25,44))):
 # comprendre le mieux possible le jeu ») : le plateau du jeu, ses neuf orbites (une couleur par famille, la plus grande
 # appuyée) et ses facettes en losanges, résolu ; au centre le cube, qui porte les couleurs des faces voisines
 # les couleurs de la palette Classique du jeu (le client, le 16/10/2026)
-COUL_LOGO = ["#FF9014", "#FD5440", "#FCCD30", "#F2F5F0", "#21B86F", "#3282FC"]
+COUL_LOGO = ["#F59A38", "#F2665A", "#F7D44C", "#F2F2EF", "#38C987", "#4C8DF0"]
 ORB=[(255,207,74),(178,130,255),(92,200,255)]   # une couleur par famille d'orbites
 
 def stickers():

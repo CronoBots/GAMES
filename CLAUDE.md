@@ -169,8 +169,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 - **Faces terminées** : halo discret de leur couleur sous leurs neuf pastilles (`RAYON_FACE`), sur le plateau de jeu.
 - **Une note par cercle** (le client, le 16/10/2026, vu dans une vidéo) : `sonTour` joue la note de son orbite (`NOTES`, gamme
   pentatonique de do, trois notes par famille, du grave à l'aigu) en timbre de kalimba ; chaque quart de tour d'un glisser
-  la rejoue. **Palette Classique** aux tons francs et lumineux de cette vidéo (#FF9014, #FD5440, #FCCD30, #F2F5F0, #21B86F,
-  #3282FC) ; le logo les reprend (`COUL_LOGO`).
+  la rejoue. **Palette Classique** aux couleurs du cube de cette vidéo, relevées sur les captures du client (#F59A38, #F2665A,
+  #F7D44C, #F2F2EF, #38C987, #4C8DF0) ; le logo les reprend (`COUL_LOGO`).
 - **Musique** (`Musique`, `www/audio/nuit-dorbites.m4a`, générée par le client avec Suno sous licence
   commerciale) : AAC 96 kb/s (l'Opus d'origine ne se lit pas sur iPhone), boucle Web Audio avec fondu
   enchaîné de 6 s, démarre au premier geste, se coupe en arrière-plan, baisse sous la victoire. Le Chromium
