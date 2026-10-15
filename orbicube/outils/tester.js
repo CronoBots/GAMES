@@ -106,11 +106,13 @@ async function resoudre(p) {
     (await p.textContent("#fenetre")).includes("jeu libre fait partie") ? ok("jeu libre « Moyen » réservée") : faute("« Moyen » n'est pas réservé");
     await p.tap('#fenetre [data-a="x"]'); await p.waitForTimeout(300);
     // défis : celui du jour est gratuit, celui de la semaine réservé au jeu complet
-    await p.tap("#btnJour"); await p.waitForTimeout(300);
-    const sem = await p.evaluate(() => { const f = document.querySelector("#fenetre"); return !!f.querySelector('.reserve [data-a="semaine"]') && !f.querySelector('[data-a="jour"]').closest(".reserve"); });
-    await p.tap('#fenetre [data-a="semaine"]'); await p.waitForTimeout(400);
+    await p.tap("#btnJour"); await p.waitForTimeout(500);
+    const sem = await p.evaluate(() => { const f = document.querySelector("#defis"); return f.classList.contains("actif") && !!f.querySelector('.reserve [data-a="semaine"]') && !f.querySelector('[data-a="jour"]').closest(".reserve"); });
+    const hub = await p.evaluate(() => ["Défi du jour", "Missions du jour", "Récompenses du rang"].every((t) => document.querySelector("#defis").textContent.includes(t)));
+    hub ? ok("écran Défis : défi du jour, missions et récompenses du rang réunis") : faute("écran Défis incomplet");
+    await p.tap('#defis [data-a="semaine"]'); await p.waitForTimeout(400);
     sem && (await p.textContent("#fenetre")).includes("défi de la semaine fait partie") ? ok("défis : le jour gratuit, la semaine réservée au jeu complet") : faute("défi de la semaine pas réservé");
-    await p.tap('#fenetre [data-a="x"]'); await p.waitForTimeout(300);
+    await p.tap('#fenetre [data-a="x"]'); await p.waitForTimeout(300); await p.tap("#defis [data-retour]"); await p.waitForTimeout(400);
 
     // options : groupe Achat et lien de confidentialité
     await p.tap("#btnOptions"); await p.waitForTimeout(400);
@@ -190,7 +192,7 @@ async function resoudre(p) {
     if (appareil === "iPhone 13") {
       await p.setViewportSize({ width: 844, height: 390 });
       await p.tap("#parcours [data-retour]"); await p.waitForTimeout(400);
-      await p.tap("#btnJour"); await p.waitForTimeout(300); await p.tap('#fenetre [data-a="jour"]'); await p.waitForTimeout(2200);
+      await p.tap("#btnJour"); await p.waitForTimeout(500); await p.tap('#defis [data-a="jour"]'); await p.waitForTimeout(2200);
       const d3 = await debordements(p); d3.length ? faute("débordement en paysage : " + d3) : ok("défi du jour en paysage, sans débordement");
     }
     // la campagne refaite (huit mondes) ne reprend pas les niveaux d'une ancienne sauvegarde, mais garde l'achat
@@ -304,8 +306,8 @@ async function resoudre(p) {
     const lire = (p) => p.evaluate(() => JSON.parse(localStorage.getItem("orbicube-v1")));
     const p = await nouveau(true);
     /^Player\d{4}$/.test(await p.textContent("#rangTitre")) ? ok("pseudo par défaut « " + (await p.textContent("#rangTitre")) + " » dans la puce de l'accueil") : faute("pseudo par défaut absent : " + (await p.textContent("#rangTitre")));
-    !(await lire(p)).compte && essai.joueurs.size === 6 ? ok("rien n'est envoyé avant la première partie") : faute("un profil est créé avant de jouer");
-    await p.tap("#btnJour"); await p.waitForTimeout(300); await p.tap('#fenetre [data-a="jour"]'); await p.waitForTimeout(2200);
+    await p.tap("#btnJour"); await p.waitForTimeout(900);
+    !(await lire(p)).compte && essai.joueurs.size === 6 ? ok("rien n'est envoyé avant la première victoire, même en ouvrant Défis et son podium") : faute("un profil est créé avant de jouer"); await p.tap('#defis [data-a="jour"]'); await p.waitForTimeout(2200);
     const sol = await p.evaluate(() => window.__orbicube.solution());
     for (const m of sol) { await p.keyboard.press(m.length > 1 ? "Shift+" + m[0] : m[0]); await p.waitForTimeout(450); }
     await p.waitForTimeout(2600);
@@ -341,7 +343,7 @@ async function resoudre(p) {
     !essai.joueurs.has(moi.id) && (await lire(q)).classementOff ? ok("« Supprimer mes données » efface le profil du serveur") : faute("données non supprimées");
     // la route du rang : au rang 20, cadre étoilé et deux ampoules offertes chaque jour (sans le jeu complet)
     await q.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); v.xp = 8740; v.amp = 1; v.ampJour = ""; v.ampMaj = Date.now(); localStorage.setItem(k, JSON.stringify(v)); });
-    await q.reload(); await q.waitForTimeout(1500); await q.tap("#btnJour"); await q.waitForTimeout(300); await q.tap('#fenetre [data-a="jour"]'); await q.waitForTimeout(2200);
+    await q.reload(); await q.waitForTimeout(1500); await q.tap("#btnJour"); await q.waitForTimeout(500); await q.tap('#defis [data-a="jour"]'); await q.waitForTimeout(2200);
     const r20 = await q.evaluate(() => ({ cadre: document.getElementById("btnRang").className, amp: +document.getElementById("ampNb").textContent }));
     /cadre-etoile/.test(r20.cadre) && r20.amp === 3 ? ok("rang 20 : cadre étoilé sur la puce, deux ampoules offertes ce jour") : faute("route du rang : " + JSON.stringify(r20));
     const e5 = p.erreurs.concat(q.erreurs); e5.length ? faute("erreurs : " + e5.join(" | ")) : ok("aucune erreur de script");
@@ -378,7 +380,8 @@ async function resoudre(p) {
     await go("#btnIndice", 400); await mesurer("indice"); await go('#fenetre [data-a="oui"]'); await go("#btnPause"); await go('#fenetre [data-a="niveaux"]', 600); await mesurer("niveaux");
     await mesurer("parcours"); await go(".parc-sect.paye"); await mesurer("boutique"); await fermer();
     await go("#parcours [data-retour]"); await go("#btnLibre"); await mesurer("jeu libre"); await go('#fenetre [data-a="10"]'); await mesurer("boutique jeu libre moyen"); await fermer();
-    await go("#btnJour"); await mesurer("défis"); await go('#fenetre [data-a="semaine"]', 600); await mesurer("boutique défi de la semaine"); await fermer();
+    await go("#btnJour", 900); await mesurer("défis"); await go('#defis [data-a="semaine"]', 600); await mesurer("boutique défi de la semaine"); await fermer(); await go("#defis [data-retour]");
+    await go("#btnClassementAcc", 900); await mesurer("classement depuis l'accueil"); await go("#classement [data-retour]");
     await go("#btnLibre"); await go('#fenetre [data-a="relax"]'); await mesurer("boutique jeu libre"); await fermer();
     await go("#btnRang"); await mesurer("profil"); await go("#btnPseudo"); await mesurer("pseudo"); await fermer();
     await go("#btnRecuperer"); await mesurer("code de récupération"); await fermer(); await go("#btnSupprimerCompte"); await mesurer("supprimer"); await fermer();

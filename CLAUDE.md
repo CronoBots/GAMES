@@ -284,6 +284,15 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   `npm run tester` joue tout contre `outils/classement-essai.js` (faux serveur en mémoire, mêmes réponses). **Mise en
   ligne en attente** : la limite de deux projets Supabase gratuits est atteinte (le client doit libérer une place) ;
   `www/config.js` > `classement` reste vide d'ici là, et l'écran dit « ouvrira avec la sortie du jeu ».
+- **Écran Défis** (`#defis`, `rafraichirDefis`, le client, le 15/10/2026 : « combiner les missions du profil avec les défis du
+  jour ainsi que les récompenses de profil », « professionnel ») : le rond « Défis » du dock ouvre un écran (plus une fenêtre)
+  qui réunit le défi du jour en carte dorée (date, série, résultat coups/temps/étoiles, « Jouer le défi » ou « Rejouer pour
+  progresser », temps avant le suivant, podium du jour et sa place), le défi de la semaine (ou la carte réservée), les
+  missions du jour (`missionsHTML`) et les récompenses du rang (anneau, barre d'XP, prochaine récompense, `routeHTML`).
+  Le Profil garde l'identité (pseudo, rang, étoiles), le bouton Classement et « Mon profil de joueur » ; la puce de
+  l'accueil n'affiche plus que le rang et le pseudo. **Classement à l'accueil** : rond « Classement » dans le dock
+  (cinq ronds ; sous 360 px, noms sur deux lignes et sans ligne d'état). Lire le classement ne crée jamais de profil
+  (le test le vérifie) : seule une victoire, un pseudo changé, un signalement ou « Afficher » le code le font.
 - **Route du rang** (le client, le 14/10/2026 : « à quoi sert le niveau ? ») : `ROUTE`, un style à gagner tous les cinq rangs
   (Hexagones 5, Poussière d'étoiles 10, Crépuscule 15, Nacre 20, Abysses 25, Braises 30, Solaire 35, Or rose 40), un cadre
   autour du pseudo à chaque titre (`CADRES`, `cadreDe`, `poserCadre` : bronze, argent, or, étoilé, cristal, légendaire ; sur la

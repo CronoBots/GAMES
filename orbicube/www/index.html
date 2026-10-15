@@ -524,6 +524,7 @@ body{background:
 .dock .or .rond{border-color:rgba(255,207,74,.42);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 10px 22px -10px rgba(0,0,0,.9),0 0 16px -8px rgba(255,207,74,.45)}
 .dock .or svg{stroke:var(--or)}.dock .or .sous{color:var(--or);font-family:var(--f-chiffre)}
 .dock .item[hidden]{display:none}
+@media (max-width:360px){.dock .nom{font-size:10px;white-space:normal;max-width:100%;overflow-wrap:anywhere}.dock .sous{display:none}}
 #stylesAccueil{font-family:var(--f-texte)}
 @media (max-height:700px){#accueil .bouton.principal{min-height:56px}#accueil .bouton.principal svg{width:38px;height:38px;padding:11px 10px 11px 12px}.dock{margin-top:4px}.dock .item{gap:4px}}
 .bouton.bloc,.tuile{background:
@@ -807,7 +808,38 @@ body.sobre #plateau{transition:none}
 .route.ok b{color:var(--encre)}.route.ok .route-r{border-color:rgba(var(--acc),.8);color:var(--encre);background:rgba(var(--acc),.18)}
 .route.proch .route-r{border-color:var(--or);color:var(--or)}
 .route .coche svg{width:18px;height:18px;fill:none;stroke:rgb(var(--acc));stroke-width:2.4}
+/* l'écran Défis (le client, le 15/10/2026) : défis, missions et récompenses réunis */
+.df-carte{display:grid;gap:12px;padding:16px;margin-bottom:14px;border-radius:var(--r);border:1px solid var(--bord);background:var(--verre),rgba(14,14,24,.6)}
+.df-jour{border-color:rgba(255,207,74,.45);box-shadow:0 0 0 1px rgba(255,207,74,.08),0 18px 40px -24px rgba(255,207,74,.5);background:linear-gradient(160deg,rgba(255,207,74,.12),rgba(255,207,74,0) 55%),rgba(14,14,24,.62)}
+.df-tete{display:flex;align-items:center;gap:12px}
+.df-tete>div{flex:1;min-width:0;display:grid}.df-tete b{font:600 18px var(--f-titre);letter-spacing:.02em}.df-tete small{color:var(--pale);font-size:12.5px}.df-tete small::first-letter{text-transform:uppercase}
+.df-ico{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:14px;background:rgba(var(--acc),.16);border:1px solid rgba(var(--acc),.4)}
+.df-jour .df-ico{background:rgba(255,207,74,.14);border-color:rgba(255,207,74,.5)}
+.df-ico svg{width:22px;height:22px;fill:none;stroke:rgb(var(--acc));stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.df-jour .df-ico svg{stroke:var(--or)}
+.df-serie{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:99px;background:rgba(255,140,60,.14);color:#ffb36b;font:600 12px var(--f-texte);white-space:nowrap}
+.df-serie svg{width:14px;height:14px;fill:#ff9a4a;stroke:none}
+.df-desc{margin:0;color:var(--pale);font-size:14px;line-height:1.45}
+.df-res{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.df-res>div{display:grid;justify-items:center;gap:2px;padding:10px 4px;border-radius:14px;background:rgba(255,255,255,.05)}
+.df-res b{font:700 19px var(--f-chiffre)}.df-res span{font-size:11.5px;color:var(--pale)}
+.df-et{display:inline-flex;gap:1px}.df-et svg{width:15px;height:15px}
+.df-carte .bouton{min-height:52px;border-radius:999px}
+.df-reste{margin:-4px 0 0;text-align:center;color:var(--pale);font-size:12.5px}
+.df-podium{display:grid;gap:0;padding-top:12px;border-top:1px solid rgba(255,255,255,.08)}
+.df-podium .cl-ligne{min-height:46px;margin-bottom:5px}.df-podium .cl-vide{margin:6px}
+.df-podium-tete{display:flex;justify-content:space-between;align-items:baseline;margin:0 4px 8px;font:600 12px var(--f-titre);letter-spacing:.12em;text-transform:uppercase;color:var(--pale)}
+.df-podium-tete b{font:700 14px var(--f-chiffre);letter-spacing:0;color:var(--encre)}
+.df-lien{justify-self:center;padding:8px 14px;border:0;background:none;color:rgb(var(--acc));font:600 13.5px var(--f-texte);cursor:pointer}
+.h4-plus{display:flex;justify-content:space-between;align-items:center}.h4-plus span{font-family:var(--f-chiffre);letter-spacing:0;color:var(--pale)}.h4-plus span.fini{color:var(--or)}
+.df-rang{display:grid;grid-template-columns:64px minmax(0,1fr);gap:14px;align-items:center;padding:6px 16px 10px}
+.df-rang .anneau-rang{width:64px;height:64px;font-size:22px}
+.df-rang b{display:block;font:600 16px var(--f-titre);margin-bottom:6px}.df-rang small{display:block;margin-top:5px;color:var(--pale);font:600 12px var(--f-chiffre)}
+.df-rang .mb{display:block;height:6px;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden}.df-rang .mb i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,rgb(var(--acc)),rgb(var(--acc-clair,var(--acc))))}
+.df-proch{margin:0 16px 6px;padding:10px 12px;border-radius:12px;background:rgba(255,207,74,.08);border:1px solid rgba(255,207,74,.25);color:var(--encre);font-size:13px}
+#defis .route{padding-inline:16px}
 /* le classement (le client, le 14/10/2026) */
+@media (max-width:360px){.cl-ligne{grid-template-columns:22px 28px minmax(0,1fr) auto;gap:7px;padding:8px 10px}.cl-niv{width:26px;height:26px;font-size:11px}
+  .cl-val{gap:6px;font-size:12px}.cl-val svg{width:12px;height:12px}.df-carte{padding:14px 12px}}
 #classement>.tete+.defile{padding-bottom:120px}
 .cl-onglets{position:relative;z-index:1;display:flex;gap:6px;max-width:520px;margin:0 auto 10px;padding:4px 0 8px;overflow-x:auto;scrollbar-width:none}.cl-onglets::-webkit-scrollbar{display:none}
 .cl-onglets button{flex:1 1 auto;min-width:0;white-space:nowrap;min-height:38px;padding:0 9px;border-radius:99px;border:1px solid var(--bord);background:rgba(14,14,24,.55);color:var(--pale);font:600 13px var(--f-texte);cursor:pointer}
@@ -855,7 +887,7 @@ body.sobre #plateau{transition:none}
     <div class="astres" aria-hidden="true"><i class="astre verte"></i><i class="astre rousse"></i><i class="astre roc r1"></i><i class="astre roc r2"></i><i class="astre roc r3"></i></div>
     <div class="acc-haut">
       <button class="ico" id="btnAide" type="button" aria-label="Comment jouer"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.8"/><path d="M12 17.2v.1"/></svg></button>
-      <button class="puce-rang" id="btnRang" type="button" aria-label="Profil, rang et missions"><span class="anneau-rang notrad" id="rangAnneau"></span><b id="rangTitre" class="notrad">Novice</b><span class="rb-mis" id="rangMissions"></span></button>
+      <button class="puce-rang" id="btnRang" type="button" aria-label="Profil et rang"><span class="anneau-rang notrad" id="rangAnneau"></span><b id="rangTitre" class="notrad">Novice</b></button>
       <div class="acc-droite">
       <button class="ico" id="btnOptions" type="button" aria-label="Options"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
       </div>
@@ -873,6 +905,8 @@ body.sobre #plateau{transition:none}
           <nav class="dock" aria-label="Autres modes">
           <button class="item" id="btnJour" type="button"><i class="rond"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15.5" r="2"/></svg><b class="point" id="jourPoint" hidden></b></i>
             <span class="nom">Défis</span><span class="sous" id="jourSous"></span></button>
+          <button class="item" id="btnClassementAcc" type="button"><i class="rond"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"/></svg></i>
+            <span class="nom">Classement</span><span class="sous" id="classementSous">mondial</span></button>
           <button class="item" id="btnLibre" type="button"><i class="rond"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg></i>
             <span class="nom">Jeu libre</span><span class="sous">chrono</span></button>
           <button class="item" id="btnSucces" type="button"><i class="rond"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M8.5 14l-1.5 7 5-3 5 3-1.5-7"/></svg></i>
@@ -961,12 +995,10 @@ body.sobre #plateau{transition:none}
     <div class="defile"><div class="centre cascade">
       <div class="rang-carte" id="rangCarte"></div>
       <button class="bouton" id="btnClassements" type="button" style="width:100%;justify-content:center;margin-bottom:14px"><svg viewBox="0 0 24 24"><path d="M4 20V11h4v9M10 20V5h4v15M16 20v-6h4v6"/></svg><span>Classement</span></button>
-      <div class="groupe"><h4>Missions du jour</h4><div id="listeMissions"></div></div>
       <div class="groupe"><h4>Comment monter</h4><div class="ligne"><div class="lt"><b>Résoudre un cube</b><span>De l’expérience selon sa longueur, plus pour chaque étoile.</span></div></div>
         <div class="ligne"><div class="lt"><b>Missions du jour</b><span>Trois par jour ; les trois réussies offrent une ampoule.</span></div></div>
         <div class="ligne"><div class="lt"><b>Défis</b><span>Le défi du jour et celui de la semaine rapportent le plus.</span></div></div>
         <div class="ligne"><div class="lt"><b>Chaque rang</b><span>Une ampoule gagnée.</span></div></div></div>
-      <div class="groupe"><h4>Route du rang</h4><div id="listeRoute"></div></div>
       <div class="groupe" id="grpCompte"><h4>Mon profil de joueur</h4>
         <div class="ligne"><div class="lt"><b>Code de récupération</b><span>Notez-le : sur un autre téléphone, il rend votre pseudo, votre place, vos achats et votre progression.</span></div>
           <button class="code-rec notrad" id="btnCode" type="button">—</button></div>
@@ -975,6 +1007,14 @@ body.sobre #plateau{transition:none}
         <div class="ligne"><div class="lt"><b>Supprimer mes données</b><span>Efface du serveur votre pseudo, vos scores et votre sauvegarde. Votre partie reste sur ce téléphone.</span></div>
           <button class="danger" id="btnSupprimerCompte" type="button">Supprimer</button></div></div>
     </div></div>
+  </section>
+
+  <section class="ecran" id="defis" aria-label="Défis">
+    <div class="tete">
+      <button class="ico" data-retour="accueil" type="button" aria-label="Retour"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2>Défis</h2><span class="ico vide"></span>
+    </div>
+    <div class="defile"><div class="centre cascade" id="defisCorps"></div></div>
   </section>
 
   <section class="ecran" id="classement" aria-label="Classement">
@@ -1653,7 +1693,7 @@ function montrer(id,sens){var prevEcran=ECRAN;sens=sens||1;document.querySelecto
   numeroter(document.getElementById(id));
   Logo.visible=id==="accueil";AideP.visible=id==="aide";JeuP.visible=id==="jeu";if(typeof ApercuP!=="undefined"){ApercuP.visible=id==="boutique";if(id==="boutique"){redimApercu();rendreBoutique();}}
   if(id==="accueil"){FOND_ACC=2;poserFond(FOND_ACC,true);accentTheme(FOND_ACC);rafraichirAccueil();majRang();Logo.demarrer();}  // accueil toujours en thème bleu
-  if(id==="succes")rafraichirSucces();if(id==="profil")rafraichirProfil();if(id==="aide")redimAide();if(id==="jeu"){poserFond((J&&J.fond)||FOND_ACC||1,true);redimJeu();}
+  if(id==="succes")rafraichirSucces();if(id==="profil")rafraichirProfil();if(id==="defis")rafraichirDefis();if(id==="aide")redimAide();if(id==="jeu"){poserFond((J&&J.fond)||FOND_ACC||1,true);redimJeu();}
   Ticker.reveiller();}
 var OPT_DEPUIS_JEU=false;
 document.querySelectorAll("[data-retour]").forEach(function(b){b.addEventListener("click",function(){sonClic();
@@ -2633,18 +2673,15 @@ function missionsVictoire(d,e,eT,temps){avancerMissions(function(m){return{cubes
   avancerMissions(function(m){return m.id==="sansfin"&&d.mode==="sansfin"?d.etape:m.id==="vite"&&temps<=m.but*1000?m.but:0;},true);}
 function majRang(){var R=rangDe(PROG.xp),M=missionsDuJour();document.getElementById("btnRang").classList.toggle("mecene",aDroit("soutien"));document.getElementById("rangAnneau").innerHTML=anneauRang(PROG.xp);poserCadre(document.getElementById("btnRang"),R.r);
   document.getElementById("rangTitre").textContent=pseudo();   // le pseudo du joueur (le titre est au profil)
-  // les missions du jour : une cible et « 1/3 » (les trois points seuls ne disaient pas ce qu'ils comptaient), dorés à 3/3
-  var nm=M.l.filter(missionFinie).length,rm=document.getElementById("rangMissions");rm.classList.toggle("fini",nm===M.l.length);
-  rm.innerHTML='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg>'+nm+'/'+M.l.length;}
+  // les missions du jour ont quitté la puce (le client, le 15/10/2026) : elles sont dans l'écran Défis, la puce garde le pseudo
+  if(ECRAN==="defis")rafraichirDefis();}
 function rafraichirProfil(){var R=rangDe(PROG.xp),M=missionsDuJour();
   var rc=document.getElementById("rangCarte");rc.classList.toggle("mecene",aDroit("soutien"));poserCadre(rc,R.r);
-  document.getElementById("listeRoute").innerHTML=routeHTML();majCompte();
+  majCompte();
   rc.innerHTML='<span class="anneau-rang notrad">'+anneauRang(PROG.xp,2.4)+'</span><button class="rc-pseudo" id="btnPseudo" type="button" aria-label="Changer de pseudo"><b class="notrad">'+echapper(pseudo())+'</b>'+
     '<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/></svg></button><h3 class="rc-titre">'+titreRang(R.r)+'</h3>'+(aDroit("soutien")?'<span class="mecene-titre">Mécène d’Orbicube</span>':"")+(voieFinie(MONDES.length-1)?'<span class="mecene-titre maitre">Maître des orbites</span>':"")+
     '<span class="xp notrad">'+R.xp+' / '+R.besoin+' XP</span><span class="rc-et notrad">'+SVG_ET+etoilesTotal()+' '+SVG_ETT+etoilesChrono()+'</span>';
-  document.getElementById("listeMissions").innerHTML=M.l.map(function(m){var ok=missionFinie(m);return '<div class="mission'+(ok?" ok":"")+'"><span class="coche">'+(ok?'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>':"")+'</span>'+
-    '<div><b>'+texteMission(m)+'</b><i class="mb"><i style="width:'+(100*m.p/m.but).toFixed(0)+'%"></i></i></div><span class="mx notrad">'+(m.id==="vite"||m.id==="sansfin"?(ok?"✓":""):m.p+"/"+m.but)+'</span></div>';}).join("")+
-    '<p class="mission-bonus">'+(M.bonus?"Les trois sont réussies : ampoule gagnée. Nouvelles missions demain.":"Les trois réussies : une ampoule. +"+XP_MISSION+" XP chacune.")+'</p>';}
+}
 document.getElementById("btnClassements").addEventListener("click",function(){sonClic();ouvrirClassement(null,"profil");});
 document.getElementById("btnRang").addEventListener("click",function(){sonClic();montrer("profil");});
 document.getElementById("rangCarte").addEventListener("click",function(e){if(e.target.closest("#btnPseudo")){sonClic();changerPseudo();}});
@@ -2655,14 +2692,47 @@ function cleSemaine(d){d=new Date(d||Date.now());d.setHours(0,0,0,0);d.setDate(d
 function semaineDef(){var k=cleSemaine();return{mode:"semaine",id:k,anneaux:SIXFACES,par:14,melange:genererMelange(graine("semaine-"+k),SIXFACES,14),titre:"Défi de la semaine",sous:"Semaine "+(+k.slice(-2))};}
 // relax : un mélange court, sans chrono, sans compteur, sans étoiles ; pour quelques minutes
 function relaxDef(){return{mode:"relax",relax:true,id:"relax",n:8,anneaux:TOUS,par:8,melange:genererMelange(Math.random,TOUS,8),titre:"Relax",sous:"sans chrono ni étoiles"};}
-function ouvrirDefis(){var j=PROG.jours[cleJour()],w=(PROG.semaines||{})[cleSemaine()];
-  ouvrirFenetre('<h3>Défis</h3><p>Le même mélange pour tout le monde.</p><div class="menu">'+
-    '<button class="bouton or" data-a="jour" type="button"><span>Défi du jour</span><span class="droite">'+(j?"réussi":PROG.serie>1&&estHier(PROG.dernierJour)?"série de "+PROG.serie:"nouveau")+'</span></button>'+
-    (complet()?'<button class="bouton" data-a="semaine" type="button"><span>Défi de la semaine</span><span class="droite">'+(w?"record "+fmt(w.temps):"2 ampoules")+'</span></button>':
-      carteReserve([["semaine","Défi de la semaine","Un grand mélange de 14 coups, le même pour tous, deux ampoules à la clé"]]))+
-    (enLigne()?'<button class="bouton" data-a="classement" type="button"><span>Classement</span><span class="droite">'+SVG_COUPE+'</span></button>':"")+
-    '<button class="bouton" data-a="x" type="button" style="justify-content:center;color:var(--pale)">Fermer</button></div>',
-    function(a){fermerFenetre();if(a==="classement")ouvrirClassement("jour","accueil");else if(a==="jour")lancer(jourDef());else if(a==="acheter")ouvrirBoutique("semaine");else if(a==="semaine"){if(complet())lancer(semaineDef());else ouvrirBoutique("semaine");}},"x");}
+// L'écran Défis (le client, le 15/10/2026 : « combiner les missions du profil avec les défis du jour ainsi que les
+// récompenses de profil », « professionnel ») : tout ce qui se renouvelle et tout ce qui se gagne, au même endroit.
+// Le défi du jour en tête (résultat, place, podium), celui de la semaine, les missions du jour, puis la route du rang.
+function ouvrirDefis(){montrer("defis");}
+var SVG_CAL='<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15.5" r="2"/></svg>',
+  SVG_SEM='<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M7 14h10M7 17.5h6"/></svg>',
+  SVG_FLAMME='<svg viewBox="0 0 24 24"><path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3 0-3-1-5.5 1-8.5z"/></svg>';
+function missionsHTML(M){return M.l.map(function(m){var ok=missionFinie(m);return '<div class="mission'+(ok?" ok":"")+'"><span class="coche">'+(ok?'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>':"")+'</span>'+
+    '<div><b>'+texteMission(m)+'</b><i class="mb"><i style="width:'+(100*m.p/m.but).toFixed(0)+'%"></i></i></div><span class="mx notrad">'+(m.id==="vite"||m.id==="sansfin"?(ok?"✓":""):m.p+"/"+m.but)+'</span></div>';}).join("")+
+    '<p class="mission-bonus">'+(M.bonus?"Les trois sont réussies : ampoule gagnée. Nouvelles missions demain.":"Les trois réussies : une ampoule. +"+XP_MISSION+" XP chacune.")+'</p>';}
+function resteJour(){var dem=new Date();dem.setHours(24,0,0,0);var r=dem-Date.now(),h=Math.floor(r/3600000);return h>=1?"dans "+h+" h":"dans "+Math.max(1,Math.ceil(r/60000))+" min";}
+function resultatDefi(r){return '<div class="df-res"><div><b class="notrad">'+r.coups+'</b><span>coups</span></div><div><b class="notrad">'+fmt(r.temps)+'</b><span>temps</span></div>'+
+  '<div><b class="notrad df-et">'+[0,1,2].map(function(k){return k<r.etoiles?SVG_ET:SVG_ET_OFF;}).join("")+'</b><span>étoiles</span></div></div>';}
+function rafraichirDefis(){var j=PROG.jours[cleJour()],w=(PROG.semaines||{})[cleSemaine()],R=rangDe(PROG.xp),M=missionsDuJour(),nm=M.l.filter(missionFinie).length,
+    serie=PROG.serie>1&&(PROG.dernierJour===cleJour()||estHier(PROG.dernierJour)),prochain=ROUTE.filter(function(x){return x.r>R.r;})[0];
+  var h='<div class="df-carte df-jour"><div class="df-tete"><span class="df-ico">'+SVG_CAL+'</span><div><b>Défi du jour</b><small class="notrad">'+new Date().toLocaleDateString(locale(),{weekday:"long",day:"numeric",month:"long"})+'</small></div>'+
+      (serie?'<span class="df-serie">'+SVG_FLAMME+'<span>série de '+PROG.serie+'</span></span>':"")+'</div>'+
+    (j?resultatDefi(j):'<p class="df-desc">Le même mélange pour tout le monde : 8 coups sur les six faces.</p>')+
+    '<button class="bouton principal" data-a="jour" type="button"><span>'+(j?"Rejouer pour progresser":"Jouer le défi")+'</span>'+(j?"":'<span class="droite">+1 ampoule</span>')+'</button>'+
+    (j?'<p class="df-reste">Nouveau défi '+resteJour()+'</p>':"")+
+    (enLigne()&&!PROG.classementOff?'<div class="df-podium" id="dfPodium"><p class="cl-vide">Chargement…</p></div>':"")+'</div>';
+  h+=complet()?'<div class="df-carte"><div class="df-tete"><span class="df-ico">'+SVG_SEM+'</span><div><b>Défi de la semaine</b><small>Semaine '+(+cleSemaine().slice(-2))+'</small></div></div>'+
+      (w?resultatDefi(w):'<p class="df-desc">Un grand mélange de 14 coups, le même pour tous jusqu’à dimanche.</p>')+
+      '<button class="bouton" data-a="semaine" type="button" style="justify-content:center"><span>'+(w?"Rejouer pour progresser":"Jouer le défi de la semaine")+'</span>'+(w?"":'<span class="droite">+2 ampoules</span>')+'</button>'+
+      (enLigne()&&!PROG.classementOff?'<button class="df-lien" data-a="classement-semaine" type="button">Classement de la semaine</button>':"")+'</div>':
+    carteReserve([["semaine","Défi de la semaine","Un grand mélange de 14 coups, le même pour tous, deux ampoules à la clé"]]);
+  h+='<div class="groupe"><h4 class="h4-plus">Missions du jour<span class="notrad'+(nm===M.l.length?" fini":"")+'">'+nm+'/'+M.l.length+'</span></h4>'+missionsHTML(M)+'</div>';
+  h+='<div class="groupe"><h4>Récompenses du rang</h4><div class="df-rang"><span class="anneau-rang notrad">'+anneauRang(PROG.xp,2.6)+'</span><div><b>'+titreRang(R.r)+'</b>'+
+      '<i class="mb"><i style="width:'+(100*R.xp/R.besoin).toFixed(0)+'%"></i></i><small class="notrad">'+R.xp+' / '+R.besoin+' XP</small></div></div>'+
+    (prochain?'<p class="df-proch">Prochaine récompense au rang '+prochain.r+' : '+prochain.l[0]+'</p>':"")+routeHTML()+'</div>';
+  var c=document.getElementById("defisCorps");c.innerHTML=h;numeroter(document.getElementById("defis"));
+  if(document.getElementById("dfPodium"))appel("classement",{tableau:"jour",cle:cleJour()}).then(function(r){var P=document.getElementById("dfPodium");if(!P||ECRAN!=="defis")return;
+    if(!r.liste){P.innerHTML="";return;}var mien=PROG.compte&&PROG.compte.id;
+    P.innerHTML='<div class="df-podium-tete"><span>Classement du jour</span>'+(r.moi?'<b>'+r.moi.place+' / '+r.total+'</b>':"")+'</div>'+
+      (r.liste.length?r.liste.slice(0,3).map(function(x){return ligneCl("jour",x,x.pid===mien);}).join(""):'<p class="cl-vide">Personne pour l’instant : soyez le premier !</p>')+
+      '<button class="df-lien" data-a="classement" type="button">Voir tout le classement</button>';});}
+document.getElementById("defisCorps").addEventListener("click",function(e){var b=e.target.closest("[data-a],[data-pid]");if(!b)return;sonClic();
+  if(b.hasAttribute("data-pid")){profilPublic(b.getAttribute("data-pid"));return;}var a=b.getAttribute("data-a");
+  if(a==="jour")lancer(jourDef());else if(a==="semaine"){if(complet())lancer(semaineDef());else ouvrirBoutique("semaine");}else if(a==="acheter")ouvrirBoutique("semaine");
+  else if(a==="classement")ouvrirClassement("jour","defis");else if(a==="classement-semaine")ouvrirClassement("semaine","defis");});
+document.getElementById("btnClassementAcc").addEventListener("click",function(){audio();sonClic();ouvrirClassement("jour","accueil");});
 
 /* ========== 15 sexies. LE CLASSEMENT, LE PSEUDO, LE CODE DE RÉCUPÉRATION ==========
    Le client, le 14/10/2026 : un classement dans le jeu, sans compte Apple ni Google. Un identifiant tiré au hasard,
@@ -2702,7 +2772,7 @@ function envoyerScore(d,temps){if(d.mode!=="jour"&&d.mode!=="semaine")return;PRO
 function viderEnvois(){if(!PROG.compte||!(PROG.envois||[]).length||viderEnvois.en)return;viderEnvois.en=true;var e=PROG.envois[0];
   appel("score",e).then(function(r){viderEnvois.en=false;if(r.erreur==="reseau"||r.erreur==="serveur"||r.erreur==="hors"||r.erreur==="ailleurs")return;
     PROG.envois=PROG.envois.filter(function(x){return x!==e;});sauver();viderEnvois();});}
-function apresVictoireClassement(d,temps){if(d.mode==="jour"||d.mode==="semaine")envoyerScore(d,temps);else assurerCompte();envoyerStats();sauverNuage();}
+function apresVictoireClassement(d,temps){if(d.mode==="jour"||d.mode==="semaine")envoyerScore(d,temps);else assurerCompte();envoyerStats();sauverNuage(true);}
 
 // ---- l'écran du classement ----
 var SVG_COUPE='<svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8"><path d="M4 20V11h4v9M10 20V5h4v15M16 20v-6h4v6"/></svg>';
@@ -2724,7 +2794,7 @@ function chargerClassement(){var t=CL.t,L=document.getElementById("clListe"),M=d
   if(PROG.classementOff){L.innerHTML='<p class="cl-vide">Vous n’apparaissez pas au classement.</p><button class="bouton" id="clRevenir" type="button" style="justify-content:center;width:100%">Revenir au classement</button>';
     document.getElementById("clRevenir").onclick=function(){sonClic();PROG.classementOff=false;sauver();chargerClassement();};return;}
   L.innerHTML='<p class="cl-vide">Chargement…</p>';var cle=t==="jour"?cleJour():t==="semaine"?cleSemaine():"";
-  assurerCompte().then(function(){return appel("classement",{tableau:t,cle:cle});}).then(function(r){if(CL.t!==t)return;
+  appel("classement",{tableau:t,cle:cle}).then(function(r){if(CL.t!==t)return;
     if(!r.liste){L.innerHTML='<p class="cl-vide">'+(r.erreur==="reseau"?"Pas de connexion. Le classement revient dès que le téléphone est en ligne.":"Le classement ne répond pas. Réessayez plus tard.")+'</p>';return;}
     var mien=PROG.compte&&PROG.compte.id;
     L.innerHTML=r.liste.length?r.liste.map(function(x){return ligneCl(t,x,x.pid===mien);}).join("")+'<p class="cl-total">'+(r.total>1?r.total+" joueurs classés":"1 joueur classé")+'</p>':
