@@ -518,7 +518,8 @@ body{background:
 .dock .item:active .rond{transform:scale(.9)}
 .dock svg{width:23px;height:23px;stroke:rgb(var(--acc));fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .dock .nom{font-family:var(--f-titre);font-weight:600;font-size:clamp(10px,3.2vw,13.5px);letter-spacing:.01em;line-height:1.05;text-align:center;white-space:nowrap}
-.dock .sous{font-size:11px;line-height:1;color:var(--pale);min-height:11px;white-space:nowrap}
+/* plus de sous-titre sous les ronds du dock (le client, le 16/10/2026) : le nom suffit ; les badges restent */
+.dock .sous{display:none}
 .dock .point{position:absolute;top:1px;right:1px;width:12px;height:12px;border-radius:50%;background:var(--or);box-shadow:0 0 0 2px #0b0d1c,0 0 10px rgba(255,207,74,.9)}
 .dock .point[hidden]{display:none}
 .dock .or .rond{border-color:rgba(255,207,74,.42);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 10px 22px -10px rgba(0,0,0,.9),0 0 16px -8px rgba(255,207,74,.45)}
