@@ -855,6 +855,10 @@ button.obj:first-child{border-top:0}
 .obj.verrou .obj-txt small{color:var(--or)}.obj.verrou .coche{border-style:dashed;border-color:rgba(255,207,74,.6)}
 .df-grandes{border-color:rgba(255,207,74,.35);background:linear-gradient(160deg,rgba(178,130,255,.14),rgba(178,130,255,0) 55%),rgba(14,14,24,.62)}
 .df-reserve .objs{opacity:.72}
+.achat-hero{display:grid;justify-items:center;gap:4px;margin:-4px 0 10px;padding:14px 12px 12px;border-radius:18px;background:radial-gradient(circle at 50% 30%,rgba(255,207,74,.16),rgba(255,207,74,0) 70%)}
+.achat-hero .neuf{width:96px;height:96px;filter:drop-shadow(0 0 10px rgba(255,207,74,.35))}
+.achat-hero .etiq{font:600 11px var(--f-titre);letter-spacing:.16em;text-transform:uppercase;color:var(--or)}
+.achat-hero h3{margin:0;font-size:24px}.achat-hero p{margin:2px 0 0!important}
 .df-place{display:flex;align-items:center;gap:8px;width:100%;min-height:46px;margin-top:2px;padding:0 4px;border:0;border-top:1px solid rgba(255,255,255,.08);background:none;color:var(--encre);font:600 14px var(--f-texte);cursor:pointer;text-align:left}
 .df-place span{flex:1}.df-place b{font:700 14px var(--f-chiffre);color:var(--or)}.df-place svg{width:16px;height:16px;fill:none;stroke:var(--pale);stroke-width:2}
 .g-intro{margin:0;padding:2px 16px 10px;color:var(--pale);font-size:13px;line-height:1.45}
@@ -1086,7 +1090,7 @@ button.obj:first-child{border-top:0}
           <label class="interrupteur"><input type="checkbox" id="optAnims" role="switch" aria-label="Animations"><i></i></label></div>
       </div>
       <div class="groupe" id="grpAchat"><h4>Achat</h4>
-        <div class="ligne"><div class="lt"><b>Orbicube complet</b><span id="achatEtat">Les 8 mondes, tout le jeu libre.</span></div>
+        <div class="ligne"><div class="lt"><b>Orbicube complet</b><span id="achatEtat">Les 9 orbites, 4 mondes de plus, tout le jeu libre.</span></div>
           <button class="danger" id="btnAchatOpt" type="button" style="color:var(--or);border-color:#5a4a1c;background:#221c0d">Débloquer</button></div>
         <div class="ligne"><div class="lt"><b>Restaurer mes achats</b><span>Après une réinstallation ou sur un autre appareil du même compte.</span></div>
           <button class="danger" id="btnRestaurer" type="button" style="color:var(--encre);border-color:var(--trait-vif);background:var(--carte2)">Restaurer</button></div>
@@ -2124,7 +2128,7 @@ function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length
   Mav.l.forEach(function(m,i){if(!fav[i]&&missionFinie(m))J.objectifs.push({k:"m"+i,t:texteMission(m),g:gainsMission(m)});});
   if(!bav&&Mav.bonus)J.objectifs.push({k:"bonus",t:"Bonus : toutes les missions",g:[["amp",AMP_BONUS]]});
   Sav.l.forEach(function(m,i){if(!fsv[i]&&missionFinie(m))J.objectifs.push({k:"s"+i,t:texteMission(m),g:gainsMission(m)});});
-  if(!bsv&&Sav.bonus)J.objectifs.push({k:"bonusS",t:"Bonus : toutes les grandes missions",g:[["amp",AMP_BONUS_SEM]]});
+  if(!bsv&&Sav.bonus)J.objectifs.push({k:"bonusS",t:"Bonus : toutes les missions élite",g:[["amp",AMP_BONUS_SEM]]});
   J.objectifs.forEach(function(o){OBJ_NEUFS[o.k]=1;});
   sauver();majJeu();apresVictoireClassement(d,temps);var jeton=J,t0=performance.now();
   // vague de victoire : les cercles s'allument l'un après l'autre, les pastilles sautent du centre vers le bord
@@ -2426,7 +2430,7 @@ document.getElementById("btnJour").addEventListener("click",function(){audio();s
 // jeu libre (le client, le 14/10/2026 : « donner vraiment envie d'acheter ») : sans achat, « Facile » se joue sur les
 // orbites des mondes gratuits ; tout le reste est rassemblé dans une carte « Avec le jeu complet » qui dit ce qu'on y gagne
 var SVG_RESERVE='<svg class="cad" viewBox="0 0 24 24">'+CAD+'</svg>';
-function carteReserve(lignes){return '<div class="reserve"><div class="reserve-tete">'+SVG_RESERVE+'<span>Avec le jeu complet</span></div>'+
+function carteReserve(lignes){return '<div class="reserve"><div class="reserve-tete">'+SVG_RESERVE+'<span>Avec les 9 orbites · jeu complet</span></div>'+
   lignes.map(function(l){return '<button class="reserve-ligne" data-a="'+l[0]+'" type="button"><b>'+l[1]+'</b><small>'+l[2]+'</small></button>';}).join("")+
   '<button class="bouton principal" data-a="acheter" type="button"><span>Débloquer</span>'+(PRIX?'<span class="droite">'+PRIX+'</span>':"")+'</button></div>';}
 document.getElementById("btnLibre").addEventListener("click",function(){audio();sonClic();var ouv=complet(),h='<h3>Jeu libre</h3>';
@@ -2477,13 +2481,18 @@ NATIF.etatAchat().then(function(ok){if(ok===true&&!PROG.achat){PROG.achat=true;s
 // la pastille d'achat n'apparaît qu'une fois le monde 1 fini : avant, elle parle d'un jeu qu'on ne connaît pas encore
 function majAchat(){var c=complet();document.getElementById("btnBoutique").hidden=!Object.keys(PROG.niveaux).length;document.getElementById("boutPoint").hidden=!nouveauxStyles().length;   // dès le premier niveau fini (le client, le 14/10/2026)
   document.getElementById("grpAchat").hidden=CFG.modele==="complet";
-  document.getElementById("achatEtat").textContent=c?"Débloqué. Merci pour votre soutien !":"Les 8 mondes, tout le jeu libre"+(PRIX?" · "+PRIX:"")+".";
+  document.getElementById("achatEtat").textContent=c?"Débloqué. Merci pour votre soutien !":"Les 9 orbites, 4 mondes de plus, tout le jeu libre"+(PRIX?" · "+PRIX:"")+".";
   var b=document.getElementById("btnAchatOpt");b.textContent=c?"Débloqué":"Débloquer";b.disabled=c;
   document.getElementById("optPied").textContent="Orbicube "+(CFG.version||"")+(c||CFG.modele==="complet"?"":" · version d’essai");}
-var POURQUOI={indice:"Le jeu complet en offre une chaque jour.",monde:"Les mondes 5 à 8 font partie du jeu complet.",libre:"Ce mode de jeu libre fait partie du jeu complet.",semaine:"Le défi de la semaine fait partie du jeu complet.",accueil:""};
+// ce que le joueur voulait faire quand la boutique s'ouvre ; le gain principal reste le même : les 9 orbites (le client, le 16/10/2026)
+var POURQUOI={indice:"Le jeu complet offre aussi une ampoule chaque jour.",monde:"Chaque monde suivant ajoute une orbite, jusqu’aux 9 à la fois.",libre:"Ce mode se joue sur les 9 orbites.",semaine:"Les missions élite font partie du jeu complet.",accueil:""};
+var SVG_NEUF=(function(){var c=[[0,-7],[-6.1,3.5],[6.1,3.5]],r=[8,10.5,13],cols=["#ffcf4a","#b282ff","#5cb4ff"],h='<svg class="neuf" viewBox="-26 -26 52 52" aria-hidden="true">';
+  c.forEach(function(p,i){r.forEach(function(rr,k){h+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+rr+'" fill="none" stroke="'+cols[i]+'" stroke-width="'+(k===1?1.6:1.1)+'" opacity="'+(k===1?1:.7)+'"/>';});});return h+'</svg>';})();
 function ouvrirBoutique(raison){var web=!NATIF.natif,li=CFG.liens||{};
-  var avantages=[["48 niveaux de plus","Six, sept, huit orbites, puis les neuf à la fois."],["Tout le jeu libre","Moyen, difficile, expert, sans fin et relax, sur les neuf orbites."],["Les grandes missions","Le défi de la semaine et trois missions longues, bien mieux récompensées."],["Une ampoule offerte chaque jour","Pour un indice quand vous bloquez."],["Un seul achat, pour toujours","Sans publicité, sans abonnement."]];
-  var html='<h3>Orbicube complet</h3>'+(POURQUOI[raison]?'<p>'+POURQUOI[raison]+'</p>':'<p>Vous avez joué la version d’essai. La suite vous attend.</p>')+
+  var avantages=[["4 mondes et 48 niveaux de plus","Six, sept, huit orbites, puis les neuf à la fois."],["Tout le jeu libre sur les 9 orbites","Moyen, difficile, expert, sans fin et relax."],["Les missions élite","Le défi de la semaine et trois missions longues, bien mieux récompensées."],["Une ampoule offerte chaque jour","Pour un indice quand vous bloquez."],["Un seul achat, pour toujours","Sans publicité, sans abonnement."]];
+  // en tête, le vrai gain, dessiné : les neuf orbites du cube (trois familles de trois cercles)
+  var html='<div class="achat-hero">'+SVG_NEUF+'<span class="etiq">Orbicube complet</span><h3>Débloquez les 9 orbites</h3><p>Le cube entier : ses neuf cercles, enfin à la fois.</p></div>'+
+    (POURQUOI[raison]?'<p>'+POURQUOI[raison]+'</p>':"")+
     '<div style="display:grid;gap:10px;text-align:left;margin:4px 0 16px">'+avantages.map(function(a){return '<div style="display:flex;gap:10px;align-items:flex-start"><svg viewBox="0 0 24 24" style="width:20px;height:20px;flex:none;margin-top:1px;stroke:var(--or);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b style="display:block">'+a[0]+'</b><span style="color:var(--pale);font-size:13px">'+a[1]+'</span></div></div>';}).join("")+'</div><div class="menu">';
   if(web){html+='<p style="margin:0 0 6px">L’achat se fait dans l’application, sur iPhone ou Android.</p>'+
       (li.appStore?'<a class="bouton principal" href="'+li.appStore+'" target="_blank" rel="noopener"><span>App Store</span></a>':"")+
@@ -2585,9 +2594,9 @@ function rendreBoutique(){var c=complet(),tous=["pack_couleurs","pack_formes","p
   document.getElementById("boutAmpNb").textContent=ampoules();
   var puce=function(t){return'<li><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>'+t+'</span></li>';};
   if(!c&&CFG.modele!=="complet")h='<div class="bout-hero"><span class="etiq">Meilleure offre</span><h3>'+PACKS.integrale.nom+'</h3><p>Tout Orbicube, en un seul achat, pour toujours.</p><ul>'+
-      puce("Les 8 mondes et tout le jeu libre")+puce("Une ampoule offerte chaque jour")+puce("Les 3 packs : 4 palettes, 3 formes, 4 effets")+'</ul>'+
+      puce("Les 9 orbites : 4 mondes et 48 niveaux de plus")+puce("Tout le jeu libre et les missions élite")+puce("Une ampoule offerte chaque jour")+puce("Les 3 packs : 4 palettes, 3 formes, 4 effets")+'</ul>'+
       '<button class="btn-or" type="button" data-achat="integrale"><span>Tout débloquer</span><span class="px notrad">'+PRIXP.integrale+'</span></button>'+auLieuDe("integrale")+'</div>'+
-      '<div class="bout-ligne" id="pack-complet"><span class="ic"><svg viewBox="0 0 24 24">'+IC.couronne+'</svg></span><div class="lt"><b>Orbicube complet</b><span>Les 8 mondes, tout le jeu libre, une ampoule par jour.</span></div>'+
+      '<div class="bout-ligne" id="pack-complet"><span class="ic"><svg viewBox="0 0 24 24">'+IC.couronne+'</svg></span><div class="lt"><b>Orbicube complet</b><span>Les 9 orbites : 4 mondes de plus, tout le jeu libre, les missions élite.</span></div>'+
       '<button class="btn-or" type="button" data-achat="complet"><span class="px notrad">'+PRIX+'</span></button></div>'+(tous?"":lignePack("collection",IC.effets));
   else if(!tous)h='<div class="bout-hero"><span class="etiq">Collection</span><h3>'+PACKS.collection.nom+'</h3><p>Les trois packs de styles, en un seul achat.</p><ul>'+
       puce("4 palettes : Aurore, Galaxie, Glace, Joyaux")+puce("3 formes : Gemmes, Étoiles, Cristaux")+puce("4 effets : comète, argent, arc-en-ciel, feu d’artifice")+'</ul>'+
@@ -2692,7 +2701,7 @@ function xpVictoire(d,e,eT,premier){if(d.relax)return 12;var x=d.mode==="sansfin
 // Deux sortes de missions (le client, le 15/10/2026 : « les gratuites rapportent moins, celles du jeu complet rapportent
 // plus » ; « 4 missions mais un bonus pour 3, ce n'est pas logique ») :
 // - les missions du jour, pour tous : le défi du jour + 3 missions, renouvelées chaque jour ;
-// - les grandes missions, avec le jeu complet : le défi de la semaine + 3 missions longues, renouvelées chaque lundi,
+// - les missions élite, avec le jeu complet : le défi de la semaine + 3 missions longues, renouvelées chaque lundi,
 //   bien mieux payées ; sans achat, elles se montrent (et ce qu'elles rapportent) derrière un cadenas.
 // Le défi est une mission comme les autres (id defi / defiSem) : le bonus récompense TOUTES les missions de la liste.
 // Phrases courtes (une ligne sur le petit iPhone) ; `jeu` : où la mission se joue, d'un toucher.
@@ -2725,7 +2734,7 @@ function defMission(m){return(m.s?MISSIONS_SEM:MISSIONS).filter(function(x){retu
 function texteMission(m){return defMission(m).txt.replace("{0}",m.but);}
 function missionFinie(m){return m.p>=m.but;}
 // v(m) : ce que l'événement apporte à la mission m ; max : la mission garde le meilleur, sinon elle cumule.
-// Les grandes missions n'avancent qu'avec le jeu complet.
+// Les missions élite n'avancent qu'avec le jeu complet.
 function avancerMissions(v,max){var touche=false,listes=[[missionsDuJour(),XP_MISSION,AMP_BONUS]];if(complet())listes.push([missionsSemaine(),XP_MISSION_SEM,AMP_BONUS_SEM]);
   listes.forEach(function(L){var M=L[0],fini=[];
     M.l.forEach(function(m){if(missionFinie(m))return;var x=v(m);if(!x)return;m.p=Math.min(m.but,max?Math.max(m.p,x):m.p+x);if(missionFinie(m))fini.push(m);});
@@ -2799,7 +2808,7 @@ function lignesMissions(M,amp,pre,bonusTxt,ferme){var res=pre==="m"?PROG.jours[c
     return objectif(ok,texteMission(m),sous,gainsMission(m),barre,(defi?"vedette":"")+(ferme?" verrou":""),ferme?"acheter":ok&&!defi?"":def&&def.jeu,pre+i);}).join("")+
   objectif(M.bonus,bonusTxt,M.bonus?"Gagné":amp>1?amp+" ampoules de plus":"Une ampoule de plus",[["amp",amp]],"","bonus"+(ferme?" verrou":""),"",pre==="m"?"bonus":"bonusS");}
 function joursAvantLundi(){var d=new Date(),n=(8-d.getDay())%7;return n||7;}
-// Aujourd'hui : « Missions du jour » (pour tous) puis « Grandes missions » (jeu complet), deux cadres de même forme ;
+// Aujourd'hui : « Missions du jour » (pour tous) puis « Missions élite » (jeu complet), deux cadres de même forme ;
 // compteur sur les 4 missions, bonus quand les 4 sont réussies ; chaque ligne dit ce qu'elle rapporte et mène où elle se joue.
 function rafraichirDefis(){var vu=PROG.objVu||(PROG.objVu={n:0,d:""});if(vu.d!==cleJour()){vu.n++;vu.d=cleJour();sauver();}
   var j=PROG.jours[cleJour()],w=(PROG.semaines||{})[cleSemaine()],M=missionsDuJour(),S=missionsSemaine(),ouv=complet(),
@@ -2814,9 +2823,9 @@ function rafraichirDefis(){var vu=PROG.objVu||(PROG.objVu={n:0,d:""});if(vu.d!==
     (j?"":'<button class="bouton principal" data-a="jour" type="button"><span>Jouer le défi du jour</span></button>')+
     (serie?'<p class="df-serie-l">'+SVG_FLAMME+'<span>Série de '+PROG.serie+' jours : une ampoule à chaque semaine complète.</span></p>':"")+
     lignePlace("jour")+'</div>';
-  // les grandes missions : avec le jeu complet ; sans achat, la même liste derrière un cadenas, pour montrer ce qu'elle rapporte
-  h+='<div class="df-carte df-grandes'+(ouv?"":" df-reserve")+'">'+tete(SVG_SEM,"Grandes missions",ouv?(nj>1?"De la semaine · nouvelles dans "+nj+" jours":"De la semaine · nouvelles demain"):"Jeu complet · nouvelles chaque lundi",fs,S.l.length,!ouv)+
-    '<div class="objs">'+lignesMissions(S,AMP_BONUS_SEM,"s","Bonus : toutes les grandes missions",!ouv)+'</div>'+
+  // les missions élite : avec le jeu complet ; sans achat, la même liste derrière un cadenas, pour montrer ce qu'elle rapporte
+  h+='<div class="df-carte df-grandes'+(ouv?"":" df-reserve")+'">'+tete(SVG_SEM,"Missions élite",ouv?(nj>1?"De la semaine · nouvelles dans "+nj+" jours":"De la semaine · nouvelles demain"):"Jeu complet · nouvelles chaque lundi",fs,S.l.length,!ouv)+
+    '<div class="objs">'+lignesMissions(S,AMP_BONUS_SEM,"s","Bonus : toutes les missions élite",!ouv)+'</div>'+
     (ouv?(w?"":'<button class="bouton" data-a="semaine" type="button" style="justify-content:center"><span>Jouer le défi de la semaine</span></button>')+lignePlace("semaine"):
       '<button class="bouton df-debloquer" data-a="acheter" type="button"><span>Débloquer</span>'+(PRIX?'<span class="droite">'+PRIX+'</span>':"")+'</button>')+'</div>';
   var c=document.getElementById("defisCorps");c.innerHTML=h;OBJ_NEUFS={};

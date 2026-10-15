@@ -100,18 +100,18 @@ async function resoudre(p) {
     // jeu libre : « Facile » ouvert sur les cinq orbites gratuites, le reste dans la carte « Avec le jeu complet »
     await p.tap("#parcours [data-retour]"); await p.waitForTimeout(400);
     await p.tap("#btnLibre"); await p.waitForTimeout(300);
-    const lib = await p.evaluate(() => { const f = document.querySelector("#fenetre"); const fa = f.querySelector('[data-a="5"]'); return { facile: !!fa && !fa.closest(".reserve") && fa.textContent.includes("5 orbites"), carte: !!f.querySelector(".reserve") && f.querySelector(".reserve").textContent.includes("Avec le jeu complet"), reserves: [...f.querySelectorAll(".reserve [data-a]")].map((b) => b.dataset.a).join(",") }; });
+    const lib = await p.evaluate(() => { const f = document.querySelector("#fenetre"); const fa = f.querySelector('[data-a="5"]'); return { facile: !!fa && !fa.closest(".reserve") && fa.textContent.includes("5 orbites"), carte: !!f.querySelector(".reserve") && f.querySelector(".reserve").textContent.includes("9 orbites"), reserves: [...f.querySelectorAll(".reserve [data-a]")].map((b) => b.dataset.a).join(",") }; });
     lib.facile && lib.carte && lib.reserves === "10,sansfin,relax,acheter" ? ok("jeu libre : Facile sur 5 orbites, le reste réservé et annoncé") : faute("jeu libre sans achat : " + JSON.stringify(lib));
     await p.tap('#fenetre [data-a="10"]'); await p.waitForTimeout(400);
-    (await p.textContent("#fenetre")).includes("jeu libre fait partie") ? ok("jeu libre « Moyen » réservée") : faute("« Moyen » n'est pas réservé");
+    (await p.textContent("#fenetre")).includes("9 orbites") ? ok("jeu libre « Moyen » réservé, et la boutique met en avant les 9 orbites") : faute("« Moyen » n'est pas réservé");
     await p.tap('#fenetre [data-a="x"]'); await p.waitForTimeout(300);
     // défis : celui du jour est gratuit, celui de la semaine réservé au jeu complet
     await p.tap("#btnJour"); await p.waitForTimeout(500);
     const sem = await p.evaluate(() => { const f = document.querySelector("#joueur"); return f.classList.contains("actif") && f.querySelectorAll('.df-reserve .obj.verrou[data-a="acheter"]').length === 4 && !f.querySelector('.obj[data-a="jour"]').classList.contains("verrou"); });
-    const hub = await p.evaluate(() => ["Missions du jour", "Défi du jour", "Bonus : toutes les missions", "+40 XP", "Grandes missions", "+150 XP"].every((t) => document.querySelector("#pJour").textContent.includes(t)) && !document.querySelector("#pJour").textContent.includes("Récompenses du rang"));
-    hub ? ok("Aujourd'hui : missions du jour (gratuites) et grandes missions (jeu complet), chacune avec sa récompense") : faute("écran Défis incomplet");
+    const hub = await p.evaluate(() => ["Missions du jour", "Défi du jour", "Bonus : toutes les missions", "+40 XP", "Missions élite", "+150 XP"].every((t) => document.querySelector("#pJour").textContent.includes(t)) && !document.querySelector("#pJour").textContent.includes("Récompenses du rang"));
+    hub ? ok("Aujourd'hui : missions du jour (gratuites) et missions élite (jeu complet), chacune avec sa récompense") : faute("écran Défis incomplet");
     await p.tap('#pJour .df-reserve [data-a="acheter"]'); await p.waitForTimeout(400);
-    sem && (await p.textContent("#fenetre")).includes("défi de la semaine fait partie") ? ok("missions du jour pour tous ; grandes missions visibles derrière un cadenas, qui mènent à la boutique") : faute("défi de la semaine pas réservé");
+    sem && (await p.textContent("#fenetre")).includes("missions élite font partie") ? ok("missions du jour pour tous ; missions élite visibles derrière un cadenas, qui mènent à la boutique") : faute("défi de la semaine pas réservé");
     await p.tap('#fenetre [data-a="x"]'); await p.waitForTimeout(300); await p.tap("#joueur [data-retour]"); await p.waitForTimeout(400);
 
     // options : groupe Achat et lien de confidentialité

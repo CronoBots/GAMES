@@ -124,6 +124,10 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   (`poserFond(t,true)`, le client, le 13/10/2026 : les planètes et astéroïdes des composites passaient sous le plateau ;
   les `fond-N` ne servent plus). En jeu comme à l'accueil, le ciel animé est baissé et n'envoie qu'une étoile filante pâle à la fois. La campagne
   (`#parcours`) garde ses fonds en couches parallaxe par-dessus.
+- **Le gain principal du jeu complet, ce sont les 9 orbites** (le client, le 16/10/2026) : la fenêtre d'achat (`ouvrirBoutique`)
+  s'ouvre sur « Débloquez les 9 orbites » avec leur dessin (`SVG_NEUF`, `.achat-hero`), puis la raison qui l'a ouverte
+  (`POURQUOI`) et les avantages, les orbites d'abord ; même ordre dans la boutique (édition intégrale, Orbicube complet),
+  les options et la carte réservée (« Avec les 9 orbites · jeu complet »).
 - **Ce que l'achat ouvre, dit clairement** (le client, le 14/10/2026 : « Jeu libre », pas « Partie libre » ; donner envie
   d'acheter) : sans achat, le jeu libre n'a que « Facile » sur les orbites du dernier monde gratuit (`orbitesLibres`,
   `libresGratuits`) ; Moyen/Difficile/Expert, Sans fin, Relax et le **défi de la semaine** sont dans une carte dorée
@@ -296,9 +300,9 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   « défi du jour, mission du jour, ça porte à confusion », « avec les récompenses de chacun », « que ça donne envie ») :
   **deux sortes de missions** (le client, le 15/10/2026 : « les gratuites rapportent moins, celles du jeu complet plus » ;
   « 4 missions mais un bonus pour 3, pas logique ») : **Missions du jour**, pour tous (le défi du jour + 3 missions `MISSIONS`
-  à +40 XP, renouvelées chaque jour, bonus +1 ampoule quand les QUATRE sont réussies) et **Grandes missions**, avec le jeu
+  à +40 XP, renouvelées chaque jour, bonus +1 ampoule quand les QUATRE sont réussies) et **Missions élite** (« Grandes missions » jusqu'au 16/10/2026, le client : « il faut appeler ça autrement »), avec le jeu
   complet (le défi de la semaine + 3 missions longues `MISSIONS_SEM` à +150 XP qui cumulent la semaine, renouvelées le
-  lundi, bonus +3 ampoules quand les quatre sont réussies). Sans achat, les grandes missions se montrent derrière un
+  lundi, bonus +3 ampoules quand les quatre sont réussies). Sans achat, les missions élite se montrent derrière un
   cadenas avec leurs récompenses (`.df-reserve`, lignes `verrou` qui mènent à la boutique, un bouton « Débloquer ») et
   n'avancent pas (`avancerMissions`). **Le défi est une mission de la liste** (`defi` / `defiSem`, `fixe`, toujours en tête,
   `tirerMissions` ; son XP et ses ampoules viennent de la victoire, `gainsMission` ne fait que les afficher) ; une liste
