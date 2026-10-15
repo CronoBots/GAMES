@@ -715,6 +715,8 @@ body.sobre #plateau{transition:none}
 .bout-hero ul{list-style:none;margin:0 0 16px;padding:0;display:grid;gap:7px;font-size:13.5px}
 .bout-hero li{display:flex;gap:9px;align-items:flex-start;line-height:1.35}
 .bout-hero li svg{width:17px;height:17px;flex:none;stroke:var(--or);fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;margin-top:1px}
+.bout-jeu .bj-tete{display:flex;align-items:center;gap:12px}.bout-jeu .bj-tete .neuf{width:72px;height:72px;flex:none;filter:drop-shadow(0 0 10px rgba(255,207,74,.35))}
+.bout-jeu .bj-tete h3{margin:6px 0 0}.bout-jeu p{margin-top:10px}
 .bout-hero.merci{border-color:rgba(var(--acc),.4);background:linear-gradient(160deg,rgba(30,34,70,.95),rgba(14,14,26,.95));box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
 .btn-or{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:52px;padding:0 20px;border-radius:999px;border:0;cursor:pointer;
   font:600 16px var(--f-titre);letter-spacing:.03em;color:#1b1406;background:linear-gradient(180deg,#ffe28e,#f0b623);
@@ -1008,11 +1010,13 @@ button.obj:first-child{border-top:0}
       <span class="puce bout-reserve" aria-label="Ampoules"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg><span class="notrad" id="boutAmpNb">3</span></span>
     </div>
     <div class="defile"><div class="bout">
+      <div class="bout" id="boutJeu"></div>
+      <div class="bout-sous" id="boutStylesT" hidden>Styles</div>
       <p class="bout-intro">Habillez votre plateau. Certains styles se gagnent en jouant, les autres s’achètent seuls ou en pack.</p>
       <div class="segment bout-rayons" id="boutRayons"><button type="button" data-r="palette" class="on"><span>Couleurs</span><i class="cpt notrad"></i></button><button type="button" data-r="forme"><span>Formes</span><i class="cpt notrad"></i></button><button type="button" data-r="effets"><span>Effets</span><i class="cpt notrad"></i></button></div>
       <div class="bout-apercu"><canvas id="apercu" aria-label="Aperçu du style"></canvas><div class="nom" id="apercuNom"></div><div class="fiche" id="apercuFiche"></div></div>
       <div class="bout" id="boutRayon"></div>
-      <div class="bout-sous">Packs et offres</div>
+      <div class="bout-sous">Packs de styles</div>
       <div class="bout" id="boutHero"></div>
       <div class="bout-sous">Ampoules</div>
       <p class="bout-note">Une ampoule = un indice : le prochain tour s’affiche sur le plateau.</p>
@@ -2593,15 +2597,18 @@ var IC={couleurs:'<circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><ci
 function rendreBoutique(){var c=complet(),tous=["pack_couleurs","pack_formes","pack_effets"].every(aDroit),h="";
   document.getElementById("boutAmpNb").textContent=ampoules();
   var puce=function(t){return'<li><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>'+t+'</span></li>';};
-  if(!c&&CFG.modele!=="complet")h='<div class="bout-hero"><span class="etiq">Meilleure offre</span><h3>'+PACKS.integrale.nom+'</h3><p>Tout Orbicube, en un seul achat, pour toujours.</p><ul>'+
-      puce("Les 9 orbites : 4 mondes et 48 niveaux de plus")+puce("Tout le jeu libre et les missions élite")+puce("Une ampoule offerte chaque jour")+puce("Les 3 packs : 4 palettes, 3 formes, 4 effets")+'</ul>'+
-      '<button class="btn-or" type="button" data-achat="integrale"><span>Tout débloquer</span><span class="px notrad">'+PRIXP.integrale+'</span></button>'+auLieuDe("integrale")+'</div>'+
-      '<div class="bout-ligne" id="pack-complet"><span class="ic"><svg viewBox="0 0 24 24">'+IC.couronne+'</svg></span><div class="lt"><b>Orbicube complet</b><span>Les 9 orbites : 4 mondes de plus, tout le jeu libre, les missions élite.</span></div>'+
-      '<button class="btn-or" type="button" data-achat="complet"><span class="px notrad">'+PRIX+'</span></button></div>'+(tous?"":lignePack("collection",IC.effets));
+  // le jeu complet tout en haut, à part (le client, le 16/10/2026 : « perdu dans les packs ») : les 9 orbites d'abord,
+  // l'édition intégrale en second choix ; plus bas, les packs de styles seulement
+  var jeu=!c&&CFG.modele!=="complet";
+  document.getElementById("boutJeu").innerHTML=jeu?'<div class="bout-hero bout-jeu"><div class="bj-tete">'+SVG_NEUF+'<div><span class="etiq">Le jeu complet</span><h3>Débloquez les 9 orbites</h3></div></div>'+
+      '<p>Le cube entier : ses neuf cercles, enfin à la fois.</p><ul>'+puce("4 mondes et 48 niveaux de plus")+puce("Tout le jeu libre et les missions élite")+puce("Une ampoule offerte chaque jour")+'</ul>'+
+      '<button class="btn-or" type="button" data-achat="complet"><span>Orbicube complet</span><span class="px notrad">'+PRIX+'</span></button></div>'+lignePack("integrale",IC.couronne):"";
+  document.getElementById("boutStylesT").hidden=!jeu;
+  if(!tous&&jeu)h=lignePack("collection",IC.effets);
   else if(!tous)h='<div class="bout-hero"><span class="etiq">Collection</span><h3>'+PACKS.collection.nom+'</h3><p>Les trois packs de styles, en un seul achat.</p><ul>'+
       puce("4 palettes : Aurore, Galaxie, Glace, Joyaux")+puce("3 formes : Gemmes, Étoiles, Cristaux")+puce("4 effets : comète, argent, arc-en-ciel, feu d’artifice")+'</ul>'+
       '<button class="btn-or" type="button" data-achat="collection"><span>Tout le style</span><span class="px notrad">'+PRIXP.collection+'</span></button>'+auLieuDe("collection")+'</div>';
-  else h='<div class="bout-hero merci"><span class="etiq">Merci</span><h3>Vous avez tout Orbicube</h3><p>Tous les mondes et tous les styles sont à vous. Bon voyage dans les orbites.</p></div>';
+  else if(c)h='<div class="bout-hero merci"><span class="etiq">Merci</span><h3>Vous avez tout Orbicube</h3><p>Tous les mondes et tous les styles sont à vous. Bon voyage dans les orbites.</p></div>';
   // en bas de la boutique, toutes les offres : l'édition phare, puis chaque pack (chacun ouvre aussi ses styles un par un)
   h+=lignePack("couleurs",IC.couleurs)+lignePack("formes",IC.formes)+lignePack("effets",IC.effets);
   document.getElementById("boutHero").innerHTML=h;
@@ -2615,7 +2622,7 @@ function rendreBoutique(){var c=complet(),tous=["pack_couleurs","pack_formes","p
       return'<div class="bout-sous">'+g[1]+'</div><div class="bout-grille">'+STYLES[g[0]].map(function(st){return carteStyle(g[0],st);}).join("")+'</div>';}).join("");
   var el=document.getElementById("boutRayon");el.innerHTML=r;
   el.querySelectorAll(".style").forEach(function(b){vignette(b.querySelector("canvas"),b.dataset.k,b.dataset.id);});
-  document.querySelectorAll("#boutHero .pack-contenu canvas").forEach(function(cv){vignette(cv,cv.dataset.k,cv.dataset.id);});
+  document.querySelectorAll("#boutHero .pack-contenu canvas,#boutJeu .pack-contenu canvas").forEach(function(cv){vignette(cv,cv.dataset.k,cv.dataset.id);});
   document.getElementById("boutAmpoules").innerHTML=["amp10","amp30"].map(function(k){return'<button class="bout-carte" type="button" data-achat="'+k+'">'+(k==="amp30"?'<span class="eco">Le plus avantageux</span>':"")+
       '<svg viewBox="0 0 24 24">'+'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/>'+'</svg><b>'+PACKS[k].nom+'</b><span class="px notrad">'+PRIXP[k]+'</span></button>';}).join("");
   document.getElementById("boutSoutien").innerHTML=aDroit("soutien")?'<div class="bout-ligne acquis"><span class="ic"><svg viewBox="0 0 24 24">'+IC.cœur+'</svg></span><div class="lt"><b>Merci pour votre soutien !</b><span>Votre liseré doré brille sur votre profil.</span></div></div>':lignePack("soutien",IC.cœur);

@@ -587,6 +587,8 @@
     ["Des étoiles d’or tombent du ciel à chaque victoire.", "Golden stars fall from the sky with every win.", "Gouden sterren vallen uit de lucht bij elke overwinning.", "Goldene Sterne fallen bei jedem Sieg vom Himmel.", "Estrellas de oro caen del cielo en cada victoria."],
     ["Quatre gerbes de feu d’artifice à chaque victoire.", "Four bursts of fireworks with every win.", "Vier vuurwerkbundels bij elke overwinning.", "Vier Feuerwerksgarben bei jedem Sieg.", "Cuatro ramilletes de fuegos artificiales en cada victoria."],
     ["Packs et offres", "Packs and offers", "Pakketten en aanbiedingen", "Pakete und Angebote", "Packs y ofertas"],
+    ["Packs de styles", "Style packs", "Stijlpakketten", "Stilpakete", "Packs de estilos"],
+    ["Le jeu complet", "The full game", "Het volledige spel", "Die Vollversion", "El juego completo"],
     ["Acheter", "Buy", "Kopen", "Kaufen", "Comprar"],
     ["Porter", "Wear", "Gebruiken", "Verwenden", "Usar"],
     ["ou le pack {0}", "or the {0} pack", "of het pakket {0}", "oder das Paket {0}", "o el pack {0}"],
