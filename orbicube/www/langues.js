@@ -75,6 +75,12 @@
     ["Maître des orbites", "Master of orbits", "Meester van de banen", "Meister der Bahnen", "Maestro de las órbitas"],
     ["Finir la voie dorée des huit mondes.", "Finish the golden path of all eight worlds.", "Voltooi het gouden pad van alle acht werelden.", "Schließe den goldenen Pfad aller acht Welten ab.", "Termina el camino dorado de los ocho mundos."],
     // --- écran Défis (15/10/2026)
+    ["Grandes missions", "Big missions", "Grote missies", "Große Missionen", "Grandes misiones"],
+    ["Avec le jeu complet · bien mieux récompensées", "With the full game · far better rewards", "Met het volledige spel · veel beter beloond", "Mit dem Vollspiel · viel besser belohnt", "Con el juego completo · mucho mejor recompensadas"],
+    ["Réussissez les missions pour gagner de l’expérience et des ampoules. Toutes réussies : une ampoule de plus.", "Complete missions to earn experience and bulbs. All done: one more bulb.", "Voltooi missies om ervaring en lampjes te verdienen. Allemaal gehaald: een extra lampje.", "Schaffe Missionen, um Erfahrung und Glühbirnen zu verdienen. Alle geschafft: eine Glühbirne mehr.", "Cumple misiones para ganar experiencia y bombillas. Todas cumplidas: una bombilla más."],
+    ["Bonus : toutes les missions", "Bonus: all missions", "Bonus: alle missies", "Bonus: alle Missionen", "Bonus: todas las misiones"],
+    ["Bonus : toutes les grandes missions", "Bonus: all big missions", "Bonus: alle grote missies", "Bonus: alle großen Missionen", "Bonus: todas las grandes misiones"],
+    ["Débloquer les grandes missions", "Unlock big missions", "Grote missies ontgrendelen", "Große Missionen freischalten", "Desbloquear las grandes misiones"],
     ["Un défi en moins de {0} s", "A challenge in under {0} s", "Een uitdaging in minder dan {0} s", "Eine Herausforderung in unter {0} s", "Un reto en menos de {0} s"],
     ["Missions de la semaine", "Weekly missions", "Missies van de week", "Wochenmissionen", "Misiones de la semana"],
     ["Nouvelles missions dans {0} h", "New missions in {0} h", "Nieuwe missies over {0} u", "Neue Missionen in {0} Std.", "Nuevas misiones en {0} h"],

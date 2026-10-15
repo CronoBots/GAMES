@@ -107,11 +107,11 @@ async function resoudre(p) {
     await p.tap('#fenetre [data-a="x"]'); await p.waitForTimeout(300);
     // défis : celui du jour est gratuit, celui de la semaine réservé au jeu complet
     await p.tap("#btnJour"); await p.waitForTimeout(500);
-    const sem = await p.evaluate(() => { const f = document.querySelector("#joueur"); return f.classList.contains("actif") && !!f.querySelector('.obj.verrou[data-a="semaine"]') && !f.querySelector('.obj[data-a="jour"]').classList.contains("verrou"); });
-    const hub = await p.evaluate(() => ["Missions du jour", "Défi du jour", "Bonus : les trois missions", "+50 XP", "Missions de la semaine", "+150 XP"].every((t) => document.querySelector("#pJour").textContent.includes(t)) && !document.querySelector("#pJour").textContent.includes("Récompenses du rang"));
-    hub ? ok("Aujourd'hui : missions du jour et de la semaine, chacune avec sa récompense") : faute("écran Défis incomplet");
-    await p.tap('#pJour [data-a="semaine"]'); await p.waitForTimeout(400);
-    sem && (await p.textContent("#fenetre")).includes("défi de la semaine fait partie") ? ok("défis : le jour gratuit, la semaine réservée au jeu complet") : faute("défi de la semaine pas réservé");
+    const sem = await p.evaluate(() => { const f = document.querySelector("#joueur"); return f.classList.contains("actif") && f.querySelectorAll('.df-reserve .obj.verrou[data-a="acheter"]').length === 4 && !f.querySelector('.obj[data-a="jour"]').classList.contains("verrou"); });
+    const hub = await p.evaluate(() => ["Missions du jour", "Défi du jour", "Bonus : toutes les missions", "+40 XP", "Grandes missions", "+150 XP"].every((t) => document.querySelector("#pJour").textContent.includes(t)) && !document.querySelector("#pJour").textContent.includes("Récompenses du rang"));
+    hub ? ok("Aujourd'hui : missions du jour (gratuites) et grandes missions (jeu complet), chacune avec sa récompense") : faute("écran Défis incomplet");
+    await p.tap('#pJour .df-reserve [data-a="acheter"]'); await p.waitForTimeout(400);
+    sem && (await p.textContent("#fenetre")).includes("défi de la semaine fait partie") ? ok("missions du jour pour tous ; grandes missions visibles derrière un cadenas, qui mènent à la boutique") : faute("défi de la semaine pas réservé");
     await p.tap('#fenetre [data-a="x"]'); await p.waitForTimeout(300); await p.tap("#joueur [data-retour]"); await p.waitForTimeout(400);
 
     // options : groupe Achat et lien de confidentialité
@@ -383,7 +383,7 @@ async function resoudre(p) {
     await go("#btnIndice", 400); await mesurer("indice"); await go('#fenetre [data-a="oui"]'); await go("#btnPause"); await go('#fenetre [data-a="niveaux"]', 600); await mesurer("niveaux");
     await mesurer("parcours"); await go(".parc-sect.paye"); await mesurer("boutique"); await fermer();
     await go("#parcours [data-retour]"); await go("#btnLibre"); await mesurer("jeu libre"); await go('#fenetre [data-a="10"]'); await mesurer("boutique jeu libre moyen"); await fermer();
-    await go("#btnJour", 900); await mesurer("défis"); await go('#pJour [data-a="semaine"]', 600); await mesurer("boutique défi de la semaine"); await fermer(); await go("#joueur [data-retour]");
+    await go("#btnJour", 900); await mesurer("défis"); await go('#pJour .df-reserve [data-a="acheter"]', 600); await mesurer("boutique défi de la semaine"); await fermer(); await go("#joueur [data-retour]");
     await go("#btnClassementAcc", 900); await mesurer("classement depuis l'accueil"); await go("#joueur [data-retour]");
     await go("#btnLibre"); await go('#fenetre [data-a="relax"]'); await mesurer("boutique jeu libre"); await fermer();
     await go("#btnRang"); await mesurer("profil"); await go("#btnPseudo"); await mesurer("pseudo"); await fermer();

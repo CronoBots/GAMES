@@ -853,7 +853,8 @@ button.obj:first-child{border-top:0}
 .obj-gagnes>div{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13.5px}
 .obj-gagnes .gains{flex-direction:row}
 .obj.verrou .obj-txt small{color:var(--or)}.obj.verrou .coche{border-style:dashed;border-color:rgba(255,207,74,.6)}
-.df-semaine{border-color:rgba(var(--acc),.4)}
+.df-grandes{border-color:rgba(255,207,74,.35);background:linear-gradient(160deg,rgba(178,130,255,.14),rgba(178,130,255,0) 55%),rgba(14,14,24,.62)}
+.df-reserve .objs{opacity:.72}
 .df-place{display:flex;align-items:center;gap:8px;width:100%;min-height:46px;margin-top:2px;padding:0 4px;border:0;border-top:1px solid rgba(255,255,255,.08);background:none;color:var(--encre);font:600 14px var(--f-texte);cursor:pointer;text-align:left}
 .df-place span{flex:1}.df-place b{font:700 14px var(--f-chiffre);color:var(--or)}.df-place svg{width:16px;height:16px;fill:none;stroke:var(--pale);stroke-width:2}
 .g-intro{margin:0;padding:2px 16px 10px;color:var(--pale);font-size:13px;line-height:1.45}
@@ -1777,7 +1778,7 @@ function rafraichirAccueil(){var pn=prochainNiveau(),fait=Object.keys(PROG.nivea
   document.getElementById("jourSous").textContent=serieVive?"série de "+PROG.serie:
     j?(h>=1?"dans "+h+" h":"dans "+Math.max(1,Math.ceil(reste/60000))+" min"):"+1 ampoule";
   // le rond Défis compte les objectifs du jour qui restent (défi du jour + missions) ; plus rien à 4/4
-  var Mo=missionsDuJour(),reste=(j?0:1)+Mo.l.filter(function(m){return !missionFinie(m);}).length,jp=document.getElementById("jourPoint");
+  var Mo=missionsDuJour(),reste=Mo.l.filter(function(m){return !missionFinie(m);}).length,jp=document.getElementById("jourPoint");
   jp.hidden=!reste;jp.textContent=reste;
   // sous « Continuer » : le monde en cours et ses étoiles, dans sa couleur
   // la seconde ligne du bouton dit où l'on en est, sans phrase en plus sous le bouton
@@ -2118,12 +2119,11 @@ function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length
   var Mav=missionsDuJour(),fav=Mav.l.map(missionFinie),bav=Mav.bonus,Sav=missionsSemaine(),fsv=Sav.l.map(missionFinie),bsv=Sav.bonus;
   J.xp=xpVictoire(d,e,eT,!av);gagnerXp(J.xp);missionsVictoire(d,e,eT,temps,!av);
   // les objectifs du jour que cette partie vient d'accomplir : dits dans la fenêtre de victoire, allumés dans « Aujourd'hui »
-  J.objectifs=[];if(d.mode==="jour"&&!av){J.objectifs.push({k:"jour",t:"Défi du jour",g:[["amp",1],["xp",100]]});}
-  if(d.mode==="semaine"&&!av)J.objectifs.push({k:"semaine",t:"Défi de la semaine",g:[["amp",2],["xp",200]]});
-  Mav.l.forEach(function(m,i){if(!fav[i]&&missionFinie(m))J.objectifs.push({k:"m"+i,t:texteMission(m),g:[["xp",XP_MISSION]]});});
-  if(!bav&&Mav.bonus)J.objectifs.push({k:"bonus",t:"Bonus : les trois missions",g:[["amp",AMP_BONUS]]});
-  Sav.l.forEach(function(m,i){if(!fsv[i]&&missionFinie(m))J.objectifs.push({k:"s"+i,t:texteMission(m),g:[["xp",XP_MISSION_SEM]]});});
-  if(!bsv&&Sav.bonus)J.objectifs.push({k:"bonusS",t:"Bonus de la semaine",g:[["amp",AMP_BONUS_SEM]]});
+  J.objectifs=[];
+  Mav.l.forEach(function(m,i){if(!fav[i]&&missionFinie(m))J.objectifs.push({k:"m"+i,t:texteMission(m),g:gainsMission(m)});});
+  if(!bav&&Mav.bonus)J.objectifs.push({k:"bonus",t:"Bonus : toutes les missions",g:[["amp",AMP_BONUS]]});
+  Sav.l.forEach(function(m,i){if(!fsv[i]&&missionFinie(m))J.objectifs.push({k:"s"+i,t:texteMission(m),g:gainsMission(m)});});
+  if(!bsv&&Sav.bonus)J.objectifs.push({k:"bonusS",t:"Bonus : toutes les grandes missions",g:[["amp",AMP_BONUS_SEM]]});
   J.objectifs.forEach(function(o){OBJ_NEUFS[o.k]=1;});
   sauver();majJeu();apresVictoireClassement(d,temps);var jeton=J,t0=performance.now();
   // vague de victoire : les cercles s'allument l'un après l'autre, les pastilles sautent du centre vers le bord
@@ -2684,38 +2684,51 @@ function xpVictoire(d,e,eT,premier){if(d.relax)return 12;var x=d.mode==="sansfin
 // les missions du jour : trois, tirées de la date, les mêmes pour tout le monde ce jour-là
 // des phrases courtes (une ligne sur le petit iPhone) ; « Réussir le défi du jour » n'en fait plus partie depuis que le défi
 // du jour est le premier des objectifs du jour (le client, le 15/10/2026). `jeu` : où l'objectif se joue, d'un toucher.
-// Missions du jour et missions de la semaine (le client, le 15/10/2026 : « plus difficiles, mais qui rapportent plus »).
-// Phrases courtes (une ligne sur le petit iPhone). `jeu` : où la mission se joue, d'un toucher. Même identifiant = même
-// événement compté (avancerMissions) ; les missions de la semaine cumulent toute la semaine.
+// Deux sortes de missions (le client, le 15/10/2026 : « les gratuites rapportent moins, celles du jeu complet rapportent
+// plus » ; « 4 missions mais un bonus pour 3, ce n'est pas logique ») :
+// - les missions du jour, pour tous : le défi du jour + 3 missions, renouvelées chaque jour ;
+// - les grandes missions, avec le jeu complet : le défi de la semaine + 3 missions longues, renouvelées chaque lundi,
+//   bien mieux payées ; sans achat, elles se montrent (et ce qu'elles rapportent) derrière un cadenas.
+// Le défi est une mission comme les autres (id defi / defiSem) : le bonus récompense TOUTES les missions de la liste.
+// Phrases courtes (une ligne sur le petit iPhone) ; `jeu` : où la mission se joue, d'un toucher.
 var MISSIONS=[{id:"tours",txt:"{0} tours de cercle",n:[80,100,120],jeu:"campagne"},{id:"cubes",txt:"{0} cubes résolus",n:[3,4],jeu:"campagne"},
   {id:"etT",txt:"{0} étoiles de temps",n:[6,9],jeu:"campagne"},{id:"parfait",txt:"{0} niveaux à trois étoiles",n:[2,3],jeu:"campagne"},
   {id:"sansfin",txt:"Étape {0} en sans fin",n:[4,5],jeu:"libre"},{id:"libre",txt:"{0} parties en jeu libre",n:[2,3],jeu:"libre"},
-  {id:"vite",txt:"Un défi en moins de {0} s",n:[45,60],jeu:"jour"}];
+  {id:"vite",txt:"Un défi en moins de {0} s",n:[45,60],jeu:"jour"},{id:"defi",txt:"Défi du jour",n:[1],jeu:"jour",fixe:true}];
 var MISSIONS_SEM=[{id:"tours",txt:"{0} tours de cercle",n:[500,700],jeu:"campagne"},{id:"cubes",txt:"{0} cubes résolus",n:[15,20],jeu:"campagne"},
   {id:"etT",txt:"{0} étoiles de temps",n:[24,36],jeu:"campagne"},{id:"parfait",txt:"{0} niveaux à trois étoiles",n:[6,8],jeu:"campagne"},
   {id:"libre",txt:"{0} parties en jeu libre",n:[8,12],jeu:"libre"},{id:"jours",txt:"{0} défis du jour réussis",n:[4,5],jeu:"jour"},
-  {id:"vite",txt:"Un défi en moins de {0} s",n:[30],jeu:"jour"},{id:"sansfin",txt:"Étape {0} en sans fin",n:[8,10],jeu:"libre",complet:true}];
-var XP_MISSION=50,XP_MISSION_SEM=150,AMP_BONUS=1,AMP_BONUS_SEM=3;
-function tirerMissions(cle,pool,sem){var rnd=graine(cle),p=pool.filter(function(m){return !m.complet||complet();}),l=[];
-  while(l.length<3){var m=p.splice(Math.floor(rnd()*p.length),1)[0];l.push({id:m.id,but:m.n[Math.floor(rnd()*m.n.length)],p:0,s:sem?1:0});}return l;}
+  {id:"vite",txt:"Un défi en moins de {0} s",n:[30],jeu:"jour"},{id:"sansfin",txt:"Étape {0} en sans fin",n:[8,10],jeu:"libre"},
+  {id:"defiSem",txt:"Défi de la semaine",n:[1],jeu:"semaine",fixe:true}];
+// récompenses : un défi donne ses ampoules et son expérience par la victoire elle-même (xpVictoire) ; une mission, son XP ici
+var XP_MISSION=40,XP_MISSION_SEM=150,AMP_BONUS=1,AMP_BONUS_SEM=3;
+function gainsMission(m){return m.id==="defi"?[["amp",1],["xp",100]]:m.id==="defiSem"?[["amp",2],["xp",200]]:[["xp",m.s?XP_MISSION_SEM:XP_MISSION]];}
+function tirerMissions(cle,pool,sem){var rnd=graine(cle),p=pool.filter(function(m){return !m.fixe;}),fixe=pool.filter(function(m){return m.fixe;})[0],
+    l=[{id:fixe.id,but:1,p:0,s:sem?1:0}];
+  while(l.length<4){var m=p.splice(Math.floor(rnd()*p.length),1)[0];l.push({id:m.id,but:m.n[Math.floor(rnd()*m.n.length)],p:0,s:sem?1:0});}return l;}
 function missionsDuJour(){var k=cleJour(),connue=function(m){return MISSIONS.some(function(x){return x.id===m.id&&x.n.indexOf(m.but)>=0;});};
-  // une liste d'avant le 15/10/2026 (missions retirées ou plus faciles) est retirée : les missions du jour sont retirées
-  if(PROG.missions&&PROG.missions.jour===k&&!PROG.missions.l.every(connue))PROG.missions=null;
-  if(!PROG.missions||PROG.missions.jour!==k)PROG.missions={jour:k,l:tirerMissions("missions-"+k,MISSIONS),bonus:false};return PROG.missions;}
-function missionsSemaine(){var k=cleSemaine();if(!PROG.missionsSem||PROG.missionsSem.sem!==k)PROG.missionsSem={sem:k,l:tirerMissions("missions-sem-"+k,MISSIONS_SEM,true),bonus:false};
+  // une liste d'avant le 15/10/2026 (sans le défi, ou aux missions retirées) est tirée à nouveau
+  if(PROG.missions&&PROG.missions.jour===k&&(!PROG.missions.l.every(connue)||PROG.missions.l[0].id!=="defi"))PROG.missions=null;
+  if(!PROG.missions||PROG.missions.jour!==k){PROG.missions={jour:k,l:tirerMissions("missions-"+k,MISSIONS),bonus:false};
+    if(PROG.jours[k])PROG.missions.l[0].p=1;}return PROG.missions;}
+function missionsSemaine(){var k=cleSemaine();
+  if(PROG.missionsSem&&PROG.missionsSem.sem===k&&PROG.missionsSem.l[0].id!=="defiSem")PROG.missionsSem=null;
+  if(!PROG.missionsSem||PROG.missionsSem.sem!==k){PROG.missionsSem={sem:k,l:tirerMissions("missions-sem-"+k,MISSIONS_SEM,true),bonus:false};
+    if((PROG.semaines||{})[k])PROG.missionsSem.l[0].p=1;}
   return PROG.missionsSem;}
 function defMission(m){return(m.s?MISSIONS_SEM:MISSIONS).filter(function(x){return x.id===m.id;})[0];}
 function texteMission(m){return defMission(m).txt.replace("{0}",m.but);}
 function missionFinie(m){return m.p>=m.but;}
-// v(m) : ce que l'événement apporte à la mission m ; max : la mission garde le meilleur, sinon elle cumule
-function avancerMissions(v,max){var touche=false;
-  [[missionsDuJour(),XP_MISSION,AMP_BONUS],[missionsSemaine(),XP_MISSION_SEM,AMP_BONUS_SEM]].forEach(function(L){var M=L[0],fini=[];
+// v(m) : ce que l'événement apporte à la mission m ; max : la mission garde le meilleur, sinon elle cumule.
+// Les grandes missions n'avancent qu'avec le jeu complet.
+function avancerMissions(v,max){var touche=false,listes=[[missionsDuJour(),XP_MISSION,AMP_BONUS]];if(complet())listes.push([missionsSemaine(),XP_MISSION_SEM,AMP_BONUS_SEM]);
+  listes.forEach(function(L){var M=L[0],fini=[];
     M.l.forEach(function(m){if(missionFinie(m))return;var x=v(m);if(!x)return;m.p=Math.min(m.but,max?Math.max(m.p,x):m.p+x);if(missionFinie(m))fini.push(m);});
-    fini.forEach(function(m){toast("Mission accomplie",texteMission(m));gagnerXp(L[1]);});
+    fini.forEach(function(m){if(m.id==="defi"||m.id==="defiSem")return;toast("Mission accomplie",texteMission(m));gagnerXp(L[1]);});
     if(!M.bonus&&M.l.every(missionFinie)){M.bonus=true;for(var a=0;a<L[2];a++)gagnerAmpoule();}
     if(fini.length)touche=true;});
   if(touche)majRang();}
-function missionsVictoire(d,e,eT,temps,premier){avancerMissions(function(m){return{cubes:1,etT:d.relax?0:eT,jours:d.mode==="jour"&&premier?1:0,parfait:d.mode==="campagne"&&e===3?1:0,
+function missionsVictoire(d,e,eT,temps,premier){avancerMissions(function(m){return{cubes:1,etT:d.relax?0:eT,jours:d.mode==="jour"&&premier?1:0,defi:d.mode==="jour"?1:0,defiSem:d.mode==="semaine"?1:0,parfait:d.mode==="campagne"&&e===3?1:0,
     libre:d.mode==="libre"||d.mode==="sansfin"||d.relax?1:0}[m.id]||0;});
   avancerMissions(function(m){return m.id==="sansfin"&&d.mode==="sansfin"?d.etape:m.id==="vite"&&(d.mode==="jour"||d.mode==="semaine")&&temps<=m.but*1000?m.but:0;},true);}
 function majRang(){var R=rangDe(PROG.xp),M=missionsDuJour();document.getElementById("btnRang").classList.toggle("mecene",aDroit("soutien"));document.getElementById("rangAnneau").innerHTML=anneauRang(PROG.xp);poserCadre(document.getElementById("btnRang"),R.r);
@@ -2771,36 +2784,36 @@ function objectif(fait,titre,sous,gl,extra,cls,jeu,k){var tag=jeu?"button":"div"
   '<span class="obj-txt"><b>'+titre+'</b>'+(sous?'<small>'+sous+'</small>':"")+(extra||"")+'</span>'+gains(gl,fait)+(jeu?SVG_CHEVRON:"")+'</'+tag+'>';}
 function objectifsGagnes(){if(!J.objectifs||!J.objectifs.length)return "";
   return '<div class="obj-gagnes"><b>'+(J.objectifs.length>1?"Missions accomplies":"Mission accomplie")+'</b>'+J.objectifs.map(function(o){return '<div><span>'+o.t+'</span>'+gains(o.g)+'</div>';}).join("")+'</div>';}
-// les lignes de missions d'une liste (du jour ou de la semaine) : avancement, récompense, et où elles se jouent
-function lignesMissions(M,xp,amp,pre,bonusTxt){return M.l.map(function(m,i){var ok=missionFinie(m),compte=m.but>1&&m.id!=="vite"&&m.id!=="sansfin",
-      barre=ok||!compte?"":'<i class="mb"><i style="width:'+(100*m.p/m.but).toFixed(0)+'%"></i></i>',def=defMission(m);
-    return objectif(ok,texteMission(m),compte?'<span class="notrad">'+m.p+'/'+m.but+'</span>':"",[["xp",xp]],barre,"",ok?"":def&&def.jeu,pre+i);}).join("")+
-  objectif(M.bonus,bonusTxt,M.bonus?"Gagné":amp>1?amp+" ampoules de plus":"Une ampoule de plus",[["amp",amp]],"","bonus","",pre==="m"?"bonus":"bonusS");}
+// les lignes d'une liste de missions : le défi en tête (son résultat une fois joué), puis les missions, puis le bonus de toutes
+function lignesMissions(M,amp,pre,bonusTxt,ferme){var res=pre==="m"?PROG.jours[cleJour()]:(PROG.semaines||{})[cleSemaine()];
+  return M.l.map(function(m,i){var ok=missionFinie(m),defi=m.id==="defi"||m.id==="defiSem",compte=m.but>1&&m.id!=="vite"&&m.id!=="sansfin",
+      barre=ok||!compte||ferme?"":'<i class="mb"><i style="width:'+(100*m.p/m.but).toFixed(0)+'%"></i></i>',def=defMission(m),
+      sous=defi?(res?'<span class="notrad">'+res.coups+'</span> coups · <span class="notrad">'+fmt(res.temps)+'</span>':m.id==="defi"?"Le même mélange pour tout le monde, 8 coups":"Un grand mélange de 14 coups, le même pour tous"):
+        compte&&!ferme?'<span class="notrad">'+m.p+'/'+m.but+'</span>':"";
+    // un défi reste jouable une fois réussi (pour progresser au classement) ; une mission réussie ne mène plus nulle part
+    return objectif(ok,texteMission(m),sous,gainsMission(m),barre,(defi?"vedette":"")+(ferme?" verrou":""),ferme?"acheter":ok&&!defi?"":def&&def.jeu,pre+i);}).join("")+
+  objectif(M.bonus,bonusTxt,M.bonus?"Gagné":amp>1?amp+" ampoules de plus":"Une ampoule de plus",[["amp",amp]],"","bonus"+(ferme?" verrou":""),"",pre==="m"?"bonus":"bonusS");}
 function joursAvantLundi(){var d=new Date(),n=(8-d.getDay())%7;return n||7;}
-// Aujourd'hui (le client, le 15/10/2026) : « Missions du jour » (le défi du jour en tête, trois missions, le bonus) et
-// « Missions de la semaine » (le défi de la semaine en tête, trois missions plus longues et mieux payées, le bonus),
-// deux cadres de même forme ; chaque ligne dit ce qu'elle rapporte et mène où elle se joue.
+// Aujourd'hui : « Missions du jour » (pour tous) puis « Grandes missions » (jeu complet), deux cadres de même forme ;
+// compteur sur les 4 missions, bonus quand les 4 sont réussies ; chaque ligne dit ce qu'elle rapporte et mène où elle se joue.
 function rafraichirDefis(){var vu=PROG.objVu||(PROG.objVu={n:0,d:""});if(vu.d!==cleJour()){vu.n++;vu.d=cleJour();sauver();}
   var j=PROG.jours[cleJour()],w=(PROG.semaines||{})[cleSemaine()],M=missionsDuJour(),S=missionsSemaine(),ouv=complet(),
-    nm=M.l.filter(missionFinie).length,ns=S.l.filter(missionFinie).length,tj=M.l.length+1,fj=nm+(j?1:0),ts=S.l.length+1,fs=ns+(w?1:0),
+    fj=M.l.filter(missionFinie).length,fs=S.l.filter(missionFinie).length,
     serie=PROG.serie>1&&(PROG.dernierJour===cleJour()||estHier(PROG.dernierJour)),nj=joursAvantLundi();
-  function tete(ico,titre,sous,f,t){return '<div class="df-tete"><span class="df-ico">'+ico+'</span><div><b>'+titre+'</b><small>'+sous+'</small></div>'+
-    '<span class="df-compte notrad'+(f===t?" fini":"")+'">'+f+'/'+t+'</span></div><i class="df-barre"><i style="width:'+(100*f/t).toFixed(0)+'%"></i></i>';}
-  var h='<div class="df-carte df-jour">'+tete(SVG_CAL,"Missions du jour","Nouvelles missions "+resteJour(),fj,tj)+
-    (vu.n<=3?'<p class="df-desc">Chaque jour et chaque semaine, de nouvelles missions : réussissez-les pour gagner de l’expérience et des ampoules.</p>':"")+'<div class="objs">'+
-    objectif(!!j,"Défi du jour",j?'<span class="notrad">'+j.coups+'</span> coups · <span class="notrad">'+fmt(j.temps)+'</span>':"Le même mélange pour tout le monde, 8 coups",[["amp",1],["xp",100]],"","vedette","jour","jour")+
-    lignesMissions(M,XP_MISSION,AMP_BONUS,"m","Bonus : les trois missions")+'</div>'+
+  function tete(ico,titre,sous,f,t,ferme){return '<div class="df-tete"><span class="df-ico">'+ico+'</span><div><b>'+titre+'</b><small>'+sous+'</small></div>'+
+    (ferme?'<span class="df-cadenas">'+SVG_RESERVE+'</span></div>':'<span class="df-compte notrad'+(f===t?" fini":"")+'">'+f+'/'+t+'</span></div><i class="df-barre"><i style="width:'+(100*f/t).toFixed(0)+'%"></i></i>');}
+  var h='<div class="df-carte df-jour">'+tete(SVG_CAL,"Missions du jour","Nouvelles missions "+resteJour(),fj,M.l.length)+
+    (vu.n<=3?'<p class="df-desc">Réussissez les missions pour gagner de l’expérience et des ampoules. Toutes réussies : une ampoule de plus.</p>':"")+
+    '<div class="objs">'+lignesMissions(M,AMP_BONUS,"m","Bonus : toutes les missions")+'</div>'+
     // un seul bouton : tant que le défi du jour n'est pas joué ; ensuite sa ligne suffit pour le rejouer
     (j?"":'<button class="bouton principal" data-a="jour" type="button"><span>Jouer le défi du jour</span></button>')+
     (serie?'<p class="df-serie-l">'+SVG_FLAMME+'<span>Série de '+PROG.serie+' jours : une ampoule à 3 jours, puis chaque semaine.</span></p>':"")+
     lignePlace("jour")+'</div>';
-  // la semaine : ses missions sont ouvertes à tous ; seul le défi de la semaine demande le jeu complet (cadenas sur sa ligne)
-  h+='<div class="df-carte df-semaine">'+tete(SVG_SEM,"Missions de la semaine",nj>1?"Nouvelles missions dans "+nj+" jours":"Nouvelles missions demain",fs,ts)+'<div class="objs">'+
-    objectif(!!w,"Défi de la semaine",w?'<span class="notrad">'+w.coups+'</span> coups · <span class="notrad">'+fmt(w.temps)+'</span>':ouv?"Un grand mélange de 14 coups, le même pour tous":"Avec le jeu complet",
-      [["amp",2],["xp",200]],"","vedette"+(ouv?"":" verrou"),"semaine","semaine")+
-    lignesMissions(S,XP_MISSION_SEM,AMP_BONUS_SEM,"s","Bonus : les trois missions")+'</div>'+
-    (ouv&&!w?'<button class="bouton" data-a="semaine" type="button" style="justify-content:center"><span>Jouer le défi de la semaine</span></button>':"")+
-    (ouv?lignePlace("semaine"):"")+'</div>';
+  // les grandes missions : avec le jeu complet ; sans achat, la même liste derrière un cadenas, pour montrer ce qu'elle rapporte
+  h+='<div class="df-carte df-grandes'+(ouv?"":" df-reserve")+'">'+tete(SVG_SEM,"Grandes missions",ouv?(nj>1?"Nouvelles missions dans "+nj+" jours":"Nouvelles missions demain"):"Avec le jeu complet · bien mieux récompensées",fs,S.l.length,!ouv)+
+    '<div class="objs">'+lignesMissions(S,AMP_BONUS_SEM,"s","Bonus : toutes les grandes missions",!ouv)+'</div>'+
+    (ouv?(w?"":'<button class="bouton" data-a="semaine" type="button" style="justify-content:center"><span>Jouer le défi de la semaine</span></button>')+lignePlace("semaine"):
+      '<button class="bouton df-debloquer" data-a="acheter" type="button"><span>Débloquer</span>'+(PRIX?'<span class="droite">'+PRIX+'</span>':"")+'</button>')+'</div>';
   var c=document.getElementById("defisCorps");c.innerHTML=h;OBJ_NEUFS={};
   ["jour","semaine"].forEach(function(t){var el=document.getElementById("dfPlace-"+t);if(!el||!PROG.compte)return;
     appel("classement",{tableau:t,cle:t==="jour"?cleJour():cleSemaine()}).then(function(r){if(r.moi&&ECRAN==="joueur"&&JOUEUR.o==="jour")el.textContent=r.moi.place+" / "+r.total;});});}
