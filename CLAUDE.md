@@ -45,6 +45,13 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 
 ## Ce qu'il faut savoir du code d'Orbicube
 
+- **Dispositions des orbites** (le client, le 16/10/2026 : « acheter d'autres présentations des orbites ») : `DISPOS` (Trèfle, la
+  disposition d'origine ; **Anneau**, les six faces en couronne : centres à 0,32 au lieu de 0,5336, le tout agrandi de 1,155),
+  style `dispo` (onglet Formes, « Disposition des orbites » ; Anneau dans le pack Formes et à l'unité). `poserGeo(id)` recalcule
+  tout ce qui dérive de la géométrie (`RAY`, `CEN`, `S[].xy`, `CENTRE_FACE`, `FORME`, `RAYON_FACE`, `DELTA`, `PAS`) ; `changerGeo`
+  redessine les plateaux. L'aperçu de la boutique pose la disposition regardée, `montrer` remet la disposition portée en
+  quittant la boutique. Les facettes gardent un angle d'au moins `min` (50° Trèfle, inchangé ; 65° Anneau, `ecarter`).
+  Le vérificateur et le parcours de test jouent le Trèfle.
 - La géométrie : trois familles de trois cercles concentriques (une par axe). Une facette
   est au croisement de deux cercles. **Les pastilles d'un cercle ne sont pas réparties
   régulièrement** : celle qui franchit un des deux grands vides parcourt plus d'un demi-tour.
@@ -111,8 +118,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   d'attente : `www/config.js` > `prixPacks`. Pas de monnaie virtuelle ni de tirage au hasard (décision du 13/10/2026).
   Pack soutien : liseré doré sur la puce du rang et le Profil (« Mécène d'Orbicube »).
 - **Fin de niveau** : les six faces s'illuminent l'une après l'autre et le cube fait un tour sur
-  lui-même (`PIVOT` n'est animé que là ; 1,5 s, penché un peu vers l'avant à mi-course, la fenêtre de victoire attend
-  1,7 s pour qu'on le voie, le client le 16/10/2026 : « c'est beau ») ; « Revoir ma partie » rejoue le mélange puis les coups (`revoir()`).
+  lui-même (`PIVOT` n'est animé que là ; 1,5 s autour de la verticale, dans l'inclinaison du jeu, sans le relever ; la
+  fenêtre de victoire attend 1,7 s pour qu'on le voie, le client le 16/10/2026) ; « Revoir ma partie » rejoue le mélange puis les coups (`revoir()`).
 - **Couleur d'accent par monde** (`ACCENTS`, `accent(w)`) : variable CSS `--acc` (triplet r,g,b) et
   `ACC` pour le canevas (cercle saisi, vague de victoire). Accueil, défi et jeu libre : le lilas.
   **Les orbites du plateau** (trait fin + halo léger, au repos comme à la sélection/au tour) prennent cette

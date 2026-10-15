@@ -1240,7 +1240,7 @@ var PALETTES={classique:["#F59A38","#F2665A","#F7D44C","#F2F2EF","#38C987","#4C8
    Les styles ne changent rien au jeu : couleurs, forme des pastilles, traînée, orbites, victoire. */
 var PACKS={
   couleurs:{produit:"orbicube_pack_couleurs",droit:"pack_couleurs",nom:"Palettes cosmiques",desc:"Aurore, Galaxie, Glace et Joyaux."},
-  formes:{produit:"orbicube_pack_formes",droit:"pack_formes",nom:"Formes précieuses",desc:"Gemmes, Étoiles et Cristaux."},
+  formes:{produit:"orbicube_pack_formes",droit:"pack_formes",nom:"Formes précieuses",desc:"Gemmes, Étoiles, Cristaux et la disposition Anneau."},
   effets:{produit:"orbicube_pack_effets",droit:"pack_effets",nom:"Effets stellaires",desc:"Traînée comète, orbites d’argent ou arc-en-ciel, feu d’artifice."},
   collection:{produit:"orbicube_collection",droits:["pack_couleurs","pack_formes","pack_effets"],nom:"Collection complète",desc:"Les trois packs de styles."},
   integrale:{produit:"orbicube_integrale",droits:["complet","pack_couleurs","pack_formes","pack_effets"],nom:"Édition intégrale",desc:"Le jeu complet et les trois packs de styles."},
@@ -1257,16 +1257,18 @@ var STYLES={
   forme:[{id:"facettes",nom:"Facettes"},{id:"astral",nom:"Style du monde"},{id:"perles",nom:"Perles"},{id:"hexagones",nom:"Hexagones",ouv:{rang:5}},
     {id:"gemmes",nom:"Gemmes",ouv:{pack:"formes"}},{id:"etoiles",nom:"Étoiles",ouv:{pack:"formes"}},{id:"cristaux",nom:"Cristaux",ouv:{pack:"formes"}},
     {id:"ecailles",nom:"Écailles",ouv:{voie:2}},{id:"eclats",nom:"Éclats",ouv:{voie:6}}],
+  // la disposition des orbites (le client, le 16/10/2026) : Anneau, dans le pack Formes et à l'unité
+  dispo:[{id:"trefle",nom:"Trèfle"},{id:"anneau",nom:"Anneau",ouv:{pack:"formes"}}],
   trainee:[{id:"halo",nom:"Halo"},{id:"poussiere",nom:"Poussière d’étoiles",ouv:{rang:10}},{id:"comete",nom:"Comète",ouv:{pack:"effets"}},{id:"sillage",nom:"Sillage",ouv:{voie:1}},{id:"braises",nom:"Braises",ouv:{rang:30}}],
   orbite:[{id:"accent",nom:"Couleur du monde"},{id:"argent",nom:"Argent",ouv:{pack:"effets"}},{id:"arcenciel",nom:"Arc-en-ciel",ouv:{pack:"effets"}},
     {id:"amethyste",nom:"Améthyste",ouv:{voie:3}},{id:"couronne",nom:"Couronne",ouv:{voie:7}},{id:"nacre",nom:"Nacre",ouv:{rang:20}},{id:"orrose",nom:"Or rose",ouv:{rang:40}}],
   victoire:[{id:"confettis",nom:"Confettis"},{id:"pluie",nom:"Pluie d’étoiles",ouv:{chrono:30}},{id:"feux",nom:"Feu d’artifice",ouv:{pack:"effets"}},{id:"supernova",nom:"Supernova",ouv:{voie:4}}]};
 // les styles portés, recalculés par appliquerOptions() (le dessin les lit à chaque image)
-var STY={palette:"monde",forme:"facettes",trainee:"halo",orbite:"accent",victoire:"confettis"};
+var STY={palette:"monde",forme:"facettes",dispo:"trefle",trainee:"halo",orbite:"accent",victoire:"confettis"};
 // chaque style d'un pack s'achète aussi à l'unité (le client, le 14/10/2026) : produit orbicube_style_<id>, droit style_<id>
 Object.keys(STYLES).forEach(function(k){STYLES[k].forEach(function(st){if(st.ouv&&st.ouv.pack)PACKS["s_"+st.id]={produit:"orbicube_style_"+st.id,droit:"style_"+st.id,nom:st.nom,unite:true};});});
 // une phrase par style, pour la fiche de l'aperçu : on sait ce qu'on porte ou ce qu'on achète
-var DESC_STYLE={monde:"Les couleurs du cube, accordées au monde où vous jouez.",astral:"Des pièces de verre aux reflets du monde : cristal, givre, braise ou étincelle.",classique:"Les six couleurs du cube 3×3.",contraste:"Des teintes distinctes pour tous les yeux.",pastel:"Des couleurs douces, tout en légèreté.",
+var DESC_STYLE={trefle:"Les trois familles d’orbites en trèfle : la disposition d’origine.",anneau:"Les six faces en couronne autour d’un grand vide.",monde:"Les couleurs du cube, accordées au monde où vous jouez.",astral:"Des pièces de verre aux reflets du monde : cristal, givre, braise ou étincelle.",classique:"Les six couleurs du cube 3×3.",contraste:"Des teintes distinctes pour tous les yeux.",pastel:"Des couleurs douces, tout en légèreté.",
   neon:"Des couleurs vives qui brillent dans la nuit.",aurore:"Les voiles d’une aurore boréale.",galaxie:"Le pourpre, le rose et l’or d’une nébuleuse.",
   glace:"Les bleus froids de la banquise.",joyaux:"Rubis, émeraude, saphir et topaze.",facettes:"Le cube de compétition : autocollants sur corps noir.",
   perles:"Des billes de verre rondes et brillantes.",hexagones:"Des alvéoles nettes et régulières.",gemmes:"Des pierres taillées qui accrochent la lumière.",
@@ -1325,17 +1327,27 @@ function cleA(mv){return mv.a+","+mv.L;}
 // proportions relevées sur la visualisation de référence (le client, le 11/10/2026) : des cercles plus grands
 // par rapport à l'écart de leurs centres, ce qui vide le milieu et sépare les neuf pastilles de chaque face
 var RAY=[0.7296,0.904,1.0835],ECART=0.5336;
+// les dispositions des orbites (le client, le 16/10/2026 : « acheter d'autres présentations des orbites ») : mêmes cercles, mêmes
+// pastilles, mêmes coups ; seul l'écart des trois centres change (Anneau : les six faces en couronne), la taille compensée (k)
+// pour que le plateau garde la même place. La disposition portée est posée par poserGeo, qui recalcule tout ce qui suit.
+var RAY0=RAY.slice(),DISPOS={trefle:{e:ECART,k:1,min:50},anneau:{e:.32,k:1.155,min:65}},DISPO="trefle";
 var CEN=[-30,90,210].map(function(d){var r=d*Math.PI/180;return[Math.cos(r)*ECART,Math.sin(r)*ECART];});
 function inter(c1,r1,c2,r2){var dx=c2[0]-c1[0],dy=c2[1]-c1[1],d=Math.hypot(dx,dy),a=(r1*r1-r2*r2+d*d)/(2*d),h=Math.sqrt(r1*r1-a*a),mx=c1[0]+a*dx/d,my=c1[1]+a*dy/d;
   return[[mx-h*dy/d,my+h*dx/d],[mx+h*dy/d,my-h*dx/d]];}
-S.forEach(function(s){var b=(s.a+1)%3,c=(s.a+2)%3,pts=inter(CEN[b],RAY[s.p[b]+1],CEN[c],RAY[s.p[c]+1]);
-  var d=function(q){return Math.hypot(q[0]-CEN[s.a][0],q[1]-CEN[s.a][1]);};pts.sort(function(u,v){return d(u)-d(v);});s.xy=s.s>0?pts[0]:pts[1];});
-var CENTRE_FACE={},CLE_CENTRE={};S.forEach(function(s,i){if(s.p[(s.a+1)%3]===0&&s.p[(s.a+2)%3]===0){CENTRE_FACE[s.a+","+s.s]=s.xy;CLE_CENTRE[s.a+","+s.s]=i;}});
+// une disposition : ses rayons, l'écart de ses centres, et la place de chaque pastille (au croisement de ses deux cercles)
+function geoDe(id){var D=DISPOS[id]||DISPOS.trefle,ray=RAY0.map(function(r){return r*D.k;}),e=D.e*D.k,
+    cen=[-30,90,210].map(function(d){var r=d*Math.PI/180;return[Math.cos(r)*e,Math.sin(r)*e];});
+  return{ray:ray,e:e,cen:cen,xy:S.map(function(s){var b=(s.a+1)%3,c=(s.a+2)%3,pts=inter(cen[b],ray[s.p[b]+1],cen[c],ray[s.p[c]+1]);
+    var d=function(q){return Math.hypot(q[0]-cen[s.a][0],q[1]-cen[s.a][1]);};pts.sort(function(u,v){return d(u)-d(v);});return s.s>0?pts[0]:pts[1];})};}
+var CENTRE_FACE={},CLE_CENTRE={},FORME=[],RAYON_FACE=0;
 // Forme des facettes : un losange dont les côtés suivent les deux cercles qui se croisent sous la pastille,
 // comme une case du cube vue en perspective. u et v sont les tangentes unitaires des deux cercles (repère du plateau).
 function tangente(p,c){var x=p[0]-c[0],y=p[1]-c[1],l=Math.hypot(x,y);return[-y/l,x/l];}
-var FORME=S.map(function(st){var b=(st.a+1)%3,c=(st.a+2)%3;return{u:tangente(st.xy,CEN[b]),v:tangente(st.xy,CEN[c])};});
-var RAYON_FACE=0;S.forEach(function(s){var c=CENTRE_FACE[s.a+","+s.s];RAYON_FACE=Math.max(RAYON_FACE,Math.hypot(s.xy[0]-c[0],s.xy[1]-c[1]));});RAYON_FACE+=.045;
+// les deux côtés d'une facette s'écartent d'au moins min degrés (50 dans le Trèfle, qui n'y touche pas ; 65 dans l'Anneau, où des
+// cercles se croisent à 28° : le losange serait une aiguille)
+function ecarter(u,v,min){var sg=u[0]*v[0]+u[1]*v[1]<0?-1:1,w=[v[0]*sg,v[1]*sg],th=Math.acos(Math.min(1,u[0]*w[0]+u[1]*w[1])),MIN=min*Math.PI/180;
+  if(th>=MIN)return{u:u,v:v};var b=Math.atan2(u[1]+w[1],u[0]+w[0]),cr=u[0]*w[1]-u[1]*w[0]>0?1:-1,au=b-cr*MIN/2,aw=b+cr*MIN/2;
+  return{u:[Math.cos(au),Math.sin(au)],v:[Math.cos(aw)*sg,Math.sin(aw)*sg]};}
 function angle(pt,c){return Math.atan2(pt[1]-c[1],pt[0]-c[0]);}
 function normA(d){while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;return d;}
 // Déplacement angulaire de chaque pastille pour un tour, dans le sens réel du cercle.
@@ -1348,8 +1360,16 @@ function delta(a,L,q){var k=a+","+L+","+q;if(DELTA[k])return DELTA[k];var m=perm
   var sens=pos>=neg?1:-1;
   for(kk in m){i=+kk;if(S[i].a!==a&&Math.sign(d[i])!==sens)d[i]+=sens*2*Math.PI;}
   d.sens=sens;return DELTA[k]=d;}
-for(var ax=0;ax<3;ax++){PAS[ax]=[];SENS_VIS[ax]=delta(ax,1,1).sens;for(var LL=-1;LL<=1;LL++){var dd=delta(ax,LL,1),som=0,nb=0;
-  for(var kk in dd){if(kk==="sens"||S[+kk].a===ax)continue;som+=Math.abs(dd[kk]);nb++;}PAS[ax][LL+1]=som/nb;}}
+function poserGeo(id){var g=geoDe(id);DISPO=DISPOS[id]?id:"trefle";ECART=g.e;
+  for(var i=0;i<3;i++){RAY[i]=g.ray[i];CEN[i][0]=g.cen[i][0];CEN[i][1]=g.cen[i][1];}
+  S.forEach(function(s,i){s.xy=g.xy[i];});
+  CENTRE_FACE={};CLE_CENTRE={};S.forEach(function(s,i){if(s.p[(s.a+1)%3]===0&&s.p[(s.a+2)%3]===0){CENTRE_FACE[s.a+","+s.s]=s.xy;CLE_CENTRE[s.a+","+s.s]=i;}});
+  FORME=S.map(function(st){var b=(st.a+1)%3,c=(st.a+2)%3;return ecarter(tangente(st.xy,CEN[b]),tangente(st.xy,CEN[c]),DISPOS[DISPO].min);});
+  RAYON_FACE=0;S.forEach(function(s){var c=CENTRE_FACE[s.a+","+s.s];RAYON_FACE=Math.max(RAYON_FACE,Math.hypot(s.xy[0]-c[0],s.xy[1]-c[1]));});RAYON_FACE+=.045;
+  DELTA={};
+  for(var ax=0;ax<3;ax++){PAS[ax]=[];SENS_VIS[ax]=delta(ax,1,1).sens;for(var LL=-1;LL<=1;LL++){var dd=delta(ax,LL,1),som=0,nb=0;
+    for(var kk in dd){if(kk==="sens"||S[+kk].a===ax)continue;som+=Math.abs(dd[kk]);nb++;}PAS[ax][LL+1]=som/nb;}}}
+poserGeo("trefle");
 function qPourSens(a,vis){return vis*SENS_VIS[a];}   // vis : +1 anti-horaire, −1 horaire
 function sensVis(mv){return mv.q*SENS_VIS[mv.a];}
 function ease(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;}
@@ -1759,7 +1779,10 @@ function vibrer(ms){if(!PROG.options.vib)return;if(NATIF.vibrer(Array.isArray(ms
 /* ========== 8. NAVIGATION ========== */
 var ECRAN="accueil";
 // sens : +1 on avance (l'écran arrive de la droite), −1 on revient (il arrive de la gauche)
-function montrer(id,sens){if(RECHARGER&&id!=="jeu"){location.reload();return;}var prevEcran=ECRAN;sens=sens||1;document.querySelectorAll(".ecran").forEach(function(e){
+// une autre disposition des orbites : tout est recalculé (poserGeo), puis les plateaux se redessinent
+function changerGeo(id){if(id===DISPO)return;poserGeo(id);Ticker.actifs.forEach(function(p){if(p.taille)p.dessiner();});if(ECRAN==="jeu")redimJeu();}
+function montrer(id,sens){if(id!=="boutique")changerGeo(STY.dispo);   // l'aperçu d'une disposition ne la porte pas
+if(RECHARGER&&id!=="jeu"){location.reload();return;}var prevEcran=ECRAN;sens=sens||1;document.querySelectorAll(".ecran").forEach(function(e){
     if(e.id===id){e.style.transition="none";e.style.setProperty("--dx",(sens*28)+"px");void e.offsetWidth;e.style.transition="";e.classList.add("actif");}
     else{if(e.classList.contains("actif"))e.style.setProperty("--dx",(-sens*28)+"px");e.classList.remove("actif");}});ECRAN=id;
   // l'accueil et les menus gardent le lilas ; la carte et le jeu prennent la couleur de leur monde
@@ -2205,8 +2228,8 @@ function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length
   // les six faces s'illuminent l'une après l'autre, et le cube fait un tour complet sur lui-même
   Object.keys(CENTRE_FACE).forEach(function(k,i){setTimeout(function(){if(J!==jeton)return;JeuP.eclats.push({xy:CENTRE_FACE[k],c:JeuP.col[CLE_CENTRE[k]],t0:performance.now()});Ticker.reveiller();},CALME?0:420+i*110);});
   var base={y:PIVOT.y,x:PIVOT.x};if(!CALME)(function tour(now){if(J!==jeton){PIVOT=base;return;}var k=Math.min(1,(now-t0-200)/1500);if(k<0){requestAnimationFrame(tour);return;}
-    // un tour complet, le cube se penchant un peu vers l'avant à mi-course (le client, le 16/10/2026 : « c'est beau »)
-    PIVOT={y:base.y+ease(k)*Math.PI*2,x:base.x+Math.sin(Math.PI*k)*.35};dessinerMini();if(k<1)requestAnimationFrame(tour);else{PIVOT=base;dessinerMini();}})(t0);
+    // un tour complet autour de la verticale, dans l'inclinaison du jeu, sans relever le cube (le client, le 16/10/2026)
+    PIVOT={y:base.y+ease(k)*Math.PI*2,x:base.x};dessinerMini();if(k<1)requestAnimationFrame(tour);else{PIVOT=base;dessinerMini();}})(t0);
   setTimeout(function(){if(J!==jeton)return;sonVictoire();vibrer([20,40,20]);confettis();fenetreVictoire(e,n,temps,record);verifierSucces();},CALME?300:1700);}
 function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
   // campagne : le bouton principal suit le chemin ; un niveau pair du chemin qui ouvre un expert le propose en second
@@ -2475,7 +2498,7 @@ function rafraichirSucces(){document.getElementById("sucCompte").textContent=Obj
 function appliquerOptions(){var o=PROG.options;
   // une fois : « Couleurs du monde » devient la palette par défaut (le client, le 14/10/2026), même pour qui avait « Classique » par défaut
   // sty4 : Facettes redevient la forme par défaut (le client, le 16/10/2026)
-  if(!o.pal2){if(!o.palette||o.palette==="classique")o.palette="monde";o.pal2=1;}if(!o.sty4){if(!o.forme||o.forme==="astral")o.forme="facettes";o.sty3=o.sty4=1;}Object.keys(STY).forEach(function(k){STY[k]=styleActif(k);});COUL=PALETTES[STY.palette]||PALETTES.classique;
+  if(!o.pal2){if(!o.palette||o.palette==="classique")o.palette="monde";o.pal2=1;}if(!o.sty4){if(!o.forme||o.forme==="astral")o.forme="facettes";o.sty3=o.sty4=1;}Object.keys(STY).forEach(function(k){STY[k]=styleActif(k);});COUL=PALETTES[STY.palette]||PALETTES.classique;if(ECRAN!=="boutique")changerGeo(STY.dispo);
   // « Animations » décoché = calme forcé, en plus du réglage système prefers-reduced-motion
   CALME=!!((window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)||o.anims===false);
   document.body.classList.toggle("sobre",o.anims===false);
@@ -2597,7 +2620,8 @@ ApercuP.apres=function(now){if(this.occupe()||now<this.prochain)return;
     this.sol=mv.slice().reverse().map(inverse);mv.forEach(function(x){ApercuP.jouer(x,560);});this.prochain=now+900;return;}
   this.jouer(this.sol.shift(),560);this.prochain=now+(this.sol.length?250:1500);};
 function habillerApercu(){var vu=function(k){return VU[k]||STY[k];};ApercuP.pal=PALETTES[vu("palette")];ApercuP.forme=vu("forme");ApercuP.trainee=vu("trainee");ApercuP.orbite=vu("orbite");
-  var k=RAYON==="effets"?(VU.dernier||"trainee"):RAYON,st=style(k,vu(k)),o=st.ouv||{},f,pr;document.getElementById("apercuNom").textContent=st.nom;
+  changerGeo(vu("dispo"));
+  var k=RAYON==="effets"?(VU.dernier||"trainee"):RAYON==="forme"&&VU.dernier==="dispo"?"dispo":RAYON,st=style(k,vu(k)),o=st.ouv||{},f,pr;document.getElementById("apercuNom").textContent=st.nom;
   f='<p class="fiche-desc">'+DESC_STYLE[st.id]+'</p>';
   if(STY[k]===st.id)f+='<span class="fiche-etat">'+COCHE+'Porté</span>';
   else if(styleOuvert(k,st.id))f+='<button class="bouton petit" type="button" data-porter="'+k+'" data-id="'+st.id+'">Porter</button>';
@@ -2610,6 +2634,10 @@ function redimApercu(){var w=document.querySelector("#boutique .bout").clientWid
 // vignettes : un petit dessin par style, avec la palette portée (ou celle du style pour les couleurs)
 function vignette(cv,k,id){var d=Math.min(DPR,2.5),W=64;cv.width=W*d;cv.height=W*d;var cx=cv.getContext("2d");cx.setTransform(d,0,0,d,0,0);cx.clearRect(0,0,W,W);
   var pal=k==="palette"?PALETTES[id]:PALETTES[VU.palette||STY.palette],c=[32,32];
+  // une disposition : ses neuf orbites et ses 54 pastilles, en petit
+  if(k==="dispo"){var g=geoDe(id),sc=17.5,o=[32,33];cx.lineWidth=.7;cx.strokeStyle="rgba(255,255,255,.3)";
+    g.cen.forEach(function(ce){g.ray.forEach(function(r){cx.beginPath();cx.arc(o[0]+ce[0]*sc,o[1]-ce[1]*sc,r*sc,0,6.283);cx.stroke();});});
+    g.xy.forEach(function(p,i){cx.beginPath();cx.arc(o[0]+p[0]*sc,o[1]-p[1]*sc,1.8,0,6.283);cx.fillStyle=pal[faceDe(S[i].n)];cx.fill();});return;}
   if(k==="palette"){var top=[[32,10],[51,21],[32,32],[13,21]],gauche=[[13,21],[32,32],[32,55],[13,44]],droite=[[32,32],[51,21],[51,44],[32,55]];
     // les trois faces montrées : les teintes qui font l'identité de la palette (sinon jaune, rouge, bleu)
     var fc={galaxie:[0,1,3],joyaux:[2,0,4],aurore:[2,1,0]}[id]||[2,1,5];
@@ -2697,12 +2725,13 @@ function rendreBoutique(){var c=complet(),tous=["pack_couleurs","pack_formes","p
   pk+='<div class="bout-sous">Faire avancer Orbicube</div>'+(aDroit("soutien")?'<div class="bout-ligne acquis"><span class="ic"><svg viewBox="0 0 24 24">'+IC.cœur+'</svg></span><div class="lt"><b>Merci pour votre don !</b><span>Votre liseré doré brille sur votre profil.</span></div></div>':lignePack("soutien",IC.cœur));
   document.querySelectorAll("#boutRayons button").forEach(function(b){b.classList.toggle("on",b.dataset.r===RAYON);
     if(b.dataset.r==="packs"){b.querySelector(".cpt").textContent=["couleurs","formes","effets"].filter(function(k){return aDroit(PACKS[k].droit);}).length+"/3";return;}
-    var ks=b.dataset.r==="effets"?["trainee","orbite","victoire"]:[b.dataset.r],n=0,t=0;ks.forEach(function(k){STYLES[k].forEach(function(st){t++;if(styleOuvert(k,st.id))n++;});});
+    var ks=b.dataset.r==="effets"?["trainee","orbite","victoire"]:b.dataset.r==="forme"?["forme","dispo"]:[b.dataset.r],n=0,t=0;ks.forEach(function(k){STYLES[k].forEach(function(st){t++;if(styleOuvert(k,st.id))n++;});});
     b.querySelector(".cpt").textContent=n+"/"+t;});
   var r="";
   if(RAYON==="packs")r=pk;
   else if(RAYON==="palette")r='<div class="bout-grille">'+STYLES.palette.map(function(st){return carteStyle("palette",st);}).join("")+'</div>';
-  else if(RAYON==="forme")r='<div class="bout-grille">'+STYLES.forme.map(function(st){return carteStyle("forme",st);}).join("")+'</div>';
+  else if(RAYON==="forme")r=[["forme","Pastilles"],["dispo","Disposition des orbites"]].map(function(g){
+      return'<div class="bout-sous">'+g[1]+'</div><div class="bout-grille">'+STYLES[g[0]].map(function(st){return carteStyle(g[0],st);}).join("")+'</div>';}).join("");
   else r=[["trainee","Traînée"],["orbite","Orbites"],["victoire","Victoire"]].map(function(g){
       return'<div class="bout-sous">'+g[1]+'</div><div class="bout-grille">'+STYLES[g[0]].map(function(st){return carteStyle(g[0],st);}).join("")+'</div>';}).join("");
   var el=document.getElementById("boutRayon");el.innerHTML=r;

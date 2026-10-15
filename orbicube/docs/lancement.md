@@ -241,10 +241,11 @@ sont ceux de `PACKS` dans `www/index.html` ; les prix affichés en attendant le 
 | `orbicube_soutien` « Faire un don » | Non consommable | 2,99 € | `soutien` |
 | `orbicube_ampoules_10` « 10 aides » | **Consommable** | 0,99 € | aucun : le jeu crédite les aides |
 | `orbicube_ampoules_30` « 30 aides » | **Consommable** | 1,99 € | aucun |
-| `orbicube_style_<id>` : chaque style d'un pack, **à l'unité** (11 produits, voir ci-dessous) | Non consommable | 0,99 € | `style_<id>` |
+| `orbicube_style_<id>` : chaque style d'un pack, **à l'unité** (12 produits, voir ci-dessous) | Non consommable | 0,99 € | `style_<id>` |
 
-Les 11 styles vendus aussi à l'unité (le client, le 14/10/2026 : « chaque élément peut être acheté séparément ») :
-`aurore`, `galaxie`, `glace`, `joyaux` (couleurs) ; `gemmes`, `etoiles`, `cristaux` (formes) ; `comete`, `argent`,
+Les 12 styles vendus aussi à l'unité (le client, le 14/10/2026 : « chaque élément peut être acheté séparément ») :
+`aurore`, `galaxie`, `glace`, `joyaux` (couleurs) ; `gemmes`, `etoiles`, `cristaux`, `anneau` (formes ; `anneau` est la disposition des orbites en couronne, ajoutée
+au pack Formes le 16/10/2026) ; `comete`, `argent`,
 `arcenciel`, `feux` (effets). Produit `orbicube_style_aurore`, droit `style_aurore`, et ainsi de suite. Un style s'ouvre
 avec son propre droit **ou** celui de son pack : le pack reste plus avantageux dès deux styles.
 
