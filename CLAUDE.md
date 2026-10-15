@@ -132,7 +132,11 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   carte « Le jeu complet » (`#boutJeu`, les 9 orbites, bouton « Orbicube complet ») seule ; ensuite « Styles » : quatre
   onglets Couleurs, Formes, Effets et **Packs** (le client, le 16/10/2026 : « rassembler les packs dans un onglet », puis
   « l'édition intégrale doit être dans les packs », « les aides doivent être dans les packs » : Édition intégrale,
-  Collection, les trois packs puis les aides à acheter, compteur « n/3 », sans aperçu). Compteurs sous les noms. **Sur la carte de la campagne**, le jeu complet se pose comme un monde entre le
+  Collection, les trois packs puis les aides à acheter, compteur « n/3 », sans aperçu). **Offres groupées en grandes cartes**
+  (le client : « pas bien présentées ») : l'intégrale montre ses deux parts (le jeu complet + tous les styles), la collection
+  la vignette de ses onze styles, chacune avec son économie en pourcentage (`economie`, rien si un prix manque).
+  **Le pack soutien devient un don** (« Faire un don », section « Faire avancer Orbicube », en bas de l'onglet Packs : il
+  finance les optimisations ; même produit `orbicube_soutien`, même liseré doré). Compteurs sous les noms. **Sur la carte de la campagne**, le jeu complet se pose comme un monde entre le
   dernier monde gratuit et le premier payant (`.parc-jeu`, item `t:"j"` de `buildParcours`) ; il disparaît après l'achat.
 - **Ce que l'achat ouvre, dit clairement** (le client, le 14/10/2026 : « Jeu libre », pas « Partie libre » ; donner envie
   d'acheter) : sans achat, le jeu libre n'a que « Facile » sur les orbites du dernier monde gratuit (`orbitesLibres`,

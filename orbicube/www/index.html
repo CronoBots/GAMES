@@ -777,6 +777,19 @@ body.sobre #plateau{transition:none}
 .style .neuf{position:absolute;top:7px;left:7px;font:700 9px var(--f-titre);letter-spacing:.1em;text-transform:uppercase;color:#05221a;background:#3ee6a6;border-radius:99px;padding:2px 6px;z-index:1}
 .eco-ligne{display:block;margin-top:3px;font-size:12px;color:var(--pale)}.eco-ligne s{color:var(--sourd)}
 .bout-hero .eco-ligne{text-align:center;margin-top:8px}
+/* les offres groupées (édition intégrale, collection) : contenu lisible et économie en pastille */
+.bout-hero.offre .of-tete{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.eco-pct{font:700 12.5px var(--f-chiffre);color:#05221a;background:#3ee6a6;border-radius:99px;padding:3px 10px;flex:none}
+.of-parts{display:grid;gap:6px;margin:2px 0 16px}
+.of-part{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,207,74,.22)}
+.of-part .neuf{width:46px;height:46px;flex:none}
+.of-ic{width:46px;height:46px;flex:none;display:grid;place-items:center;border-radius:50%;background:rgba(255,207,74,.12)}
+.of-ic svg{width:24px;height:24px;stroke:var(--or);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.of-part div{min-width:0}.of-part b{display:block;font:600 15px var(--f-titre)}.of-part div span{display:block;color:var(--pale);font-size:12.5px;line-height:1.35;margin-top:2px}
+.of-plus{text-align:center;color:var(--or);font:700 18px/1 var(--f-titre);margin:-2px 0}
+.bout-hero.col{border-color:rgba(var(--acc),.45);background:linear-gradient(160deg,rgba(40,32,70,.95),rgba(14,14,26,.95))}
+.of-vitrine{display:grid;gap:10px;margin:2px 0 16px;padding:12px 8px;border-radius:16px;background:rgba(255,255,255,.04)}
+.of-vitrine .pack-contenu{border-top:0;padding-top:0;margin:0}
 .bout-apercu .nom{font:600 12px var(--f-titre);letter-spacing:.16em;text-transform:uppercase;color:var(--pale)}
 .bout-rayons{width:100%}.bout-rayons button{flex:1}
 .bout-sous{margin:6px 2px -4px;font:600 11px var(--f-titre);letter-spacing:.18em;text-transform:uppercase;color:rgb(var(--acc))}
@@ -1026,7 +1039,6 @@ button.obj:first-child{border-top:0}
       <div class="segment bout-rayons" id="boutRayons"><button type="button" data-r="palette" class="on"><span>Couleurs</span><i class="cpt notrad"></i></button><button type="button" data-r="forme"><span>Formes</span><i class="cpt notrad"></i></button><button type="button" data-r="effets"><span>Effets</span><i class="cpt notrad"></i></button><button type="button" data-r="packs"><span>Packs</span><i class="cpt notrad"></i></button></div>
       <div class="bout-apercu" id="boutApercu"><canvas id="apercu" aria-label="Aperçu du style"></canvas><div class="nom" id="apercuNom"></div><div class="fiche" id="apercuFiche"></div></div>
       <div class="bout" id="boutRayon"></div>
-      <div id="boutSoutien"></div>
       <button class="bout-lien" id="boutRestaurer" type="button">Restaurer mes achats</button>
       <p class="bout-pied">Paiement sécurisé par l’App Store ou Google Play. Achats uniques, sans abonnement ni publicité, restaurables sur un nouvel appareil. Les styles ne changent rien au jeu : ils l’habillent.</p>
     </div></div>
@@ -1207,7 +1219,7 @@ var PACKS={
   effets:{produit:"orbicube_pack_effets",droit:"pack_effets",nom:"Effets stellaires",desc:"Traînée comète, orbites d’argent ou arc-en-ciel, feu d’artifice."},
   collection:{produit:"orbicube_collection",droits:["pack_couleurs","pack_formes","pack_effets"],nom:"Collection complète",desc:"Les trois packs de styles."},
   integrale:{produit:"orbicube_integrale",droits:["complet","pack_couleurs","pack_formes","pack_effets"],nom:"Édition intégrale",desc:"Le jeu complet et les trois packs de styles."},
-  soutien:{produit:"orbicube_soutien",droit:"soutien",nom:"Soutenir Orbicube",desc:"Un merci au créateur, et un liseré doré sur votre profil."},
+  soutien:{produit:"orbicube_soutien",droit:"soutien",nom:"Faire un don",desc:"Il finance les prochaines optimisations et nouveautés d’Orbicube. En remerciement, un liseré doré sur votre profil."},
   amp10:{produit:"orbicube_ampoules_10",ampoules:10,nom:"10 aides"},
   amp30:{produit:"orbicube_ampoules_30",ampoules:30,nom:"30 aides"}};
 // ouv : rien (ouvert), {etoiles:n} de coups, {chrono:n} de temps, {rang:n}, ou {pack:clé}
@@ -2597,6 +2609,8 @@ function prixSomme(cles,ref){var n=0,ok=true;cles.forEach(function(c){var v=c===
   var m=String(ref||"").match(/\d+([.,])\d{2}/);if(!ok||!m||n<=prixVal(ref))return"";return String(ref).replace(/\d+[.,]\d{2}/,n.toFixed(2).replace(".",m[1]));}
 function contenuCles(cle){var P=PACKS[cle];if(P.droits)return P.droits.map(function(d){return d==="complet"?"complet":d.replace("pack_","");});
   var l=[];Object.keys(PACKS).forEach(function(k){var st=PACKS[k].unite&&k.slice(2);if(!st)return;Object.keys(STYLES).forEach(function(r){STYLES[r].forEach(function(x){if(x.id===st&&x.ouv&&x.ouv.pack===cle)l.push(k);});});});return l;}
+function economie(cle){var t=prixSomme(contenuCles(cle),PRIXP[cle]),a=prixVal(t),p=prixVal(PRIXP[cle]);if(!a||!p)return"";
+  var n=Math.round((1-p/a)*100);return n>=5?'<span class="eco-pct notrad">−'+n+' %</span>':"";}
 function auLieuDe(cle){var t=prixSomme(contenuCles(cle),PRIXP[cle]);return t?'<span class="eco-ligne">au lieu de <s class="notrad">'+t+'</s></span>':"";}
 function lignePack(cle,ic){var P=PACKS[cle],a=P.droit?aDroit(P.droit):(P.droits||[]).every(aDroit);
   return'<div class="bout-ligne'+(a?" acquis":"")+'" id="pack-'+cle+'"><span class="ic"><svg viewBox="0 0 24 24">'+ic+'</svg></span><div class="lt"><b>'+P.nom+'</b><span>'+P.desc+'</span>'+(a?"":auLieuDe(cle))+'</div>'+
@@ -2617,14 +2631,22 @@ function rendreBoutique(){var c=complet(),tous=["pack_couleurs","pack_formes","p
   // l'onglet Packs (le client, le 16/10/2026 : « rassembler les packs dans un onglet ») : la collection, puis chaque pack
   // (chacun ouvre aussi ses styles un par un) ; tout acquis, un merci en haut
   if(c&&tous)document.getElementById("boutJeu").innerHTML='<div class="bout-hero merci"><span class="etiq">Merci</span><h3>Vous avez tout Orbicube</h3><p>Tous les mondes et tous les styles sont à vous. Bon voyage dans les orbites.</p></div>';
-  var pk=jeu?lignePack("integrale",IC.couronne):"";
-  if(!tous&&jeu)pk+=lignePack("collection",IC.effets);
-  else if(!tous)pk='<div class="bout-hero"><span class="etiq">Collection</span><h3>'+PACKS.collection.nom+'</h3><p>Les trois packs de styles, en un seul achat.</p><ul>'+
-      puce("4 palettes : Aurore, Galaxie, Glace, Joyaux")+puce("3 formes : Gemmes, Étoiles, Cristaux")+puce("4 effets : comète, argent, arc-en-ciel, feu d’artifice")+'</ul>'+
+  // les offres groupées en grandes cartes (le client, le 16/10/2026 : « pas bien présentées ») : ce qu'elles contiennent,
+  // l'économie, puis les packs un par un, les aides et le don
+  var pk="";
+  if(jeu)pk+='<div class="bout-sous">Offres groupées</div><div class="bout-hero offre" id="pack-integrale"><div class="of-tete"><span class="etiq">Meilleure offre</span>'+economie("integrale")+'</div>'+
+      '<h3>'+PACKS.integrale.nom+'</h3><p>Tout Orbicube, en un seul achat, pour toujours.</p><div class="of-parts">'+
+      '<div class="of-part">'+SVG_NEUF+'<div><b>Le jeu complet</b><span>Les 9 orbites, 4 mondes et 48 niveaux de plus</span></div></div><div class="of-plus">+</div>'+
+      '<div class="of-part"><span class="of-ic"><svg viewBox="0 0 24 24">'+IC.effets+'</svg></span><div><b>Tous les styles</b><span>4 palettes, 3 formes, 4 effets</span></div></div></div>'+
+      '<button class="btn-or" type="button" data-achat="integrale"><span>Tout débloquer</span><span class="px notrad">'+PRIXP.integrale+'</span></button>'+auLieuDe("integrale")+'</div>';
+  if(!tous)pk+=(jeu?"":'<div class="bout-sous">Offres groupées</div>')+'<div class="bout-hero offre col" id="pack-collection"><div class="of-tete"><span class="etiq">Tous les styles</span>'+economie("collection")+'</div>'+
+      '<h3>'+PACKS.collection.nom+'</h3><p>Les trois packs de styles, en un seul achat.</p><div class="of-vitrine">'+contenuPack("couleurs")+contenuPack("formes")+contenuPack("effets")+'</div>'+
       '<button class="btn-or" type="button" data-achat="collection"><span>Tout le style</span><span class="px notrad">'+PRIXP.collection+'</span></button>'+auLieuDe("collection")+'</div>';
-  pk+=lignePack("couleurs",IC.couleurs)+lignePack("formes",IC.formes)+lignePack("effets",IC.effets);
+  pk+='<div class="bout-sous">Packs de styles</div>'+lignePack("couleurs",IC.couleurs)+lignePack("formes",IC.formes)+lignePack("effets",IC.effets);
   // les aides aussi dans l'onglet Packs (le client, le 16/10/2026)
   pk+='<div class="bout-sous">Aides</div><p class="bout-note">Une aide = un indice : le prochain tour s’affiche sur le plateau.</p><div class="bout-amp" id="boutAmpoules"></div>';
+  // le soutien devient un don pour faire avancer le jeu (le client, le 16/10/2026)
+  pk+='<div class="bout-sous">Faire avancer Orbicube</div>'+(aDroit("soutien")?'<div class="bout-ligne acquis"><span class="ic"><svg viewBox="0 0 24 24">'+IC.cœur+'</svg></span><div class="lt"><b>Merci pour votre don !</b><span>Votre liseré doré brille sur votre profil.</span></div></div>':lignePack("soutien",IC.cœur));
   document.querySelectorAll("#boutRayons button").forEach(function(b){b.classList.toggle("on",b.dataset.r===RAYON);
     if(b.dataset.r==="packs"){b.querySelector(".cpt").textContent=["couleurs","formes","effets"].filter(function(k){return aDroit(PACKS[k].droit);}).length+"/3";return;}
     var ks=b.dataset.r==="effets"?["trainee","orbite","victoire"]:[b.dataset.r],n=0,t=0;ks.forEach(function(k){STYLES[k].forEach(function(st){t++;if(styleOuvert(k,st.id))n++;});});
@@ -2641,7 +2663,6 @@ function rendreBoutique(){var c=complet(),tous=["pack_couleurs","pack_formes","p
   document.querySelectorAll("#boutRayon .pack-contenu canvas,#boutJeu .pack-contenu canvas").forEach(function(cv){vignette(cv,cv.dataset.k,cv.dataset.id);});
   if(RAYON==="packs")document.getElementById("boutAmpoules").innerHTML=["amp10","amp30"].map(function(k){return'<button class="bout-carte" type="button" data-achat="'+k+'">'+(k==="amp30"?'<span class="eco">Le plus avantageux</span>':"")+
       '<svg viewBox="0 0 24 24">'+'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/>'+'</svg><b>'+PACKS[k].nom+'</b><span class="px notrad">'+PRIXP[k]+'</span></button>';}).join("");
-  document.getElementById("boutSoutien").innerHTML=aDroit("soutien")?'<div class="bout-ligne acquis"><span class="ic"><svg viewBox="0 0 24 24">'+IC.cœur+'</svg></span><div class="lt"><b>Merci pour votre soutien !</b><span>Votre liseré doré brille sur votre profil.</span></div></div>':lignePack("soutien",IC.cœur);
   if(RAYON!=="packs")habillerApercu();
   // tout ce qui est ouvert est désormais vu : le point du rond Boutique s'éteint (les badges restent jusqu'à la sortie)
   PROG.stylesVus=PROG.stylesVus||{};var nv=false;Object.keys(STYLES).forEach(function(k){STYLES[k].forEach(function(st){if(st.ouv&&!PROG.stylesVus[st.id]&&styleOuvert(k,st.id)){PROG.stylesVus[st.id]=true;nv=true;}});});
