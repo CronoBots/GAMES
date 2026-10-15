@@ -286,10 +286,15 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   `www/config.js` > `classement` reste vide d'ici là, et l'écran dit « ouvrira avec la sortie du jeu ».
 - **Espace joueur** (`#joueur`, le client, le 15/10/2026 : « on s'y perd entre le profil, les missions et les défis »,
   « intuitif, compréhensible et professionnel ») : **un seul écran, trois onglets** en commande segmentée dans l'en-tête
-  (`#jOnglets`, `ouvrirJoueur(o, depuis)`, `ongletJoueur`, `JOUEUR.o`) : **Aujourd'hui** (`#pJour`, `rafraichirDefis` : le défi
-  du jour en carte dorée avec résultat et série, le défi de la semaine en carte de même format (ou verrouillée,
-  `.df-reserve` : cadenas, « Avec le jeu complet », un seul bouton doré), les missions du jour ; chaque défi finit par une
-  ligne « Classement du jour / de la semaine » avec la place du joueur, `lignePlace`) ; **Classement** (`#pClassement`,
+  (`#jOnglets`, `ouvrirJoueur(o, depuis)`, `ongletJoueur`, `JOUEUR.o`) : **Aujourd'hui** (`#pJour`, `rafraichirDefis`, le client, le 15/10/2026 :
+  « défi du jour, mission du jour, ça porte à confusion », « avec les récompenses de chacun », « que ça donne envie ») :
+  **un seul cadre « Objectifs du jour »** (compteur 1/4, barre dorée, une phrase d'explication) qui liste le défi du jour
+  en tête puis les trois missions et le bonus des trois missions, chacun avec ses récompenses en pastilles (`objectif`,
+  `gains` : ampoules en or, XP en accent ; le défi du jour +1 ampoule +100 XP, une mission +30 XP, le bonus +1 ampoule ;
+  pâlies une fois gagnées), puis « Jouer le défi du jour », la série et la ligne « Classement du jour » (`lignePlace`).
+  En dessous, **« Objectif de la semaine »** au même format (+2 ampoules +200 XP ; verrouillé `.df-reserve` sans achat).
+  Les XP affichées sont arrondies vers le bas du gain réel (`xpVictoire`) : ne jamais promettre plus que ce qui tombe.
+  Une mission d'une seule fois n'affiche ni « 0/1 » ni barre ; **Classement** (`#pClassement`,
   `chargerClassement`, sous-onglets Jour à Rang, ligne « Vous » épinglée) ; **Profil** (`#pProfil`, `rafraichirProfil` : carte
   d'identité avec pseudo modifiable, récompenses du rang `#grpRecomp` avec une phrase sur la façon de monter, « Compte »).
   **Chaque chose à un seul endroit** (le client, le 15/10/2026 : « espacement, répétition, logique ») : plus de podium

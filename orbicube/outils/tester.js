@@ -108,8 +108,8 @@ async function resoudre(p) {
     // défis : celui du jour est gratuit, celui de la semaine réservé au jeu complet
     await p.tap("#btnJour"); await p.waitForTimeout(500);
     const sem = await p.evaluate(() => { const f = document.querySelector("#joueur"); return f.classList.contains("actif") && !!f.querySelector('.df-reserve [data-a="semaine"]') && !f.querySelector('[data-a="jour"]').closest(".df-reserve"); });
-    const hub = await p.evaluate(() => ["Défi du jour", "Missions du jour"].every((t) => document.querySelector("#pJour").textContent.includes(t)) && !document.querySelector("#pJour").textContent.includes("Récompenses du rang"));
-    hub ? ok("espace joueur, onglet Aujourd'hui : défis et missions, sans redite du Profil") : faute("écran Défis incomplet");
+    const hub = await p.evaluate(() => ["Objectifs du jour", "Défi du jour", "Bonus : les trois missions", "+30 XP"].every((t) => document.querySelector("#pJour").textContent.includes(t)) && !document.querySelector("#pJour").textContent.includes("Récompenses du rang"));
+    hub ? ok("espace joueur, Aujourd'hui : défi du jour et missions dans un seul cadre d'objectifs, chacun avec sa récompense") : faute("écran Défis incomplet");
     await p.tap('#pJour [data-a="semaine"]'); await p.waitForTimeout(400);
     sem && (await p.textContent("#fenetre")).includes("défi de la semaine fait partie") ? ok("défis : le jour gratuit, la semaine réservée au jeu complet") : faute("défi de la semaine pas réservé");
     await p.tap('#fenetre [data-a="x"]'); await p.waitForTimeout(300); await p.tap("#joueur [data-retour]"); await p.waitForTimeout(400);
