@@ -131,8 +131,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   **Dans la boutique, le jeu complet est tout en haut, à part** (le client, le 16/10/2026 : « perdu dans les packs ») :
   carte « Le jeu complet » (`#boutJeu`, les 9 orbites, bouton « Orbicube complet ») seule ; ensuite « Styles » : quatre
   onglets Couleurs, Formes, Effets et **Packs** (le client, le 16/10/2026 : « rassembler les packs dans un onglet », puis
-  « l'édition intégrale doit être dans les packs » : Édition intégrale, Collection et les trois packs, compteur « n/3 »,
-  sans aperçu). Compteurs sous les noms. **Sur la carte de la campagne**, le jeu complet se pose comme un monde entre le
+  « l'édition intégrale doit être dans les packs », « les aides doivent être dans les packs » : Édition intégrale,
+  Collection, les trois packs puis les aides à acheter, compteur « n/3 », sans aperçu). Compteurs sous les noms. **Sur la carte de la campagne**, le jeu complet se pose comme un monde entre le
   dernier monde gratuit et le premier payant (`.parc-jeu`, item `t:"j"` de `buildParcours`) ; il disparaît après l'achat.
 - **Ce que l'achat ouvre, dit clairement** (le client, le 14/10/2026 : « Jeu libre », pas « Partie libre » ; donner envie
   d'acheter) : sans achat, le jeu libre n'a que « Facile » sur les orbites du dernier monde gratuit (`orbitesLibres`,

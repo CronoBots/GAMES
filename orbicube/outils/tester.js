@@ -125,8 +125,8 @@ async function resoudre(p) {
     (await p.isVisible("#boutique.actif")) && (await p.$$eval("#boutRayon .style", (l) => l.length)) === 14 ? ok("boutique : quatorze palettes en vitrine, dont « Couleurs du monde », deux exclusives de la voie dorée et trois du rang") : faute("boutique : rayon des couleurs absent");
     (await p.textContent('#boutRayons [data-r="palette"] .cpt')) === "3/14" ? ok("boutique : compteur de collection (3/14 palettes pour un débutant)") : faute("compteur de collection faux : " + (await p.textContent('#boutRayons [data-r="palette"] .cpt')));
     await p.tap('#boutRayons [data-r="packs"]'); await p.waitForTimeout(400);
-    (await p.isVisible("#boutJeu .bout-jeu")) && !(await p.$("#boutJeu #pack-integrale")) && (await p.isVisible("#boutRayon #pack-integrale")) && (await p.isVisible("#pack-couleurs")) && !(await p.isVisible("#boutApercu")) && (await p.textContent('#boutRayons [data-r="packs"] .cpt')) === "0/3"
-      ? ok("boutique : le jeu complet en haut, les packs dans leur onglet (0/3), sans aperçu") : faute("onglet Packs de la boutique");
+    (await p.isVisible("#boutJeu .bout-jeu")) && !(await p.$("#boutJeu #pack-integrale")) && (await p.isVisible("#boutRayon #pack-integrale")) && (await p.isVisible("#pack-couleurs")) && (await p.isVisible('#boutRayon [data-achat="amp10"]')) && !(await p.isVisible("#boutApercu")) && (await p.textContent('#boutRayons [data-r="packs"] .cpt')) === "0/3"
+      ? ok("boutique : le jeu complet en haut, les packs et les aides dans leur onglet (0/3), sans aperçu") : faute("onglet Packs de la boutique");
     const dPk = await debordements(p); dPk.length ? faute("débordement dans l'onglet Packs : " + dPk) : ok("onglet Packs sans débordement");
     (await p.textContent("#pack-couleurs")).includes("au lieu de") && (await p.textContent("#pack-couleurs")).includes("3,96") ? ok("boutique : le pack montre ce que coûterait son contenu à l'unité (3,96 €)") : faute("prix barré du pack absent");
     await p.tap('#boutRayons [data-r="palette"]'); await p.waitForTimeout(400);
@@ -295,6 +295,7 @@ async function resoudre(p) {
     await p.click('#boutRayons [data-r="packs"]'); await p.waitForTimeout(400); await p.click("#pack-couleurs [data-achat]"); await p.waitForTimeout(900);
     const packAcquis = (await p.textContent("#pack-couleurs")).includes("Acquis"); await p.click('#boutRayons [data-r="palette"]'); await p.waitForTimeout(400); 
     !(await p.$('.style.ferme[data-id="aurore"]')) && packAcquis ? ok("pack acheté : ses palettes s'ouvrent") : faute("le pack acheté n'ouvre rien");
+    await p.click('#boutRayons [data-r="packs"]'); await p.waitForTimeout(400);
     const amp0 = +(await p.textContent("#boutAmpNb")); await p.click('[data-achat="amp10"]'); await p.waitForTimeout(900);
     +(await p.textContent("#boutAmpNb")) === amp0 + 10 ? ok("dix ampoules achetées sont créditées") : faute("ampoules non créditées : " + amp0 + " → " + (await p.textContent("#boutAmpNb")));
     erreurs.length ? faute("erreurs : " + erreurs.join(" | ")) : ok("aucune erreur de script");

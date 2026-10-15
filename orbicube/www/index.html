@@ -1026,9 +1026,6 @@ button.obj:first-child{border-top:0}
       <div class="segment bout-rayons" id="boutRayons"><button type="button" data-r="palette" class="on"><span>Couleurs</span><i class="cpt notrad"></i></button><button type="button" data-r="forme"><span>Formes</span><i class="cpt notrad"></i></button><button type="button" data-r="effets"><span>Effets</span><i class="cpt notrad"></i></button><button type="button" data-r="packs"><span>Packs</span><i class="cpt notrad"></i></button></div>
       <div class="bout-apercu" id="boutApercu"><canvas id="apercu" aria-label="Aperçu du style"></canvas><div class="nom" id="apercuNom"></div><div class="fiche" id="apercuFiche"></div></div>
       <div class="bout" id="boutRayon"></div>
-      <div class="bout-sous">Aides</div>
-      <p class="bout-note">Une aide = un indice : le prochain tour s’affiche sur le plateau.</p>
-      <div class="bout-amp" id="boutAmpoules"></div>
       <div id="boutSoutien"></div>
       <button class="bout-lien" id="boutRestaurer" type="button">Restaurer mes achats</button>
       <p class="bout-pied">Paiement sécurisé par l’App Store ou Google Play. Achats uniques, sans abonnement ni publicité, restaurables sur un nouvel appareil. Les styles ne changent rien au jeu : ils l’habillent.</p>
@@ -2626,6 +2623,8 @@ function rendreBoutique(){var c=complet(),tous=["pack_couleurs","pack_formes","p
       puce("4 palettes : Aurore, Galaxie, Glace, Joyaux")+puce("3 formes : Gemmes, Étoiles, Cristaux")+puce("4 effets : comète, argent, arc-en-ciel, feu d’artifice")+'</ul>'+
       '<button class="btn-or" type="button" data-achat="collection"><span>Tout le style</span><span class="px notrad">'+PRIXP.collection+'</span></button>'+auLieuDe("collection")+'</div>';
   pk+=lignePack("couleurs",IC.couleurs)+lignePack("formes",IC.formes)+lignePack("effets",IC.effets);
+  // les aides aussi dans l'onglet Packs (le client, le 16/10/2026)
+  pk+='<div class="bout-sous">Aides</div><p class="bout-note">Une aide = un indice : le prochain tour s’affiche sur le plateau.</p><div class="bout-amp" id="boutAmpoules"></div>';
   document.querySelectorAll("#boutRayons button").forEach(function(b){b.classList.toggle("on",b.dataset.r===RAYON);
     if(b.dataset.r==="packs"){b.querySelector(".cpt").textContent=["couleurs","formes","effets"].filter(function(k){return aDroit(PACKS[k].droit);}).length+"/3";return;}
     var ks=b.dataset.r==="effets"?["trainee","orbite","victoire"]:[b.dataset.r],n=0,t=0;ks.forEach(function(k){STYLES[k].forEach(function(st){t++;if(styleOuvert(k,st.id))n++;});});
@@ -2640,7 +2639,7 @@ function rendreBoutique(){var c=complet(),tous=["pack_couleurs","pack_formes","p
   el.querySelectorAll(".style").forEach(function(b){vignette(b.querySelector("canvas"),b.dataset.k,b.dataset.id);});
   document.getElementById("boutApercu").hidden=RAYON==="packs";
   document.querySelectorAll("#boutRayon .pack-contenu canvas,#boutJeu .pack-contenu canvas").forEach(function(cv){vignette(cv,cv.dataset.k,cv.dataset.id);});
-  document.getElementById("boutAmpoules").innerHTML=["amp10","amp30"].map(function(k){return'<button class="bout-carte" type="button" data-achat="'+k+'">'+(k==="amp30"?'<span class="eco">Le plus avantageux</span>':"")+
+  if(RAYON==="packs")document.getElementById("boutAmpoules").innerHTML=["amp10","amp30"].map(function(k){return'<button class="bout-carte" type="button" data-achat="'+k+'">'+(k==="amp30"?'<span class="eco">Le plus avantageux</span>':"")+
       '<svg viewBox="0 0 24 24">'+'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/>'+'</svg><b>'+PACKS[k].nom+'</b><span class="px notrad">'+PRIXP[k]+'</span></button>';}).join("");
   document.getElementById("boutSoutien").innerHTML=aDroit("soutien")?'<div class="bout-ligne acquis"><span class="ic"><svg viewBox="0 0 24 24">'+IC.cœur+'</svg></span><div class="lt"><b>Merci pour votre soutien !</b><span>Votre liseré doré brille sur votre profil.</span></div></div>':lignePack("soutien",IC.cœur);
   if(RAYON!=="packs")habillerApercu();
