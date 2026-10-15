@@ -2815,7 +2815,7 @@ function rafraichirDefis(){var vu=PROG.objVu||(PROG.objVu={n:0,d:""});if(vu.d!==
     (serie?'<p class="df-serie-l">'+SVG_FLAMME+'<span>Série de '+PROG.serie+' jours : une ampoule à chaque semaine complète.</span></p>':"")+
     lignePlace("jour")+'</div>';
   // les grandes missions : avec le jeu complet ; sans achat, la même liste derrière un cadenas, pour montrer ce qu'elle rapporte
-  h+='<div class="df-carte df-grandes'+(ouv?"":" df-reserve")+'">'+tete(SVG_SEM,"Grandes missions",ouv?(nj>1?"Nouvelles missions dans "+nj+" jours":"Nouvelles missions demain"):"Avec le jeu complet · bien mieux récompensées",fs,S.l.length,!ouv)+
+  h+='<div class="df-carte df-grandes'+(ouv?"":" df-reserve")+'">'+tete(SVG_SEM,"Grandes missions",ouv?(nj>1?"De la semaine · nouvelles dans "+nj+" jours":"De la semaine · nouvelles demain"):"Jeu complet · nouvelles chaque lundi",fs,S.l.length,!ouv)+
     '<div class="objs">'+lignesMissions(S,AMP_BONUS_SEM,"s","Bonus : toutes les grandes missions",!ouv)+'</div>'+
     (ouv?(w?"":'<button class="bouton" data-a="semaine" type="button" style="justify-content:center"><span>Jouer le défi de la semaine</span></button>')+lignePlace("semaine"):
       '<button class="bouton df-debloquer" data-a="acheter" type="button"><span>Débloquer</span>'+(PRIX?'<span class="droite">'+PRIX+'</span>':"")+'</button>')+'</div>';
