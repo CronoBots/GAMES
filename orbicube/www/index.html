@@ -647,6 +647,15 @@ body{background:
 .parc-cond svg{width:12px;height:12px;fill:var(--or)}.parc-cond.t{color:#4cc9f0}.parc-cond.t svg{fill:#4cc9f0}
 .parc-desc .cond{display:block;margin-top:4px;font-weight:600;color:var(--or)}.parc-desc .cond.t{color:#4cc9f0}
 .parc-sect.paye{border-color:rgba(255,207,74,.5);cursor:pointer}
+/* le jeu complet sur la carte, comme un monde (le client, le 16/10/2026) */
+.parc-jeu{position:absolute;left:50%;transform:translate(-50%,-50%);z-index:4;width:min(calc(100% - 28px),380px);display:grid;grid-template-columns:auto minmax(0,1fr);
+  gap:10px 14px;align-items:center;padding:16px;border-radius:24px;border:1px solid rgba(255,207,74,.6);cursor:pointer;
+  background:linear-gradient(160deg,rgba(60,46,14,.94),rgba(16,14,26,.95));box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 0 34px -8px rgba(255,207,74,.6),0 14px 30px -16px #000}
+.parc-jeu .neuf{width:64px;height:64px;filter:drop-shadow(0 0 10px rgba(255,207,74,.4))}
+.parc-jeu .etiq{display:block;font:700 10.5px var(--f-titre);letter-spacing:.16em;text-transform:uppercase;color:var(--or)}
+.parc-jeu b{display:block;margin:3px 0 2px;font:600 18px/1.2 var(--f-titre);color:#fff;overflow-wrap:anywhere}
+.parc-jeu small{display:block;color:var(--pale);font-size:12.5px;line-height:1.35}
+.parc-jeu .btn-or{grid-column:1/-1;min-height:46px;font-size:15px}
 .parc-sect .pscad{width:14px;height:14px;stroke:var(--or);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;margin-left:2px}
 /* décor cosmique par monde EN COUCHES (parallaxe) : fond teinté, nébuleuses lointaines, planètes+anneaux, orbites, étincelles */
 .parc-fond{position:absolute;inset:0;z-index:0;pointer-events:none;background:#06060c}
@@ -699,7 +708,7 @@ body.sobre #plateau{transition:none}
 .ecran:not(#parcours)>.tete+.defile{margin-top:calc(-1*env(safe-area-inset-top,0px));margin-bottom:calc(-1*env(safe-area-inset-bottom,0px));
   padding-top:calc(env(safe-area-inset-top,0px) + 66px);padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 /* ===== Boutique (le client, le 13/10/2026) : vitrine premium. Offre phare dorée, aperçu en direct sur un vrai plateau,
-   rayons de styles en vignettes, ampoules, soutien. Verre sombre et liserés d'accent comme le reste du jeu ; le doré est
+   rayons de styles en vignettes, aides, soutien. Verre sombre et liserés d'accent comme le reste du jeu ; le doré est
    réservé à ce qui s'achète. ===== */
 .bouton.petit{min-height:40px;padding:0 18px;border-radius:999px;font-size:14px;flex:none;margin-left:auto}
 .bout{display:grid;gap:14px;width:100%;max-width:460px;margin:0 auto;grid-template-columns:minmax(0,1fr)}
@@ -1008,7 +1017,7 @@ button.obj:first-child{border-top:0}
     <div class="tete">
       <button class="ico" data-retour="accueil" type="button" aria-label="Retour" id="boutRetour"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
       <h2>Boutique</h2>
-      <span class="puce bout-reserve" aria-label="Ampoules"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg><span class="notrad" id="boutAmpNb">3</span></span>
+      <span class="puce bout-reserve" aria-label="Aides"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg><span class="notrad" id="boutAmpNb">3</span></span>
     </div>
     <div class="defile"><div class="bout">
       <div class="bout" id="boutJeu"></div>
@@ -1017,8 +1026,8 @@ button.obj:first-child{border-top:0}
       <div class="segment bout-rayons" id="boutRayons"><button type="button" data-r="palette" class="on"><span>Couleurs</span><i class="cpt notrad"></i></button><button type="button" data-r="forme"><span>Formes</span><i class="cpt notrad"></i></button><button type="button" data-r="effets"><span>Effets</span><i class="cpt notrad"></i></button><button type="button" data-r="packs"><span>Packs</span><i class="cpt notrad"></i></button></div>
       <div class="bout-apercu" id="boutApercu"><canvas id="apercu" aria-label="Aperçu du style"></canvas><div class="nom" id="apercuNom"></div><div class="fiche" id="apercuFiche"></div></div>
       <div class="bout" id="boutRayon"></div>
-      <div class="bout-sous">Ampoules</div>
-      <p class="bout-note">Une ampoule = un indice : le prochain tour s’affiche sur le plateau.</p>
+      <div class="bout-sous">Aides</div>
+      <p class="bout-note">Une aide = un indice : le prochain tour s’affiche sur le plateau.</p>
       <div class="bout-amp" id="boutAmpoules"></div>
       <div id="boutSoutien"></div>
       <button class="bout-lien" id="boutRestaurer" type="button">Restaurer mes achats</button>
@@ -1142,7 +1151,7 @@ button.obj:first-child{border-top:0}
       <div class="aide-carte">
         <h3>Gagner des étoiles</h3>
         <p data-html="aide-vue"><b>Glisser le cube</b> au-dessus du plateau le fait pivoter : à gauche ou à droite pour en faire le tour, vers le haut ou le bas pour voir la face du dessous.</p>
-        <p data-html="aide-etoiles">Un niveau est résolu quand chaque groupe de neuf pastilles est d’une seule couleur. <b>Étoiles de coups</b> : trois en au plus autant de coups que le mélange (le « par »), deux jusqu’au double, une au-delà. <b>Étoiles de temps</b> : trois sous l’objectif affiché à côté du chrono, deux sous le double. Le bouton ampoule montre le tour suivant contre une <b>ampoule</b> de votre réserve, et limite le niveau à deux étoiles de coups. On regagne des ampoules en réussissant toutes les missions, en terminant un monde ou un palier de rang.</p>
+        <p data-html="aide-etoiles">Un niveau est résolu quand chaque groupe de neuf pastilles est d’une seule couleur. <b>Étoiles de coups</b> : trois en au plus autant de coups que le mélange (le « par »), deux jusqu’au double, une au-delà. <b>Étoiles de temps</b> : trois sous l’objectif affiché à côté du chrono, deux sous le double. Le bouton d’aide montre le tour suivant contre une <b>aide</b> de votre réserve, et limite le niveau à deux étoiles de coups. On regagne des aides en réussissant toutes les missions, en terminant un monde ou un palier de rang.</p>
         <p data-html="aide-clavier">Au clavier : <span class="m">U D L R F B M E S</span>, Maj pour le sens inverse, Ctrl+Z pour annuler, Échap pour la pause.</p>
       </div>
     </div></div>
@@ -1193,7 +1202,7 @@ var PALETTES={classique:["#FF7A1E","#FA3A47","#FBD101","#F4F4F6","#2DCC4B","#009
   solaire:["#FF7B00","#FF3D3D","#FFD000","#FFF6D6","#B8E000","#FFA94D"]};    // rang 35 : flamme, rouge, soleil, lumière, tilleul, mandarine  // monde 6 : corail, ambre, carmin, nacre, pourpre, lagon
 /* ========== LA BOUTIQUE : packs vendus et styles (le client, le 13/10/2026) ==========
    Chaque pack est un droit (« entitlement » RevenueCat) vendu par un produit des stores ; une édition groupée active
-   plusieurs droits (réglé dans RevenueCat). Les ampoules sont consommables : le jeu les crédite lui-même.
+   plusieurs droits (réglé dans RevenueCat). Les aides sont consommables : le jeu les crédite lui-même.
    Les styles ne changent rien au jeu : couleurs, forme des pastilles, traînée, orbites, victoire. */
 var PACKS={
   couleurs:{produit:"orbicube_pack_couleurs",droit:"pack_couleurs",nom:"Palettes cosmiques",desc:"Aurore, Galaxie, Glace et Joyaux."},
@@ -1202,8 +1211,8 @@ var PACKS={
   collection:{produit:"orbicube_collection",droits:["pack_couleurs","pack_formes","pack_effets"],nom:"Collection complète",desc:"Les trois packs de styles."},
   integrale:{produit:"orbicube_integrale",droits:["complet","pack_couleurs","pack_formes","pack_effets"],nom:"Édition intégrale",desc:"Le jeu complet et les trois packs de styles."},
   soutien:{produit:"orbicube_soutien",droit:"soutien",nom:"Soutenir Orbicube",desc:"Un merci au créateur, et un liseré doré sur votre profil."},
-  amp10:{produit:"orbicube_ampoules_10",ampoules:10,nom:"10 ampoules"},
-  amp30:{produit:"orbicube_ampoules_30",ampoules:30,nom:"30 ampoules"}};
+  amp10:{produit:"orbicube_ampoules_10",ampoules:10,nom:"10 aides"},
+  amp30:{produit:"orbicube_ampoules_30",ampoules:30,nom:"30 aides"}};
 // ouv : rien (ouvert), {etoiles:n} de coups, {chrono:n} de temps, {rang:n}, ou {pack:clé}
 var STYLES={
   palette:[{id:"monde",nom:"Couleurs du monde"},{id:"classique",nom:"Classique"},{id:"contraste",nom:"Daltonien"},{id:"pastel",nom:"Pastel",ouv:{etoiles:45}},{id:"neon",nom:"Néon",ouv:{chrono:45}},
@@ -1835,6 +1844,8 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
   // la couleur d'un monde sur la carte est celle de son décor, comme en jeu (le client : « pourquoi mauve alors que le thème est vert ? »)
   var finVoie=null;
   for(var w=0;w<MONDES.length;w++){var M=MONDES[w],acc=THEME_ACC[themeFond(w)-1],y0=y;
+    // le jeu complet, posé comme un monde à la fin du jeu gratuit (le client, le 16/10/2026)
+    if(w===CFG.mondesGratuits&&mondePaye(w)&&CFG.modele!=="complet"){y+=120;items.push({t:"j",y:y});y+=150;}
     y+=28;items.push({t:"s",acc:acc,w:w,nom:M.nom,y:y});y+=136;
     // le chemin : les huit niveaux, en lacets
     var xs=[],ys=[];
@@ -1888,6 +1899,8 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
         +'<div class="parc-sect'+(pa?" paye":"")+(voieFinie(it.w)?" couronne":"")+'" style="--pa:'+it.acc+';top:'+fy+'px">'+(voieFinie(it.w)?'<svg class="couronne-ic" viewBox="0 0 24 24"><path d="M3 18h18l-1.5-10-4.5 4-3-7-3 7-4.5-4z"/></svg>':"")+'<b>Monde '+(it.w+1)+'</b><small>'+it.nom+'</small>'
         +(pa?'<svg class="pscad" viewBox="0 0 24 24">'+CAD+'</svg>':cE?'<span class="parc-cond'+(cE.jaunes?"":" t")+'"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+cE.a+' / '+cE.faut+'</span>':'<span class="parc-et"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etM+'/'+maxM+'<svg class="t" viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etTM+'/'+maxM+'</span>')+'</div>'
         +'<div class="parc-desc" style="--pa:'+it.acc+';top:'+(fy+30)+'px">'+MONDES[it.w].desc+'<span class="parc-meta">'+MONDES[it.w].anneaux.length+' orbites · '+MONDES[it.w].coups[0]+' à '+MONDES[it.w].coups[BASE-1]+' coups</span></div>';}
+    else if(it.t==="j")sects+='<div class="parc-jeu" style="top:'+fy+'px" role="button" tabindex="0">'+SVG_NEUF+'<div><span class="etiq">Le jeu complet</span><b>Débloquez les 9 orbites</b>'+
+        '<small>4 mondes et 48 niveaux de plus</small></div><span class="btn-or"><span>Orbicube complet</span><span class="px notrad">'+PRIX+'</span></span></div>';
     // la pastille de la voie dorée, discrète, posée sur la bifurcation (le client, le 14/10/2026)
     else if(it.t==="x")sects+='<div class="parc-exp'+(mondeFini(it.w)?"":" discret")+'" style="top:'+fy+'px;left:'+it.x.toFixed(1)+'px"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>Voie dorée</div>';
     else{var ex=estExpert(it.i),cache=ex&&!mondeFini(it.w),r=it.r,e=r?r.etoiles||0:0,t=r?r.chrono||0:0,
@@ -1942,6 +1955,7 @@ function ouvrirParcours(){accentCarte();montrer("parcours");requestAnimationFram
   if(c&&dd)dd.scrollTop=Math.max(0,c.offsetTop-dd.clientHeight*.55);});}
 document.getElementById("avis").addEventListener("click",function(){clearTimeout(avisMinuteur);fermerAvis();});
 document.getElementById("chemin").addEventListener("click",function(e){
+  if(e.target.closest(".parc-jeu")){sonClic();ouvrirBoutique("monde");return;}
   var sec=e.target.closest(".parc-sect.paye");if(sec){sonClic();ouvrirBoutique("monde");return;}
   var b=e.target.closest(".parc-niv");if(!b)return;
   if(b.classList.contains("paye")){sonClic();ouvrirBoutique("monde");return;}
@@ -2083,20 +2097,20 @@ function cheminSolution(){var tout=J.def.melange.slice(),ch=[];J.hist.forEach(fu
     if(change)continue;
     for(var k=0;k<ch.length-2;k++){var c=cleA(ch[k]);if(c===cleA(ch[k+1])&&c===cleA(ch[k+2])&&ch[k].q===ch[k+1].q&&ch[k].q===ch[k+2].q){ch.splice(k,3,inverse(ch[k]));change=true;break;}}}
   return ch;}
-// Les ampoules : une par indice. 3 au départ ; on en gagne avec le défi du jour, en terminant un monde, en faisant
+// Les aides : une par indice. 3 au départ ; on en gagne avec le défi du jour, en terminant un monde, en faisant
 // 3 étoiles de coups et 3 de temps ; le jeu complet en offre une par jour ; à zéro, une revient après 10 minutes.
-var RECHARGE_AMP=30*60000;   // à zéro, une ampoule revient après 30 min (10 min avant le 15/10/2026 : trop généreux)
+var RECHARGE_AMP=30*60000;   // à zéro, une aide revient après 30 min (10 min avant le 15/10/2026 : trop généreux)
 function ampoules(){if(!PROG.amp&&PROG.ampVide&&Date.now()-PROG.ampVide>=RECHARGE_AMP){PROG.amp=1;PROG.ampVide=0;PROG.ampMaj=Date.now();sauver();}
   var cj=ampoulesDuJour();if(cj&&PROG.ampJour!==cleJour()){PROG.amp=(PROG.amp||0)+cj;PROG.ampJour=cleJour();PROG.ampVide=0;PROG.ampMaj=Date.now();sauver();}return PROG.amp||0;}
-// ampoules offertes chaque jour : une avec le jeu complet, une de plus au rang 10, une encore au rang 20
+// aides offertes chaque jour : une avec le jeu complet, une de plus au rang 10, une encore au rang 20
 function ampoulesDuJour(){return complet()?1:0;}
 function majAmpoules(){var n=ampoules(),b=document.getElementById("ampNb");b.textContent=n;b.classList.toggle("vide",!n);}
-function gagnerAmpoule(){PROG.amp=ampoules()+1;PROG.ampVide=0;PROG.ampMaj=Date.now();majAmpoules();setTimeout(function(){toast("Ampoule gagnée","+1");},900);}
-// ampoules achetées en boutique (consommables) : créditées tout de suite, comme celles qu'on gagne
+function gagnerAmpoule(){PROG.amp=ampoules()+1;PROG.ampVide=0;PROG.ampMaj=Date.now();majAmpoules();setTimeout(function(){toast("Aide gagnée","+1");},900);}
+// aides achetées en boutique (consommables) : créditées tout de suite, comme celles qu'on gagne
 function crediterAmpoules(n){PROG.amp=ampoules()+n;PROG.ampVide=0;PROG.ampMaj=Date.now();sauver();majAmpoules();}
 function depenserAmpoule(){PROG.amp=Math.max(0,ampoules()-1);if(!PROG.amp)PROG.ampVide=Date.now();PROG.ampMaj=Date.now();sauver();majAmpoules();}
 function plusDAmpoules(){var reste=Math.max(1,Math.ceil((RECHARGE_AMP-(Date.now()-PROG.ampVide))/60000));
-  ouvrirFenetre('<h3>Plus d’ampoules</h3><p>Une ampoule revient dans '+reste+' min.</p><p>Vous en gagnez aussi en réussissant toutes les missions, en terminant un monde ou un palier de rang.</p>'+
+  ouvrirFenetre('<h3>Plus d’aides</h3><p>Une aide revient dans '+reste+' min.</p><p>Vous en gagnez aussi en réussissant toutes les missions, en terminant un monde ou un palier de rang.</p>'+
     (complet()?'':'<p>Le jeu complet en offre une chaque jour.</p>')+'<div class="menu">'+(complet()?'':'<button class="bouton or" data-a="boutique" type="button"><span>Jeu complet</span></button>')+
     '<button class="bouton" data-a="x" type="button" style="justify-content:center">Je cherche encore</button></div>',function(a){fermerFenetre();if(a==="boutique")ouvrirBoutique("indice");},"x");}
 function indice(gratuit){if(!J||!J.pret||J.fini||JeuP.occupe())return;var ch=cheminSolution();if(!ch.length)return;JeuP.indice=ch[0];
@@ -2108,12 +2122,12 @@ function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length
     record=record||eT>((av&&av.chrono)||0);
     var gain=(e===3&&eT===3&&!(av&&av.etoiles===3&&av.chrono===3)),finMonde=!av&&MONDES[d.w].coups.every(function(c,i){return estExpert(i)!==estExpert(d.i)||i===d.i||PROG.niveaux[(d.w+1)+"-"+(i+1)];});
     PROG.niveaux[d.id]=av?{etoiles:Math.max(av.etoiles,e),chrono:Math.max(av.chrono||0,eT),coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),sansIndice:av.sansIndice||!J.indice}:{etoiles:e,chrono:eT,coups:n,temps:temps,sansIndice:!J.indice};
-    if(n>=3&&temps<10000)PROG.tips.eclair=1;if(finMonde)gagnerAmpoule();   // plus d'ampoule pour un 3+3 : 96 niveaux, c'était 96 ampoules
-    // la voie dorée finie (son dernier expert, la première fois) : trois ampoules en tout et le style exclusif du monde
+    if(n>=3&&temps<10000)PROG.tips.eclair=1;if(finMonde)gagnerAmpoule();   // plus d'aide pour un 3+3 : 96 niveaux, c'était 96 aides
+    // la voie dorée finie (son dernier expert, la première fois) : trois aides en tout et le style exclusif du monde
     J.voie=!av&&d.i===MONDES[d.w].coups.length-1;if(J.voie){gagnerAmpoule();gagnerAmpoule();}}
   else if(d.mode==="jour"){av=PROG.jours[d.id];record=!av;PROG.jours[d.id]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),etoiles:Math.max(av.etoiles,e)}:{coups:n,temps:temps,etoiles:e};
     if(PROG.dernierJour!==d.id){PROG.serie=estHier(PROG.dernierJour)?PROG.serie+1:1;PROG.dernierJour=d.id;
-      // palier de série : une ampoule à chaque semaine d'affilée (7, 14, 21…) ; plus à 3 jours depuis le 15/10/2026
+      // palier de série : une aide à chaque semaine d'affilée (7, 14, 21…) ; plus à 3 jours depuis le 15/10/2026
       if(PROG.serie>=7&&PROG.serie%7===0)gagnerAmpoule();}PROG.serieMax=Math.max(PROG.serieMax||0,PROG.serie);}
   else if(d.mode==="semaine"){PROG.semaines=PROG.semaines||{};av=PROG.semaines[d.id];record=!av||temps<av.temps;
     PROG.semaines[d.id]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),etoiles:Math.max(av.etoiles,e)}:{coups:n,temps:temps,etoiles:e};}
@@ -2163,7 +2177,7 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
     '<div>Temps<b>'+fmt(temps)+' / '+fmt(objectifTemps(d.par))+'</b><i class="mini-et">'+[0,1,2].map(function(k){return k<J.eT?SVG_ETT:SVG_ET_OFF;}).join("")+'</i></div></div>'+
     (e<3?'<p>'+(J.indice?"L’indice limite le niveau à deux étoiles.":"Trois étoiles en "+d.par+" coups ou moins.")+'</p>':"")+
     (experts!=null?'<p class="experts">La voie dorée s’ouvre : quatre niveaux experts vous attendent.</p>':"")+
-    (J.voie?'<div class="voie-gain"><b>Voie dorée terminée</b><span>Style exclusif « '+styleVoie(d.w).nom+' » débloqué, et 3 ampoules.</span></div>':"")+(cS?'<p class="experts">'+texteCond(cS)+'</p>':"")+
+    (J.voie?'<div class="voie-gain"><b>Voie dorée terminée</b><span>Style exclusif « '+styleVoie(d.w).nom+' » débloqué, et 3 aides.</span></div>':"")+(cS?'<p class="experts">'+texteCond(cS)+'</p>':"")+
     (d.mode==="jour"?'<p class="serie">Série : '+PROG.serie+' · record : '+Math.max(PROG.serieMax||0,PROG.serie)+'</p>':"")+objectifsGagnes()+'<div class="menu">';
   if(suiv)html+='<button class="bouton principal" data-a="suivant" type="button"><span>'+(suiv.w!==d.w?"Monde "+(suiv.w+1):estExpert(suiv.i)?nomNiveau(suiv.w,suiv.i):"Niveau suivant")+'</span></button>';
   if(experts!=null)html+='<button class="bouton or" data-a="experts" type="button" style="justify-content:center">'+nomNiveau(d.w,experts)+'</button>';
@@ -2238,7 +2252,7 @@ function pause(){if(!J||!document.getElementById("voile").hidden)return;var t=J.
 var TUTOS={"1-1":["geste","Glissez le long du cercle qui brille, dans le sens de la flèche, pour remettre le cube en ordre."],
   "1-2":["toucher","Glissez dans un sens ou dans l’autre : le cercle suit votre doigt et ne compte qu’au lâcher."],
   "1-3":["pastille","Chaque pastille est au croisement de deux cercles. Un tour déplace douze pastilles, et les neuf de la face pivotent sur place."],
-  "1-5":["indice","Bloqué ? L’ampoule en haut à droite montre le tour suivant, mais limite le niveau à deux étoiles."],
+  "1-5":["indice","Bloqué ? Le bouton d’aide en haut à droite montre le tour suivant, mais limite le niveau à deux étoiles."],
   "3-1":["tranche","Les cercles du milieu sont les tranches M, E et S. Ils n’ont pas de face à eux : seules douze pastilles bougent."]};
 function tutoriel(){if(!J||J.def.mode!=="campagne")return;var t=TUTOS[J.def.id];if(!t||PROG.tips[t[0]])return;
   var b=document.getElementById("bulle");document.getElementById("bulleTxt").textContent=t[1];b.dataset.tip=t[0];b.hidden=false;if(t[0]==="geste")indice(true);}
@@ -2304,7 +2318,7 @@ document.getElementById("btnIndice").addEventListener("click",function(){sonClic
   if(!ampoules()){vibrer(20);plusDAmpoules();return;}
   function montrer(){depenserAmpoule();indice(false);}
   if(!J.indice&&etoilesPour(J.hist.length,J.def.par,false)===3){
-    ouvrirFenetre('<h3>Un indice ?</h3><p>Le tour suivant s’affichera sur le plateau, mais ce niveau ne pourra plus donner que deux étoiles.</p><p>Il vous coûte une ampoule.</p><div class="menu"><button class="bouton principal" data-a="oui" type="button"><span>Montrer le tour</span></button><button class="bouton" data-a="non" type="button" style="justify-content:center">Je cherche encore</button></div>',
+    ouvrirFenetre('<h3>Un indice ?</h3><p>Le tour suivant s’affichera sur le plateau, mais ce niveau ne pourra plus donner que deux étoiles.</p><p>Il vous coûte une aide.</p><div class="menu"><button class="bouton principal" data-a="oui" type="button"><span>Montrer le tour</span></button><button class="bouton" data-a="non" type="button" style="justify-content:center">Je cherche encore</button></div>',
       function(a){fermerFenetre();if(a==="oui")montrer();},"non");}else montrer();});
 document.getElementById("btnAnnuler").addEventListener("click",annuler);
 document.getElementById("btnRecommencer").addEventListener("click",function(){sonClic();recommencer();});
@@ -2488,11 +2502,11 @@ function majAchat(){var c=complet();document.getElementById("btnBoutique").hidde
   var b=document.getElementById("btnAchatOpt");b.textContent=c?"Débloqué":"Débloquer";b.disabled=c;
   document.getElementById("optPied").textContent="Orbicube "+(CFG.version||"")+(c||CFG.modele==="complet"?"":" · version d’essai");numeroPublication();}
 // ce que le joueur voulait faire quand la boutique s'ouvre ; le gain principal reste le même : les 9 orbites (le client, le 16/10/2026)
-var POURQUOI={indice:"Le jeu complet offre aussi une ampoule chaque jour.",monde:"Chaque monde suivant ajoute une orbite, jusqu’aux 9 à la fois.",libre:"Ce mode se joue sur les 9 orbites.",semaine:"Les missions élite font partie du jeu complet.",accueil:""};
+var POURQUOI={indice:"Le jeu complet offre aussi une aide chaque jour.",monde:"Chaque monde suivant ajoute une orbite, jusqu’aux 9 à la fois.",libre:"Ce mode se joue sur les 9 orbites.",semaine:"Les missions élite font partie du jeu complet.",accueil:""};
 var SVG_NEUF=(function(){var c=[[0,-7],[-6.1,3.5],[6.1,3.5]],r=[8,10.5,13],cols=["#ffcf4a","#b282ff","#5cb4ff"],h='<svg class="neuf" viewBox="-26 -26 52 52" aria-hidden="true">';
   c.forEach(function(p,i){r.forEach(function(rr,k){h+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+rr+'" fill="none" stroke="'+cols[i]+'" stroke-width="'+(k===1?1.6:1.1)+'" opacity="'+(k===1?1:.7)+'"/>';});});return h+'</svg>';})();
 function ouvrirBoutique(raison){var web=!NATIF.natif,li=CFG.liens||{};
-  var avantages=[["4 mondes et 48 niveaux de plus","Six, sept, huit orbites, puis les neuf à la fois."],["Tout le jeu libre sur les 9 orbites","Moyen, difficile, expert, sans fin et relax."],["Les missions élite","Le défi de la semaine et trois missions longues, bien mieux récompensées."],["Une ampoule offerte chaque jour","Pour un indice quand vous bloquez."],["Un seul achat, pour toujours","Sans publicité, sans abonnement."]];
+  var avantages=[["4 mondes et 48 niveaux de plus","Six, sept, huit orbites, puis les neuf à la fois."],["Tout le jeu libre sur les 9 orbites","Moyen, difficile, expert, sans fin et relax."],["Les missions élite","Le défi de la semaine et trois missions longues, bien mieux récompensées."],["Une aide offerte chaque jour","Pour un indice quand vous bloquez."],["Un seul achat, pour toujours","Sans publicité, sans abonnement."]];
   // en tête, le vrai gain, dessiné : les neuf orbites du cube (trois familles de trois cercles)
   var html='<div class="achat-hero">'+SVG_NEUF+'<span class="etiq">Orbicube complet</span><h3>Débloquez les 9 orbites</h3><p>Le cube entier : ses neuf cercles, enfin à la fois.</p></div>'+
     (POURQUOI[raison]?'<p>'+POURQUOI[raison]+'</p>':"")+
@@ -2597,17 +2611,17 @@ function rendreBoutique(){var c=complet(),tous=["pack_couleurs","pack_formes","p
   document.getElementById("boutAmpNb").textContent=ampoules();
   var puce=function(t){return'<li><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>'+t+'</span></li>';};
   // le jeu complet tout en haut, à part (le client, le 16/10/2026 : « perdu dans les packs ») : les 9 orbites d'abord,
-  // l'édition intégrale en second choix ; les packs de styles ont leur onglet
+  // l'édition intégrale et les packs de styles ont leur onglet (le client, le 16/10/2026)
   var jeu=!c&&CFG.modele!=="complet";
   document.getElementById("boutJeu").innerHTML=jeu?'<div class="bout-hero bout-jeu"><div class="bj-tete">'+SVG_NEUF+'<div><span class="etiq">Le jeu complet</span><h3>Débloquez les 9 orbites</h3></div></div>'+
-      '<p>Le cube entier : ses neuf cercles, enfin à la fois.</p><ul>'+puce("4 mondes et 48 niveaux de plus")+puce("Tout le jeu libre et les missions élite")+puce("Une ampoule offerte chaque jour")+'</ul>'+
-      '<button class="btn-or" type="button" data-achat="complet"><span>Orbicube complet</span><span class="px notrad">'+PRIX+'</span></button></div>'+lignePack("integrale",IC.couronne):"";
+      '<p>Le cube entier : ses neuf cercles, enfin à la fois.</p><ul>'+puce("4 mondes et 48 niveaux de plus")+puce("Tout le jeu libre et les missions élite")+puce("Une aide offerte chaque jour")+'</ul>'+
+      '<button class="btn-or" type="button" data-achat="complet"><span>Orbicube complet</span><span class="px notrad">'+PRIX+'</span></button></div>':"";
   document.getElementById("boutStylesT").hidden=!jeu;
   // l'onglet Packs (le client, le 16/10/2026 : « rassembler les packs dans un onglet ») : la collection, puis chaque pack
   // (chacun ouvre aussi ses styles un par un) ; tout acquis, un merci en haut
   if(c&&tous)document.getElementById("boutJeu").innerHTML='<div class="bout-hero merci"><span class="etiq">Merci</span><h3>Vous avez tout Orbicube</h3><p>Tous les mondes et tous les styles sont à vous. Bon voyage dans les orbites.</p></div>';
-  var pk="";
-  if(!tous&&jeu)pk=lignePack("collection",IC.effets);
+  var pk=jeu?lignePack("integrale",IC.couronne):"";
+  if(!tous&&jeu)pk+=lignePack("collection",IC.effets);
   else if(!tous)pk='<div class="bout-hero"><span class="etiq">Collection</span><h3>'+PACKS.collection.nom+'</h3><p>Les trois packs de styles, en un seul achat.</p><ul>'+
       puce("4 palettes : Aurore, Galaxie, Glace, Joyaux")+puce("3 formes : Gemmes, Étoiles, Cristaux")+puce("4 effets : comète, argent, arc-en-ciel, feu d’artifice")+'</ul>'+
       '<button class="btn-or" type="button" data-achat="collection"><span>Tout le style</span><span class="px notrad">'+PRIXP.collection+'</span></button>'+auLieuDe("collection")+'</div>';
@@ -2647,7 +2661,7 @@ function acheterPack(cle){sonClic();
   document.getElementById("boutique").classList.add("attente");
   NATIF.acheterProduit(P.produit).then(function(r){document.getElementById("boutique").classList.remove("attente");
     if(!r.ok){if(!r.annule)avertir("Achat",r.erreur==="indisponible"?"Le store ne répond pas. Réessayez plus tard.":"L’achat n’a pas abouti.");return;}
-    if(P.ampoules){crediterAmpoules(P.ampoules);toast("Merci !","+{0} ampoules".replace("{0}",P.ampoules));}
+    if(P.ampoules){crediterAmpoules(P.ampoules);toast("Merci !","+{0} aides".replace("{0}",P.ampoules));}
     else{appliquerDroits(r.droits,P);toast("Merci !",P.nom);confettis();
       if(P.unite)Object.keys(STYLES).forEach(function(k){STYLES[k].forEach(function(st){if("s_"+st.id===cle)opt(k,st.id);});});}
     sonVictoire();vibrer([20,40,20]);rendreBoutique();});}
@@ -2678,12 +2692,12 @@ NATIF.surRetour(function(){if(!document.getElementById("voile").hidden){if(FEN.e
 
 /* ========== 15 quinquies. LE RANG, LES MISSIONS, LES DÉFIS ==========
    Le jeu se joue cinq minutes (un défi, trois missions) ou des semaines (les rangs, les mondes).
-   L'expérience vient de chaque cube résolu ; chaque rang offre une ampoule. */
+   L'expérience vient de chaque cube résolu ; chaque rang offre une aide. */
 var RANGS=[[1,"Novice"],[5,"Apprenti"],[10,"Navigateur"],[15,"Astronome"],[20,"Gardien des orbites"],[30,"Maître des cercles"],[40,"Légende"]];
 function xpPour(r){return 60+r*40;}                       // pour passer du rang r au rang r+1
 function rangDe(xp){var r=1;xp=xp||0;while(xp>=xpPour(r)){xp-=xpPour(r);r++;}return{r:r,xp:xp,besoin:xpPour(r)};}
 // la route du rang (le client, le 14/10/2026 : « à quoi sert le niveau ? ») : tous les cinq rangs un style à gagner,
-// un cadre autour du pseudo à chaque titre, et des ampoules offertes chaque jour aux rangs 10 et 20
+// un cadre autour du pseudo à chaque titre, et des aides offertes chaque jour aux rangs 10 et 20
 var ROUTE=[{r:5,l:["Forme Hexagones","Cadre de bronze"]},{r:10,l:["Traînée Poussière d’étoiles","Cadre d’argent"]},
   {r:15,l:["Couleurs Crépuscule","Cadre d’or"]},{r:20,l:["Orbites de nacre","Cadre étoilé"]},{r:25,l:["Couleurs Abysses"]},
   {r:30,l:["Traînée Braises","Cadre de cristal"]},{r:35,l:["Couleurs Solaire"]},{r:40,l:["Orbites d’or rose","Cadre légendaire"]}];
@@ -2724,7 +2738,7 @@ var MISSIONS_SEM=[{id:"tours",txt:"{0} tours de cercle",n:[500,700],jeu:"campagn
   {id:"libre",txt:"{0} parties en jeu libre",n:[8,12],jeu:"libre"},{id:"jours",txt:"{0} défis du jour réussis",n:[4,5],jeu:"jour"},
   {id:"vite",txt:"Un défi en moins de {0} s",n:[30],jeu:"jour"},{id:"sansfin",txt:"Étape {0} en sans fin",n:[8,10],jeu:"libre"},
   {id:"defiSem",txt:"Défi de la semaine",n:[1],jeu:"semaine",fixe:true}];
-// récompenses : un défi donne ses ampoules et son expérience par la victoire elle-même (xpVictoire) ; une mission, son XP ici
+// récompenses : un défi donne ses aides et son expérience par la victoire elle-même (xpVictoire) ; une mission, son XP ici
 var XP_MISSION=40,XP_MISSION_SEM=150,AMP_BONUS=1,AMP_BONUS_SEM=2;
 function gainsMission(m){return m.id==="defi"?[["xp",100]]:m.id==="defiSem"?[["xp",200]]:[["xp",m.s?XP_MISSION_SEM:XP_MISSION]];}
 function tirerMissions(cle,pool,sem){var rnd=graine(cle),p=pool.filter(function(m){return !m.fixe;}),fixe=pool.filter(function(m){return m.fixe;})[0],
@@ -2763,7 +2777,7 @@ function rafraichirProfil(){var R=rangDe(PROG.xp),M=missionsDuJour();
   var rc=document.getElementById("rangCarte");rc.classList.toggle("mecene",aDroit("soutien"));poserCadre(rc,R.r);
   majCompte();
   // les récompenses : une phrase pour dire comment on monte, puis la route (la prochaine est en doré) ; plus d'encadré qui la répétait
-  document.getElementById("grpRecomp").innerHTML='<h4>Récompenses du rang</h4><p class="g-intro">Résolvez des cubes, réussissez les défis et les missions pour gagner de l’expérience. Chaque palier offre une ampoule.</p>'+routeHTML();
+  document.getElementById("grpRecomp").innerHTML='<h4>Récompenses du rang</h4><p class="g-intro">Résolvez des cubes, réussissez les défis et les missions pour gagner de l’expérience. Chaque palier offre une aide.</p>'+routeHTML();
   rc.innerHTML='<span class="anneau-rang notrad">'+anneauRang(PROG.xp,2.4)+'</span><button class="rc-pseudo" id="btnPseudo" type="button" aria-label="Changer de pseudo"><b class="notrad">'+echapper(pseudo())+'</b>'+
     '<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/></svg></button><h3 class="rc-titre">'+titreRang(R.r)+'</h3>'+(aDroit("soutien")?'<span class="mecene-titre">Mécène d’Orbicube</span>':"")+(voieFinie(MONDES.length-1)?'<span class="mecene-titre maitre">Maître des orbites</span>':"")+
     '<span class="xp notrad">'+R.xp+' / '+R.besoin+' XP</span><span class="rc-et notrad">'+SVG_ET+etoilesTotal()+' '+SVG_ETT+etoilesChrono()+'</span>';
@@ -2816,7 +2830,7 @@ function lignesMissions(M,amp,pre,bonusTxt,ferme){var res=pre==="m"?PROG.jours[c
         compte&&!ferme?'<span class="notrad">'+m.p+'/'+m.but+'</span>':"";
     // un défi reste jouable une fois réussi (pour progresser au classement) ; une mission réussie ne mène plus nulle part
     return objectif(ok,texteMission(m),sous,gainsMission(m),barre,(defi?"vedette":"")+(ferme?" verrou":""),ferme?"acheter":ok&&!defi?"":def&&def.jeu,pre+i);}).join("")+
-  objectif(M.bonus,bonusTxt,M.bonus?"Gagné":amp>1?amp+" ampoules de plus":"Une ampoule de plus",[["amp",amp]],"","bonus"+(ferme?" verrou":""),"",pre==="m"?"bonus":"bonusS");}
+  objectif(M.bonus,bonusTxt,M.bonus?"Gagné":amp>1?amp+" aides de plus":"Une aide de plus",[["amp",amp]],"","bonus"+(ferme?" verrou":""),"",pre==="m"?"bonus":"bonusS");}
 function joursAvantLundi(){var d=new Date(),n=(8-d.getDay())%7;return n||7;}
 // Aujourd'hui : « Missions du jour » (pour tous) puis « Missions élite » (jeu complet), deux cadres de même forme ;
 // compteur sur les 4 missions, bonus quand les 4 sont réussies ; chaque ligne dit ce qu'elle rapporte et mène où elle se joue.
@@ -2827,11 +2841,11 @@ function rafraichirDefis(){var vu=PROG.objVu||(PROG.objVu={n:0,d:""});if(vu.d!==
   function tete(ico,titre,sous,f,t,ferme){return '<div class="df-tete"><span class="df-ico">'+ico+'</span><div><b>'+titre+'</b><small>'+sous+'</small></div>'+
     (ferme?'<span class="df-cadenas">'+SVG_RESERVE+'</span></div>':'<span class="df-compte notrad'+(f===t?" fini":"")+'">'+f+'/'+t+'</span></div><i class="df-barre"><i style="width:'+(100*f/t).toFixed(0)+'%"></i></i>');}
   var h='<div class="df-carte df-jour">'+tete(SVG_CAL,"Missions du jour","Nouvelles missions "+resteJour(),fj,M.l.length)+
-    (vu.n<=3?'<p class="df-desc">Réussissez les missions pour gagner de l’expérience et des ampoules. Toutes réussies : une ampoule de plus.</p>':"")+
+    (vu.n<=3?'<p class="df-desc">Réussissez les missions pour gagner de l’expérience et des aides. Toutes réussies : une aide de plus.</p>':"")+
     '<div class="objs">'+lignesMissions(M,AMP_BONUS,"m","Bonus : toutes les missions")+'</div>'+
     // un seul bouton : tant que le défi du jour n'est pas joué ; ensuite sa ligne suffit pour le rejouer
     (j?"":'<button class="bouton principal" data-a="jour" type="button"><span>Jouer le défi du jour</span></button>')+
-    (serie?'<p class="df-serie-l">'+SVG_FLAMME+'<span>Série de '+PROG.serie+' jours : une ampoule à chaque semaine complète.</span></p>':"")+
+    (serie?'<p class="df-serie-l">'+SVG_FLAMME+'<span>Série de '+PROG.serie+' jours : une aide à chaque semaine complète.</span></p>':"")+
     lignePlace("jour")+'</div>';
   // les missions élite : avec le jeu complet ; sans achat, la même liste derrière un cadenas, pour montrer ce qu'elle rapporte
   h+='<div class="df-carte df-grandes'+(ouv?"":" df-reserve")+'">'+tete(SVG_SEM,"Missions élite",ouv?(nj>1?"De la semaine · nouvelles dans "+nj+" jours":"De la semaine · nouvelles demain"):"Jeu complet · nouvelles chaque lundi",fs,S.l.length,!ouv)+

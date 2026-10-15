@@ -36,7 +36,7 @@ elles. Regroupez chaque couleur pour gagner.
 • Des gestes faits pour le pouce : glisser, lancer, enchaîner les tours sans lever le doigt
 • Une palette lisible par les daltoniens
 • Un classement mondial avec votre pseudo, sans compte à créer
-• Une route du rang : styles, cadres et ampoules à gagner en jouant
+• Une route du rang : styles, cadres et aides à gagner en jouant
 • Jouable hors ligne, sans publicité ni suivi
 
 Les quatre premiers mondes sont gratuits. Les neuf orbites à la fois se jouent avec le jeu complet. Un achat unique débloque tout le jeu, pour toujours. Des packs de styles, facultatifs, habillent le plateau : palettes, formes, effets.

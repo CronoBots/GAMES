@@ -125,7 +125,7 @@ async function resoudre(p) {
     (await p.isVisible("#boutique.actif")) && (await p.$$eval("#boutRayon .style", (l) => l.length)) === 14 ? ok("boutique : quatorze palettes en vitrine, dont « Couleurs du monde », deux exclusives de la voie dorée et trois du rang") : faute("boutique : rayon des couleurs absent");
     (await p.textContent('#boutRayons [data-r="palette"] .cpt')) === "3/14" ? ok("boutique : compteur de collection (3/14 palettes pour un débutant)") : faute("compteur de collection faux : " + (await p.textContent('#boutRayons [data-r="palette"] .cpt')));
     await p.tap('#boutRayons [data-r="packs"]'); await p.waitForTimeout(400);
-    (await p.isVisible("#boutJeu .bout-jeu")) && (await p.isVisible("#pack-couleurs")) && !(await p.isVisible("#boutApercu")) && (await p.textContent('#boutRayons [data-r="packs"] .cpt')) === "0/3"
+    (await p.isVisible("#boutJeu .bout-jeu")) && !(await p.$("#boutJeu #pack-integrale")) && (await p.isVisible("#boutRayon #pack-integrale")) && (await p.isVisible("#pack-couleurs")) && !(await p.isVisible("#boutApercu")) && (await p.textContent('#boutRayons [data-r="packs"] .cpt')) === "0/3"
       ? ok("boutique : le jeu complet en haut, les packs dans leur onglet (0/3), sans aperçu") : faute("onglet Packs de la boutique");
     const dPk = await debordements(p); dPk.length ? faute("débordement dans l'onglet Packs : " + dPk) : ok("onglet Packs sans débordement");
     (await p.textContent("#pack-couleurs")).includes("au lieu de") && (await p.textContent("#pack-couleurs")).includes("3,96") ? ok("boutique : le pack montre ce que coûterait son contenu à l'unité (3,96 €)") : faute("prix barré du pack absent");
@@ -275,11 +275,16 @@ async function resoudre(p) {
     await p.click("#btnSuccesStore"); await p.waitForTimeout(200);
     (await p.evaluate(() => window.__affiche)) ? ok("le bouton ouvre la liste de Game Center") : faute("le bouton n'ouvre rien");
     await p.click("#succes [data-retour]"); await p.waitForTimeout(400);
-    await p.click("#btnJouer"); await p.waitForTimeout(700); await p.click(".parc-sect.paye"); await p.waitForTimeout(400);
+    await p.click("#btnJouer"); await p.waitForTimeout(700);
+    (await p.$$eval(".parc-jeu", (l) => l.length)) === 1 ? ok("carte : le jeu complet posé comme un monde à la fin du jeu gratuit") : faute("carte du jeu complet absente de la campagne");
+    await p.click(".parc-jeu"); await p.waitForTimeout(400);
+    (await p.textContent("#fenetre")).includes("9 orbites") ? ok("la carte du jeu complet ouvre l'achat") : faute("la carte du jeu complet n'ouvre rien");
+    await p.click('#fenetre [data-a="x"]').catch(() => {}); await p.waitForTimeout(300);
+    await p.click(".parc-sect.paye"); await p.waitForTimeout(400);
     (await p.textContent("#fenetre")).includes("3,49 €") ? ok("la boutique affiche le prix du store") : faute("prix absent de la boutique");
     await p.click('#fenetre [data-a="acheter"]'); await p.waitForTimeout(1400);
     (await p.textContent("#btnAchatOpt")) === "Débloqué" ? ok("achat réussi : le jeu complet est débloqué") : faute("l'achat ne débloque rien");
-    (await p.$$eval(".parc-sect.paye", (l) => l.length)) === 0 ? ok("après l'achat, plus aucun monde réservé") : faute("des mondes restent réservés après l'achat");
+    (await p.$$eval(".parc-sect.paye, .parc-jeu", (l) => l.length)) === 0 ? ok("après l'achat, plus aucun monde réservé ni carte du jeu complet") : faute("des mondes restent réservés après l'achat");
     // boutique : prix d'un pack venu du store, achat d'un pack (ses styles s'ouvrent), achat d'ampoules (créditées)
     await p.click("#parcours [data-retour]"); await p.waitForTimeout(400);
     await p.click("#btnOptions"); await p.waitForTimeout(400); await p.click("#btnStylesOpt"); await p.waitForTimeout(700);

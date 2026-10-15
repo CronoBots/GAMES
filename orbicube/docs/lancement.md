@@ -26,7 +26,7 @@ Ils changent : vérifiez-les sur les pages officielles au moment de vous inscrir
   un pseudo, un identifiant tiré au hasard et les scores (section 3 quinquies) : pas de bandeau de consentement
   (ni publicité ni suivi), mais une politique de confidentialité qui le dit et des questionnaires à jour (section 6).
 - **La boutique** (le client, le 13/10/2026) vend aussi, en option, des **packs de styles** (couleurs, formes
-  des pastilles, effets), deux éditions groupées, des **ampoules** et un **pack soutien** : voir 3 quater. Les
+  des pastilles, effets), deux éditions groupées, des **aides** et un **pack soutien** : voir 3 quater. Les
   styles ne changent rien au jeu ; une partie se gagne aussi en jouant (étoiles, rang).
 - **Changer de modèle** ne demande aucun code : `www/config.js`.
   - `modele: "complet"` : tout est ouvert. Choisissez ce réglage pour vendre l'application payante
@@ -233,8 +233,8 @@ sont ceux de `PACKS` dans `www/index.html` ; les prix affichés en attendant le 
 | `orbicube_collection` « Collection complète » | Non consommable | 3,99 € | `pack_couleurs`, `pack_formes`, `pack_effets` |
 | `orbicube_integrale` « Édition intégrale » | Non consommable | 7,99 € | `complet`, `pack_couleurs`, `pack_formes`, `pack_effets` |
 | `orbicube_soutien` « Soutenir Orbicube » | Non consommable | 2,99 € | `soutien` |
-| `orbicube_ampoules_10` « 10 ampoules » | **Consommable** | 0,99 € | aucun : le jeu crédite les ampoules |
-| `orbicube_ampoules_30` « 30 ampoules » | **Consommable** | 1,99 € | aucun |
+| `orbicube_ampoules_10` « 10 aides » | **Consommable** | 0,99 € | aucun : le jeu crédite les aides |
+| `orbicube_ampoules_30` « 30 aides » | **Consommable** | 1,99 € | aucun |
 | `orbicube_style_<id>` : chaque style d'un pack, **à l'unité** (11 produits, voir ci-dessous) | Non consommable | 0,99 € | `style_<id>` |
 
 Les 11 styles vendus aussi à l'unité (le client, le 14/10/2026 : « chaque élément peut être acheté séparément ») :
@@ -295,8 +295,8 @@ Après chaque modification du jeu : `npm run cap:sync`, puis reconstruire.
   5. le bouton retour d'Android : il ferme les fenêtres, met en pause, remonte, puis quitte ;
   6. les retours haptiques sur iPhone ;
   7. la boutique : prix de chaque pack dans la devise du store, achat d'un pack (ses styles s'ouvrent), Édition
-     intégrale (tout s'ouvre, mondes compris), 10 ampoules (créditées), puis *Restaurer* après réinstallation (les
-     packs reviennent, pas les ampoules).
+     intégrale (tout s'ouvre, mondes compris), 10 aides (créditées), puis *Restaurer* après réinstallation (les
+     packs reviennent, pas les aides).
 
 ---
 

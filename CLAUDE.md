@@ -129,9 +129,11 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   (`POURQUOI`) et les avantages, les orbites d'abord ; même ordre dans la boutique (édition intégrale, Orbicube complet),
   les options et la carte réservée (« Avec les 9 orbites · jeu complet »).
   **Dans la boutique, le jeu complet est tout en haut, à part** (le client, le 16/10/2026 : « perdu dans les packs ») :
-  carte « Le jeu complet » (`#boutJeu`, les 9 orbites, bouton « Orbicube complet ») puis l'édition intégrale en second
-  choix ; ensuite « Styles » : quatre onglets Couleurs, Formes, Effets et **Packs** (le client, le 16/10/2026 : « rassembler
-  les packs dans un onglet » ; Collection et les trois packs, compteur « n/3 », sans aperçu). Compteurs sous les noms.
+  carte « Le jeu complet » (`#boutJeu`, les 9 orbites, bouton « Orbicube complet ») seule ; ensuite « Styles » : quatre
+  onglets Couleurs, Formes, Effets et **Packs** (le client, le 16/10/2026 : « rassembler les packs dans un onglet », puis
+  « l'édition intégrale doit être dans les packs » : Édition intégrale, Collection et les trois packs, compteur « n/3 »,
+  sans aperçu). Compteurs sous les noms. **Sur la carte de la campagne**, le jeu complet se pose comme un monde entre le
+  dernier monde gratuit et le premier payant (`.parc-jeu`, item `t:"j"` de `buildParcours`) ; il disparaît après l'achat.
 - **Ce que l'achat ouvre, dit clairement** (le client, le 14/10/2026 : « Jeu libre », pas « Partie libre » ; donner envie
   d'acheter) : sans achat, le jeu libre n'a que « Facile » sur les orbites du dernier monde gratuit (`orbitesLibres`,
   `libresGratuits`) ; Moyen/Difficile/Expert, Sans fin, Relax et le **défi de la semaine** sont dans une carte dorée
@@ -159,7 +161,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   commerciale) : AAC 96 kb/s (l'Opus d'origine ne se lit pas sur iPhone), boucle Web Audio avec fondu
   enchaîné de 6 s, démarre au premier geste, se coupe en arrière-plan, baisse sous la victoire. Le Chromium
   des tests n'a pas l'AAC : son échec de décodage doit rester silencieux.
-- **Ampoules** (le client, le 11/10/2026 ; pas de vidéo publicitaire, qui imposerait pub, suivi et RGPD) :
+- **Ampoules**, appelées **« aides »** à l'écran depuis le 16/10/2026 (le client ; en, nl « hints », de « Hilfen », es « ayudas » ;
+  le code et les produits des stores gardent `amp`/`ampoules`) (le client, le 11/10/2026 ; pas de vidéo publicitaire, qui imposerait pub, suivi et RGPD) :
   un indice coûte une ampoule (`ampoules()`, `depenserAmpoule()`), 3 au départ. **Rendues rares le 15/10/2026** (le client :
   « trop facilement obtenues, ça gâche la difficulté ») : +1 quand les quatre missions du jour sont réussies, +2 pour les
   quatre grandes missions, +1 par monde terminé, +1 à chaque palier de la route du rang (tous les cinq rangs, plus à chaque
