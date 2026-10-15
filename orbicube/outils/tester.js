@@ -303,6 +303,27 @@ async function resoudre(p) {
     await ctx.close();
   }
 
+  // le jeu libre en 2×2 (gratuit) et en 4×4 (avec le jeu complet) : trois familles de deux ou de quatre orbites
+  {
+    console.log("Jeu libre 2×2 et 4×4 (iPhone 13)");
+    const ctx = await b.newContext({ ...devices["iPhone 13"], locale: "fr-FR" });
+    const p = await ctx.newPage(); p.setDefaultTimeout(8000); const err = []; p.on("pageerror", (e) => err.push(e.message));
+    await p.goto(URL + "?capture"); await p.waitForTimeout(1500);
+    const gagner = async () => { for (const m of await p.evaluate(() => window.__orbicube.solution())) { await p.evaluate((x) => window.__orbicube.jouer(x), m); await p.waitForTimeout(450); } await p.waitForTimeout(2600); };
+    await p.tap("#btnLibre"); await p.waitForTimeout(400); await p.tap('#fenetre [data-a="t4"]'); await p.waitForTimeout(400);
+    (await p.$('#fenetre .reserve [data-a="acheter"]')) && !(await p.$('#fenetre .menu > [data-a="8"]')) ? ok("4×4 réservé au jeu complet") : faute("le 4×4 n'est pas réservé");
+    await p.tap('#fenetre [data-a="t2"]'); await p.waitForTimeout(400); await p.tap('#fenetre [data-a="3"]'); await p.waitForTimeout(2600); await p.tap("#bulleOk").catch(() => {});
+    const t2 = await p.evaluate(() => [window.__orbicube.taille(), document.getElementById("jTitre").textContent]);
+    t2[0] === 2 && t2[1] === "Jeu libre 2×2" ? ok("2×2 gratuit : six orbites, 24 pièces") : faute("2×2 : " + JSON.stringify(t2));
+    await gagner();
+    (await p.textContent("#fenetre")).includes("record") || (await p.textContent("#fenetre")).includes("Record") ? ok("2×2 résolu jusqu'à la victoire") : faute("2×2 : pas de victoire");
+    const d2 = await debordements(p); d2.length ? faute("débordement en 2×2 : " + d2) : ok("victoire 2×2 sans débordement");
+    await p.tap('#fenetre [data-a="menu"]'); await p.waitForTimeout(800);
+    (await p.evaluate(() => window.__orbicube.taille())) === 3 ? ok("retour à l'accueil : le cube redevient un 3×3") : faute("la taille reste après la partie");
+    err.length ? faute("erreurs : " + err.join(" | ")) : ok("aucune erreur de script");
+    await ctx.close();
+  }
+
   // le classement, contre un faux serveur (outils/classement-essai.js : mêmes réponses que la fonction Supabase)
   {
     console.log("Classement (serveur d'essai, iPhone 13)");

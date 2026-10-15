@@ -648,6 +648,9 @@ body{background:
 .parc-cond svg{width:12px;height:12px;fill:var(--or)}.parc-cond.t{color:#4cc9f0}.parc-cond.t svg{fill:#4cc9f0}
 .parc-desc .cond{display:block;margin-top:4px;font-weight:600;color:var(--or)}.parc-desc .cond.t{color:#4cc9f0}
 .parc-sect.paye{border-color:rgba(255,207,74,.5);cursor:pointer}
+/* Jeu libre : le choix de la taille du cube (le client, le 16/10/2026) */
+.fenetre .segment.tailles{width:100%;margin:2px 0 12px}.fenetre .segment.tailles button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;font-size:15px}
+.fenetre .segment.tailles .cad{width:13px;height:13px;stroke:var(--or);fill:none;stroke-width:2.2}
 /* un succès réservé au jeu complet (le client, le 16/10/2026) */
 .suc-jc{display:inline-block;margin-top:5px;font:700 10px var(--f-titre);font-style:normal;letter-spacing:.12em;text-transform:uppercase;color:var(--or);
   border:1px solid rgba(255,207,74,.45);border-radius:99px;padding:2px 8px}
@@ -1301,24 +1304,30 @@ function suivreTheme(t){THEME_COURANT=t;if(STY.palette==="monde")COUL=PALETTES.m
 var COUL=PALETTES.classique;
 function hexRGB(h){h=h.replace("#","");return parseInt(h.substr(0,2),16)+","+parseInt(h.substr(2,2),16)+","+parseInt(h.substr(4,2),16);}
 function faceDe(n){return n[0]>0?0:n[0]<0?1:n[1]>0?2:n[1]<0?3:n[2]>0?4:5;}
-var S=[],CLE={};
-for(var x=-1;x<=1;x++)for(var y=-1;y<=1;y++)for(var z=-1;z<=1;z++){var p=[x,y,z];
-  for(var a=0;a<3;a++)if(Math.abs(p[a])===1){var n=[0,0,0];n[a]=p[a];CLE[p+"|"+n]=S.length;S.push({p:p,n:n,a:a,s:p[a]});}}
+// le cube N×N (le client, le 16/10/2026 : « pour un 2×2, il suffit de 3×2 orbites ; pour un 4×4, 3×4 ») : les cubes ont
+// leurs coordonnées de −DEMI à DEMI (demi-entiers pour 2 et 4), une facette par face visible. Le 3×3 reste celui d'origine.
+var TAILLE=3,DEMI=1,S=[],CLE={},PERM={};
+function construireCube(n){TAILLE=n;DEMI=(n-1)/2;S=[];CLE={};PERM={};
+  for(var x=-DEMI;x<=DEMI;x++)for(var y=-DEMI;y<=DEMI;y++)for(var z=-DEMI;z<=DEMI;z++){var p=[x,y,z];
+    for(var a=0;a<3;a++)if(Math.abs(p[a])===DEMI){var nn=[0,0,0];nn[a]=p[a]>0?1:-1;CLE[p+"|"+nn]=S.length;S.push({p:p,n:nn,a:a,s:nn[a]});}}}
+construireCube(3);
 function resoluCol(){return S.map(function(s){return faceDe(s.n);});}
 function rot90(v,a){var x=v[0],y=v[1],z=v[2];return a===0?[x,-z,y]:a===1?[z,y,-x]:[-y,x,z];}
 function rotAng(v,a,t){var c=Math.cos(t),s=Math.sin(t),x=v[0],y=v[1],z=v[2];
   if(a===0)return[x,y*c-z*s,y*s+z*c];if(a===1)return[x*c+z*s,y,-x*s+z*c];return[x*c-y*s,x*s+y*c,z];}
-var PERM={};
 function perm(a,L,q){var k=a+","+L+","+q;if(PERM[k])return PERM[k];var m={};
-  for(var i=0;i<54;i++){var s=S[i];if(s.p[a]!==L)continue;var pp=s.p,nn=s.n;for(var j=0;j<(q>0?1:3);j++){pp=rot90(pp,a);nn=rot90(nn,a);}m[i]=CLE[pp+"|"+nn];}
+  for(var i=0;i<S.length;i++){var s=S[i];if(s.p[a]!==L)continue;var pp=s.p,nn=s.n;for(var j=0;j<(q>0?1:3);j++){pp=rot90(pp,a);nn=rot90(nn,a);}m[i]=CLE[pp+"|"+nn];}
   return PERM[k]=m;}
 function appliquer(col,mv){var m=perm(mv.a,mv.L,mv.q),nc=col.slice();for(var k in m)nc[m[k]]=col[+k];return nc;}
-function estResolu(col){var g={};for(var i=0;i<54;i++){var k=S[i].a+","+S[i].s;if(g[k]===undefined)g[k]=col[i];else if(g[k]!==col[i])return false;}return true;}
+function estResolu(col){var g={};for(var i=0;i<S.length;i++){var k=S[i].a+","+S[i].s;if(g[k]===undefined)g[k]=col[i];else if(g[k]!==col[i])return false;}return true;}
 var MV={R:[0,1,-1],M:[0,0,1],L:[0,-1,1],U:[1,1,-1],E:[1,0,1],D:[1,-1,1],F:[2,1,-1],S:[2,0,-1],B:[2,-1,1]};
 var TOUS=["U","D","L","R","F","B","M","E","S"];
 // les six faces, SANS les tranches médianes M/E/S : jeu des défis gratuits (le 9-anneaux reste l'avantage du payant)
 var SIXFACES=["U","D","L","R","F","B"];
-var NOM_ANNEAU={};Object.keys(MV).forEach(function(k){NOM_ANNEAU[MV[k][0]+","+MV[k][1]]=k;});
+var NOM_ANNEAU={},MV3=MV,TOUS3=TOUS;Object.keys(MV).forEach(function(k){NOM_ANNEAU[MV[k][0]+","+MV[k][1]]=k;});
+// les noms des orbites d'un N×N : R L U D F B pour les couches extérieures ; en 4×4, r l u d f b pour les couches intérieures
+function mvDe(n){if(n===3)return MV3;var m={},h=(n-1)/2;[["R","L",0],["U","D",1],["F","B",2]].forEach(function(f){
+    m[f[0]]=[f[2],h,-1];m[f[1]]=[f[2],-h,1];if(n>3){m[f[0].toLowerCase()]=[f[2],h-1,-1];m[f[1].toLowerCase()]=[f[2],1-h,1];}});return m;}
 function nomDe(mv){var b=NOM_ANNEAU[mv.a+","+mv.L];if(mv.d===2)return b+"2";return MV[b][2]===mv.q?b:b+"′";}
 function parNom(t){var b=t.charAt(0),m=MV[b];return{a:m[0],L:m[1],q:t.length>1?-m[2]:m[2]};}
 function inverse(mv){return{a:mv.a,L:mv.L,q:-mv.q};}
@@ -1331,14 +1340,18 @@ var RAY=[0.7296,0.904,1.0835],ECART=0.5336;
 // les dispositions des orbites (le client, le 16/10/2026 : « acheter d'autres présentations des orbites ») : mêmes cercles, mêmes
 // pastilles, mêmes coups ; seul l'écart des trois centres change (Anneau : les six faces en couronne), la taille compensée (k)
 // pour que le plateau garde la même place. La disposition portée est posée par poserGeo, qui recalcule tout ce qui suit.
-var RAY0=RAY.slice(),DISPOS={trefle:{e:ECART,k:1,min:50},anneau:{e:.32,k:1.155,min:65}},DISPO="trefle";
+var RAY0=RAY.slice(),ECART0=ECART,DISPOS={trefle:{e:ECART,k:1,min:50},anneau:{e:.32,k:1.155,min:65}},DISPO="trefle";
 var CEN=[-30,90,210].map(function(d){var r=d*Math.PI/180;return[Math.cos(r)*ECART,Math.sin(r)*ECART];});
 function inter(c1,r1,c2,r2){var dx=c2[0]-c1[0],dy=c2[1]-c1[1],d=Math.hypot(dx,dy),a=(r1*r1-r2*r2+d*d)/(2*d),h=Math.sqrt(r1*r1-a*a),mx=c1[0]+a*dx/d,my=c1[1]+a*dy/d;
   return[[mx-h*dy/d,my+h*dx/d],[mx+h*dy/d,my-h*dx/d]];}
 // une disposition : ses rayons, l'écart de ses centres, et la place de chaque pastille (au croisement de ses deux cercles)
-function geoDe(id){var D=DISPOS[id]||DISPOS.trefle,ray=RAY0.map(function(r){return r*D.k;}),e=D.e*D.k,
+// les rayons d'un N×N : même cercle du milieu, un pas entre cercles un peu plus serré en 4×4 ; hors 3×3, le plateau est
+// remis à la même étendue que celui d'origine (le 3×3 garde ses proportions exactes)
+function rayonsTaille(n){if(n===3)return RAY0.slice();var pas=n===2?.177:.15,r=[];for(var i=0;i<n;i++)r.push(.904+(i-(n-1)/2)*pas);return r;}
+function geoDe(id){var D=DISPOS[id]||DISPOS.trefle,base=rayonsTaille(TAILLE),kn=TAILLE===3?1:(ECART0+RAY0[2])/(ECART0+base[TAILLE-1]),
+    ray=base.map(function(r){return r*kn*D.k;}),e=D.e*kn*D.k,
     cen=[-30,90,210].map(function(d){var r=d*Math.PI/180;return[Math.cos(r)*e,Math.sin(r)*e];});
-  return{ray:ray,e:e,cen:cen,xy:S.map(function(s){var b=(s.a+1)%3,c=(s.a+2)%3,pts=inter(cen[b],ray[s.p[b]+1],cen[c],ray[s.p[c]+1]);
+  return{ray:ray,e:e,cen:cen,xy:S.map(function(s){var b=(s.a+1)%3,c=(s.a+2)%3,pts=inter(cen[b],ray[s.p[b]+DEMI],cen[c],ray[s.p[c]+DEMI]);
     var d=function(q){return Math.hypot(q[0]-cen[s.a][0],q[1]-cen[s.a][1]);};pts.sort(function(u,v){return d(u)-d(v);});return s.s>0?pts[0]:pts[1];})};}
 var CENTRE_FACE={},CLE_CENTRE={},FORME=[],RAYON_FACE=0;
 // Forme des facettes : un losange dont les côtés suivent les deux cercles qui se croisent sous la pastille,
@@ -1362,22 +1375,28 @@ function delta(a,L,q){var k=a+","+L+","+q;if(DELTA[k])return DELTA[k];var m=perm
   for(kk in m){i=+kk;if(S[i].a!==a&&Math.sign(d[i])!==sens)d[i]+=sens*2*Math.PI;}
   d.sens=sens;return DELTA[k]=d;}
 function poserGeo(id){var g=geoDe(id);DISPO=DISPOS[id]?id:"trefle";ECART=g.e;
-  for(var i=0;i<3;i++){RAY[i]=g.ray[i];CEN[i][0]=g.cen[i][0];CEN[i][1]=g.cen[i][1];}
+  RAY.length=g.ray.length;for(var i=0;i<g.ray.length;i++)RAY[i]=g.ray[i];for(i=0;i<3;i++){CEN[i][0]=g.cen[i][0];CEN[i][1]=g.cen[i][1];}
   S.forEach(function(s,i){s.xy=g.xy[i];});
-  CENTRE_FACE={};CLE_CENTRE={};S.forEach(function(s,i){if(s.p[(s.a+1)%3]===0&&s.p[(s.a+2)%3]===0){CENTRE_FACE[s.a+","+s.s]=s.xy;CLE_CENTRE[s.a+","+s.s]=i;}});
+  // le centre d'une face : sa pastille du milieu ; en 2×2 et 4×4, qui n'en ont pas, la moyenne de ses pastilles
+  CENTRE_FACE={};CLE_CENTRE={};var som={};S.forEach(function(s,i){var k=s.a+","+s.s;if(!som[k])som[k]=[0,0,0,i];som[k][0]+=s.xy[0];som[k][1]+=s.xy[1];som[k][2]++;
+    if(s.p[(s.a+1)%3]===0&&s.p[(s.a+2)%3]===0){CENTRE_FACE[k]=s.xy;CLE_CENTRE[k]=i;}});
+  Object.keys(som).forEach(function(k){if(!CENTRE_FACE[k]){CENTRE_FACE[k]=[som[k][0]/som[k][2],som[k][1]/som[k][2]];CLE_CENTRE[k]=som[k][3];}});
   FORME=S.map(function(st){var b=(st.a+1)%3,c=(st.a+2)%3;return ecarter(tangente(st.xy,CEN[b]),tangente(st.xy,CEN[c]),DISPOS[DISPO].min);});
   RAYON_FACE=0;S.forEach(function(s){var c=CENTRE_FACE[s.a+","+s.s];RAYON_FACE=Math.max(RAYON_FACE,Math.hypot(s.xy[0]-c[0],s.xy[1]-c[1]));});RAYON_FACE+=.045;
   DELTA={};
-  for(var ax=0;ax<3;ax++){PAS[ax]=[];SENS_VIS[ax]=delta(ax,1,1).sens;for(var LL=-1;LL<=1;LL++){var dd=delta(ax,LL,1),som=0,nb=0;
-    for(var kk in dd){if(kk==="sens"||S[+kk].a===ax)continue;som+=Math.abs(dd[kk]);nb++;}PAS[ax][LL+1]=som/nb;}}}
+  for(var ax=0;ax<3;ax++){PAS[ax]=[];SENS_VIS[ax]=delta(ax,DEMI,1).sens;for(var LL=-DEMI;LL<=DEMI;LL++){var dd=delta(ax,LL,1),sm=0,nb=0;
+    for(var kk in dd){if(kk==="sens"||S[+kk].a===ax)continue;sm+=Math.abs(dd[kk]);nb++;}PAS[ax][LL+DEMI]=sm/nb;}}}
 poserGeo("trefle");
+// changer de taille : le cube, les noms des orbites, puis la géométrie dans la disposition portée
+function poserTaille(n){if(n===TAILLE)return;construireCube(n);MV=mvDe(n);TOUS=n===3?TOUS3:Object.keys(MV);
+  NOM_ANNEAU={};Object.keys(MV).forEach(function(k){NOM_ANNEAU[MV[k][0]+","+MV[k][1]]=k;});poserGeo(DISPO);}
 function qPourSens(a,vis){return vis*SENS_VIS[a];}   // vis : +1 anti-horaire, −1 horaire
 function sensVis(mv){return mv.q*SENS_VIS[mv.a];}
 function ease(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;}
 function easeBack(t){var c1=1.6,c3=c1+1;return 1+c3*Math.pow(t-1,3)+c1*Math.pow(t-1,2);} // arrivée avec un léger rebond
 // halo peu coûteux : deux traits larges et translucides sous le trait (le flou de canvas est trop lent sur téléphone)
 function halo(cx,rgb,a,w){cx.lineWidth=w*4;cx.strokeStyle="rgba("+rgb+","+(a*.12)+")";cx.stroke();cx.lineWidth=w*2.2;cx.strokeStyle="rgba("+rgb+","+(a*.25)+")";cx.stroke();}
-function facesUnies(col){var g={},mauv={};for(var i=0;i<54;i++){var k=S[i].a+","+S[i].s;if(g[k]===undefined)g[k]=col[i];else if(g[k]!==col[i])mauv[k]=1;}
+function facesUnies(col){var g={},mauv={};for(var i=0;i<S.length;i++){var k=S[i].a+","+S[i].s;if(g[k]===undefined)g[k]=col[i];else if(g[k]!==col[i])mauv[k]=1;}
   var out={};for(var k in g)if(!mauv[k])out[k]=g[k];return out;}
 var CALME=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -1485,7 +1504,7 @@ Plateau.prototype.arrivee=function(mv,avant){var now=performance.now(),m=perm(mv
   if(this.opts.eclats){var a0=facesUnies(avant),a1=facesUnies(this.col),self=this,nv=0;
     Object.keys(a1).forEach(function(k){if(!(k in a0)){self.eclats.push({xy:CENTRE_FACE[k],c:a1[k],t0:now});nv++;}});if(nv&&this.onFace)this.onFace(nv);}};
 Plateau.prototype.comete=function(now){var cx=this.cx,E=this.ECH,per=3800,n=Math.floor(now/per),ph=(now%per)/per,k=(n*4+1)%9,a=Math.floor(k/3),L=k%3-1,
-  c=CEN[a],r=RAY[L+1],dir=n%2?1:-1,a0=n*2.1+dir*ph*Math.PI*1.6,al=Math.sin(ph*Math.PI);
+  c=CEN[a],r=RAY[L+DEMI],dir=n%2?1:-1,a0=n*2.1+dir*ph*Math.PI*1.6,al=Math.sin(ph*Math.PI);
   for(var i=0;i<18;i++){var aa=a0-dir*i*.04,p=this.vers([c[0]+r*Math.cos(aa),c[1]+r*Math.sin(aa)]);cx.beginPath();
     cx.arc(p[0],p[1],Math.max(.8,E*(this.opts.sobre?.024:.032)*(1-i/18)),0,Math.PI*2);cx.fillStyle="rgba(222,214,255,"+(al*(1-i/18)*(this.opts.sobre?.5:.9))+")";cx.fill();}};
 Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH,self=this;if(!W)return;now=now||performance.now();
@@ -1496,8 +1515,8 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
   var SB=this.opts.sobre?.5:1;
   // styles de la boutique : ceux du joueur (STY), ou ceux qu'un plateau impose (l'aperçu de la boutique)
   var CL=this.pal||COUL,FO=this.forme||STY.forme,TR=this.trainee||STY.trainee,OR=this.orbite||(this.opts.sobre?"accent":STY.orbite);
-  for(var a=0;a<3;a++)for(var L=-1;L<=1;L++){var k=a+","+L,c=this.vers(CEN[a]),ok=this.permisA(k);
-    cx.save();cx.beginPath();cx.arc(c[0],c[1],RAY[L+1]*E,0,Math.PI*2);
+  for(var a=0;a<3;a++)for(var L=-DEMI;L<=DEMI;L++){var k=a+","+L,c=this.vers(CEN[a]),ok=this.permisA(k);
+    cx.save();cx.beginPath();cx.arc(c[0],c[1],RAY[L+DEMI]*E,0,Math.PI*2);
     if(k===act&&this.opts.sobre){halo(cx,ACC,.22,Math.max(1.2,E*.012));cx.strokeStyle="rgba("+ACC+",.9)";cx.lineWidth=Math.max(1.4,E*.011);}
     else if(k===act){var pa=.6+.4*Math.sin(now/320);halo(cx,ACC,.28+.12*pa,Math.max(2,E*.02));cx.strokeStyle="rgba("+ACC_CLAIR+","+(.8+.15*pa)+")";cx.lineWidth=Math.max(2,E*.019);}
     else if(k===ind){var pl=.5+.5*Math.sin(now/220);halo(cx,"255,207,74",.5+.5*pl,Math.max(2.5,E*.03));cx.strokeStyle="rgba(255,207,74,"+(.45+.5*pl)+")";cx.lineWidth=Math.max(2.5,E*.03);}
@@ -1508,16 +1527,16 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
       // Le halo devient fort à la sélection et pendant le tour (branches act/survol), même teinte.
       var oc=couleurOrbite(OR,a);halo(cx,oc,.12*(SB<1?.65:1),Math.max(1,E*.01));cx.strokeStyle="rgba("+oc+","+(SB<1?.44:.55)+")";cx.lineWidth=this.permis?1.4:(SB<1?1.1:1.3);}
     cx.stroke();
-    if(vg>=0){var dk=(vg-ordre*75)/450;if(dk>0&&dk<1){cx.beginPath();cx.arc(c[0],c[1],RAY[L+1]*E,0,Math.PI*2);cx.setLineDash([]);
+    if(vg>=0){var dk=(vg-ordre*75)/450;if(dk>0&&dk<1){cx.beginPath();cx.arc(c[0],c[1],RAY[L+DEMI]*E,0,Math.PI*2);cx.setLineDash([]);
       halo(cx,ACC,Math.sin(dk*Math.PI),Math.max(3,E*.045));cx.strokeStyle="rgba("+ACC_CLAIR+","+Math.sin(dk*Math.PI)+")";cx.lineWidth=Math.max(3,E*.045);cx.stroke();}}
     cx.restore();ordre++;}
   if(vg>1700)this.vague=0;
   if(this.opts.comete&&!CALME)this.comete(now);
   if(this.indice&&!this.anim)this.fleche(this.indice,now);
-  var t=this.anim?this.anim.t:0,pos=this.positionsA(t),rp=Math.max(3,E*.060),i,q;
+  var t=this.anim?this.anim.t:0,pos=this.positionsA(t),rp=Math.max(3,E*.060*(TAILLE===4?.76:TAILLE===2?1.4:1)),i,q;
   if(this.anim&&!CALME){
     // arcs de couleur qui glissent sur le cercle actif
-    var mvA=this.anim.mv,cA=this.vers(CEN[mvA.a]),rA=RAY[mvA.L+1]*E;
+    var mvA=this.anim.mv,cA=this.vers(CEN[mvA.a]),rA=RAY[mvA.L+DEMI]*E;
     cx.save();cx.lineCap="round";cx.lineWidth=Math.max(3,E*.042);cx.globalAlpha=.5;
     pos.forEach(function(p){if(!p.m||p.f)return;var qq=self.vers(p.xy),an=Math.atan2(qq[1]-cA[1],qq[0]-cA[0]);
       cx.beginPath();cx.arc(cA[0],cA[1],rA,an-.17,an+.17);cx.strokeStyle=CL[p.c];cx.globalAlpha=.16*SB;cx.lineWidth=Math.max(8,E*.1);cx.stroke();cx.globalAlpha=.5*SB;cx.lineWidth=Math.max(3,E*.042);cx.stroke();});
@@ -1567,7 +1586,7 @@ Plateau.prototype.etiquette=function(k,nm,orx){var cx=this.cx,W=this.taille,ab=k
   cx.fillStyle="rgba(17,17,27,.92)";cx.strokeStyle=orx?"#ffcf4a":"#5a5680";cx.lineWidth=1;cx.beginPath();
   if(cx.roundRect)cx.roundRect(px-tw/2,py-th/2,tw,th,7);else cx.rect(px-tw/2,py-th/2,tw,th);cx.fill();cx.stroke();
   cx.fillStyle=orx?"#ffcf4a":"#eeedf5";cx.textAlign="center";cx.textBaseline="middle";cx.fillText(nm,px,py+1);};
-Plateau.prototype.fleche=function(mv,now){var cx=this.cx,E=this.ECH,c=CEN[mv.a],r=RAY[mv.L+1],u=Math.hypot(c[0],c[1]),base=Math.atan2(c[1]/u,c[0]/u);
+Plateau.prototype.fleche=function(mv,now){var cx=this.cx,E=this.ECH,c=CEN[mv.a],r=RAY[mv.L+DEMI],u=Math.hypot(c[0],c[1]),base=Math.atan2(c[1]/u,c[0]/u);
   var dir=sensVis(mv),ph=(now%1500)/1500,a0=base-dir*.55+dir*1.1*ph,len=.5,pts=[];
   for(var i=0;i<=16;i++){var aa=a0-dir*len*(1-i/16);pts.push(this.vers([c[0]+r*Math.cos(aa),c[1]+r*Math.sin(aa)]));}
   var al=Math.sin(ph*Math.PI);cx.save();cx.lineCap="round";cx.lineWidth=Math.max(4,E*.05);cx.strokeStyle="rgba(255,207,74,"+al+")";
@@ -1576,7 +1595,7 @@ Plateau.prototype.fleche=function(mv,now){var cx=this.cx,E=this.ECH,c=CEN[mv.a],
   cx.fillStyle="rgba(255,207,74,"+al+")";cx.beginPath();cx.moveTo(p1[0]+Math.cos(ang)*h*.6,p1[1]+Math.sin(ang)*h*.6);
   cx.lineTo(p1[0]+Math.cos(ang+2.4)*h,p1[1]+Math.sin(ang+2.4)*h);cx.lineTo(p1[0]+Math.cos(ang-2.4)*h,p1[1]+Math.sin(ang-2.4)*h);cx.closePath();cx.fill();cx.restore();};
 Plateau.prototype.anneauxSous=function(px,py){var m=this.depuis(px,py),tol=Math.max(22,this.ECH*.2),out=[];
-  for(var a=0;a<3;a++)for(var L=-1;L<=1;L++){var k=a+","+L;if(!this.permisA(k))continue;var d=Math.abs(Math.hypot(m[0]-CEN[a][0],m[1]-CEN[a][1])-RAY[L+1])*this.ECH;
+  for(var a=0;a<3;a++)for(var L=-DEMI;L<=DEMI;L++){var k=a+","+L;if(!this.permisA(k))continue;var d=Math.abs(Math.hypot(m[0]-CEN[a][0],m[1]-CEN[a][1])-RAY[L+DEMI])*this.ECH;
     if(d<=tol)out.push({a:a,L:L,d:d});}
   out.sort(function(u,v){return u.d-v.d;});return out;};
 Plateau.prototype.jouer=function(mv,duree,fin,courbe){this.file.push({mv:mv,duree:duree,fin:fin,courbe:courbe});this.suivant();};
@@ -1601,7 +1620,7 @@ document.addEventListener("visibilitychange",function(){if(!document.hidden)Tick
 
 /* ========== 4. LE CUBE EN PERSPECTIVE ========== */
 var C30=Math.cos(Math.PI/6);
-function dessinerCube(cc,w,col,anim,pivot){cc.clearRect(0,0,w,w);var k=w/6.6,ox=w/2,oy=w/2,
+function dessinerCube(cc,w,col,anim,pivot){cc.clearRect(0,0,w,w);var k=w/(2.2*TAILLE),ox=w/2,oy=w/2,
     LK=STY.forme==="astral"?LOOK_THEME[THEME_COURANT-1]:null,LKA=THEME_ACC[THEME_COURANT-1];   // « Style du monde » : verre teinté du décor
   // orientation libre : pivot.y fait tourner autour de la verticale, pivot.x bascule vers l'avant
   // (autour de l'axe horizontal de l'écran, (1,0,−1)/√2), ce qui montre la face du dessous
@@ -1616,7 +1635,7 @@ function dessinerCube(cc,w,col,anim,pivot){cc.clearRect(0,0,w,w);var k=w/6.6,ox=
   // tranche, les cubes du plus lointain au plus proche. Trier tous les cubes ensemble par leur centre se
   // trompait dès qu'une tranche tournait : des morceaux de facettes cachées perçaient à travers.
   var ax=mv?mv.a:0,u=[0,0,0];u[ax]=1;var ua=rotV(u),sensAx=ua[0]+ua[1]+ua[2];
-  for(var x=-1;x<=1;x++)for(var y=-1;y<=1;y++)for(var z=-1;z<=1;z++)
+  for(var x=-DEMI;x<=DEMI;x++)for(var y=-DEMI;y<=DEMI;y++)for(var z=-DEMI;z<=DEMI;z++)
     (function(p){var tourne=!!(mv&&p[mv.a]===mv.L),tr=function(v){return tourne?rotAng(v,mv.a,th):v;},c=rotV(tr(p));
       cubies.push({p:p,tr:tr,d:c[0]+c[1]+c[2],t:p[ax]*sensAx});})([x,y,z]);
   cubies.sort(function(u,v){return u.t-v.t||u.d-v.d;});
@@ -1693,7 +1712,13 @@ function cleJour(d){d=d||new Date();return d.getFullYear()+String(d.getMonth()+1
 function jourDef(){var k=cleJour(),d=new Date();return{mode:"jour",id:k,anneaux:SIXFACES,par:8,melange:genererMelange(graine("jour-"+k),SIXFACES,8),
   titre:"Défi du jour",sous:d.toLocaleDateString(locale(),{weekday:"long",day:"numeric",month:"long"})};}
 var LIBRES=[{n:5,nom:"Facile"},{n:10,nom:"Moyen"},{n:15,nom:"Difficile"},{n:25,nom:"Expert"}];
-function libreDef(n){var nm=LIBRES.filter(function(l){return l.n===n;})[0],an=orbitesLibres();return{mode:"libre",id:"libre-"+n,n:n,anneaux:an,par:n,
+// les autres tailles du jeu libre (le client, le 16/10/2026) : 2×2 pour tous, 4×4 avec le jeu complet ; toutes leurs orbites
+var LIBRES_T={2:[{n:3,nom:"Facile"},{n:6,nom:"Moyen"},{n:9,nom:"Difficile"},{n:12,nom:"Expert"}],4:[{n:8,nom:"Facile"},{n:14,nom:"Moyen"},{n:20,nom:"Difficile"},{n:30,nom:"Expert"}]};
+function tailleOuverte(t){return t!==4||complet();}
+function cleRecord(d){return d.taille&&d.taille!==3?"t"+d.taille+"-"+d.n:d.n;}
+function libreDef(n,t){t=t||3;if(t!==3){poserTaille(t);var nt=LIBRES_T[t].filter(function(l){return l.n===n;})[0],at=Object.keys(MV);
+    return{mode:"libre",id:"libre-"+t+"-"+n,n:n,taille:t,anneaux:at,par:n,melange:genererMelange(Math.random,at,n),titre:"Jeu libre "+t+"×"+t,sous:nt.nom};}
+  var nm=LIBRES.filter(function(l){return l.n===n;})[0],an=orbitesLibres();return{mode:"libre",id:"libre-"+n,n:n,anneaux:an,par:n,
   melange:genererMelange(Math.random,an,n),titre:"Jeu libre",sous:nm.nom};}
 function etoilesPour(coups,par,indice){var e=coups<=par?3:coups<=par*2+1?2:1;return indice?Math.min(2,e):e;}
 // Étoiles de temps, en miroir des étoiles de coups : l'objectif est de 4 s par coup du par, plus 6 s pour lire
@@ -1771,7 +1796,7 @@ function bip(freq,dur,type,vol,quand){var ac=audio();if(!ac)return;var t=ac.curr
 // chaque cercle a sa note (le client, le 16/10/2026) : la gamme pentatonique de do, du grave à l'aigu, trois notes par famille
 // d'orbites ; un timbre de kalimba (fondamentale, octave légère, attaque brève) : jouer, c'est faire une petite mélodie
 var NOTES=[261.63,293.66,329.63,392,440,523.25,587.33,659.25,783.99];
-function sonTour(mv){var f=NOTES[mv.a*3+mv.L+1];bip(f,.7,"sine",.11);bip(f*2,.35,"sine",.025,.005);bip(f*3,.08,"triangle",.02);}
+function sonTour(mv){var f=NOTES[mv.a*3+Math.round((mv.L+DEMI)/(TAILLE-1)*2)];bip(f,.7,"sine",.11);bip(f*2,.35,"sine",.025,.005);bip(f*3,.08,"triangle",.02);}
 function sonClic(){bip(660,.05,"sine",.05);}
 function sonEtoile(i){bip(880*Math.pow(1.26,i),.25,"sine",.12);bip(1320*Math.pow(1.26,i),.2,"triangle",.05,.02);}
 function sonVictoire(){bip(131,.6,"sine",.09);[523,659,784,1047,1319].forEach(function(f,i){bip(f,.4,"triangle",.1,i*.08);bip(f*2,.3,"sine",.03,i*.08+.02);});}
@@ -1781,8 +1806,8 @@ function vibrer(ms){if(!PROG.options.vib)return;if(NATIF.vibrer(Array.isArray(ms
 var ECRAN="accueil";
 // sens : +1 on avance (l'écran arrive de la droite), −1 on revient (il arrive de la gauche)
 // une autre disposition des orbites : tout est recalculé (poserGeo), puis les plateaux se redessinent
-function changerGeo(id){if(id===DISPO)return;poserGeo(id);Ticker.actifs.forEach(function(p){if(p.taille)p.dessiner();});if(ECRAN==="jeu")redimJeu();}
-function montrer(id,sens){if(id!=="boutique")changerGeo(STY.dispo);   // l'aperçu d'une disposition ne la porte pas
+function changerGeo(id){if(id===DISPO)return;poserGeo(id);Ticker.actifs.forEach(function(p){if(p.taille&&p.visible&&p.col&&p.col.length===S.length)p.dessiner();});if(ECRAN==="jeu")redimJeu();}
+function montrer(id,sens){var tl=id==="jeu"&&J?(J.def.taille||3):3;if(tl!==TAILLE)poserTaille(tl);if(id!=="boutique")changerGeo(STY.dispo);   // l'aperçu d'une disposition ne la porte pas
 if(RECHARGER&&id!=="jeu"){location.reload();return;}var prevEcran=ECRAN;sens=sens||1;document.querySelectorAll(".ecran").forEach(function(e){
     if(e.id===id){e.style.transition="none";e.style.setProperty("--dx",(sens*28)+"px");void e.offsetWidth;e.style.transition="";e.classList.add("actif");}
     else{if(e.classList.contains("actif"))e.style.setProperty("--dx",(-sens*28)+"px");e.classList.remove("actif");}});ECRAN=id;
@@ -2071,7 +2096,7 @@ JeuP.onFace=function(n){if(!J||!J.pret||J.fini)return;bip(1047,.28,"sine",.07);b
 var mini=document.getElementById("mini"),miniC=mini.getContext("2d"),PIVOT={y:0,x:0},J=null;
 function dessinerMini(){if(!PROG.options.cube)return;var w=mini.clientWidth||84,px=Math.round(w*DPR);if(mini.width!==px){mini.width=px;mini.height=px;miniC.setTransform(DPR,0,0,DPR,0,0);}
   // le plateau se redessine à chaque image (indice qui pulse, halos) : le cube, lui, seulement quand il change
-  var an=JeuP.anim,cle=w+"|"+COUL[0]+STY.forme+THEME_COURANT+"|"+JeuP.col.join("")+"|"+PIVOT.y.toFixed(4)+","+PIVOT.x.toFixed(4)+"|"+(an?cleA(an.mv)+an.mv.q+":"+an.t.toFixed(4):"");
+  var an=JeuP.anim,cle=TAILLE+"|"+w+"|"+COUL[0]+STY.forme+THEME_COURANT+"|"+JeuP.col.join("")+"|"+PIVOT.y.toFixed(4)+","+PIVOT.x.toFixed(4)+"|"+(an?cleA(an.mv)+an.mv.q+":"+an.t.toFixed(4):"");
   if(cle===dessinerMini.cle)return;dessinerMini.cle=cle;dessinerCube(miniC,w,JeuP.col,an,PIVOT);}
 // Le cube pivote au doigt : glisser à gauche ou à droite le fait tourner autour de la verticale, vers le
 // haut ou le bas le bascule pour montrer la face du dessous. Au lâcher, il se cale sur la vue la plus
@@ -2112,7 +2137,7 @@ function redimJeu(){var jeu=document.getElementById("jeu"),z=document.getElement
   // la famille du haut (les cercles interdits ne sont qu'un pointillé à peine visible) ; le plateau ne bouge pas. Sans
   // place pour ça (petits écrans), il reste centré entre le titre et le cercle.
   mini.style.transform="";if(PROG.options.cube&&getComputedStyle(jeu).display!=="grid"){var h=jeu.querySelector(".jtete").getBoundingClientRect().bottom,
-    rh=RAY[2];if(JeuP.permis){rh=0;for(var LH=1;LH>=-1;LH--)if(JeuP.permis["1,"+LH]){rh=RAY[LH+1];break;}if(!rh)rh=RAY[2];}
+    rh=RAY[RAY.length-1];if(JeuP.permis){rh=0;for(var LH=DEMI;LH>=-DEMI;LH--)if(JeuP.permis["1,"+LH]){rh=RAY[LH+DEMI];break;}if(!rh)rh=RAY[RAY.length-1];}
     // position du canevas SANS sa transformation : pendant le mélange (.brouille) il est réduit et tourné, et sa boîte
     // englobante faussait le calcul (le cube restait trop haut une fois le plateau dévoilé)
     var c=z.getBoundingClientRect().top+JeuP.cv.offsetTop+JeuP.OY-(ECART+rh)*JeuP.ECH,m=mini.getBoundingClientRect(),dy=Math.max((h+c)/2-(m.top+m.height/2),c-28-m.bottom);
@@ -2123,14 +2148,14 @@ var ro=new ResizeObserver(function(){if(ECRAN==="jeu")redimJeu();if(ECRAN==="acc
 ro.observe(document.querySelector(".logoboite"));
 
 // le plateau arrive DÉJÀ troublé : sans transition, sinon on le voyait net (avec le cube) le temps qu'il se floute
-function lancer(def){var pl=document.getElementById("plateau"),jc=document.querySelector("#jeu .jcube");pl.style.transition=jc.style.transition="none";
+function lancer(def){poserTaille(def.taille||3);var pl=document.getElementById("plateau"),jc=document.querySelector("#jeu .jcube");pl.style.transition=jc.style.transition="none";
   document.getElementById("zonePlateau").classList.add("brouille");document.getElementById("jeu").classList.add("brouille");
   void pl.offsetWidth;pl.style.transition=jc.style.transition="";
 var ft=themeFond(def.w!=null?def.w:Math.floor(Math.random()*4));accentTheme(ft);document.body.classList.toggle("zen",!!(PROG.options.zen||def.relax));
 J={def:def,fond:ft,hist:[],t0:0,fini:false,indice:false,pret:false,tranches:{}};
   JeuP.col=(def.base?def.base.slice():resoluCol());JeuP.anim=null;JeuP.file=[];JeuP.indice=null;JeuP.survol=null;
   document.getElementById("mini").hidden=!PROG.options.cube;
-  if(def.anneaux.length===9)JeuP.permis=null;else{JeuP.permis={};def.anneaux.forEach(function(b){JeuP.permis[MV[b][0]+","+MV[b][1]]=true;});}
+  if(def.anneaux.length===TOUS.length)JeuP.permis=null;else{JeuP.permis={};def.anneaux.forEach(function(b){JeuP.permis[MV[b][0]+","+MV[b][1]]=true;});}
   document.getElementById("jTitre").textContent=def.titre;document.getElementById("jSous").textContent=def.sous+" · par "+def.par;
   document.getElementById("btnNiveauxJeu").hidden=def.mode!=="campagne";
   document.getElementById("plateau").removeAttribute("data-indice");
@@ -2205,7 +2230,7 @@ function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length
     PROG.semaines[d.id]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),etoiles:Math.max(av.etoiles,e)}:{coups:n,temps:temps,etoiles:e};}
   else if(d.mode==="relax"){}
   else if(d.mode==="sansfin"){record=d.etape>(PROG.stats.sansFin||0);PROG.stats.sansFin=Math.max(PROG.stats.sansFin||0,d.etape);}
-  else{av=PROG.stats.meilleur[d.n];record=!av||temps<av.temps;PROG.stats.meilleur[d.n]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps)}:{coups:n,temps:temps};}
+  else{var cr=cleRecord(d);av=PROG.stats.meilleur[cr];record=!av||temps<av.temps;PROG.stats.meilleur[cr]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps)}:{coups:n,temps:temps};}
   if(J.tranches[0]&&J.tranches[1]&&J.tranches[2])PROG.tips.troisTranches=1;
   if(d.mode==="jour"||d.mode==="semaine")envoyerClassement(d.mode,temps,true);
   if(d.mode==="sansfin")envoyerClassement("sansfin",d.etape);
@@ -2262,7 +2287,7 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
     (J.hist.length&&!defiClasse()?'<button class="bouton" data-a="revoir" type="button" style="justify-content:center;min-height:46px;font-size:14px;color:var(--pale)">Revoir ma partie</button>':"")+'</div>';
   ouvrirFenetre(html,function(a){if(a==="partager"){partager(e,n,temps);return;}if(a==="classement"){fermerFenetre();ouvrirClassement(d.mode,"accueil");return;}fermerFenetre();if(a==="revoir"){revoir(e,n,temps);return;}
     if(a==="etape"){var k=d.etape+1;if(k>5&&!complet())ouvrirBoutique("libre");else lancer(sansFinDef(k));return;}if(a==="experts"){lancer(niveauDef(d.w,experts));return;}if(a==="suivant"){if(mondePaye(suiv.w))ouvrirBoutique("monde");else lancer(niveauDef(suiv.w,suiv.i));}
-    else if(a==="encore")lancer(libreDef(d.n));else if(a==="rejouer")lancer(d.mode==="libre"?libreDef(d.n):d.mode==="sansfin"?sansFinDef(d.etape):d);
+    else if(a==="encore")lancer(libreDef(d.n,d.taille));else if(a==="rejouer")lancer(d.mode==="libre"?libreDef(d.n,d.taille):d.mode==="sansfin"?sansFinDef(d.etape):d);
     else if(d.mode==="campagne")ouvrirParcours();else montrer("accueil");},"menu");
   document.querySelectorAll("#fenetre .gros-et svg").forEach(function(s,k){setTimeout(function(){s.classList.add("vu");if(k<e)sonEtoile(k);},250+k*260);});}
 // Partager le défi du jour, comme on partage une grille de mots : un résumé sans aucune donnée personnelle
@@ -2346,7 +2371,7 @@ cvJ.addEventListener("pointermove",function(e){var p=pt(e);
     G.cand.forEach(function(c){var ce=CEN[c.a],rx=m0[0]-ce[0],ry=m0[1]-ce[1],rl=Math.hypot(rx,ry),tx=-ry/rl,ty=rx/rl,sc=Math.abs(tx*dx-ty*dy)/Math.hypot(dx,dy)-c.d*.01;
       if(sc>bs){bs=sc;best=c;}});
     G.choisi=best;JeuP.survol=cleA(best);G.der=angle(m0,CEN[best.a]);}
-  var m=JeuP.depuis(p[0],p[1]),a=angle(m,CEN[G.choisi.a]),d=normA(a-G.der),now=performance.now(),pas1=PAS[G.choisi.a][G.choisi.L+1];G.der=a;G.cumul+=d;
+  var m=JeuP.depuis(p[0],p[1]),a=angle(m,CEN[G.choisi.a]),d=normA(a-G.der),now=performance.now(),pas1=PAS[G.choisi.a][G.choisi.L+DEMI];G.der=a;G.cumul+=d;
   G.trace.push([now,G.cumul]);while(G.trace.length>2&&now-G.trace[0][0]>110)G.trace.shift();
   // rotation continue : chaque quart de tour franchi est posé aussitôt sur le plateau, et le doigt continue ;
   // le coup, lui, ne se compte qu'au lâcher (voir finirGeste)
@@ -2366,7 +2391,7 @@ function lacher(){if(!G)return;var g=G;G=null;
   JeuP.survol=null;
   var an=JeuP.anim;if(!an||!an.libre){finirGeste(g,g.net);Ticker.reveiller();return;}
   // vitesse du doigt sur les 110 dernières ms, en quarts de tour par seconde, dans le sens du tour en cours
-  var tr=g.trace,v=0;if(tr.length>1){var dt=tr[tr.length-1][0]-tr[0][0];if(dt>0)v=(tr[tr.length-1][1]-tr[0][1])/dt*1000/PAS[g.choisi.a][g.choisi.L+1];}
+  var tr=g.trace,v=0;if(tr.length>1){var dt=tr[tr.length-1][0]-tr[0][0];if(dt>0)v=(tr[tr.length-1][1]-tr[0][1])/dt*1000/PAS[g.choisi.a][g.choisi.L+DEMI];}
   var sens=sensVis(an.mv),vit=v*sens,ok=an.t>.4||(an.t>.06&&vit>2.2);if(vit<-2.2)ok=false;var mv=an.mv;
   an.libre=false;an.deb=performance.now();an.de=an.t;an.vers=ok?1:0;an.courbe="rebond";
   an.duree=((ok?1-an.t:an.t)*240+90)*PROG.options.vitesse/(ok&&vit>3?Math.min(2,vit/3):1);
@@ -2531,16 +2556,25 @@ var SVG_RESERVE='<svg class="cad" viewBox="0 0 24 24">'+CAD+'</svg>';
 function carteReserve(lignes){return '<div class="reserve"><div class="reserve-tete">'+SVG_RESERVE+'<span>Avec les 9 orbites · jeu complet</span></div>'+
   lignes.map(function(l){return '<button class="reserve-ligne" data-a="'+l[0]+'" type="button"><b>'+l[1]+'</b><small>'+l[2]+'</small></button>';}).join("")+
   '<button class="bouton principal" data-a="acheter" type="button"><span>Débloquer</span>'+(PRIX?'<span class="droite">'+PRIX+'</span>':"")+'</button></div>';}
-document.getElementById("btnLibre").addEventListener("click",function(){audio();sonClic();var ouv=complet(),h='<h3>Jeu libre</h3>';
-  function ligne(l){var m=PROG.stats.meilleur[l.n];return '<button class="bouton" data-a="'+l.n+'" type="button"><span>'+l.nom+' · '+l.n+' coups</span><span class="droite">'+(m?"record "+fmt(m.temps):ouv?"":orbitesLibres().length+" orbites")+'</span></button>';}
-  if(ouv)h+='<p>Les neuf orbites, un mélange au hasard, le chrono tourne.</p><div class="menu">'+LIBRES.map(ligne).join("")+
+document.getElementById("btnLibre").addEventListener("click",function(){audio();sonClic();fenetreLibre(PROG.options.tailleLibre||3);});
+function fenetreLibre(t){var ouv=complet(),h='<h3>Jeu libre</h3>';
+  // la taille du cube : 2×2 (trois fois deux orbites), 3×3, 4×4 (trois fois quatre) ; le 4×4 avec le jeu complet
+  h+='<div class="segment tailles" role="tablist">'+[2,3,4].map(function(x){return '<button type="button" class="'+(x===t?"on":"")+'" data-a="t'+x+'"><span class="notrad">'+x+'×'+x+'</span>'+(tailleOuverte(x)?"":SVG_RESERVE)+'</button>';}).join("")+'</div>';
+  function ligne(l){var m=PROG.stats.meilleur[t===3?l.n:"t"+t+"-"+l.n];return '<button class="bouton" data-a="'+l.n+'" type="button"><span>'+l.nom+' · '+l.n+' coups</span><span class="droite">'+(m?"record "+fmt(m.temps):ouv||t!==3?"":orbitesLibres().length+" orbites")+'</span></button>';}
+  if(t===2)h+='<p>Six orbites, 24 pièces : le cube 2×2, pour s’échauffer.</p><div class="menu">'+LIBRES_T[2].map(ligne).join("");
+  else if(t===4)h+=ouv?'<p>Douze orbites, 96 pièces : le cube 4×4, le grand défi.</p><div class="menu">'+LIBRES_T[4].map(ligne).join(""):
+    '<p>Douze orbites, 96 pièces : le cube 4×4, le grand défi.</p><div class="menu">'+carteReserve([["acheter","Le cube 4×4","Quatre orbites par famille, quatre niveaux de difficulté"]]);
+  else if(ouv)h+='<p>Les neuf orbites, un mélange au hasard, le chrono tourne.</p><div class="menu">'+LIBRES.map(ligne).join("")+
     '<button class="bouton" data-a="relax" type="button"><span>Relax · sans chrono</span><span class="droite">8 coups</span></button>'+
     '<button class="bouton or" data-a="sansfin" type="button"><span>Sans fin</span><span class="droite">'+(PROG.stats.sansFin?"record étape "+PROG.stats.sansFin:"nouveau")+'</span></button>';
   else h+='<p>Un mélange au hasard, le chrono tourne.</p><div class="menu">'+LIBRES.filter(function(l){return libreOuvert(l.n);}).map(ligne).join("")+
     carteReserve([["10","Moyen, difficile, expert","10, 15 et 25 coups sur les neuf orbites"],["sansfin","Sans fin","Un coup de plus à chaque étape : jusqu’où irez-vous ?"],["relax","Relax","Sans chrono ni compteur, pour le plaisir de tourner"]]);
-  ouvrirFenetre(h+'<button class="bouton" data-a="x" type="button" style="justify-content:center;color:var(--pale)">Fermer</button></div>',function(a){fermerFenetre();
+  ouvrirFenetre(h+'<button class="bouton" data-a="x" type="button" style="justify-content:center;color:var(--pale)">Fermer</button></div>',function(a){
+    if(a&&a.charAt(0)==="t"){sonClic();PROG.options.tailleLibre=+a.slice(1);sauver();fenetreLibre(+a.slice(1));return;}
+    fermerFenetre();
     if(a==="acheter"){ouvrirBoutique("libre");return;}
-    if(a==="sansfin"){if(ouv)lancer(sansFinDef(1));else ouvrirBoutique("libre");return;}if(a==="relax"){if(ouv)lancer(relaxDef());else ouvrirBoutique("libre");return;}if(a&&a!=="x"){if(libreOuvert(+a))lancer(libreDef(+a));else ouvrirBoutique("libre");}},"x");});
+    if(t!==3){if(a&&a!=="x"){if(tailleOuverte(t))lancer(libreDef(+a,t));else ouvrirBoutique("libre");}return;}
+    if(a==="sansfin"){if(ouv)lancer(sansFinDef(1));else ouvrirBoutique("libre");return;}if(a==="relax"){if(ouv)lancer(relaxDef());else ouvrirBoutique("libre");return;}if(a&&a!=="x"){if(libreOuvert(+a))lancer(libreDef(+a));else ouvrirBoutique("libre");}},"x");}
 document.getElementById("btnSucces").addEventListener("click",function(){sonClic();montrer("succes");});
 document.getElementById("btnSuccesStore").addEventListener("click",function(){sonClic();NATIF.succesAfficher();});
 document.getElementById("btnOptions").addEventListener("click",function(){sonClic();montrer("options");});
@@ -3150,7 +3184,7 @@ document.getElementById("optLangue").addEventListener("change",function(){PROG.o
   (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(function(){setTimeout(retirer,Math.max(0,1500-(performance.now()-t0)));});
   setTimeout(retirer,2400);})();
 // accès réservé aux outils de captures (npm run captures), actif seulement avec ?capture dans l'adresse
-if(/[?&]capture\b/.test(location.search))window.__orbicube={dernier:function(){return J&&J.hist.length?nomDe(J.hist[J.hist.length-1]).replace("′","'"):"";},solution:function(){return J&&J.pret?cheminSolution().map(function(m){return nomDe(m).replace("′","'");}):[];},vus:function(){return Object.keys(VUS);},manques:function(){return Object.keys(MANQUES);},parcours:function(){ouvrirParcours();}};
+if(/[?&]capture\b/.test(location.search))window.__orbicube={jouer:function(t){jouerCoup(parNom(t));},taille:function(){return TAILLE;},dernier:function(){return J&&J.hist.length?nomDe(J.hist[J.hist.length-1]).replace("′","'"):"";},solution:function(){return J&&J.pret?cheminSolution().map(function(m){return nomDe(m).replace("′","'");}):[];},vus:function(){return Object.keys(VUS);},manques:function(){return Object.keys(MANQUES);},parcours:function(){ouvrirParcours();}};
 // le rang est né après les premiers joueurs : leurs niveaux déjà finis lui donnent son expérience, une fois
 function rattraperXp(){if(PROG.xpInit)return;var x=0;Object.keys(PROG.niveaux).forEach(function(k){var w=+k.split("-")[0]-1,i=+k.split("-")[1]-1,r=PROG.niveaux[k];
     if(MONDES[w]&&MONDES[w].coups[i]!=null)x+=Math.min(70,10+4*MONDES[w].coups[i])+5*(r.etoiles||0)+5*(r.chrono||0);});

@@ -45,6 +45,14 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 
 ## Ce qu'il faut savoir du code d'Orbicube
 
+- **Cubes 2×2 et 4×4** (le client, le 16/10/2026 : « pour un 2×2, il suffit de 3×2 orbites ; pour un 4×4, 3×4 ») : trois familles
+  de N orbites. `construireCube(n)` (coordonnées de −DEMI à DEMI, demi-entiers en 2 et 4), `mvDe(n)` (R L U D F B extérieures,
+  r l u d f b intérieures en 4×4), `rayonsTaille(n)` (plateau remis à l'étendue du 3×3), `poserTaille(n)` reconstruit tout ;
+  partout les couches vont de −DEMI à DEMI et s'indexent `L+DEMI`. Le centre d'une face sans pastille du milieu est la moyenne de
+  ses pastilles. Pièces ×1,4 en 2×2, ×0,76 en 4×4. **Seulement en Jeu libre** (choix de taille en tête de la fenêtre,
+  `fenetreLibre`, `PROG.options.tailleLibre`) : 2×2 gratuit (3, 6, 9, 12 coups), 4×4 avec le jeu complet (8, 14, 20, 30) ;
+  records à part (`cleRecord` : « t2-3 »…). `lancer` pose la taille de la partie, `montrer` remet le 3×3 hors du jeu. Le 3×3
+  reste celui d'origine (le vérificateur le rejoue). `?capture` : `__orbicube.jouer(nom)`, `taille()`.
 - **Dispositions des orbites** (le client, le 16/10/2026 : « acheter d'autres présentations des orbites ») : `DISPOS` (Trèfle, la
   disposition d'origine ; **Anneau**, les six faces en couronne : centres à 0,32 au lieu de 0,5336, le tout agrandi de 1,155),
   style `dispo` (onglet Formes, « Disposition des orbites » ; Anneau dans le pack Formes et à l'unité). `poserGeo(id)` recalcule
