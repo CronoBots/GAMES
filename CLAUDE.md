@@ -222,8 +222,10 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 - **Écrans de menu** (profil, options, succès, aide) : le contenu défile derrière l'en-tête jusqu'aux bords de l'écran
   (zones de sécurité comprises) ; l'en-tête flotte sur un fondu sombre (bloc en fin de feuille de style, le client, le 13/10/2026).
 - **Logo** : **l'icône de l'app et l'écran de démarrage natif sont le logo premium** (le client, le 16/10/2026 : « je n'aime
-  pas celui actuel ») : un cube 3×3 résolu en perspective (corps noir, pastilles arrondies, reflets en dégradé) pris dans deux
-  orbites or et lilas avec leurs perles, sur un ciel violet étoilé (`logo_premium`, `rendre_premium` dans `outils/icones.py`).
+  pas celui actuel », puis « le cube au milieu et quelques orbites avec les facettes autour, faisant comprendre le jeu ») :
+  le plateau du jeu résolu (ses neuf orbites, une couleur par famille, la plus grande appuyée ; ses facettes en losanges) et,
+  au centre, un cube 3×3 en perspective (corps noir, pastilles arrondies) aux couleurs des faces voisines (jaune, vert,
+  orange), sur un ciel violet étoilé (`logo_premium`, `rendre_premium` dans `outils/icones.py`).
   Les trois anneaux (`ANNEAUX`) ne servent plus qu'au logo du mélange (`.anneaux`). **L'écran de chargement web montre les neuf orbites du plateau** (`.orbites`, SVG, un éclat de
   couleur par orbite, sans filtre CSS) puis se dissout sur l'accueil (le client, le 13/10/2026) ; les médailles des succès gardent le plateau. Accueil : la devise disparaît après le
   premier niveau, le rond « Boutique » n'apparaît qu'après le premier niveau fini. Quand la suite de la campagne est payante, le bouton
