@@ -825,23 +825,20 @@ body.sobre #plateau{transition:none}
 .df-et{display:inline-flex;gap:1px}.df-et svg{width:15px;height:15px}
 .df-carte .bouton{min-height:52px;border-radius:999px}
 .df-reste{margin:-4px 0 0;text-align:center;color:var(--pale);font-size:12.5px}
-.df-podium{display:grid;gap:0;padding-top:12px;border-top:1px solid rgba(255,255,255,.08)}
-.df-podium .cl-ligne{min-height:46px;margin-bottom:5px}.df-podium .cl-vide{margin:6px}
-.df-podium-tete{display:flex;justify-content:space-between;align-items:baseline;margin:0 4px 8px;font:600 12px var(--f-titre);letter-spacing:.12em;text-transform:uppercase;color:var(--pale)}
-.df-podium-tete b{font:700 14px var(--f-chiffre);letter-spacing:0;color:var(--encre)}
+.df-reserve .df-tete small{color:var(--or)}
+.df-cadenas svg{width:20px;height:20px;stroke:var(--or);fill:none;stroke-width:2}
+.df-debloquer{border-color:rgba(255,207,74,.55)!important;color:var(--or)!important}
+.df-place{display:flex;align-items:center;gap:8px;width:100%;min-height:46px;margin-top:2px;padding:0 4px;border:0;border-top:1px solid rgba(255,255,255,.08);background:none;color:var(--encre);font:600 14px var(--f-texte);cursor:pointer;text-align:left}
+.df-place span{flex:1}.df-place b{font:700 14px var(--f-chiffre);color:var(--or)}.df-place svg{width:16px;height:16px;fill:none;stroke:var(--pale);stroke-width:2}
+.g-intro{margin:0;padding:2px 16px 10px;color:var(--pale);font-size:13px;line-height:1.45}
 .df-lien{justify-self:center;padding:8px 14px;border:0;background:none;color:rgb(var(--acc));font:600 13.5px var(--f-texte);cursor:pointer}
 .h4-plus{display:flex;justify-content:space-between;align-items:center}.h4-plus span{font-family:var(--f-chiffre);letter-spacing:0;color:var(--pale)}.h4-plus span.fini{color:var(--or)}
-.df-rang{display:grid;grid-template-columns:64px minmax(0,1fr);gap:14px;align-items:center;padding:6px 16px 10px}
-.df-rang .anneau-rang{width:64px;height:64px;font-size:22px}
-.df-rang b{display:block;font:600 16px var(--f-titre);margin-bottom:6px}.df-rang small{display:block;margin-top:5px;color:var(--pale);font:600 12px var(--f-chiffre)}
-.df-rang .mb{display:block;height:6px;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden}.df-rang .mb i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,rgb(var(--acc)),rgb(var(--acc-clair,var(--acc))))}
-.df-proch{margin:0 16px 6px;padding:10px 12px;border-radius:12px;background:rgba(255,207,74,.08);border:1px solid rgba(255,207,74,.25);color:var(--encre);font-size:13px}
-#grpRecomp .route{padding-inline:16px}#grpRecomp .df-proch{margin:4px 16px 6px}
 /* l'espace joueur : les trois onglets en commande segmentée dans l'en-tête */
 .j-onglets{flex:1;display:flex;gap:2px;margin-right:6px;padding:3px;border-radius:99px;background:rgba(10,10,20,.62);border:1px solid var(--bord)}
 .j-onglets button{flex:1 1 auto;min-width:0;min-height:36px;padding:0 8px;border:0;border-radius:99px;background:none;color:var(--pale);font:600 13.5px var(--f-texte);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
 .j-onglets button.actif{background:rgba(var(--acc),.32);color:var(--encre);box-shadow:inset 0 0 0 1px rgba(var(--acc),.75)}
-@media (max-width:360px){.j-onglets button{font-size:12px;padding:0 6px}.df-podium .cl-ligne{grid-template-columns:22px minmax(0,1fr) auto}.df-podium .cl-niv{display:none}}
+@media (max-width:360px){.j-onglets button{font-size:12px;padding:0 6px}}
+#grpRecomp .route{padding-inline:16px}
 .j-panneau[hidden]{display:none}
 #joueur>.tete+.defile{padding-bottom:120px}
 /* le classement (le client, le 14/10/2026) */
@@ -1014,16 +1011,12 @@ body.sobre #plateau{transition:none}
       <div class="j-panneau" id="pProfil" hidden><div class="centre">
       <div class="rang-carte" id="rangCarte"></div>
       <div class="groupe" id="grpRecomp"></div>
-      <div class="groupe"><h4>Comment monter</h4><div class="ligne"><div class="lt"><b>Résoudre un cube</b><span>De l’expérience selon sa longueur, plus pour chaque étoile.</span></div></div>
-        <div class="ligne"><div class="lt"><b>Missions du jour</b><span>Trois par jour ; les trois réussies offrent une ampoule.</span></div></div>
-        <div class="ligne"><div class="lt"><b>Défis</b><span>Le défi du jour et celui de la semaine rapportent le plus.</span></div></div>
-        <div class="ligne"><div class="lt"><b>Chaque rang</b><span>Une ampoule gagnée.</span></div></div></div>
-      <div class="groupe" id="grpCompte"><h4>Mon profil de joueur</h4>
-        <div class="ligne"><div class="lt"><b>Code de récupération</b><span>Notez-le : sur un autre téléphone, il rend votre pseudo, votre place, vos achats et votre progression.</span></div>
+      <div class="groupe" id="grpCompte"><h4>Compte</h4>
+        <div class="ligne"><div class="lt"><b>Code de récupération</b><span>Notez-le : il rend votre profil, vos achats et votre progression sur un autre téléphone.</span></div>
           <button class="code-rec notrad" id="btnCode" type="button">—</button></div>
-        <div class="ligne"><div class="lt"><b>Utiliser un code</b><span>Reprendre un profil depuis un autre téléphone. L’autre téléphone en sera détaché.</span></div>
+        <div class="ligne"><div class="lt"><b>Utiliser un code</b><span>Reprendre votre profil d’un autre téléphone.</span></div>
           <button class="danger" id="btnRecuperer" type="button" style="color:var(--encre);border-color:var(--trait-vif);background:var(--carte2)">Saisir</button></div>
-        <div class="ligne"><div class="lt"><b>Supprimer mes données</b><span>Efface du serveur votre pseudo, vos scores et votre sauvegarde. Votre partie reste sur ce téléphone.</span></div>
+        <div class="ligne"><div class="lt"><b>Supprimer mes données</b><span>Retire votre profil du classement et du serveur.</span></div>
           <button class="danger" id="btnSupprimerCompte" type="button">Supprimer</button></div></div>
       </div></div>
     </div>
@@ -2677,8 +2670,8 @@ function majRang(){var R=rangDe(PROG.xp),M=missionsDuJour();document.getElementB
 function rafraichirProfil(){var R=rangDe(PROG.xp),M=missionsDuJour();
   var rc=document.getElementById("rangCarte");rc.classList.toggle("mecene",aDroit("soutien"));poserCadre(rc,R.r);
   majCompte();
-  document.getElementById("grpRecomp").innerHTML='<h4>Récompenses du rang</h4>'+(function(){var pr=ROUTE.filter(function(x){return x.r>R.r;})[0];
-    return pr?'<p class="df-proch" style="margin-top:4px">Prochaine récompense au rang '+pr.r+' : '+pr.l[0]+'</p>':"";})()+routeHTML();
+  // les récompenses : une phrase pour dire comment on monte, puis la route (la prochaine est en doré) ; plus d'encadré qui la répétait
+  document.getElementById("grpRecomp").innerHTML='<h4>Récompenses du rang</h4><p class="g-intro">Résolvez des cubes, réussissez les défis et les missions pour gagner de l’expérience. Chaque rang offre une ampoule.</p>'+routeHTML();
   rc.innerHTML='<span class="anneau-rang notrad">'+anneauRang(PROG.xp,2.4)+'</span><button class="rc-pseudo" id="btnPseudo" type="button" aria-label="Changer de pseudo"><b class="notrad">'+echapper(pseudo())+'</b>'+
     '<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/></svg></button><h3 class="rc-titre">'+titreRang(R.r)+'</h3>'+(aDroit("soutien")?'<span class="mecene-titre">Mécène d’Orbicube</span>':"")+(voieFinie(MONDES.length-1)?'<span class="mecene-titre maitre">Maître des orbites</span>':"")+
     '<span class="xp notrad">'+R.xp+' / '+R.besoin+' XP</span><span class="rc-et notrad">'+SVG_ET+etoilesTotal()+' '+SVG_ETT+etoilesChrono()+'</span>';
@@ -2713,35 +2706,33 @@ function missionsHTML(M){return M.l.map(function(m){var ok=missionFinie(m);retur
 function resteJour(){var dem=new Date();dem.setHours(24,0,0,0);var r=dem-Date.now(),h=Math.floor(r/3600000);return h>=1?"dans "+h+" h":"dans "+Math.max(1,Math.ceil(r/60000))+" min";}
 function resultatDefi(r){return '<div class="df-res"><div><b class="notrad">'+r.coups+'</b><span>coups</span></div><div><b class="notrad">'+fmt(r.temps)+'</b><span>temps</span></div>'+
   '<div><b class="notrad df-et">'+[0,1,2].map(function(k){return k<r.etoiles?SVG_ET:SVG_ET_OFF;}).join("")+'</b><span>étoiles</span></div></div>';}
-function blocRang(R,prochain){return '<div class="df-rang"><span class="anneau-rang notrad">'+anneauRang(PROG.xp,2.6)+'</span><div><b>'+titreRang(R.r)+'</b>'+
-    '<i class="mb"><i style="width:'+(100*R.xp/R.besoin).toFixed(0)+'%"></i></i><small class="notrad">'+R.xp+' / '+R.besoin+' XP</small></div></div>'+
-    (prochain?'<p class="df-proch">Prochaine récompense au rang '+prochain.r+' : '+prochain.l[0]+'</p>':"");}
+// une ligne sous chaque défi : son classement, et la place du joueur dès qu'il y figure (sinon un chevron)
+function lignePlace(t){if(!enLigne()||PROG.classementOff)return "";return '<button class="df-place" data-a="'+(t==="jour"?"classement":"classement-semaine")+'" type="button"><span>'+
+  (t==="jour"?"Classement du jour":"Classement de la semaine")+'</span><b class="notrad" id="dfPlace-'+t+'"></b><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>';}
 function rafraichirDefis(){var j=PROG.jours[cleJour()],w=(PROG.semaines||{})[cleSemaine()],R=rangDe(PROG.xp),M=missionsDuJour(),nm=M.l.filter(missionFinie).length,
-    serie=PROG.serie>1&&(PROG.dernierJour===cleJour()||estHier(PROG.dernierJour)),prochain=ROUTE.filter(function(x){return x.r>R.r;})[0];
+    serie=PROG.serie>1&&(PROG.dernierJour===cleJour()||estHier(PROG.dernierJour));
   var h='<div class="df-carte df-jour"><div class="df-tete"><span class="df-ico">'+SVG_CAL+'</span><div><b>Défi du jour</b><small class="notrad">'+new Date().toLocaleDateString(locale(),{weekday:"long",day:"numeric",month:"long"})+'</small></div>'+
       (serie?'<span class="df-serie">'+SVG_FLAMME+'<span>série de '+PROG.serie+'</span></span>':"")+'</div>'+
     (j?resultatDefi(j):'<p class="df-desc">Le même mélange pour tout le monde : 8 coups sur les six faces.</p>')+
     '<button class="bouton principal" data-a="jour" type="button"><span>'+(j?"Rejouer pour progresser":"Jouer le défi")+'</span>'+(j?"":'<span class="droite">+1 ampoule</span>')+'</button>'+
     (j?'<p class="df-reste">Nouveau défi '+resteJour()+'</p>':"")+
-    (enLigne()&&!PROG.classementOff?'<div class="df-podium" id="dfPodium"><p class="cl-vide">Chargement…</p></div>':"")+'</div>';
+    lignePlace("jour")+'</div>';
   h+=complet()?'<div class="df-carte"><div class="df-tete"><span class="df-ico">'+SVG_SEM+'</span><div><b>Défi de la semaine</b><small>Semaine '+(+cleSemaine().slice(-2))+'</small></div></div>'+
       (w?resultatDefi(w):'<p class="df-desc">Un grand mélange de 14 coups, le même pour tous jusqu’à dimanche.</p>')+
       '<button class="bouton" data-a="semaine" type="button" style="justify-content:center"><span>'+(w?"Rejouer pour progresser":"Jouer le défi de la semaine")+'</span>'+(w?"":'<span class="droite">+2 ampoules</span>')+'</button>'+
-      (enLigne()&&!PROG.classementOff?'<button class="df-lien" data-a="classement-semaine" type="button">Classement de la semaine</button>':"")+'</div>':
-    carteReserve([["semaine","Défi de la semaine","Un grand mélange de 14 coups, le même pour tous, deux ampoules à la clé"]]);
+      lignePlace("semaine")+'</div>':
+    // sans le jeu complet : la même carte que le défi du jour, en plus discret, avec un cadenas et un seul bouton
+    '<div class="df-carte df-reserve"><div class="df-tete"><span class="df-ico">'+SVG_SEM+'</span><div><b>Défi de la semaine</b><small>Avec le jeu complet</small></div>'+
+      '<span class="df-cadenas">'+SVG_RESERVE+'</span></div><p class="df-desc">Un grand mélange de 14 coups, le même pour tous, deux ampoules à la clé.</p>'+
+      '<button class="bouton df-debloquer" data-a="semaine" type="button"><span>Débloquer</span>'+(PRIX?'<span class="droite">'+PRIX+'</span>':"")+'</button></div>';
   h+='<div class="groupe"><h4 class="h4-plus">Missions du jour<span class="notrad'+(nm===M.l.length?" fini":"")+'">'+nm+'/'+M.l.length+'</span></h4>'+missionsHTML(M)+'</div>';
-  // en bas, le lien entre ce qu'on fait aujourd'hui et ce qu'on gagne : le rang, et la prochaine récompense (détail au Profil)
-  h+='<div class="groupe"><h4>Votre rang</h4>'+blocRang(R,prochain)+'<button class="df-lien" data-a="recompenses" type="button">Toutes les récompenses</button></div>';
   var c=document.getElementById("defisCorps");c.innerHTML=h;
-  if(document.getElementById("dfPodium"))appel("classement",{tableau:"jour",cle:cleJour()}).then(function(r){var P=document.getElementById("dfPodium");if(!P||ECRAN!=="joueur"||JOUEUR.o!=="jour")return;
-    if(!r.liste){P.innerHTML="";return;}var mien=PROG.compte&&PROG.compte.id;
-    P.innerHTML='<div class="df-podium-tete"><span>Classement du jour</span>'+(r.moi?'<b>'+r.moi.place+' / '+r.total+'</b>':"")+'</div>'+
-      (r.liste.length?r.liste.slice(0,3).map(function(x){return ligneCl("jour",x,x.pid===mien);}).join(""):'<p class="cl-vide">Personne pour l’instant : soyez le premier !</p>')+
-      '<button class="df-lien" data-a="classement" type="button">Voir tout le classement</button>';});}
+  ["jour","semaine"].forEach(function(t){var el=document.getElementById("dfPlace-"+t);if(!el||!PROG.compte)return;
+    appel("classement",{tableau:t,cle:t==="jour"?cleJour():cleSemaine()}).then(function(r){if(r.moi&&ECRAN==="joueur"&&JOUEUR.o==="jour")el.textContent=r.moi.place+" / "+r.total;});});}
 document.getElementById("defisCorps").addEventListener("click",function(e){var b=e.target.closest("[data-a],[data-pid]");if(!b)return;sonClic();
   if(b.hasAttribute("data-pid")){profilPublic(b.getAttribute("data-pid"));return;}var a=b.getAttribute("data-a");
   if(a==="jour")lancer(jourDef());else if(a==="semaine"){if(complet())lancer(semaineDef());else ouvrirBoutique("semaine");}else if(a==="acheter")ouvrirBoutique("semaine");
-  else if(a==="recompenses")ongletJoueur("profil");else if(a==="classement"){CL.t="jour";ongletJoueur("classement");}else if(a==="classement-semaine"){CL.t="semaine";ongletJoueur("classement");}});
+  else if(a==="classement"){CL.t="jour";ongletJoueur("classement");}else if(a==="classement-semaine"){CL.t="semaine";ongletJoueur("classement");}});
 document.getElementById("btnClassementAcc").addEventListener("click",function(){audio();sonClic();ouvrirClassement("jour","accueil");});
 
 /* ========== 15 sexies. LE CLASSEMENT, LE PSEUDO, LE CODE DE RÉCUPÉRATION ==========

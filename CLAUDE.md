@@ -287,10 +287,14 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 - **Espace joueur** (`#joueur`, le client, le 15/10/2026 : « on s'y perd entre le profil, les missions et les défis »,
   « intuitif, compréhensible et professionnel ») : **un seul écran, trois onglets** en commande segmentée dans l'en-tête
   (`#jOnglets`, `ouvrirJoueur(o, depuis)`, `ongletJoueur`, `JOUEUR.o`) : **Aujourd'hui** (`#pJour`, `rafraichirDefis` : le défi
-  du jour en carte dorée avec résultat, série, podium et place, le défi de la semaine ou la carte réservée, les missions du
-  jour, puis « Votre rang » avec la prochaine récompense et « Toutes les récompenses ») ; **Classement** (`#pClassement`,
+  du jour en carte dorée avec résultat et série, le défi de la semaine en carte de même format (ou verrouillée,
+  `.df-reserve` : cadenas, « Avec le jeu complet », un seul bouton doré), les missions du jour ; chaque défi finit par une
+  ligne « Classement du jour / de la semaine » avec la place du joueur, `lignePlace`) ; **Classement** (`#pClassement`,
   `chargerClassement`, sous-onglets Jour à Rang, ligne « Vous » épinglée) ; **Profil** (`#pProfil`, `rafraichirProfil` : carte
-  d'identité avec pseudo modifiable, récompenses du rang `#grpRecomp`, comment monter, « Mon profil de joueur »).
+  d'identité avec pseudo modifiable, récompenses du rang `#grpRecomp` avec une phrase sur la façon de monter, « Compte »).
+  **Chaque chose à un seul endroit** (le client, le 15/10/2026 : « espacement, répétition, logique ») : plus de podium
+  dans Aujourd'hui (l'onglet Classement le montre), plus de « Votre rang » ni d'encadré « prochaine récompense » (la route
+  la montre en doré), plus de « Comment monter » en quatre lignes.
   Entrées : la puce du haut de l'accueil → Profil, le rond Défis → Aujourd'hui, le rond Classement → Classement,
   « Voir le classement » après un défi → Classement. Les anciens écrans `#profil`, `#defis`, `#classement` n'existent plus.
   Lire le classement ne crée jamais de profil (le test le vérifie) : seule une victoire, un pseudo changé, un signalement
