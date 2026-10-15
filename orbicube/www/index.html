@@ -647,6 +647,18 @@ body{background:
 .parc-cond svg{width:12px;height:12px;fill:var(--or)}.parc-cond.t{color:#4cc9f0}.parc-cond.t svg{fill:#4cc9f0}
 .parc-desc .cond{display:block;margin-top:4px;font-weight:600;color:var(--or)}.parc-desc .cond.t{color:#4cc9f0}
 .parc-sect.paye{border-color:rgba(255,207,74,.5);cursor:pointer}
+/* un succès réservé au jeu complet (le client, le 16/10/2026) */
+.suc-jc{display:inline-block;margin-top:5px;font:700 10px var(--f-titre);font-style:normal;letter-spacing:.12em;text-transform:uppercase;color:var(--or);
+  border:1px solid rgba(255,207,74,.45);border-radius:99px;padding:2px 8px}
+/* la fin de la campagne : les mondes à venir (le client, le 16/10/2026) */
+.parc-fin{position:absolute;left:50%;transform:translate(-50%,-50%);z-index:3;width:min(calc(100% - 48px),320px);display:grid;justify-items:center;gap:4px;
+  padding:16px 18px;border-radius:22px;border:1px dashed rgba(255,255,255,.35);background:rgba(12,12,22,.82);text-align:center}
+.parc-fin svg{width:22px;height:22px;fill:var(--or);filter:drop-shadow(0 0 8px rgba(255,207,74,.6))}
+.parc-fin b{font:300 18px "Jost",var(--f-texte);letter-spacing:.18em;text-transform:uppercase;color:#eef3ff}
+.parc-fin span{color:var(--pale);font-size:13px;line-height:1.4}
+/* le titre de la campagne, dans la police du titre ORBICUBE (le client, le 16/10/2026) */
+#parcours .tete h2{font-family:"Jost",var(--f-texte);font-weight:300;text-transform:uppercase;letter-spacing:.22em;padding-left:.22em;font-size:21px;
+  color:#eef3ff;text-shadow:0 0 2px rgba(255,255,255,.35),0 0 18px rgba(var(--acc),.6)}
 /* le jeu complet sur la carte, comme un monde (le client, le 16/10/2026) */
 .parc-jeu{position:absolute;left:50%;transform:translate(-50%,-50%);z-index:4;width:min(calc(100% - 28px),380px);display:grid;grid-template-columns:auto minmax(0,1fr);
   gap:10px 14px;align-items:center;padding:16px;border-radius:24px;border:1px solid rgba(255,207,74,.6);cursor:pointer;
@@ -829,7 +841,7 @@ body.sobre #plateau{transition:none}
 .cadre-cristal{box-shadow:0 0 0 1.5px #9fe8ff,0 0 0 4px rgba(178,130,255,.25),0 0 24px -6px #9fe8ff}
 .cadre-legende{box-shadow:0 0 0 1.5px #ffb0aa,0 0 0 4px rgba(255,207,74,.3),0 0 28px -4px #ff9db5;animation:legende 3s ease-in-out infinite alternate}
 @keyframes legende{to{box-shadow:0 0 0 1.5px #ffcf4a,0 0 0 4px rgba(255,157,181,.3),0 0 28px -4px #ffcf4a}}
-.route{display:grid;grid-template-columns:38px 1fr 24px;align-items:center;gap:10px;padding:10px 4px;border-top:1px solid rgba(255,255,255,.07)}
+.route{display:grid;grid-template-columns:38px 80px minmax(0,1fr) 24px;align-items:center;gap:10px;padding:10px 4px;border-top:1px solid rgba(255,255,255,.07)}
 .route:first-child{border-top:0}
 .route-r{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid var(--bord);font:600 13px var(--f-chiffre);color:var(--pale)}
 .route b{display:block;font-size:13.5px;font-weight:600;color:var(--pale)}.route b+b{font-size:12px;font-weight:500;opacity:.8}
@@ -898,6 +910,12 @@ button.obj:first-child{border-top:0}
 .j-onglets button.actif{background:rgba(var(--acc),.32);color:var(--encre);box-shadow:inset 0 0 0 1px rgba(var(--acc),.75)}
 @media (max-width:360px){.j-onglets button{font-size:12px;padding:0 6px}}
 #grpRecomp .route{padding-inline:16px}
+/* l'aperçu de chaque récompense du rang : la vignette du style, le cadre autour d'un pseudo (le client, le 16/10/2026) */
+.rt-ap{display:flex;gap:2px;align-items:center}.rt-v{width:38px;height:38px;display:block}
+.rt-cadre{display:block;width:26px;height:26px;margin:6px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(255,255,255,.18),rgba(255,255,255,.04))}
+.route b{overflow-wrap:anywhere}
+@media (max-width:360px){.route{grid-template-columns:32px 64px minmax(0,1fr) 20px;gap:8px}.rt-v{width:30px;height:30px}.rt-cadre{width:22px;height:22px;margin:4px}}
+.route.jc{cursor:pointer}.route.jc .rt-ap{opacity:.75}.route .coche svg.cad{stroke:var(--or);stroke-width:2;fill:none}
 .j-panneau[hidden]{display:none}
 #joueur>.tete+.defile{padding-bottom:120px}
 /* le classement (le client, le 14/10/2026) */
@@ -1211,7 +1229,11 @@ var PALETTES={classique:["#FF7A1E","#FA3A47","#FBD101","#F4F4F6","#2DCC4B","#009
   // styles du rang (le client, le 14/10/2026 : que le rang serve à quelque chose) : un tous les cinq rangs
   crepuscule:["#FF8C5A","#E8436E","#FFC857","#FBE9E0","#6BBF8A","#5B6CF0"],   // rang 15 : pêche, framboise, miel, rosé, sauge, indigo
   abysses:["#1FD1C1","#FF6B9E","#C7F464","#E6FBFF","#2D7FF9","#8A5CF6"],     // rang 25 : lagon, corail, plancton, écume, bleu profond, méduse
-  solaire:["#FF7B00","#FF3D3D","#FFD000","#FFF6D6","#B8E000","#FFA94D"]};    // rang 35 : flamme, rouge, soleil, lumière, tilleul, mandarine  // monde 6 : corail, ambre, carmin, nacre, pourpre, lagon
+  solaire:["#FF7B00","#FF3D3D","#FFD000","#FFF6D6","#B8E000","#FFA94D"],
+  // réservées au jeu complet, sur la route du rang (le client, le 16/10/2026)
+  prisme:["#FF4FA3","#FF9F1C","#FFE74C","#F5F7FF","#2EC4B6","#7B61FF"],     // rang 12 : rose, orange, jaune, blanc, turquoise, violet
+  cosmos:["#B388FF","#FF6E9C","#FFD86E","#E8ECFF","#4FD1C5","#4C7DFF"],     // rang 22 : lavande, rose, or pâle, étoile, menthe, bleu nuit
+  celeste:["#7FD8FF","#FF8FB1","#FFF3A6","#FFFFFF","#9BE7A5","#A88BFF"]};    // rang 32 : ciel, rose poudré, lune, nuage, jade, lilas    // rang 35 : flamme, rouge, soleil, lumière, tilleul, mandarine  // monde 6 : corail, ambre, carmin, nacre, pourpre, lagon
 /* ========== LA BOUTIQUE : packs vendus et styles (le client, le 13/10/2026) ==========
    Chaque pack est un droit (« entitlement » RevenueCat) vendu par un produit des stores ; une édition groupée active
    plusieurs droits (réglé dans RevenueCat). Les aides sont consommables : le jeu les crédite lui-même.
@@ -1230,7 +1252,8 @@ var STYLES={
   palette:[{id:"monde",nom:"Couleurs du monde"},{id:"classique",nom:"Classique"},{id:"contraste",nom:"Daltonien"},{id:"pastel",nom:"Pastel",ouv:{etoiles:45}},{id:"neon",nom:"Néon",ouv:{chrono:45}},
     {id:"aurore",nom:"Aurore",ouv:{pack:"couleurs"}},{id:"galaxie",nom:"Galaxie",ouv:{pack:"couleurs"}},{id:"glace",nom:"Glace",ouv:{pack:"couleurs"}},{id:"joyaux",nom:"Joyaux",ouv:{pack:"couleurs"}},
     {id:"emeraude",nom:"Émeraude",ouv:{voie:0}},{id:"nebuleuse",nom:"Nébuleuse",ouv:{voie:5}},
-    {id:"crepuscule",nom:"Crépuscule",ouv:{rang:15}},{id:"abysses",nom:"Abysses",ouv:{rang:25}},{id:"solaire",nom:"Solaire",ouv:{rang:35}}],
+    {id:"crepuscule",nom:"Crépuscule",ouv:{rang:15}},{id:"abysses",nom:"Abysses",ouv:{rang:25}},{id:"solaire",nom:"Solaire",ouv:{rang:35}},
+    {id:"prisme",nom:"Prisme",ouv:{rang:12,complet:1}},{id:"cosmos",nom:"Cosmos",ouv:{rang:22,complet:1}},{id:"celeste",nom:"Céleste",ouv:{rang:32,complet:1}}],
   forme:[{id:"facettes",nom:"Facettes"},{id:"astral",nom:"Style du monde"},{id:"perles",nom:"Perles"},{id:"hexagones",nom:"Hexagones",ouv:{rang:5}},
     {id:"gemmes",nom:"Gemmes",ouv:{pack:"formes"}},{id:"etoiles",nom:"Étoiles",ouv:{pack:"formes"}},{id:"cristaux",nom:"Cristaux",ouv:{pack:"formes"}},
     {id:"ecailles",nom:"Écailles",ouv:{voie:2}},{id:"eclats",nom:"Éclats",ouv:{voie:6}}],
@@ -1255,7 +1278,7 @@ var DESC_STYLE={monde:"Les couleurs du cube, accordées au monde où vous jouez.
   ecailles:"Des écailles de dragon, polies comme du métal.",eclats:"De longs éclats de verre taillés en pointe.",
   sillage:"Un sillage bleu glacé derrière chaque pièce.",amethyste:"Des orbites d’améthyste, d’un violet profond.",
   couronne:"Des orbites d’or, la marque des maîtres.",supernova:"Une étoile explose au cœur du plateau à chaque victoire.",
-  crepuscule:"Les teintes chaudes d’un coucher de soleil.",abysses:"Les couleurs vives des grands fonds.",solaire:"Toute la chaleur d’une étoile.",
+  crepuscule:"Les teintes chaudes d’un coucher de soleil.",abysses:"Les couleurs vives des grands fonds.",solaire:"Toute la chaleur d’une étoile.",prisme:"La lumière éclatée en six couleurs franches.",cosmos:"Les teintes douces d’une galaxie lointaine.",celeste:"Un ciel clair, de la lune aux nuages.",
   braises:"Des escarbilles orange qui s’éteignent derrière les pièces.",nacre:"Des orbites de nacre, pâles et irisées.",orrose:"Des orbites d’or rose, la marque des légendes."};
 function style(k,id){var l=STYLES[k];for(var i=0;i<l.length;i++)if(l[i].id===id)return l[i];return l[0];}
 function aDroit(d){return d==="complet"?complet():!!(PROG.droits&&PROG.droits[d]);}
@@ -1266,7 +1289,7 @@ function expertsGagnes(w){var n=0;for(var i=BASE;i<MONDES[w].coups.length;i++)if
 function progresStyle(o){return o.voie!=null?[expertsGagnes(o.voie),MONDES[o.voie].coups.length-BASE,"experts"]:o.etoiles?[etoilesTotal(),o.etoiles,"étoiles de coups"]:o.chrono?[etoilesChrono(),o.chrono,"étoiles de temps"]:o.rang?[rangDe(PROG.xp).r,o.rang,"rang"]:null;}
 function nouveauxStyles(){var v=PROG.stylesVus||{},l=[];Object.keys(STYLES).forEach(function(k){STYLES[k].forEach(function(st){if(st.ouv&&!v[st.id]&&styleOuvert(k,st.id))l.push(st.id);});});return l;}
 function styleOuvert(k,id){var o=style(k,id).ouv;if(!o)return true;if(o.etoiles)return etoilesTotal()>=o.etoiles;if(o.chrono)return etoilesChrono()>=o.chrono;
-  if(o.rang)return rangDe(PROG.xp).r>=o.rang;if(o.voie!=null)return voieFinie(o.voie);if(o.pack)return aDroit(PACKS[o.pack].droit)||aDroit("style_"+id);return false;}
+  if(o.rang)return rangDe(PROG.xp).r>=o.rang&&(!o.complet||complet());if(o.voie!=null)return voieFinie(o.voie);if(o.pack)return aDroit(PACKS[o.pack].droit)||aDroit("style_"+id);return false;}
 // le style porté (un style reperdu, ou d'un pack pas encore restauré, retombe sur le premier de son rayon)
 function styleActif(k){var v=PROG.options[k];return v&&style(k,v).id===v&&styleOuvert(k,v)?v:STYLES[k][0].id;}
 Object.defineProperty(PALETTES,"monde",{get:function(){return PAL_THEME[THEME_COURANT-1]||PAL_THEME[1];},enumerable:true});
@@ -1619,7 +1642,7 @@ var MONDES=[
   {nom:"Six faces",desc:"Les six faces du cube : le vrai casse-tête commence.",anneaux:["U","D","L","R","F","B"],coups:[4,4,5,5,6,7,7,8,8,9,10,11]},
   {nom:"Première tranche",desc:"M, la tranche du milieu, déplace des pastilles sans face à elle.",anneaux:["U","D","L","R","F","B","M"],coups:[4,5,5,6,7,7,8,9,9,10,11,12]},
   {nom:"Deux tranches",desc:"E se glisse entre U et D : presque tout le cube bouge.",anneaux:["U","D","L","R","F","B","M","E"],coups:[5,5,6,7,7,8,9,10,10,11,12,13]},
-  {nom:"Grand maître",desc:"Les neuf orbites à la fois : le défi ultime.",anneaux:TOUS,coups:[5,6,7,8,9,10,11,12,12,14,16,18]}];
+  {nom:"Grand maître",desc:"Les neuf orbites en même temps : le défi ultime.",anneaux:TOUS,coups:[5,6,7,8,9,10,11,12,12,14,16,18]}];
 // une orbite de plus à chaque monde (le client, le 14/10/2026). Longueurs : un coup de plus tous les deux niveaux (les trois
 // premiers montent d'un coup chacun), une pente qui se raidit avec les orbites ; chaque monde repart un peu plus bas que la
 // fin du précédent (une orbite de plus à apprivoiser) ; ses experts partent de la fin de son chemin. Un coup de plus à
@@ -1882,6 +1905,8 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
       if(!finVoie&&bra.length>1)items.push({t:"x",w:w,x:(bra[0][0]+bra[1][0])/2,y:(bra[0][1]+bra[1][1])/2});
       bra[0].noeud=true;finVoie=bra[bra.length-1].noeud?bra[bra.length-1]:null;branches.push({w:w,pts:bra});}
     wreg.push({w:w,acc:acc,y0:y0,y1:y});y+=18;}
+  // la fin de la campagne annonce les mondes à venir (le client, le 16/10/2026)
+  y+=110;items.push({t:"f",y:y});y+=90;
   var H=y+60,de="",nodes="",sects="",d="";
   // FONDS CRAFTPIX (Space Vertical Game Backgrounds, 4 thèmes cyclés par monde), en COUCHES parallaxe :
   // BG (nébuleuse, lointain) + Planets (milieu) par monde ; Stars et Meteors tuilés en global (premier plan).
@@ -1912,6 +1937,8 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
         +'<div class="parc-sect'+(pa?" paye":"")+(voieFinie(it.w)?" couronne":"")+'" style="--pa:'+it.acc+';top:'+fy+'px">'+(voieFinie(it.w)?'<svg class="couronne-ic" viewBox="0 0 24 24"><path d="M3 18h18l-1.5-10-4.5 4-3-7-3 7-4.5-4z"/></svg>':"")+'<b>Monde '+(it.w+1)+'</b><small>'+it.nom+'</small>'
         +(pa?'<svg class="pscad" viewBox="0 0 24 24">'+CAD+'</svg>':cE?'<span class="parc-cond'+(cE.jaunes?"":" t")+'"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+cE.a+' / '+cE.faut+'</span>':'<span class="parc-et"><svg viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etM+'/'+maxM+'<svg class="t" viewBox="0 0 24 24">'+ET_PATH+'</svg>'+etTM+'/'+maxM+'</span>')+'</div>'
         +'<div class="parc-desc" style="--pa:'+it.acc+';top:'+(fy+30)+'px">'+MONDES[it.w].desc+'<span class="parc-meta">'+MONDES[it.w].anneaux.length+' orbites · '+MONDES[it.w].coups[0]+' à '+MONDES[it.w].coups[BASE-1]+' coups</span></div>';}
+    else if(it.t==="f")sects+='<div class="parc-fin" style="top:'+fy+'px"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg>'+
+        '<b>À suivre…</b><span>De nouveaux mondes arriveront avec les prochaines mises à jour.</span></div>';
     else if(it.t==="j")sects+='<div class="parc-jeu" style="top:'+fy+'px" role="button" tabindex="0">'+SVG_NEUF+'<div><span class="etiq">Le jeu complet</span><b>Débloquez les 9 orbites</b>'+
         '<small>4 mondes et 48 niveaux de plus</small></div><span class="btn-or"><span>Orbicube complet</span><span class="px notrad">'+PRIX+'</span></span></div>';
     // la pastille de la voie dorée, discrète, posée sur la bifurcation (le client, le 14/10/2026)
@@ -2386,19 +2413,26 @@ function mondeFini(w){return !!PROG.niveaux[(w+1)+"-"+BASE];}
 var SUCCES=[
   {id:"premier",nom:"Premier tour",desc:"Résoudre le premier niveau.",ok:function(){return !!PROG.niveaux["1-1"];}},
   {id:"m1",nom:"Initié",desc:"Terminer le monde 1.",ok:function(){return mondeFini(0);}},
-  {id:"m3",nom:"Trancheur",desc:"Terminer le monde des tranches.",ok:function(){return mondeFini(6);}},
-  {id:"m5",nom:"En orbite",desc:"Terminer le monde 5.",ok:function(){return mondeFini(4);}},
-  {id:"m6",nom:"Grand maître",desc:"Terminer toute la campagne.",ok:function(){return mondeFini(MONDES.length-1);}},
+  {id:"m3",nom:"Trancheur",desc:"Terminer le monde des tranches.",complet:1,ok:function(){return mondeFini(6);}},
+  {id:"m5",nom:"En orbite",desc:"Terminer le monde 5.",complet:1,ok:function(){return mondeFini(4);}},
+  {id:"m6",nom:"Grand maître",desc:"Terminer toute la campagne.",complet:1,ok:function(){return mondeFini(MONDES.length-1);}},
   {id:"p10",nom:"Précision",desc:"Trois étoiles sur 10 niveaux.",ok:function(){return nbParfaits()>=10;}},
   {id:"pm",nom:"Perfectionniste",desc:"Trois étoiles sur tout un monde.",ok:function(){for(var w=0;w<MONDES.length;w++)if(etoilesMonde(w)===MONDES[w].coups.length*3)return true;return false;}},
-  {id:"p60",nom:"Sans faute",desc:"Toutes les étoiles de la campagne.",ok:function(){return etoilesTotal()===NB_NIV*3;}},
+  {id:"p60",nom:"Sans faute",desc:"Toutes les étoiles de la campagne.",complet:1,ok:function(){return etoilesTotal()===NB_NIV*3;}},
   {id:"eclair",nom:"Éclair",desc:"Résoudre un niveau d’au moins 3 coups en moins de 10 secondes.",ok:function(){return !!PROG.tips.eclair;}},
   {id:"jour",nom:"Rendez-vous",desc:"Réussir un défi du jour.",ok:function(){return Object.keys(PROG.jours).length>0;}},
   {id:"serie3",nom:"Trois jours de suite",desc:"Réussir le défi du jour trois jours d’affilée.",ok:function(){return PROG.serie>=3;}},
-  {id:"expert",nom:"Expert",desc:"Résoudre une partie de 25 coups en jeu libre.",ok:function(){return !!PROG.stats.meilleur[25];}},
+  {id:"expert",nom:"Expert",desc:"Résoudre une partie de 25 coups en jeu libre.",complet:1,ok:function(){return !!PROG.stats.meilleur[25];}},
   {id:"axes",nom:"Trois axes",desc:"Tourner M, E et S dans une même partie résolue.",ok:function(){return !!PROG.tips.troisTranches;}},
   {id:"tours",nom:"Mille tours",desc:"Tourner les cercles 1 000 fois.",ok:function(){return PROG.stats.tours>=1000;}},
-  {id:"voies",nom:"Voie dorée",desc:"Finir la voie dorée des huit mondes.",ok:function(){for(var w=0;w<MONDES.length;w++)if(!voieFinie(w))return false;return true;}}];
+  {id:"voies",nom:"Voie dorée",desc:"Finir la voie dorée des huit mondes.",complet:1,ok:function(){for(var w=0;w<MONDES.length;w++)if(!voieFinie(w))return false;return true;}},
+  // le 16/10/2026 (le client : « ajouter des succès, notamment qui nécessitent le jeu complet »)
+  {id:"missions",nom:"Mission accomplie",desc:"Réussir les quatre missions du jour.",ok:function(){return !!PROG.tips.missionsJour;}},
+  {id:"fidele",nom:"Fidèle",desc:"Réussir sept défis du jour.",ok:function(){return Object.keys(PROG.jours).length>=7;}},
+  {id:"rang10",nom:"Habitué",desc:"Atteindre le rang 10.",ok:function(){return rangDe(PROG.xp).r>=10;}},
+  {id:"neuf",nom:"Neuf orbites",desc:"Résoudre un niveau sur les neuf orbites.",complet:1,ok:function(){return !!PROG.niveaux[MONDES.length+"-1"];}},
+  {id:"semaine",nom:"Grand défi",desc:"Réussir un défi de la semaine.",complet:1,ok:function(){return Object.keys(PROG.semaines||{}).length>0;}},
+  {id:"elite",nom:"Élite",desc:"Réussir les quatre missions élite d’une semaine.",complet:1,ok:function(){return !!PROG.tips.elite;}}];
 // les succès gagnés sont aussi déclarés à Game Center ou Google Play Jeux, quand l'app est configurée pour
 function idStore(id){var m=(CFG.succesStores||{})[NATIF.plateforme]||{};return m[id]||"";}
 function versStore(id){if(NATIF.succesDebloquer&&idStore(id))NATIF.succesDebloquer(idStore(id));}
@@ -2426,7 +2460,7 @@ function rafraichirSucces(){document.getElementById("sucCompte").textContent=Obj
     [best?fmt(meil[best].temps):(PROG.stats.sansFin?"<small>étape "+PROG.stats.sansFin+"</small>":"<small>à venir</small>"),best?"record libre · "+best+" coups":PROG.stats.sansFin?"record sans fin":"record en jeu libre"]];
   document.getElementById("tuiles").innerHTML=tu.map(function(t){return '<div class="tuile"><b>'+t[0]+'</b><span>'+t[1]+'</span></div>';}).join("");
   document.getElementById("listeSucces").innerHTML=SUCCES.map(function(s){var ok=!!PROG.succes[s.id];
-    return '<div class="suc'+(ok?" ok":"")+'"><div class="med"><svg viewBox="0 0 24 24">'+(ok?'<path d="M5 12.5l4.5 4.5L19 7.5"/>':'<rect x="6" y="11" width="12" height="9" rx="2"/><path d="M9 11V8.5a3 3 0 0 1 6 0V11"/>')+'</svg></div><div><b>'+s.nom+'</b><span>'+s.desc+'</span></div></div>';}).join("");}
+    return '<div class="suc'+(ok?" ok":"")+'"><div class="med"><svg viewBox="0 0 24 24">'+(ok?'<path d="M5 12.5l4.5 4.5L19 7.5"/>':'<rect x="6" y="11" width="12" height="9" rx="2"/><path d="M9 11V8.5a3 3 0 0 1 6 0V11"/>')+'</svg></div><div><b>'+s.nom+'</b><span>'+s.desc+'</span>'+(s.complet&&!ok&&!complet()?'<em class="suc-jc">Jeu complet</em>':"")+'</div></div>';}).join("");}
 
 /* ========== 14. OPTIONS ========== */
 function appliquerOptions(){var o=PROG.options;
@@ -2516,13 +2550,13 @@ function majAchat(){var c=complet();document.getElementById("btnBoutique").hidde
   var b=document.getElementById("btnAchatOpt");b.textContent=c?"Débloqué":"Débloquer";b.disabled=c;
   document.getElementById("optPied").textContent="Orbicube "+(CFG.version||"")+(c||CFG.modele==="complet"?"":" · version d’essai");numeroPublication();}
 // ce que le joueur voulait faire quand la boutique s'ouvre ; le gain principal reste le même : les 9 orbites (le client, le 16/10/2026)
-var POURQUOI={indice:"Le jeu complet offre aussi une aide chaque jour.",monde:"Chaque monde suivant ajoute une orbite, jusqu’aux 9 à la fois.",libre:"Ce mode se joue sur les 9 orbites.",semaine:"Les missions élite font partie du jeu complet.",accueil:""};
+var POURQUOI={rang:"Certaines récompenses du rang sont réservées au jeu complet.",indice:"Le jeu complet offre aussi une aide chaque jour.",monde:"Chaque monde suivant ajoute une orbite, jusqu’aux 9 en même temps.",libre:"Ce mode se joue sur les 9 orbites.",semaine:"Les missions élite font partie du jeu complet.",accueil:""};
 var SVG_NEUF=(function(){var c=[[0,-7],[-6.1,3.5],[6.1,3.5]],r=[8,10.5,13],cols=["#ffcf4a","#b282ff","#5cb4ff"],h='<svg class="neuf" viewBox="-26 -26 52 52" aria-hidden="true">';
   c.forEach(function(p,i){r.forEach(function(rr,k){h+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+rr+'" fill="none" stroke="'+cols[i]+'" stroke-width="'+(k===1?1.6:1.1)+'" opacity="'+(k===1?1:.7)+'"/>';});});return h+'</svg>';})();
 function ouvrirBoutique(raison){var web=!NATIF.natif,li=CFG.liens||{};
-  var avantages=[["4 mondes et 48 niveaux de plus","Six, sept, huit orbites, puis les neuf à la fois."],["Tout le jeu libre sur les 9 orbites","Moyen, difficile, expert, sans fin et relax."],["Les missions élite","Le défi de la semaine et trois missions longues, bien mieux récompensées."],["Une aide offerte chaque jour","Pour un indice quand vous bloquez."],["Un seul achat, pour toujours","Sans publicité, sans abonnement."]];
+  var avantages=[["4 mondes et 48 niveaux de plus","Six, sept, huit orbites, puis les neuf en même temps."],["Tout le jeu libre sur les 9 orbites","Moyen, difficile, expert, sans fin et relax."],["Les missions élite","Le défi de la semaine et trois missions longues, bien mieux récompensées."],["Une aide offerte chaque jour","Pour un indice quand vous bloquez."],["Un seul achat, pour toujours","Sans publicité, sans abonnement."]];
   // en tête, le vrai gain, dessiné : les neuf orbites du cube (trois familles de trois cercles)
-  var html='<div class="achat-hero">'+SVG_NEUF+'<span class="etiq">Orbicube complet</span><h3>Débloquez les 9 orbites</h3><p>Le cube entier : ses neuf cercles, enfin à la fois.</p></div>'+
+  var html='<div class="achat-hero">'+SVG_NEUF+'<span class="etiq">Orbicube complet</span><h3>Débloquez les 9 orbites</h3><p>Jouez avec les neuf cercles du cube en même temps.</p></div>'+
     (POURQUOI[raison]?'<p>'+POURQUOI[raison]+'</p>':"")+
     '<div style="display:grid;gap:10px;text-align:left;margin:4px 0 16px">'+avantages.map(function(a){return '<div style="display:flex;gap:10px;align-items:flex-start"><svg viewBox="0 0 24 24" style="width:20px;height:20px;flex:none;margin-top:1px;stroke:var(--or);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b style="display:block">'+a[0]+'</b><span style="color:var(--pale);font-size:13px">'+a[1]+'</span></div></div>';}).join("")+'</div><div class="menu">';
   if(web){html+='<p style="margin:0 0 6px">L’achat se fait dans l’application, sur iPhone ou Android.</p>'+
@@ -2560,7 +2594,7 @@ function habillerApercu(){var vu=function(k){return VU[k]||STY[k];};ApercuP.pal=
   else if(styleOuvert(k,st.id))f+='<button class="bouton petit" type="button" data-porter="'+k+'" data-id="'+st.id+'">Porter</button>';
   else if(o.pack)f+='<button class="btn-or" type="button" data-achat="s_'+st.id+'"><span>Acheter</span><span class="px notrad">'+PRIXP["s_"+st.id]+'</span></button>'+
     '<button class="fiche-pack" type="button" data-achat="'+o.pack+'">ou le pack '+PACKS[o.pack].nom+'</button>';
-  else{pr=progresStyle(o);f+='<span class="fiche-cond">'+(o.etoiles?"Se gagne à {0} étoiles de coups".replace("{0}",o.etoiles):o.chrono?"Se gagne à {0} étoiles de temps".replace("{0}",o.chrono):o.voie!=null?"Exclusif : se gagne en finissant la voie dorée du monde {0}".replace("{0}",o.voie+1):"Se gagne au rang {0}".replace("{0}",o.rang))+'</span>'+
+  else{pr=progresStyle(o);f+='<span class="fiche-cond">'+(o.etoiles?"Se gagne à {0} étoiles de coups".replace("{0}",o.etoiles):o.chrono?"Se gagne à {0} étoiles de temps".replace("{0}",o.chrono):o.voie!=null?"Exclusif : se gagne en finissant la voie dorée du monde {0}".replace("{0}",o.voie+1):(o.complet?"Avec le jeu complet, se gagne au rang {0}":"Se gagne au rang {0}").replace("{0}",o.rang))+'</span>'+
     '<div class="fiche-prog"><i style="width:'+Math.min(100,100*pr[0]/pr[1]).toFixed(0)+'%"></i></div><span class="fiche-chiffre notrad">'+Math.min(pr[0],pr[1])+' / '+pr[1]+'</span>';}
   document.getElementById("apercuFiche").innerHTML=f;ApercuP.dessiner();}
 function redimApercu(){var w=document.querySelector("#boutique .bout").clientWidth;if(w)ApercuP.dimension(Math.round(Math.min(w-40,innerHeight<700?160:190)));}
@@ -2600,7 +2634,7 @@ function vignette(cv,k,id){var d=Math.min(DPR,2.5),W=64;cv.width=W*d;cv.height=W
     else{for(var j=0;j<16;j++){cx.beginPath();cx.arc(10+((j*37)%46),10+((j*23)%46),2.4+(j%3),0,6.283);cx.fillStyle=pal[j%6];cx.fill();}}}}
 // une condition lisible pour ce qui n'est pas encore ouvert
 function condition(st){var o=st.ouv||{};if(o.etoiles)return'<small class="notrad">'+SVG_ET+o.etoiles+'</small>';if(o.chrono)return'<small class="notrad">'+SVG_ETT+o.chrono+'</small>';
-  if(o.rang)return'<small>Rang '+o.rang+'</small>';if(o.voie!=null)return'<small class="voie-cond">Monde '+(o.voie+1)+'</small>';return'<small class="notrad">'+PRIXP["s_"+st.id]+'</small>';}
+  if(o.rang)return'<small'+(o.complet?' class="voie-cond"':'')+'>Rang '+o.rang+'</small>';if(o.voie!=null)return'<small class="voie-cond">Monde '+(o.voie+1)+'</small>';return'<small class="notrad">'+PRIXP["s_"+st.id]+'</small>';}
 function carteStyle(k,st){var ouv=styleOuvert(k,st.id),porte=STY[k]===st.id,vu=VU[k]===st.id;
   return'<button class="style'+(porte?" porte":"")+(vu?" vu":"")+(ouv?"":" ferme")+'" type="button" data-k="'+k+'" data-id="'+st.id+'">'+(NOUV[st.id]?'<span class="neuf">Nouveau</span>':"")+'<canvas></canvas><b>'+st.nom+'</b>'+
     (porte?'<small>Porté</small>':ouv?'<small>Choisir</small>':condition(st))+(ouv?"":'<svg class="cad" viewBox="0 0 24 24">'+CADENAS+'</svg>')+'</button>';}
@@ -2630,7 +2664,7 @@ function rendreBoutique(){var c=complet(),tous=["pack_couleurs","pack_formes","p
   // l'édition intégrale et les packs de styles ont leur onglet (le client, le 16/10/2026)
   var jeu=!c&&CFG.modele!=="complet";
   document.getElementById("boutJeu").innerHTML=jeu?'<div class="bout-hero bout-jeu"><span class="etiq">Le jeu complet</span><h3>Débloquez les 9 orbites</h3>'+
-      '<div class="bj-tete">'+SVG_NEUF+'<p>Le cube entier : ses neuf cercles, enfin à la fois.</p></div><ul>'+puce("4 mondes et 48 niveaux de plus")+puce("Tout le jeu libre et les missions élite")+puce("Une aide offerte chaque jour")+'</ul>'+
+      '<div class="bj-tete">'+SVG_NEUF+'<p>Jouez avec les neuf cercles du cube en même temps.</p></div><ul>'+puce("4 mondes et 48 niveaux de plus")+puce("Tout le jeu libre et les missions élite")+puce("Une aide offerte chaque jour")+'</ul>'+
       '<button class="btn-or" type="button" data-achat="complet"><span>Orbicube complet</span><span class="px notrad">'+PRIX+'</span></button></div>':"";
   document.getElementById("boutStylesT").hidden=!jeu;
   // l'onglet Packs (le client, le 16/10/2026 : « rassembler les packs dans un onglet ») : la collection, puis chaque pack
@@ -2704,6 +2738,8 @@ document.getElementById("boutique").addEventListener("click",function(e){var a=e
   rendreBoutique();});
 document.getElementById("boutRestaurer").addEventListener("click",function(){sonClic();if(!NATIF.natif){avertir("Restaurer","Les achats se restaurent dans l’application.");return;}restaurer();});
 document.getElementById("btnStylesOpt").addEventListener("click",function(){sonClic();ouvrirMagasin("options");});
+// un palier du rang réservé au jeu complet mène à l'achat
+document.getElementById("grpRecomp").addEventListener("click",function(e){if(e.target.closest(".route.jc")){sonClic();ouvrirBoutique("rang");}});
 addEventListener("resize",function(){if(ECRAN==="boutique")redimApercu();});
 // à l'ouverture : les prix des packs dans la devise du joueur, et les droits déjà achetés (autre appareil, réinstallation)
 if(NATIF.prixProduits)NATIF.prixProduits(Object.keys(PACKS).map(function(k){return PACKS[k].produit;})).then(function(m){
@@ -2723,20 +2759,33 @@ function xpPour(r){return 60+r*40;}                       // pour passer du rang
 function rangDe(xp){var r=1;xp=xp||0;while(xp>=xpPour(r)){xp-=xpPour(r);r++;}return{r:r,xp:xp,besoin:xpPour(r)};}
 // la route du rang (le client, le 14/10/2026 : « à quoi sert le niveau ? ») : tous les cinq rangs un style à gagner,
 // un cadre autour du pseudo à chaque titre, et des aides offertes chaque jour aux rangs 10 et 20
-var ROUTE=[{r:5,l:["Forme Hexagones","Cadre de bronze"]},{r:10,l:["Traînée Poussière d’étoiles","Cadre d’argent"]},
-  {r:15,l:["Couleurs Crépuscule","Cadre d’or"]},{r:20,l:["Orbites de nacre","Cadre étoilé"]},{r:25,l:["Couleurs Abysses"]},
-  {r:30,l:["Traînée Braises","Cadre de cristal"]},{r:35,l:["Couleurs Solaire"]},{r:40,l:["Orbites d’or rose","Cadre légendaire"]}];
+// v : l'aperçu de chaque récompense (le client, le 16/10/2026 : « sinon on ne comprend pas ») ; jc : réservée au jeu complet
+var ROUTE=[{r:5,l:["Forme Hexagones","Cadre de bronze"],v:[["forme","hexagones"],["cadre","bronze"]]},
+  {r:10,l:["Traînée Poussière d’étoiles","Cadre d’argent"],v:[["trainee","poussiere"],["cadre","argent"]]},
+  {r:12,jc:1,l:["Couleurs Prisme"],v:[["palette","prisme"]]},
+  {r:15,l:["Couleurs Crépuscule","Cadre d’or"],v:[["palette","crepuscule"],["cadre","or"]]},
+  {r:20,l:["Orbites de nacre","Cadre étoilé"],v:[["orbite","nacre"],["cadre","etoile"]]},
+  {r:22,jc:1,l:["Couleurs Cosmos"],v:[["palette","cosmos"]]},
+  {r:25,l:["Couleurs Abysses"],v:[["palette","abysses"]]},
+  {r:30,l:["Traînée Braises","Cadre de cristal"],v:[["trainee","braises"],["cadre","cristal"]]},
+  {r:32,jc:1,l:["Couleurs Céleste"],v:[["palette","celeste"]]},
+  {r:35,l:["Couleurs Solaire"],v:[["palette","solaire"]]},
+  {r:40,l:["Orbites d’or rose","Cadre légendaire"],v:[["orbite","orrose"],["cadre","legende"]]}];
+// un palier du jeu complet ne compte pas sans l'achat
+function paliers(){return ROUTE.filter(function(e){return !e.jc||complet();});}
 var CADRES=[[5,"bronze"],[10,"argent"],[15,"or"],[20,"etoile"],[30,"cristal"],[40,"legende"]];
 function cadreDe(r){var c="";CADRES.forEach(function(x){if(r>=x[0])c=x[1];});return c;}
 function poserCadre(el,r){CADRES.forEach(function(x){el.classList.remove("cadre-"+x[1]);});var c=cadreDe(r);if(c)el.classList.add("cadre-"+c);}
-function routeHTML(){var r=rangDe(PROG.xp).r;return ROUTE.map(function(e){var ok=r>=e.r;return '<div class="route'+(ok?" ok":"")+(!ok&&ROUTE.filter(function(x){return x.r>r;})[0]===e?" proch":"")+'">'+
-  '<span class="route-r notrad">'+e.r+'</span><div>'+e.l.map(function(t){return '<b>'+t+'</b>';}).join("")+'</div><span class="coche">'+(ok?'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>':"")+'</span></div>';}).join("");}
+function routeHTML(){var r=rangDe(PROG.xp).r,proch=paliers().filter(function(x){return x.r>r;})[0];return ROUTE.map(function(e){var ferme=e.jc&&!complet(),ok=r>=e.r&&!ferme;
+  return '<div class="route'+(ok?" ok":"")+(e===proch?" proch":"")+(ferme?" jc":"")+'"'+(ferme?' data-a="acheter" role="button" tabindex="0"':"")+'>'+
+  '<span class="route-r notrad">'+e.r+'</span><div class="rt-ap">'+e.v.map(function(v){return v[0]==="cadre"?'<span class="rt-cadre cadre-'+v[1]+'"></span>':'<canvas class="rt-v" data-k="'+v[0]+'" data-id="'+v[1]+'"></canvas>';}).join("")+'</div>'+
+  '<div>'+e.l.map(function(t){return '<b>'+t+'</b>';}).join("")+(ferme?'<em class="suc-jc">Jeu complet</em>':"")+'</div><span class="coche">'+(ok?'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>':ferme?'<svg viewBox="0 0 24 24" class="cad">'+CADENAS+'</svg>':"")+'</span></div>';}).join("");}
 function titreRang(r){var t=RANGS[0][1];RANGS.forEach(function(x){if(r>=x[0])t=x[1];});return t;}
 function anneauRang(xp,epais){var R=rangDe(xp),f=R.xp/R.besoin,c=2*Math.PI*16;
   return '<svg viewBox="0 0 38 38"><circle cx="19" cy="19" r="16" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="'+(epais||3)+'"/><circle cx="19" cy="19" r="16" fill="none" stroke="url(#gRang)" stroke-width="'+(epais||3)+'" stroke-linecap="round" stroke-dasharray="'+(c*f).toFixed(1)+' '+c.toFixed(1)+'"/>'+
     '<defs><linearGradient id="gRang" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="rgb('+ACC+')"/><stop offset="1" stop-color="rgb('+ACC_CLAIR+')"/></linearGradient></defs></svg><span>'+R.r+'</span>';}
 function gagnerXp(n){if(!n)return;var avant=rangDe(PROG.xp).r;PROG.xp=(PROG.xp||0)+n;var apres=rangDe(PROG.xp).r;
-  for(var r=avant+1;r<=apres;r++){(function(r){var e=ROUTE.filter(function(x){return x.r===r;})[0];
+  for(var r=avant+1;r<=apres;r++){(function(r){var e=paliers().filter(function(x){return x.r===r;})[0];
     setTimeout(function(){toast("Rang "+r,e?e.l[0]:titreRang(r));},400);if(e)gagnerAmpoule();})(r);}
   if(apres>avant&&typeof appliquerOptions==="function")appliquerOptions();
 }
@@ -2788,7 +2837,7 @@ function avancerMissions(v,max){var touche=false,listes=[[missionsDuJour(),XP_MI
   listes.forEach(function(L){var M=L[0],fini=[];
     M.l.forEach(function(m){if(missionFinie(m))return;var x=v(m);if(!x)return;m.p=Math.min(m.but,max?Math.max(m.p,x):m.p+x);if(missionFinie(m))fini.push(m);});
     fini.forEach(function(m){if(m.id==="defi"||m.id==="defiSem")return;toast("Mission accomplie",texteMission(m));gagnerXp(L[1]);});
-    if(!M.bonus&&M.l.every(missionFinie)){M.bonus=true;for(var a=0;a<L[2];a++)gagnerAmpoule();}
+    if(!M.bonus&&M.l.every(missionFinie)){M.bonus=true;PROG.tips[M.sem?"elite":"missionsJour"]=1;for(var a=0;a<L[2];a++)gagnerAmpoule();}
     if(fini.length)touche=true;});
   if(touche)majRang();}
 function missionsVictoire(d,e,eT,temps,premier){avancerMissions(function(m){return{cubes:1,etT:d.relax?0:eT,jours:d.mode==="jour"&&premier?1:0,defi:d.mode==="jour"?1:0,defiSem:d.mode==="semaine"?1:0,parfait:d.mode==="campagne"&&e===3?1:0,
@@ -2803,6 +2852,7 @@ function rafraichirProfil(){var R=rangDe(PROG.xp),M=missionsDuJour();
   majCompte();
   // les récompenses : une phrase pour dire comment on monte, puis la route (la prochaine est en doré) ; plus d'encadré qui la répétait
   document.getElementById("grpRecomp").innerHTML='<h4>Récompenses du rang</h4><p class="g-intro">Résolvez des cubes, réussissez les défis et les missions pour gagner de l’expérience. Chaque palier offre une aide.</p>'+routeHTML();
+  document.querySelectorAll("#grpRecomp canvas.rt-v").forEach(function(cv){vignette(cv,cv.dataset.k,cv.dataset.id);});
   rc.innerHTML='<span class="anneau-rang notrad">'+anneauRang(PROG.xp,2.4)+'</span><button class="rc-pseudo" id="btnPseudo" type="button" aria-label="Changer de pseudo"><b class="notrad">'+echapper(pseudo())+'</b>'+
     '<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/></svg></button><h3 class="rc-titre">'+titreRang(R.r)+'</h3>'+(aDroit("soutien")?'<span class="mecene-titre">Mécène d’Orbicube</span>':"")+(voieFinie(MONDES.length-1)?'<span class="mecene-titre maitre">Maître des orbites</span>':"")+
     '<span class="xp notrad">'+R.xp+' / '+R.besoin+' XP</span><span class="rc-et notrad">'+SVG_ET+etoilesTotal()+' '+SVG_ETT+etoilesChrono()+'</span>';

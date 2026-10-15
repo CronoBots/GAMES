@@ -199,7 +199,9 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   secondaires en pilule de verre sombre au contour d'accent, texte centré (`.fenetre .bouton`).
   **Écran de jeu au même langage** : boutons à icône seule (`.ico`, partout) en ronds de verre au contour d'accent,
   Annuler/Rejouer en pilules de verre, Niveaux/Accueil en petits ronds avec leur nom dessous (bloc en fin de feuille de style).
-- **Campagne** : l'en-tête de chaque monde et la pastille du haut montrent les deux totaux (`chronoMonde`, `etoilesChrono`).
+- **Campagne** : le titre de l'écran est dans la police du titre ORBICUBE (Jost 300 en capitales espacées, le client, le
+  16/10/2026) ; **en haut de la carte, « À suivre… »** (`.parc-fin`, item `t:"f"`) annonce les mondes des prochaines mises à
+  jour. L'en-tête de chaque monde et la pastille du haut montrent les deux totaux (`chronoMonde`, `etoilesChrono`).
   **Nœuds de niveau** (le client, le 14/10/2026 : « tout ») : la couleur d'un monde sur la carte est celle de son décor
   (`THEME_ACC[themeFond(w)-1]`, comme en jeu ; l'ancienne palette `ACCENTS` donnait du lilas au monde vert). Bouton de 66 px avec une **bille** de 56 px en verre sombre,
   la couleur du monde en reflet et sur l'anneau (`.bille` ; l'aplat de couleur et les orbites en filigrane ont été refusés), les **étoiles de coups en
@@ -293,7 +295,10 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   à semer dans le code. Les paragraphes d'aide à balises se traduisent en blocs (`data-html`).
 - **Les succès des stores** passent par `plugins/succes-natifs` ; sans module ni configuration,
   tout se replie sans bruit. Le module natif n'a jamais été compilé ici : la première build Xcode
-  et Android Studio le validera.
+  et Android Studio le validera. **21 succès** (le client, le 16/10/2026 : « des succès, notamment qui nécessitent le jeu
+  complet ») : neuf demandent le jeu complet (`complet:1` dans `SUCCES` : m3, m5, m6, p60, expert, voies, neuf, semaine, elite),
+  marqués « Jeu complet » (`.suc-jc`) tant qu'il n'est pas acheté. 995 points Apple sur 1 000 : plus de place pour un succès
+  sans en rééquilibrer d'autres. `PROG.tips.missionsJour` / `elite` notent les quatre missions réussies.
 - **Classement du jeu** (le client, le 14/10/2026 : un classement interne, pseudo « PlayerX » modifiable, stats visibles
   des autres, et il doit marcher sans Game Center) : serveur Supabase dans `orbicube/serveur/` (`LISEZMOI.md` : une
   fonction `orbicube`, trois tables à RLS fermé). Pas de compte : `PROG.compte` = identifiant, jeton du téléphone, code de
@@ -349,7 +354,11 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   (Hexagones 5, Poussière d'étoiles 10, Crépuscule 15, Nacre 20, Abysses 25, Braises 30, Solaire 35, Or rose 40), un cadre
   autour du pseudo à chaque titre (`CADRES`, `cadreDe`, `poserCadre` : bronze, argent, or, étoilé, cristal, légendaire ; sur la
   puce, la carte du Profil et au classement), et des ampoules offertes chaque jour aux rangs 10 et 20 (`ampoulesDuJour`,
-  en plus de celle du jeu complet). Liste au Profil (`routeHTML`, onglet Profil de l'espace joueur).
+  en plus de celle du jeu complet). Liste au Profil (`routeHTML`, onglet Profil de l'espace joueur). **Chaque palier montre
+  l'aperçu de sa récompense** (le client, le 16/10/2026 : « sinon on ne comprend pas » ; `ROUTE[].v` : vignette du style par
+  `vignette`, cadre en anneau `.rt-cadre`). **Trois paliers réservés au jeu complet** (`jc` : palettes Prisme 12, Cosmos 22,
+  Céleste 32, `ouv:{rang,complet}`) : sans achat, cadenas doré et « Jeu complet », un toucher ouvre l'achat (`POURQUOI.rang`) ;
+  `paliers()` ne compte que ceux qu'on peut gagner (aide du palier, « prochaine » récompense).
 - **Classements des stores** (le client, le 11/10/2026 : « on fera comme tu le dis ») — **remplacés à l'écran par le
   classement du jeu le 14/10/2026** ; l'envoi continue sans bruit s'ils existent : par Game Center et Google Play Jeux,
   **pas de compte à nous** (la politique de confidentialité ne change pas). `CLASSEMENTS` (jour, semaine, sansfin,

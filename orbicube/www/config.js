@@ -30,11 +30,14 @@ window.ORBICUBE_CONFIG = {
       premier: "orbicube.premier", m1: "orbicube.monde1", m3: "orbicube.tranches", m5: "orbicube.orbite",
       m6: "orbicube.grandmaitre", p10: "orbicube.precision", pm: "orbicube.perfectionniste", p60: "orbicube.sansfaute",
       eclair: "orbicube.eclair", jour: "orbicube.rendezvous", serie3: "orbicube.serie3", expert: "orbicube.expert",
-      axes: "orbicube.troisaxes", tours: "orbicube.milletours", voies: "orbicube.voiedoree"
+      axes: "orbicube.troisaxes", tours: "orbicube.milletours", voies: "orbicube.voiedoree",
+      missions: "orbicube.missions", fidele: "orbicube.fidele", rang10: "orbicube.habitue", neuf: "orbicube.neuforbites",
+      semaine: "orbicube.granddefi", elite: "orbicube.elite"
     },
     android: {
       premier: "", m1: "", m3: "", m5: "", m6: "", p10: "", pm: "", p60: "",
-      eclair: "", jour: "", serie3: "", expert: "", axes: "", tours: "", voies: ""
+      eclair: "", jour: "", serie3: "", expert: "", axes: "", tours: "", voies: "",
+      missions: "", fidele: "", rang10: "", neuf: "", semaine: "", elite: ""
     }
   },
 

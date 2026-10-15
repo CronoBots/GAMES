@@ -99,15 +99,15 @@ Le jeu lit le prix, achète, restaure et vérifie le droit « complet » par `sr
 
 ## 3 bis. Les succès dans Game Center et Google Play Jeux **[vous]**
 
-Les 15 succès du jeu sont aussi déclarés au service de jeu du téléphone : Game Center sur
+Les 21 succès du jeu sont aussi déclarés au service de jeu du téléphone : Game Center sur
 iPhone, Google Play Jeux sur Android. Le joueur les retrouve dans l'app Jeux d'Apple ou dans
 Google Play Jeux, avec la bannière « Succès déverrouillé » du système. Le code est prêt :
 `plugins/succes-natifs` (Swift et Java), branché par `src/natif.js`. Sans configuration, rien
 ne change : les succès restent dans le jeu.
 
 **Les succès à créer**, avec les images de `ressources/succes/` (`apple/` en 1024 × 1024,
-`google/` en 512 × 512). Les points totalisent 835 sur les 1 000 qu'Apple autorise : il reste
-de la marge pour des succès futurs.
+`google/` en 512 × 512). Les points totalisent 995 sur les 1 000 qu'Apple autorise. Neuf succès demandent le jeu complet
+(m3, m5, m6, p60, expert, voies, neuf, semaine, elite) : le jeu les marque « Jeu complet » tant qu'il n'est pas acheté.
 
 | Clé du jeu | Identifiant Apple | Nom | Description | Points |
 |---|---|---|---|---|
@@ -126,6 +126,12 @@ de la marge pour des succès futurs.
 | axes | `orbicube.troisaxes` | Trois axes | Tourner M, E et S dans une même partie résolue. | 50 |
 | tours | `orbicube.milletours` | Mille tours | Tourner les cercles 1 000 fois. | 100 |
 | voies | `orbicube.voiedoree` | Voie dorée | Finir la voie dorée des huit mondes. | 100 |
+| missions | `orbicube.missions` | Mission accomplie | Réussir les quatre missions du jour. | 10 |
+| fidele | `orbicube.fidele` | Fidèle | Réussir sept défis du jour. | 25 |
+| rang10 | `orbicube.habitue` | Habitué | Atteindre le rang 10. | 25 |
+| neuf | `orbicube.neuforbites` | Neuf orbites | Résoudre un niveau sur les neuf orbites. | 25 |
+| semaine | `orbicube.granddefi` | Grand défi | Réussir un défi de la semaine. | 25 |
+| elite | `orbicube.elite` | Élite | Réussir les quatre missions élite d'une semaine. | 50 |
 
 Les noms et descriptions traduits sont dans `www/langues.js` : recopiez-les dans chaque langue
 de la fiche. Aucun succès n'est caché.

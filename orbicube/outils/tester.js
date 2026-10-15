@@ -122,8 +122,8 @@ async function resoudre(p) {
 
     // la boutique, depuis les options : un style ouvert se porte d'un toucher, celui d'un pack non acheté se regarde sans se porter
     await p.tap("#btnStylesOpt"); await p.waitForTimeout(700);
-    (await p.isVisible("#boutique.actif")) && (await p.$$eval("#boutRayon .style", (l) => l.length)) === 14 ? ok("boutique : quatorze palettes en vitrine, dont « Couleurs du monde », deux exclusives de la voie dorée et trois du rang") : faute("boutique : rayon des couleurs absent");
-    (await p.textContent('#boutRayons [data-r="palette"] .cpt')) === "3/14" ? ok("boutique : compteur de collection (3/14 palettes pour un débutant)") : faute("compteur de collection faux : " + (await p.textContent('#boutRayons [data-r="palette"] .cpt')));
+    (await p.isVisible("#boutique.actif")) && (await p.$$eval("#boutRayon .style", (l) => l.length)) === 17 ? ok("boutique : dix-sept palettes en vitrine, dont « Couleurs du monde », deux exclusives de la voie dorée, trois du rang et trois du rang avec le jeu complet") : faute("boutique : rayon des couleurs absent");
+    (await p.textContent('#boutRayons [data-r="palette"] .cpt')) === "3/17" ? ok("boutique : compteur de collection (3/17 palettes pour un débutant)") : faute("compteur de collection faux : " + (await p.textContent('#boutRayons [data-r="palette"] .cpt')));
     await p.tap('#boutRayons [data-r="packs"]'); await p.waitForTimeout(400);
     (await p.isVisible("#boutJeu .bout-jeu")) && !(await p.$("#boutJeu #pack-integrale")) && (await p.isVisible("#boutRayon #pack-integrale")) && (await p.isVisible("#pack-couleurs")) && (await p.isVisible('#boutRayon [data-achat="amp10"]')) && (await p.textContent("#boutRayon #pack-soutien")).includes("Faire un don") && (await p.isVisible("#pack-collection .of-vitrine")) && (await p.textContent("#pack-integrale")).includes("%") && !(await p.isVisible("#boutApercu")) && (await p.textContent('#boutRayons [data-r="packs"] .cpt')) === "0/3"
       ? ok("boutique : le jeu complet en haut ; dans l'onglet Packs, les offres groupées détaillées (économie en %), les packs, les aides et le don") : faute("onglet Packs de la boutique");
@@ -277,6 +277,7 @@ async function resoudre(p) {
     await p.click("#succes [data-retour]"); await p.waitForTimeout(400);
     await p.click("#btnJouer"); await p.waitForTimeout(700);
     (await p.$$eval(".parc-jeu", (l) => l.length)) === 1 ? ok("carte : le jeu complet posé comme un monde à la fin du jeu gratuit") : faute("carte du jeu complet absente de la campagne");
+    (await p.$$eval(".parc-fin", (l) => l.length)) === 1 ? ok("carte : la fin de la campagne annonce les mondes à venir") : faute("fin de campagne muette");
     await p.click(".parc-jeu"); await p.waitForTimeout(400);
     (await p.textContent("#fenetre")).includes("9 orbites") ? ok("la carte du jeu complet ouvre l'achat") : faute("la carte du jeu complet n'ouvre rien");
     await p.click('#fenetre [data-a="x"]').catch(() => {}); await p.waitForTimeout(300);

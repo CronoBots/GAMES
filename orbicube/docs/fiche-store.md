@@ -31,7 +31,7 @@ elles. Regroupez chaque couleur pour gagner.
 • Des rangs à gravir, trois missions chaque jour et des ciels à débloquer
 • Un jeu libre chronométré, de facile à expert, un mode sans fin et un mode relax
 • Des étoiles de coups et des étoiles de temps, chacune avec ses récompenses
-• 15 succès, aussi dans Game Center et Google Play Jeux
+• 21 succès, aussi dans Game Center et Google Play Jeux
 • En français, anglais, néerlandais, allemand et espagnol
 • Des gestes faits pour le pouce : glisser, lancer, enchaîner les tours sans lever le doigt
 • Une palette lisible par les daltoniens
