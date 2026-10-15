@@ -284,20 +284,22 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   `npm run tester` joue tout contre `outils/classement-essai.js` (faux serveur en mémoire, mêmes réponses). **Mise en
   ligne en attente** : la limite de deux projets Supabase gratuits est atteinte (le client doit libérer une place) ;
   `www/config.js` > `classement` reste vide d'ici là, et l'écran dit « ouvrira avec la sortie du jeu ».
-- **Écran Défis** (`#defis`, `rafraichirDefis`, le client, le 15/10/2026 : « combiner les missions du profil avec les défis du
-  jour ainsi que les récompenses de profil », « professionnel ») : le rond « Défis » du dock ouvre un écran (plus une fenêtre)
-  qui réunit le défi du jour en carte dorée (date, série, résultat coups/temps/étoiles, « Jouer le défi » ou « Rejouer pour
-  progresser », temps avant le suivant, podium du jour et sa place), le défi de la semaine (ou la carte réservée), les
-  missions du jour (`missionsHTML`) et les récompenses du rang (anneau, barre d'XP, prochaine récompense, `routeHTML`).
-  Le Profil garde l'identité (pseudo, rang, étoiles), le bouton Classement et « Mon profil de joueur » ; la puce de
-  l'accueil n'affiche plus que le rang et le pseudo. **Classement à l'accueil** : rond « Classement » dans le dock
-  (cinq ronds ; sous 360 px, noms sur deux lignes et sans ligne d'état). Lire le classement ne crée jamais de profil
-  (le test le vérifie) : seule une victoire, un pseudo changé, un signalement ou « Afficher » le code le font.
+- **Espace joueur** (`#joueur`, le client, le 15/10/2026 : « on s'y perd entre le profil, les missions et les défis »,
+  « intuitif, compréhensible et professionnel ») : **un seul écran, trois onglets** en commande segmentée dans l'en-tête
+  (`#jOnglets`, `ouvrirJoueur(o, depuis)`, `ongletJoueur`, `JOUEUR.o`) : **Aujourd'hui** (`#pJour`, `rafraichirDefis` : le défi
+  du jour en carte dorée avec résultat, série, podium et place, le défi de la semaine ou la carte réservée, les missions du
+  jour, puis « Votre rang » avec la prochaine récompense et « Toutes les récompenses ») ; **Classement** (`#pClassement`,
+  `chargerClassement`, sous-onglets Jour à Rang, ligne « Vous » épinglée) ; **Profil** (`#pProfil`, `rafraichirProfil` : carte
+  d'identité avec pseudo modifiable, récompenses du rang `#grpRecomp`, comment monter, « Mon profil de joueur »).
+  Entrées : la puce du haut de l'accueil → Profil, le rond Défis → Aujourd'hui, le rond Classement → Classement,
+  « Voir le classement » après un défi → Classement. Les anciens écrans `#profil`, `#defis`, `#classement` n'existent plus.
+  Lire le classement ne crée jamais de profil (le test le vérifie) : seule une victoire, un pseudo changé, un signalement
+  ou « Afficher » le code le font.
 - **Route du rang** (le client, le 14/10/2026 : « à quoi sert le niveau ? ») : `ROUTE`, un style à gagner tous les cinq rangs
   (Hexagones 5, Poussière d'étoiles 10, Crépuscule 15, Nacre 20, Abysses 25, Braises 30, Solaire 35, Or rose 40), un cadre
   autour du pseudo à chaque titre (`CADRES`, `cadreDe`, `poserCadre` : bronze, argent, or, étoilé, cristal, légendaire ; sur la
   puce, la carte du Profil et au classement), et des ampoules offertes chaque jour aux rangs 10 et 20 (`ampoulesDuJour`,
-  en plus de celle du jeu complet). Liste « Route du rang » au Profil (`routeHTML`).
+  en plus de celle du jeu complet). Liste au Profil (`routeHTML`, onglet Profil de l'espace joueur).
 - **Classements des stores** (le client, le 11/10/2026 : « on fera comme tu le dis ») — **remplacés à l'écran par le
   classement du jeu le 14/10/2026** ; l'envoi continue sans bruit s'ils existent : par Game Center et Google Play Jeux,
   **pas de compte à nous** (la politique de confidentialité ne change pas). `CLASSEMENTS` (jour, semaine, sansfin,

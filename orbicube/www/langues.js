@@ -75,6 +75,10 @@
     ["Maître des orbites", "Master of orbits", "Meester van de banen", "Meister der Bahnen", "Maestro de las órbitas"],
     ["Finir la voie dorée des huit mondes.", "Finish the golden path of all eight worlds.", "Voltooi het gouden pad van alle acht werelden.", "Schließe den goldenen Pfad aller acht Welten ab.", "Termina el camino dorado de los ocho mundos."],
     // --- écran Défis (15/10/2026)
+    ["Aujourd’hui", "Today", "Vandaag", "Heute", "Hoy"],
+    ["Espace joueur", "Player area", "Spelersruimte", "Spielerbereich", "Espacio del jugador"],
+    ["Votre rang", "Your rank", "Je rang", "Dein Rang", "Tu rango"],
+    ["Toutes les récompenses", "All rewards", "Alle beloningen", "Alle Belohnungen", "Todas las recompensas"],
     ["Profil et rang", "Profile and rank", "Profiel en rang", "Profil und Rang", "Perfil y rango"],
     ["mondial", "global", "wereld", "weltweit", "mundial"],
     ["coups", "moves", "zetten", "Züge", "movimientos"],
