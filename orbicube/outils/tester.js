@@ -107,9 +107,9 @@ async function resoudre(p) {
     await p.tap('#fenetre [data-a="x"]'); await p.waitForTimeout(300);
     // défis : celui du jour est gratuit, celui de la semaine réservé au jeu complet
     await p.tap("#btnJour"); await p.waitForTimeout(500);
-    const sem = await p.evaluate(() => { const f = document.querySelector("#joueur"); return f.classList.contains("actif") && !!f.querySelector('.df-reserve [data-a="semaine"]') && !f.querySelector('[data-a="jour"]').closest(".df-reserve"); });
-    const hub = await p.evaluate(() => ["Objectifs du jour", "Défi du jour", "Bonus : les trois missions", "+30 XP"].every((t) => document.querySelector("#pJour").textContent.includes(t)) && !document.querySelector("#pJour").textContent.includes("Récompenses du rang"));
-    hub ? ok("espace joueur, Aujourd'hui : défi du jour et missions dans un seul cadre d'objectifs, chacun avec sa récompense") : faute("écran Défis incomplet");
+    const sem = await p.evaluate(() => { const f = document.querySelector("#joueur"); return f.classList.contains("actif") && !!f.querySelector('.obj.verrou[data-a="semaine"]') && !f.querySelector('.obj[data-a="jour"]').classList.contains("verrou"); });
+    const hub = await p.evaluate(() => ["Missions du jour", "Défi du jour", "Bonus : les trois missions", "+50 XP", "Missions de la semaine", "+150 XP"].every((t) => document.querySelector("#pJour").textContent.includes(t)) && !document.querySelector("#pJour").textContent.includes("Récompenses du rang"));
+    hub ? ok("Aujourd'hui : missions du jour et de la semaine, chacune avec sa récompense") : faute("écran Défis incomplet");
     await p.tap('#pJour [data-a="semaine"]'); await p.waitForTimeout(400);
     sem && (await p.textContent("#fenetre")).includes("défi de la semaine fait partie") ? ok("défis : le jour gratuit, la semaine réservée au jeu complet") : faute("défi de la semaine pas réservé");
     await p.tap('#fenetre [data-a="x"]'); await p.waitForTimeout(300); await p.tap("#joueur [data-retour]"); await p.waitForTimeout(400);
@@ -313,7 +313,7 @@ async function resoudre(p) {
     for (const m of sol) { await p.keyboard.press(m.length > 1 ? "Shift+" + m[0] : m[0]); await p.waitForTimeout(450); }
     await p.waitForTimeout(2600);
     const fv = await p.textContent("#fenetre");
-    fv.includes("Objectif accompli") || fv.includes("Objectifs accomplis") ? ok("la victoire dit l'objectif accompli et sa récompense") : faute("victoire sans objectif accompli");
+    fv.includes("Mission accomplie") || fv.includes("Missions accomplies") ? ok("la victoire dit la mission accomplie et sa récompense") : faute("victoire sans objectif accompli");
     const moi = (await lire(p)).compte;
     moi && moi.id && /^ORBI-/.test(moi.code) && essai.joueurs.get(moi.id).pseudo === (await p.textContent("#rangTitre")) ? ok("première victoire : profil créé, même pseudo, code de récupération") : faute("profil non créé : " + JSON.stringify(moi));
     [...essai.scores.values()].some((x) => x.j === moi.id && x.coups === sol.length) ? ok("défi du jour : coups rejoués et acceptés par le serveur (" + sol.length + " coups)") : faute("score du défi non classé");

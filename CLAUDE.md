@@ -288,11 +288,15 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   « intuitif, compréhensible et professionnel ») : **un seul écran, trois onglets** en commande segmentée dans l'en-tête
   (`#jOnglets`, `ouvrirJoueur(o, depuis)`, `ongletJoueur`, `JOUEUR.o`) : **Aujourd'hui** (`#pJour`, `rafraichirDefis`, le client, le 15/10/2026 :
   « défi du jour, mission du jour, ça porte à confusion », « avec les récompenses de chacun », « que ça donne envie ») :
-  **un seul cadre « Objectifs du jour »** (compteur 1/4, barre dorée, une phrase d'explication) qui liste le défi du jour
-  en tête puis les trois missions et le bonus des trois missions, chacun avec ses récompenses en pastilles (`objectif`,
-  `gains` : ampoules en or, XP en accent ; le défi du jour +1 ampoule +100 XP, une mission +30 XP, le bonus +1 ampoule ;
-  pâlies une fois gagnées), puis « Jouer le défi du jour », la série et la ligne « Classement du jour » (`lignePlace`).
-  En dessous, **« Objectif de la semaine »** au même format (+2 ampoules +200 XP ; verrouillé `.df-reserve` sans achat).
+  **deux cadres de même forme** (le client, le 15/10/2026 : « le défi du jour devient la mission du jour, pareil pour la
+  semaine », « plus difficiles mais qui rapportent plus ») : **Missions du jour** (le défi du jour en tête +1 ampoule +100 XP,
+  trois missions `MISSIONS` à +50 XP, bonus des trois +1 ampoule) et **Missions de la semaine** (le défi de la semaine en
+  tête +2 ampoules +200 XP, verrouillé sur sa ligne sans le jeu complet ; trois missions `MISSIONS_SEM` plus longues, qui
+  cumulent toute la semaine, à +150 XP ; bonus des trois +3 ampoules). `tirerMissions`, `missionsSemaine` (`PROG.missionsSem`,
+  graine `missions-sem-<semaine>` ; « sans fin » seulement avec le jeu complet), `avancerMissions` avance les deux listes,
+  `lignesMissions` les affiche ; compteur, barre dorée, une phrase d'explication les trois premiers jours.
+  « Un défi en moins de N s » ne compte que les défis (un niveau d'un coup la rendait gratuite) ; `jours` (semaine) compte
+  les défis du jour réussis pour la première fois. Une liste du jour d'avant ces règles est tirée à nouveau.
   Les XP affichées sont arrondies vers le bas du gain réel (`xpVictoire`) : ne jamais promettre plus que ce qui tombe.
   Une mission d'une seule fois n'affiche ni « 0/1 » ni barre. **Chaque objectif est un bouton** (`objectif(…, jeu, k)`,
   flèche « › ») qui mène où il se joue (`MISSIONS[].jeu` : `campagne` → bouton Jouer, `libre` → Jeu libre ; le défi du jour
