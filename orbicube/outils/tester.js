@@ -124,7 +124,12 @@ async function resoudre(p) {
     await p.tap("#btnStylesOpt"); await p.waitForTimeout(700);
     (await p.isVisible("#boutique.actif")) && (await p.$$eval("#boutRayon .style", (l) => l.length)) === 14 ? ok("boutique : quatorze palettes en vitrine, dont « Couleurs du monde », deux exclusives de la voie dorée et trois du rang") : faute("boutique : rayon des couleurs absent");
     (await p.textContent('#boutRayons [data-r="palette"] .cpt')) === "3/14" ? ok("boutique : compteur de collection (3/14 palettes pour un débutant)") : faute("compteur de collection faux : " + (await p.textContent('#boutRayons [data-r="palette"] .cpt')));
+    await p.tap('#boutRayons [data-r="packs"]'); await p.waitForTimeout(400);
+    (await p.isVisible("#boutJeu .bout-jeu")) && (await p.isVisible("#pack-couleurs")) && !(await p.isVisible("#boutApercu")) && (await p.textContent('#boutRayons [data-r="packs"] .cpt')) === "0/3"
+      ? ok("boutique : le jeu complet en haut, les packs dans leur onglet (0/3), sans aperçu") : faute("onglet Packs de la boutique");
+    const dPk = await debordements(p); dPk.length ? faute("débordement dans l'onglet Packs : " + dPk) : ok("onglet Packs sans débordement");
     (await p.textContent("#pack-couleurs")).includes("au lieu de") && (await p.textContent("#pack-couleurs")).includes("3,96") ? ok("boutique : le pack montre ce que coûterait son contenu à l'unité (3,96 €)") : faute("prix barré du pack absent");
+    await p.tap('#boutRayons [data-r="palette"]'); await p.waitForTimeout(400);
     await p.tap('.style[data-id="contraste"]'); await p.waitForTimeout(300);
     (await p.$('.style.porte[data-id="contraste"]')) ? ok("boutique : un style ouvert se porte d'un toucher") : faute("le style choisi n'est pas porté");
     await p.tap('.style[data-id="aurore"]'); await p.waitForTimeout(500);
@@ -278,12 +283,13 @@ async function resoudre(p) {
     // boutique : prix d'un pack venu du store, achat d'un pack (ses styles s'ouvrent), achat d'ampoules (créditées)
     await p.click("#parcours [data-retour]"); await p.waitForTimeout(400);
     await p.click("#btnOptions"); await p.waitForTimeout(400); await p.click("#btnStylesOpt"); await p.waitForTimeout(700);
-    (await p.textContent("#pack-couleurs")).includes("2,29 €") ? ok("boutique : le prix du pack vient du store (2,29 €)") : faute("prix du pack absent");
+    await p.click('#boutRayons [data-r="packs"]'); await p.waitForTimeout(400); (await p.textContent("#pack-couleurs")).includes("2,29 €") ? ok("boutique : le prix du pack vient du store (2,29 €)") : faute("prix du pack absent");
     // un style seul : la fiche de l'aperçu le vend à l'unité, sans le reste du pack
-    await p.click('.style[data-id="galaxie"]'); await p.waitForTimeout(500); await p.click('#apercuFiche [data-achat="s_galaxie"]'); await p.waitForTimeout(900);
+    await p.click('#boutRayons [data-r="palette"]'); await p.waitForTimeout(400); await p.click('.style[data-id="galaxie"]'); await p.waitForTimeout(500); await p.click('#apercuFiche [data-achat="s_galaxie"]'); await p.waitForTimeout(900);
     !(await p.$('.style.ferme[data-id="galaxie"]')) && (await p.$('.style.ferme[data-id="aurore"]')) ? ok("un style acheté seul s'ouvre, sans ouvrir le reste du pack") : faute("l'achat à l'unité ne marche pas");
-    await p.click("#pack-couleurs [data-achat]"); await p.waitForTimeout(900);
-    !(await p.$('.style.ferme[data-id="aurore"]')) && (await p.textContent("#pack-couleurs")).includes("Acquis") ? ok("pack acheté : ses palettes s'ouvrent") : faute("le pack acheté n'ouvre rien");
+    await p.click('#boutRayons [data-r="packs"]'); await p.waitForTimeout(400); await p.click("#pack-couleurs [data-achat]"); await p.waitForTimeout(900);
+    const packAcquis = (await p.textContent("#pack-couleurs")).includes("Acquis"); await p.click('#boutRayons [data-r="palette"]'); await p.waitForTimeout(400); 
+    !(await p.$('.style.ferme[data-id="aurore"]')) && packAcquis ? ok("pack acheté : ses palettes s'ouvrent") : faute("le pack acheté n'ouvre rien");
     const amp0 = +(await p.textContent("#boutAmpNb")); await p.click('[data-achat="amp10"]'); await p.waitForTimeout(900);
     +(await p.textContent("#boutAmpNb")) === amp0 + 10 ? ok("dix ampoules achetées sont créditées") : faute("ampoules non créditées : " + amp0 + " → " + (await p.textContent("#boutAmpNb")));
     erreurs.length ? faute("erreurs : " + erreurs.join(" | ")) : ok("aucune erreur de script");
@@ -375,7 +381,7 @@ async function resoudre(p) {
     const fermer = async () => { for (const a of ["x", "non", "reprendre", "menu"]) if (await go(`#fenetre [data-a="${a}"]`)) return; };
     await go("#btnOptions"); await p.selectOption("#optLangue", langue); await p.waitForTimeout(300); await mesurer("options");
     await go("#btnStylesOpt", 900); await mesurer("boutique couleurs"); await go('#boutRayons [data-r="forme"]'); await mesurer("boutique formes");
-    await go('#boutRayons [data-r="effets"]'); await mesurer("boutique effets"); await go('.style[data-id="comete"]', 600); await mesurer("boutique, style d'un pack");
+    await go('#boutRayons [data-r="effets"]'); await mesurer("boutique effets"); await go('#boutRayons [data-r="packs"]'); await mesurer("boutique packs"); await go('#boutRayons [data-r="effets"]'); await go('.style[data-id="comete"]', 600); await mesurer("boutique, style d'un pack");
     await go('.style[data-id="poussiere"]', 600); await go("#boutRetour");
     await go("#btnEffacer"); await mesurer("effacer"); await fermer(); await go("#btnRestaurer"); await go("#options [data-retour]");
     await mesurer("accueil");

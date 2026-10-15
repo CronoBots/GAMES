@@ -588,6 +588,7 @@
     ["Quatre gerbes de feu d’artifice à chaque victoire.", "Four bursts of fireworks with every win.", "Vier vuurwerkbundels bij elke overwinning.", "Vier Feuerwerksgarben bei jedem Sieg.", "Cuatro ramilletes de fuegos artificiales en cada victoria."],
     ["Packs et offres", "Packs and offers", "Pakketten en aanbiedingen", "Pakete und Angebote", "Packs y ofertas"],
     ["Packs de styles", "Style packs", "Stijlpakketten", "Stilpakete", "Packs de estilos"],
+    ["Packs", "Packs", "Pakketten", "Pakete", "Packs"],
     ["Le jeu complet", "The full game", "Het volledige spel", "Die Vollversion", "El juego completo"],
     ["Acheter", "Buy", "Kopen", "Kaufen", "Comprar"],
     ["Porter", "Wear", "Gebruiken", "Verwenden", "Usar"],

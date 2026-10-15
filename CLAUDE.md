@@ -130,7 +130,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   les options et la carte réservée (« Avec les 9 orbites · jeu complet »).
   **Dans la boutique, le jeu complet est tout en haut, à part** (le client, le 16/10/2026 : « perdu dans les packs ») :
   carte « Le jeu complet » (`#boutJeu`, les 9 orbites, bouton « Orbicube complet ») puis l'édition intégrale en second
-  choix ; ensuite « Styles » (rayons, aperçu) et, plus bas, « Packs de styles » (Collection et les trois packs) seulement.
+  choix ; ensuite « Styles » : quatre onglets Couleurs, Formes, Effets et **Packs** (le client, le 16/10/2026 : « rassembler
+  les packs dans un onglet » ; Collection et les trois packs, compteur « n/3 », sans aperçu). Compteurs sous les noms.
 - **Ce que l'achat ouvre, dit clairement** (le client, le 14/10/2026 : « Jeu libre », pas « Partie libre » ; donner envie
   d'acheter) : sans achat, le jeu libre n'a que « Facile » sur les orbites du dernier monde gratuit (`orbitesLibres`,
   `libresGratuits`) ; Moyen/Difficile/Expert, Sans fin, Relax et le **défi de la semaine** sont dans une carte dorée
