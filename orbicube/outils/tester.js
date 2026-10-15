@@ -305,11 +305,15 @@ async function resoudre(p) {
     const lire = (p) => p.evaluate(() => JSON.parse(localStorage.getItem("orbicube-v1")));
     const p = await nouveau(true);
     /^Player\d{4}$/.test(await p.textContent("#rangTitre")) ? ok("pseudo par défaut « " + (await p.textContent("#rangTitre")) + " » dans la puce de l'accueil") : faute("pseudo par défaut absent : " + (await p.textContent("#rangTitre")));
+    (await p.textContent("#jourPoint")) === "4" ? ok("le rond Défis compte les objectifs du jour qui restent (4)") : faute("compteur du rond Défis : " + (await p.textContent("#jourPoint")));
     await p.tap("#btnJour"); await p.waitForTimeout(900);
+    (await p.$$eval("#pJour button.obj.va", (l) => l.length)) >= 3 ? ok("chaque objectif du jour est un bouton qui mène où il se joue") : faute("objectifs non cliquables");
     !(await lire(p)).compte && essai.joueurs.size === 6 ? ok("rien n'est envoyé avant la première victoire, même en ouvrant Défis et son podium") : faute("un profil est créé avant de jouer"); await p.tap('#pJour [data-a="jour"]'); await p.waitForTimeout(2200);
     const sol = await p.evaluate(() => window.__orbicube.solution());
     for (const m of sol) { await p.keyboard.press(m.length > 1 ? "Shift+" + m[0] : m[0]); await p.waitForTimeout(450); }
     await p.waitForTimeout(2600);
+    const fv = await p.textContent("#fenetre");
+    fv.includes("Objectif accompli") || fv.includes("Objectifs accomplis") ? ok("la victoire dit l'objectif accompli et sa récompense") : faute("victoire sans objectif accompli");
     const moi = (await lire(p)).compte;
     moi && moi.id && /^ORBI-/.test(moi.code) && essai.joueurs.get(moi.id).pseudo === (await p.textContent("#rangTitre")) ? ok("première victoire : profil créé, même pseudo, code de récupération") : faute("profil non créé : " + JSON.stringify(moi));
     [...essai.scores.values()].some((x) => x.j === moi.id && x.coups === sol.length) ? ok("défi du jour : coups rejoués et acceptés par le serveur (" + sol.length + " coups)") : faute("score du défi non classé");

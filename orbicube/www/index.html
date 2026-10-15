@@ -840,6 +840,18 @@ body.sobre #plateau{transition:none}
 .gains.pris .gain{opacity:.45}
 .df-serie-l{display:flex;align-items:center;gap:8px;margin:0;padding:9px 12px;border-radius:12px;background:rgba(255,140,60,.1);color:#ffc08a;font-size:12.5px}
 .df-serie-l svg{flex:none;width:16px;height:16px;fill:#ff9a4a}
+.dock .point.nb{width:auto;min-width:18px;height:18px;top:-2px;right:-4px;padding:0 5px;display:grid;place-items:center;font:700 11px var(--f-chiffre);color:#1a1405}
+button.obj{width:100%;border:0;border-top:1px solid rgba(255,255,255,.06);background:none;color:var(--encre);font:inherit;text-align:left;cursor:pointer}
+button.obj:first-child{border-top:0}
+.obj.va{grid-template-columns:24px minmax(0,1fr) auto 14px}.obj.va:active{background:rgba(255,255,255,.05)}
+.obj-va{width:14px;height:14px;fill:none;stroke:var(--pale);stroke-width:2.2}
+.obj.neuf{animation:objNeuf 1.6s ease-out 2}.obj.neuf .gain{animation:gainNeuf .8s ease-out 3}
+@keyframes objNeuf{0%{background:rgba(255,207,74,.28)}100%{background:rgba(255,207,74,0)}}
+@keyframes gainNeuf{50%{box-shadow:0 0 0 2px rgba(255,207,74,.7),0 0 14px rgba(255,207,74,.6)}}
+.obj-gagnes{display:grid;gap:6px;margin:4px 0 12px;padding:10px 12px;border-radius:14px;background:rgba(255,207,74,.08);border:1px solid rgba(255,207,74,.3);text-align:left}
+.obj-gagnes>b{font:600 11px var(--f-titre);letter-spacing:.14em;text-transform:uppercase;color:var(--or)}
+.obj-gagnes>div{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13.5px}
+.obj-gagnes .gains{flex-direction:row}
 .df-place{display:flex;align-items:center;gap:8px;width:100%;min-height:46px;margin-top:2px;padding:0 4px;border:0;border-top:1px solid rgba(255,255,255,.08);background:none;color:var(--encre);font:600 14px var(--f-texte);cursor:pointer;text-align:left}
 .df-place span{flex:1}.df-place b{font:700 14px var(--f-chiffre);color:var(--or)}.df-place svg{width:16px;height:16px;fill:none;stroke:var(--pale);stroke-width:2}
 .g-intro{margin:0;padding:2px 16px 10px;color:var(--pale);font-size:13px;line-height:1.45}
@@ -920,7 +932,7 @@ body.sobre #plateau{transition:none}
             <svg viewBox="0 0 24 24"><path d="M7 4l12 8-12 8z" fill="currentColor" stroke="none"/></svg>
             <span class="deuxl"><span id="jouerTxt">Jouer</span><small id="jouerMonde"></small><span class="prog-camp" aria-hidden="true" hidden><i id="jouerProg"></i></span></span><span class="droite notrad" id="jouerSous"></span></button>
           <nav class="dock" aria-label="Autres modes">
-          <button class="item" id="btnJour" type="button"><i class="rond"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15.5" r="2"/></svg><b class="point" id="jourPoint" hidden></b></i>
+          <button class="item" id="btnJour" type="button"><i class="rond"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15.5" r="2"/></svg><b class="point nb notrad" id="jourPoint" hidden></b></i>
             <span class="nom">Défis</span><span class="sous" id="jourSous"></span></button>
           <button class="item" id="btnClassementAcc" type="button"><i class="rond"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"/></svg></i>
             <span class="nom">Classement</span><span class="sous" id="classementSous">mondial</span></button>
@@ -1762,7 +1774,9 @@ function rafraichirAccueil(){var pn=prochainNiveau(),fait=Object.keys(PROG.nivea
   var serieVive=PROG.serie>1&&(PROG.dernierJour===cleJour()||estHier(PROG.dernierJour));
   document.getElementById("jourSous").textContent=serieVive?"série de "+PROG.serie:
     j?(h>=1?"dans "+h+" h":"dans "+Math.max(1,Math.ceil(reste/60000))+" min"):"+1 ampoule";
-  document.getElementById("jourPoint").hidden=!!j;
+  // le rond Défis compte les objectifs du jour qui restent (défi du jour + missions) ; plus rien à 4/4
+  var Mo=missionsDuJour(),reste=(j?0:1)+Mo.l.filter(function(m){return !missionFinie(m);}).length,jp=document.getElementById("jourPoint");
+  jp.hidden=!reste;jp.textContent=reste;
   // sous « Continuer » : le monde en cours et ses étoiles, dans sa couleur
   // la seconde ligne du bouton dit où l'on en est, sans phrase en plus sous le bouton
   document.getElementById("jouerMonde").textContent=!fait?"Premier niveau":cA?(cA.jaunes?"Monde "+(att+1)+" : encore "+cA.manque+" étoiles de coups":"Monde "+(att+1)+" : encore "+cA.manque+" étoiles de temps"):bloque?"Suite dans le jeu complet":!pn?"Campagne terminée":nomNiveau(pn.w,pn.i)+" · "+MONDES[pn.w].nom;
@@ -2099,7 +2113,14 @@ function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length
   if(d.mode==="jour"||d.mode==="semaine")envoyerClassement(d.mode,temps,true);
   if(d.mode==="sansfin")envoyerClassement("sansfin",d.etape);
   if(d.mode==="campagne")envoyerClassement("etoiles",etoilesTotal()+etoilesChrono());
+  var Mav=missionsDuJour(),fav=Mav.l.map(missionFinie),bav=Mav.bonus;
   J.xp=xpVictoire(d,e,eT,!av);gagnerXp(J.xp);missionsVictoire(d,e,eT,temps);
+  // les objectifs du jour que cette partie vient d'accomplir : dits dans la fenêtre de victoire, allumés dans « Aujourd'hui »
+  J.objectifs=[];if(d.mode==="jour"&&!av){J.objectifs.push({k:"jour",t:"Défi du jour",g:[["amp",1],["xp",100]]});}
+  if(d.mode==="semaine"&&!av)J.objectifs.push({k:"semaine",t:"Défi de la semaine",g:[["amp",2],["xp",200]]});
+  Mav.l.forEach(function(m,i){if(!fav[i]&&missionFinie(m))J.objectifs.push({k:"m"+i,t:texteMission(m),g:[["xp",XP_MISSION]]});});
+  if(!bav&&Mav.bonus)J.objectifs.push({k:"bonus",t:"Bonus : les trois missions",g:[["amp",1]]});
+  J.objectifs.forEach(function(o){OBJ_NEUFS[o.k]=1;});
   sauver();majJeu();apresVictoireClassement(d,temps);var jeton=J,t0=performance.now();
   // vague de victoire : les cercles s'allument l'un après l'autre, les pastilles sautent du centre vers le bord
   JeuP.vague=t0;S.forEach(function(s,i){JeuP.pops[i]=t0+250+Math.hypot(s.xy[0],s.xy[1])*380;});Ticker.reveiller();
@@ -2122,7 +2143,7 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
       else{for(var i=0;i<BASE&&!suiv;i++)if(!fait(d.w,i)&&niveauOuvert(d.w,i))suiv={w:d.w,i:i};if(!suiv&&fait(d.w,BASE-1))suiv=mSuiv;}}
     cS=suiv&&suiv.w!==d.w&&!mondePaye(suiv.w)?condEtoiles(suiv.w):null;if(cS)suiv=null;}
   var titre=d.relax?"Résolu":e===3?"Parfait":e===2?"Bien joué":"Résolu",xpTxt=J.xp?'<span class="xp-gain notrad">+'+J.xp+' XP</span>':"";
-  if(d.relax){var hr='<h3>'+titre+'</h3>'+xpTxt+'<p>'+n+' coups · '+fmt(temps)+'</p><div class="menu"><button class="bouton principal" data-a="encore" type="button"><span>Nouveau mélange</span></button>'+
+  if(d.relax){var hr='<h3>'+titre+'</h3>'+xpTxt+'<p>'+n+' coups · '+fmt(temps)+'</p>'+objectifsGagnes()+'<div class="menu"><button class="bouton principal" data-a="encore" type="button"><span>Nouveau mélange</span></button>'+
       '<button class="bouton" data-a="menu" type="button" style="justify-content:center">Accueil</button></div>';
     ouvrirFenetre(hr,function(a){fermerFenetre();if(a==="encore")lancer(relaxDef());else montrer("accueil");},"menu");return;}
   var html='<div class="gros-et">'+[0,1,2].map(function(k){return k<e?SVG_ET:SVG_ET_OFF;}).join("")+'</div><h3>'+titre+'</h3>'+(record?'<span class="nouveau">Nouveau record</span>':"")+xpTxt+
@@ -2131,7 +2152,7 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
     (e<3?'<p>'+(J.indice?"L’indice limite le niveau à deux étoiles.":"Trois étoiles en "+d.par+" coups ou moins.")+'</p>':"")+
     (experts!=null?'<p class="experts">La voie dorée s’ouvre : quatre niveaux experts vous attendent.</p>':"")+
     (J.voie?'<div class="voie-gain"><b>Voie dorée terminée</b><span>Style exclusif « '+styleVoie(d.w).nom+' » débloqué, et 3 ampoules.</span></div>':"")+(cS?'<p class="experts">'+texteCond(cS)+'</p>':"")+
-    (d.mode==="jour"?'<p class="serie">Série : '+PROG.serie+' · record : '+Math.max(PROG.serieMax||0,PROG.serie)+'</p>':"")+'<div class="menu">';
+    (d.mode==="jour"?'<p class="serie">Série : '+PROG.serie+' · record : '+Math.max(PROG.serieMax||0,PROG.serie)+'</p>':"")+objectifsGagnes()+'<div class="menu">';
   if(suiv)html+='<button class="bouton principal" data-a="suivant" type="button"><span>'+(suiv.w!==d.w?"Monde "+(suiv.w+1):estExpert(suiv.i)?nomNiveau(suiv.w,suiv.i):"Niveau suivant")+'</span></button>';
   if(experts!=null)html+='<button class="bouton or" data-a="experts" type="button" style="justify-content:center">'+nomNiveau(d.w,experts)+'</button>';
   if(d.mode==="libre")html+='<button class="bouton principal" data-a="encore" type="button"><span>Nouveau mélange</span></button>';
@@ -2657,12 +2678,17 @@ function xpVictoire(d,e,eT,premier){if(d.relax)return 12;var x=d.mode==="sansfin
   if(d.mode==="jour"&&premier)x+=60;if(d.mode==="semaine"&&premier)x+=150;if(d.mode==="campagne"&&!premier)x=Math.round(x/2);return x;}
 
 // les missions du jour : trois, tirées de la date, les mêmes pour tout le monde ce jour-là
-var MISSIONS=[{id:"tours",txt:"Faire {0} tours de cercle",n:[40,60,80]},{id:"cubes",txt:"Résoudre {0} cubes",n:[2,3]},
-  {id:"etT",txt:"Gagner {0} étoiles de temps",n:[3,6]},{id:"jour",txt:"Réussir le défi du jour",n:[1]},
-  {id:"parfait",txt:"Finir un niveau avec trois étoiles",n:[1]},{id:"sansfin",txt:"Atteindre l’étape {0} en sans fin",n:[3,4]},
-  {id:"libre",txt:"Résoudre une partie en jeu libre",n:[1]},{id:"vite",txt:"Résoudre un cube en moins de {0} s",n:[30,45]}];
+// des phrases courtes (une ligne sur le petit iPhone) ; « Réussir le défi du jour » n'en fait plus partie depuis que le défi
+// du jour est le premier des objectifs du jour (le client, le 15/10/2026). `jeu` : où l'objectif se joue, d'un toucher.
+var MISSIONS=[{id:"tours",txt:"{0} tours de cercle",n:[40,60,80],jeu:"campagne"},{id:"cubes",txt:"{0} cubes résolus",n:[2,3],jeu:"campagne"},
+  {id:"etT",txt:"{0} étoiles de temps",n:[3,6],jeu:"campagne"},
+  {id:"parfait",txt:"Un niveau à trois étoiles",n:[1],jeu:"campagne"},{id:"sansfin",txt:"Étape {0} en sans fin",n:[3,4],jeu:"libre"},
+  {id:"libre",txt:"Une partie en jeu libre",n:[1],jeu:"libre"},{id:"vite",txt:"Un cube en moins de {0} s",n:[30,45],jeu:"campagne"}];
 var XP_MISSION=30;
-function missionsDuJour(){var k=cleJour();if(!PROG.missions||PROG.missions.jour!==k){var rnd=graine("missions-"+k),pool=MISSIONS.slice(),l=[];
+function missionsDuJour(){var k=cleJour(),connue=function(m){return MISSIONS.some(function(x){return x.id===m.id;});};
+  // une mission qui n'existe plus (« Réussir le défi du jour », retirée le 15/10/2026) : les missions du jour sont retirées
+  if(PROG.missions&&PROG.missions.jour===k&&!PROG.missions.l.every(connue))PROG.missions=null;
+  if(!PROG.missions||PROG.missions.jour!==k){var rnd=graine("missions-"+k),pool=MISSIONS.slice(),l=[];
     while(l.length<3){var m=pool.splice(Math.floor(rnd()*pool.length),1)[0];l.push({id:m.id,but:m.n[Math.floor(rnd()*m.n.length)],p:0});}
     PROG.missions={jour:k,l:l,bonus:false};}return PROG.missions;}
 function texteMission(m){var d=MISSIONS.filter(function(x){return x.id===m.id;})[0];return d.txt.replace("{0}",m.but);}
@@ -2722,37 +2748,44 @@ function lignePlace(t){if(!enLigne()||PROG.classementOff)return "";return '<butt
 var SVG_BULBE='<svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg>',
   SVG_COCHE='<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 function gains(l,fait){return '<span class="gains'+(fait?" pris":"")+'">'+l.map(function(g){return g[0]==="amp"?'<span class="gain amp notrad">'+SVG_BULBE+'+'+g[1]+'</span>':'<span class="gain notrad">+'+g[1]+' XP</span>';}).join("")+'</span>';}
-function objectif(fait,titre,sous,gl,extra,cls){return '<div class="obj'+(fait?" fait":"")+(cls?" "+cls:"")+'"><span class="coche">'+(fait?SVG_COCHE:"")+'</span>'+
-  '<div class="obj-txt"><b>'+titre+'</b>'+(sous?'<small>'+sous+'</small>':"")+(extra||"")+'</div>'+gains(gl,fait)+'</div>';}
-function rafraichirDefis(){var j=PROG.jours[cleJour()],w=(PROG.semaines||{})[cleSemaine()],M=missionsDuJour(),nm=M.l.filter(missionFinie).length,
+// une ligne d'objectif : un bouton qui mène là où il se joue (jeu), allumée si une partie vient de l'accomplir (OBJ_NEUFS)
+var OBJ_NEUFS={},SVG_CHEVRON='<svg class="obj-va" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>';
+function objectif(fait,titre,sous,gl,extra,cls,jeu,k){var tag=jeu?"button":"div",neuf=k&&OBJ_NEUFS[k];
+  return '<'+tag+' class="obj'+(fait?" fait":"")+(cls?" "+cls:"")+(jeu?" va":"")+(neuf?" neuf":"")+'"'+(jeu?' type="button" data-a="'+jeu+'"':"")+'><span class="coche">'+(fait?SVG_COCHE:"")+'</span>'+
+  '<span class="obj-txt"><b>'+titre+'</b>'+(sous?'<small>'+sous+'</small>':"")+(extra||"")+'</span>'+gains(gl,fait)+(jeu?SVG_CHEVRON:"")+'</'+tag+'>';}
+function objectifsGagnes(){if(!J.objectifs||!J.objectifs.length)return "";
+  return '<div class="obj-gagnes"><b>'+(J.objectifs.length>1?"Objectifs accomplis":"Objectif accompli")+'</b>'+J.objectifs.map(function(o){return '<div><span>'+o.t+'</span>'+gains(o.g)+'</div>';}).join("")+'</div>';}
+function rafraichirDefis(){var vu=PROG.objVu||(PROG.objVu={n:0,d:""});if(vu.d!==cleJour()){vu.n++;vu.d=cleJour();sauver();}var vuJours=vu.n,j=PROG.jours[cleJour()],w=(PROG.semaines||{})[cleSemaine()],M=missionsDuJour(),nm=M.l.filter(missionFinie).length,
     total=M.l.length+1,faits=nm+(j?1:0),serie=PROG.serie>1&&(PROG.dernierJour===cleJour()||estHier(PROG.dernierJour));
   var h='<div class="df-carte df-jour"><div class="df-tete"><span class="df-ico">'+SVG_CAL+'</span><div><b>Objectifs du jour</b><small>Nouveaux objectifs '+resteJour()+'</small></div>'+
       '<span class="df-compte notrad'+(faits===total?" fini":"")+'">'+faits+'/'+total+'</span></div>'+
     '<i class="df-barre"><i style="width:'+(100*faits/total).toFixed(0)+'%"></i></i>'+
-    '<p class="df-desc">Chaque jour, de nouveaux objectifs : réussissez-les pour gagner de l’expérience et des ampoules.</p><div class="objs">'+
+    (vuJours<=3?'<p class="df-desc">Chaque jour, de nouveaux objectifs : réussissez-les pour gagner de l’expérience et des ampoules.</p>':"")+'<div class="objs">'+
     // le défi du jour, en tête : le même mélange pour tout le monde, et son classement
-    objectif(!!j,"Défi du jour",j?'<span class="notrad">'+j.coups+'</span> coups · <span class="notrad">'+fmt(j.temps)+'</span>':"Le même mélange pour tout le monde, 8 coups",[["amp",1],["xp",100]],"","vedette")+
+    objectif(!!j,"Défi du jour",j?'<span class="notrad">'+j.coups+'</span> coups · <span class="notrad">'+fmt(j.temps)+'</span>':"Le même mélange pour tout le monde, 8 coups",[["amp",1],["xp",100]],"","vedette","jour","jour")+
     // une mission à compter montre où l'on en est ; une mission d'une seule fois (ou un record à battre) n'a ni « 0/1 » ni barre
     M.l.map(function(m){var ok=missionFinie(m),compte=m.but>1&&m.id!=="vite"&&m.id!=="sansfin",barre=ok||!compte?"":'<i class="mb"><i style="width:'+(100*m.p/m.but).toFixed(0)+'%"></i></i>';
-      return objectif(ok,texteMission(m),compte?'<span class="notrad">'+m.p+'/'+m.but+'</span>':"",[["xp",XP_MISSION]],barre);}).join("")+
-    objectif(M.bonus,"Bonus : les trois missions",M.bonus?"Gagné":"Une ampoule de plus",[["amp",1]],"","bonus")+'</div>'+
-    '<button class="bouton principal" data-a="jour" type="button"><span>'+(j?"Rejouer le défi du jour":"Jouer le défi du jour")+'</span></button>'+
+      var def=MISSIONS.filter(function(x){return x.id===m.id;})[0];
+      return objectif(ok,texteMission(m),compte?'<span class="notrad">'+m.p+'/'+m.but+'</span>':"",[["xp",XP_MISSION]],barre,"",ok?"":def&&def.jeu,"m"+M.l.indexOf(m));}).join("")+
+    objectif(M.bonus,"Bonus : les trois missions",M.bonus?"Gagné":"Une ampoule de plus",[["amp",1]],"","bonus","","bonus")+'</div>'+
+    // un seul bouton : tant que le défi du jour n'est pas joué ; ensuite sa ligne suffit pour le rejouer
+    (j?"":'<button class="bouton principal" data-a="jour" type="button"><span>Jouer le défi du jour</span></button>')+
     (serie?'<p class="df-serie-l">'+SVG_FLAMME+'<span>Série de '+PROG.serie+' jours : une ampoule à 3 jours, puis chaque semaine.</span></p>':"")+
     lignePlace("jour")+'</div>';
   // la semaine : un objectif à elle, avec ses récompenses
   h+=complet()?'<div class="df-carte"><div class="df-tete"><span class="df-ico">'+SVG_SEM+'</span><div><b>Objectif de la semaine</b><small>Semaine '+(+cleSemaine().slice(-2))+' · jusqu’à dimanche</small></div></div>'+
-      '<div class="objs">'+objectif(!!w,"Défi de la semaine",w?'<span class="notrad">'+w.coups+'</span> coups · <span class="notrad">'+fmt(w.temps)+'</span>':"Un grand mélange de 14 coups, le même pour tous",[["amp",2],["xp",200]],"","vedette")+'</div>'+
-      '<button class="bouton" data-a="semaine" type="button" style="justify-content:center"><span>'+(w?"Rejouer le défi de la semaine":"Jouer le défi de la semaine")+'</span></button>'+
+      '<div class="objs">'+objectif(!!w,"Défi de la semaine",w?'<span class="notrad">'+w.coups+'</span> coups · <span class="notrad">'+fmt(w.temps)+'</span>':"Un grand mélange de 14 coups, le même pour tous",[["amp",2],["xp",200]],"","vedette","semaine","semaine")+'</div>'+
+      (w?"":'<button class="bouton" data-a="semaine" type="button" style="justify-content:center"><span>Jouer le défi de la semaine</span></button>')+
       lignePlace("semaine")+'</div>':
     '<div class="df-carte df-reserve"><div class="df-tete"><span class="df-ico">'+SVG_SEM+'</span><div><b>Objectif de la semaine</b><small>Avec le jeu complet</small></div>'+
       '<span class="df-cadenas">'+SVG_RESERVE+'</span></div><div class="objs">'+objectif(false,"Défi de la semaine","Un grand mélange de 14 coups, le même pour tous",[["amp",2],["xp",200]],"","vedette")+'</div>'+
       '<button class="bouton df-debloquer" data-a="semaine" type="button"><span>Débloquer</span>'+(PRIX?'<span class="droite">'+PRIX+'</span>':"")+'</button></div>';
-  var c=document.getElementById("defisCorps");c.innerHTML=h;
+  var c=document.getElementById("defisCorps");c.innerHTML=h;OBJ_NEUFS={};
   ["jour","semaine"].forEach(function(t){var el=document.getElementById("dfPlace-"+t);if(!el||!PROG.compte)return;
     appel("classement",{tableau:t,cle:t==="jour"?cleJour():cleSemaine()}).then(function(r){if(r.moi&&ECRAN==="joueur"&&JOUEUR.o==="jour")el.textContent=r.moi.place+" / "+r.total;});});}
 document.getElementById("defisCorps").addEventListener("click",function(e){var b=e.target.closest("[data-a],[data-pid]");if(!b)return;sonClic();
   if(b.hasAttribute("data-pid")){profilPublic(b.getAttribute("data-pid"));return;}var a=b.getAttribute("data-a");
-  if(a==="jour")lancer(jourDef());else if(a==="semaine"){if(complet())lancer(semaineDef());else ouvrirBoutique("semaine");}else if(a==="acheter")ouvrirBoutique("semaine");
+  if(a==="jour")lancer(jourDef());else if(a==="campagne")document.getElementById("btnJouer").click();else if(a==="libre")document.getElementById("btnLibre").click();else if(a==="semaine"){if(complet())lancer(semaineDef());else ouvrirBoutique("semaine");}else if(a==="acheter")ouvrirBoutique("semaine");
   else if(a==="classement"){CL.t="jour";ongletJoueur("classement");}else if(a==="classement-semaine"){CL.t="semaine";ongletJoueur("classement");}});
 document.getElementById("btnClassementAcc").addEventListener("click",function(){audio();sonClic();ouvrirClassement("jour","accueil");});
 

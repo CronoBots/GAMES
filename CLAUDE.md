@@ -294,7 +294,15 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   pâlies une fois gagnées), puis « Jouer le défi du jour », la série et la ligne « Classement du jour » (`lignePlace`).
   En dessous, **« Objectif de la semaine »** au même format (+2 ampoules +200 XP ; verrouillé `.df-reserve` sans achat).
   Les XP affichées sont arrondies vers le bas du gain réel (`xpVictoire`) : ne jamais promettre plus que ce qui tombe.
-  Une mission d'une seule fois n'affiche ni « 0/1 » ni barre ; **Classement** (`#pClassement`,
+  Une mission d'une seule fois n'affiche ni « 0/1 » ni barre. **Chaque objectif est un bouton** (`objectif(…, jeu, k)`,
+  flèche « › ») qui mène où il se joue (`MISSIONS[].jeu` : `campagne` → bouton Jouer, `libre` → Jeu libre ; le défi du jour
+  le lance, même réussi pour le rejouer) ; le gros bouton « Jouer le défi du jour » n'existe que tant qu'il n'est pas joué.
+  La victoire dit ce qu'elle a accompli (`J.objectifs`, `objectifsGagnes` : « Objectif accompli · Défi du jour +1 +100 XP »)
+  et la ligne s'allume au retour dans Aujourd'hui (`OBJ_NEUFS`, lueur sans changement de taille : un `scale` débordait au
+  test). Le rond Défis de l'accueil porte le **nombre d'objectifs qui restent** (`#jourPoint.nb`, rien à 4/4). La phrase
+  d'explication ne s'affiche que les trois premiers jours (`PROG.objVu`). Missions courtes (« Une partie en jeu libre ») ;
+  « Réussir le défi du jour » n'est plus une mission (redite du premier objectif ; une liste du jour qui la contenait est
+  retirée par `missionsDuJour`) ; **Classement** (`#pClassement`,
   `chargerClassement`, sous-onglets Jour à Rang, ligne « Vous » épinglée) ; **Profil** (`#pProfil`, `rafraichirProfil` : carte
   d'identité avec pseudo modifiable, récompenses du rang `#grpRecomp` avec une phrase sur la façon de monter, « Compte »).
   **Chaque chose à un seul endroit** (le client, le 15/10/2026 : « espacement, répétition, logique ») : plus de podium
