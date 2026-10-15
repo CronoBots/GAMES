@@ -1919,6 +1919,11 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
     lst+='<div class="parc-starsb'+st+'stars-'+t+'.webp)"></div>';
     lme+='<div class="parc-meteorsb'+st+'meteors-'+t+'.webp)"></div>';});
   pts.forEach(function(p,j){d+=(j?"L":"M")+p[0].toFixed(1)+" "+(H-p[1])+" ";});
+  // après le dernier monde, le chemin et la voie dorée continuent un peu en pointillés qui s'effacent, vers « À suivre… »
+  // (le client, le 16/10/2026)
+  var sp=pts[pts.length-1],y1=sp[1],suite=function(p,x){return "M"+p[0].toFixed(1)+" "+(H-p[1])+" Q"+x.toFixed(1)+" "+(H-(y1+GAP))+" "+((x+cx)/2).toFixed(1)+" "+(H-(y1+165));},
+    suiteC=suite(sp,cx+vague(k)*amp),suiteV=finVoie?suite(finVoie,cx-vague(k)*amp*.86):"",
+    fondu=function(id,c,o){return '<linearGradient id="'+id+'" gradientUnits="userSpaceOnUse" x1="0" y1="'+(H-y1)+'" x2="0" y2="'+(H-y1-165)+'"><stop offset="0" stop-color="'+c+'" stop-opacity="'+o+'"/><stop offset="1" stop-color="'+c+'" stop-opacity="0"/></linearGradient>';};
   // le chemin déjà parcouru (deux niveaux finis de suite) passe en trait plein, dans la couleur du monde d'arrivée
   // (coupé au bord des billes : il relie les nœuds sans passer dessus)
   var fait="";pts.forEach(function(p,j){if(!j||!p[2]||!pts[j-1][2])return;var q=pts[j-1],dx=p[0]-q[0],dy=p[1]-q[1],L=Math.hypot(dx,dy),c=34/L;if(L<80)return;
@@ -1960,7 +1965,8 @@ function buildParcours(){var ch=document.getElementById("chemin");if(!ch)return;
   ch.innerHTML='<div class="parc-fond"></div>'
     +'<div class="parc-layer l-bg">'+lbg+'</div><div class="parc-layer l-planets">'+lpl+'</div>'
     +'<div class="parc-layer l-stars">'+lst+'</div><div class="parc-layer l-meteors">'+lme+'</div>'
-    +'<svg class="trail" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" preserveAspectRatio="none"><path d="'+d+'" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 11"/><g fill="none" stroke-width="2.6" stroke-linecap="round">'+fait+'</g><path d="'+de+'" fill="none" stroke="rgba(255,196,80,.55)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 9"/><path d="'+deOr+'" fill="none" stroke="rgba(255,207,74,.25)" stroke-width="7" stroke-linecap="round"/><path d="'+deOr+'" fill="none" stroke="rgba(255,214,100,.95)" stroke-width="2.4" stroke-linecap="round"/><path class="voie-discrete" d="'+deD+'" fill="none" stroke="rgba(255,196,80,.42)" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 9"/></svg>'
+    +'<svg class="trail" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" preserveAspectRatio="none"><defs>'+fondu("fonduSuite","#fff",.75)+fondu("fonduSuiteOr","#ffc450",.85)+'</defs><path d="'+d+'" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 11"/>'+
+    '<path class="suite" d="'+suiteC+'" fill="none" stroke="url(#fonduSuite)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 11"/>'+(suiteV?'<path class="suite" d="'+suiteV+'" fill="none" stroke="url(#fonduSuiteOr)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 9"/>':"")+'<g fill="none" stroke-width="2.6" stroke-linecap="round">'+fait+'</g><path d="'+de+'" fill="none" stroke="rgba(255,196,80,.55)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="1 9"/><path d="'+deOr+'" fill="none" stroke="rgba(255,207,74,.25)" stroke-width="7" stroke-linecap="round"/><path d="'+deOr+'" fill="none" stroke="rgba(255,214,100,.95)" stroke-width="2.4" stroke-linecap="round"/><path class="voie-discrete" d="'+deD+'" fill="none" stroke="rgba(255,196,80,.42)" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 9"/></svg>'
     +sects+nodes;
   parcRevele(ch);parcParallax();}
 // parallaxe PAR BANDE : chaque bande (BG/Planets/Stars/Meteors de son monde) se décale selon sa distance au

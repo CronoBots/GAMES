@@ -9,7 +9,8 @@ Sorties :
 """
 import math
 import os
-from PIL import Image, ImageDraw, ImageFilter
+import random
+from PIL import Image, ImageDraw, ImageFilter, ImageChops
 
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 COUL = ["#FF6A00", "#D7192C", "#FFD500", "#F5F5F0", "#00A651", "#0B5FD6"]  # R L U D F B, comme le jeu
@@ -140,6 +141,124 @@ def anneaux(im, echelle_rel):
     return im
 
 
+# --- le logo premium de l'app (le client, le 16/10/2026 : « je n'aime pas celui actuel ») ---
+# un cube 3×3 résolu en perspective, corps noir et pastilles arrondies (Facettes, le style par défaut du jeu), pris dans
+# deux orbites (or et lilas, comme le jeu) avec leurs perles de lumière, sur un ciel violet profond étoilé
+def lerp(a,b,t): return tuple(int(a[i]+(b[i]-a[i])*t) for i in range(len(a)))
+
+def fond_premium(T):
+    n=256; im=Image.new("RGBA",(n,n)); px=im.load()
+    for j in range(n):
+        for i in range(n):
+            t=min(1.0,math.hypot(i-n*0.5,j-n*0.42)/(n*0.7))
+            px[i,j]=lerp((44,28,96),(5,5,14),t**0.9)+(255,)
+    im=im.resize((T,T),Image.BICUBIC)
+    # nébuleuses douces
+    neb=Image.new("RGBA",(T,T),(0,0,0,0)); d=ImageDraw.Draw(neb)
+    for (x,y,r,c) in [(0.25,0.3,0.32,(120,80,255,70)),(0.78,0.72,0.3,(60,170,255,55)),(0.7,0.2,0.22,(255,90,170,40))]:
+        d.ellipse([T*(x-r),T*(y-r),T*(x+r),T*(y+r)],fill=c)
+    neb=neb.filter(ImageFilter.GaussianBlur(T*0.09)); im.alpha_composite(neb)
+    # étoiles
+    rnd=random.Random(7); st=Image.new("RGBA",(T,T),(0,0,0,0)); d=ImageDraw.Draw(st)
+    for k in range(70):
+        x,y=rnd.random()*T,rnd.random()*T; r=T*(0.0012+rnd.random()*0.0028); a=int(90+rnd.random()*150)
+        d.ellipse([x-r,y-r,x+r,y+r],fill=(255,255,255,a))
+    im.alpha_composite(st)
+    return im
+
+def poly_arrondi(d,pts,fill,inset_r):
+    d.polygon(pts,fill=fill)
+    # coins adoucis : un trait de la même couleur, joint rond
+    d.line(pts+[pts[0]],fill=fill,width=int(inset_r*2),joint="curve")
+    for p in pts: d.ellipse([p[0]-inset_r,p[1]-inset_r,p[0]+inset_r,p[1]+inset_r],fill=fill)
+
+def retrecir(pts,k):
+    cx=sum(p[0] for p in pts)/len(pts); cy=sum(p[1] for p in pts)/len(pts)
+    return [(cx+(p[0]-cx)*k,cy+(p[1]-cy)*k) for p in pts]
+
+def cube(im,cx,cy,s):
+    """cube isométrique : arête s ; corps noir, pastilles arrondies (Facettes, le style par défaut)."""
+    d=ImageDraw.Draw(im)
+    c30=math.cos(math.radians(30)); 
+    top=(cx,cy-s); 
+    # sommets
+    A=(cx,cy-s); B=(cx+s*c30,cy-s/2); C=(cx,cy); D=(cx-s*c30,cy-s/2)   # face du haut A B C D
+    E=(cx+s*c30,cy+s/2); F=(cx,cy+s); G=(cx-s*c30,cy+s/2)
+    # ombre portée
+    sh=Image.new("RGBA",im.size,(0,0,0,0)); sd=ImageDraw.Draw(sh)
+    sd.ellipse([cx-s*1.0,cy+s*0.95,cx+s*1.0,cy+s*1.25],fill=(0,0,0,150)); sh=sh.filter(ImageFilter.GaussianBlur(s*0.12)); im.alpha_composite(sh)
+    d=ImageDraw.Draw(im)
+    corps=(12,12,18,255); rr=s*0.03
+    for f in ([A,B,C,D],[D,C,F,G],[C,B,E,F]): poly_arrondi(d,f,corps,rr)
+    faces=[([A,B,C,D],(245,245,240),1.0),([D,C,F,G],(0,166,81),0.86),([C,B,E,F],(215,25,44),0.72)]
+    hl=Image.new("RGBA",im.size,(0,0,0,0)); hd=ImageDraw.Draw(hl)
+    for pts,col,lum in faces:
+        P0,P1,P2,P3=pts  # P0->P1 et P0->P3 : les deux directions de la face
+        u=((P1[0]-P0[0])/3,(P1[1]-P0[1])/3); v=((P3[0]-P0[0])/3,(P3[1]-P0[1])/3)
+        for a in range(3):
+            for b in range(3):
+                o=(P0[0]+u[0]*a+v[0]*b,P0[1]+u[1]*a+v[1]*b)
+                q=[o,(o[0]+u[0],o[1]+u[1]),(o[0]+u[0]+v[0],o[1]+u[1]+v[1]),(o[0]+v[0],o[1]+v[1])]
+                q=retrecir(q,0.80)
+                c=tuple(int(x*lum) for x in col)+(255,)
+                poly_arrondi(d,retrecir(q,0.93),c,s*0.022)
+                # reflet : le haut de la pastille plus clair
+                # reflet : un dégradé blanc du haut de la pastille vers le bas
+                qq=retrecir(q,0.86); xs=[p[0] for p in qq]; ys=[p[1] for p in qq]
+                x0,y0,x1,y1=int(min(xs)),int(min(ys)),int(max(xs))+1,int(max(ys))+1
+                m=Image.new("L",(x1-x0,y1-y0),0); ImageDraw.Draw(m).polygon([(p[0]-x0,p[1]-y0) for p in qq],fill=255)
+                g=Image.new("L",(1,256)); g.putdata([int((90 if lum==1 else 70)*max(0,1-j/150)**1.6) for j in range(256)]); g=g.resize((x1-x0,y1-y0))
+                blanc=Image.new("RGBA",(x1-x0,y1-y0),(255,255,255,0)); blanc.putalpha(ImageChops.multiply(g,m))
+                hl.alpha_composite(blanc,(x0,y0))
+    hl=hl.filter(ImageFilter.GaussianBlur(s*0.004)); im.alpha_composite(hl)
+    # arêtes claires
+    d=ImageDraw.Draw(im)
+    for p,q in [(D,C),(C,B),(C,F)]: d.line([p,q],fill=(255,255,255,40),width=max(1,int(s*0.012)))
+    return im
+
+def orbite(couche,cx,cy,rx,ry,ang,col,larg,partie,perle=None):
+    """une ellipse inclinée ; partie : 'arriere' (moitié haute, derrière le cube) ou 'avant'."""
+    d=ImageDraw.Draw(couche); pts=[]
+    rng=range(180,361) if partie=="arriere" else range(0,181)
+    ca,sa=math.cos(math.radians(ang)),math.sin(math.radians(ang))
+    for t in rng:
+        x,y=rx*math.cos(math.radians(t)),ry*math.sin(math.radians(t))
+        pts.append((cx+x*ca-y*sa,cy+x*sa+y*ca))
+    d.line(pts,fill=col,width=larg,joint="curve")
+    if perle is not None:
+        t=math.radians(perle); x,y=rx*math.cos(t),ry*math.sin(t); p=(cx+x*ca-y*sa,cy+x*sa+y*ca)
+        if (partie=="avant")==(math.sin(t)>=0): return p
+    return None
+
+def logo_premium(T,ech=0.78,transparent=False):
+    im=Image.new("RGBA",(T,T),(0,0,0,0)) if transparent else fond_premium(T)
+    cx,cy=T/2,T/2+T*0.01; s=T*ech*0.36; rx=T*ech*0.6; ry=rx*0.27
+    ORB=[(-16,(255,207,74)),(14,(178,130,255))]
+    def couche(partie):
+        lu=Image.new("RGBA",(T,T),(0,0,0,0)); tr=Image.new("RGBA",(T,T),(0,0,0,0)); perles=[]
+        for k,((ang,col),pp) in enumerate(zip(ORB,(35,215))):
+            fac=1.0 if k==0 else 0.92
+            orbite(lu,cx,cy,rx*fac,ry*fac,ang,col+(190,),int(T*(0.026 if k==0 else 0.016)),partie)
+            p=orbite(tr,cx,cy,rx*fac,ry*fac,ang,col+(255,),max(2,int(T*(0.011 if k==0 else 0.006))),partie,perle=pp)
+            if p: perles.append((p,col))
+        lu=lu.filter(ImageFilter.GaussianBlur(T*0.012))
+        d=ImageDraw.Draw(tr)
+        for p,col in perles:
+            r=T*0.018; g=Image.new("RGBA",(T,T),(0,0,0,0)); gd=ImageDraw.Draw(g); gd.ellipse([p[0]-r*2.6,p[1]-r*2.6,p[0]+r*2.6,p[1]+r*2.6],fill=col+(160,)); g=g.filter(ImageFilter.GaussianBlur(r*1.2)); lu.alpha_composite(g)
+            d.ellipse([p[0]-r,p[1]-r,p[0]+r,p[1]+r],fill=(255,255,255,255))
+        lu.alpha_composite(tr); return lu
+    # halo derrière le cube
+    h=Image.new("RGBA",(T,T),(0,0,0,0)); hd=ImageDraw.Draw(h); hd.ellipse([cx-s*1.5,cy-s*1.5,cx+s*1.5,cy+s*1.5],fill=(150,120,255,90)); h=h.filter(ImageFilter.GaussianBlur(s*0.45)); im.alpha_composite(h)
+    im.alpha_composite(couche("arriere"))
+    cube(im,cx,cy,s)
+    im.alpha_composite(couche("avant"))
+    return im
+
+
+def rendre_premium(taille, ech, transparent=False, sur=3):
+    return logo_premium(taille * sur, ech, transparent).resize((taille, taille), Image.LANCZOS)
+
+
 def rendre_logo(taille, echelle_rel, transparent=False, sur=3):
     T = taille * sur
     im = anneaux(Image.new("RGBA", (T, T), (0, 0, 0, 0)) if transparent else fond_logo(T), echelle_rel)
@@ -161,18 +280,18 @@ def ecrire(im, chemin, opaque=True):
 def main():
     w = os.path.join(RACINE, "www", "icones")
     r = os.path.join(RACINE, "ressources")
-    grande = rendre_logo(1024, 0.74)  # App Store : carré plein, sans transparence ni coins arrondis
+    grande = rendre_premium(1024, 0.78)  # App Store : carré plein, sans transparence ni coins arrondis
     ecrire(grande, os.path.join(r, "icon.png"))
-    ecrire(rendre_logo(1024, 0.56, transparent=True), os.path.join(r, "icon-foreground.png"), opaque=False)  # zone sûre Android
-    ecrire(fond_logo(1024), os.path.join(r, "icon-background.png"))
+    ecrire(rendre_premium(1024, 0.6, transparent=True), os.path.join(r, "icon-foreground.png"), opaque=False)  # zone sûre Android
+    ecrire(fond_premium(1024), os.path.join(r, "icon-background.png"))
     for nom, t in (("favicon.png", 64), ("apple-touch-icon.png", 180), ("icon-192.png", 192), ("icon-512.png", 512)):
         ecrire(grande.resize((t, t), Image.LANCZOS), os.path.join(w, nom))
-    ecrire(rendre_logo(512, 0.6), os.path.join(w, "icon-maskable-512.png"))
-    # écran de démarrage : les mêmes anneaux qu'à l'écran de chargement du jeu, qui prend le relais en les animant
+    ecrire(rendre_premium(512, 0.64), os.path.join(w, "icon-maskable-512.png"))
+    # écran de démarrage : le logo de l'app sur le noir du jeu, puis l'écran de chargement prend le relais
     S = 2732
     splash = Image.new("RGBA", (S, S), (7, 7, 12, 255))
-    logo = rendre_logo(700, 0.8, transparent=True)
-    splash.alpha_composite(logo, ((S - 700) // 2, (S - 700) // 2))
+    logo = rendre_premium(1400, 0.52, transparent=True)   # une toile large : le halo ne doit pas être rogné
+    splash.alpha_composite(logo, ((S - 1400) // 2, (S - 1400) // 2))
     ecrire(splash, os.path.join(r, "splash.png"))
     ecrire(splash, os.path.join(r, "splash-dark.png"))
 

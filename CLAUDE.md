@@ -201,7 +201,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   Annuler/Rejouer en pilules de verre, Niveaux/Accueil en petits ronds avec leur nom dessous (bloc en fin de feuille de style).
 - **Campagne** : le titre de l'écran est dans la police du titre ORBICUBE (Jost 300 en capitales espacées, le client, le
   16/10/2026) ; **en haut de la carte, « À suivre… »** (`.parc-fin`, item `t:"f"`) annonce les mondes des prochaines mises à
-  jour. L'en-tête de chaque monde et la pastille du haut montrent les deux totaux (`chronoMonde`, `etoilesChrono`).
+  jour ; le chemin et la voie dorée du dernier monde s'y prolongent en pointillés qui s'effacent (`suiteC`, `suiteV`,
+  dégradés `fonduSuite`). L'en-tête de chaque monde et la pastille du haut montrent les deux totaux (`chronoMonde`, `etoilesChrono`).
   **Nœuds de niveau** (le client, le 14/10/2026 : « tout ») : la couleur d'un monde sur la carte est celle de son décor
   (`THEME_ACC[themeFond(w)-1]`, comme en jeu ; l'ancienne palette `ACCENTS` donnait du lilas au monde vert). Bouton de 66 px avec une **bille** de 56 px en verre sombre,
   la couleur du monde en reflet et sur l'anneau (`.bille` ; l'aplat de couleur et les orbites en filigrane ont été refusés), les **étoiles de coups en
@@ -220,8 +221,10 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   (`.ligne.empile`) prennent toute la largeur du cadre.
 - **Écrans de menu** (profil, options, succès, aide) : le contenu défile derrière l'en-tête jusqu'aux bords de l'écran
   (zones de sécurité comprises) ; l'en-tête flotte sur un fondu sombre (bloc en fin de feuille de style, le client, le 13/10/2026).
-- **Logo** : les trois anneaux (`ANNEAUX` dans `outils/icones.py`) pour l'icône, le démarrage natif et le logo du
-  mélange (`.anneaux`). **L'écran de chargement web montre les neuf orbites du plateau** (`.orbites`, SVG, un éclat de
+- **Logo** : **l'icône de l'app et l'écran de démarrage natif sont le logo premium** (le client, le 16/10/2026 : « je n'aime
+  pas celui actuel ») : un cube 3×3 résolu en perspective (corps noir, pastilles arrondies, reflets en dégradé) pris dans deux
+  orbites or et lilas avec leurs perles, sur un ciel violet étoilé (`logo_premium`, `rendre_premium` dans `outils/icones.py`).
+  Les trois anneaux (`ANNEAUX`) ne servent plus qu'au logo du mélange (`.anneaux`). **L'écran de chargement web montre les neuf orbites du plateau** (`.orbites`, SVG, un éclat de
   couleur par orbite, sans filtre CSS) puis se dissout sur l'accueil (le client, le 13/10/2026) ; les médailles des succès gardent le plateau. Accueil : la devise disparaît après le
   premier niveau, le rond « Boutique » n'apparaît qu'après le premier niveau fini. Quand la suite de la campagne est payante, le bouton
   principal dit « Campagne » (et non « Continuer ») et la ligne dessous le dit.

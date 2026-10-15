@@ -137,7 +137,7 @@ Les noms et descriptions traduits sont dans `www/langues.js` : recopiez-les dans
 de la fiche. Aucun succès n'est caché.
 
 **iPhone, Game Center**
-1. App Store Connect > votre app > **Game Center** : activez-le, puis **Succès** > créez les 14
+1. App Store Connect > votre app > **Game Center** : activez-le, puis **Succès** > créez les 21
    avec exactement les identifiants Apple du tableau (ils sont déjà dans `www/config.js`).
 2. Xcode > *Signing & Capabilities* > **+ Capability > Game Center**.
 3. À la première ouverture, iOS demande au joueur de se connecter à Game Center ; ensuite c'est automatique.
@@ -278,6 +278,16 @@ npm run cap:android         # ouvre Android Studio
 - appareils : *iPhone* seul, ou *iPhone + iPad*. Si vous gardez l'iPad, il faut aussi les
   captures iPad (déjà prêtes) ;
 - orientation : portrait et paysage, les deux fonctionnent.
+
+**Faire reconnaître Orbicube comme un jeu** (mode Jeu du téléphone, app Jeux d'Apple, tableau de bord de jeu
+d'Android) :
+- iPhone : dans `ios/App/App/Info.plist`, ajoutez la clé `LSApplicationCategoryType` avec la valeur
+  `public.app-category.puzzle-games`, et choisissez **Jeux > Réflexion** comme catégorie dans App Store Connect.
+  Avec iOS 18 et plus récent, le **mode Jeu** s'active alors tout seul au lancement (moins de tâches de fond,
+  manettes et AirPods plus réactifs) ; le jeu apparaît aussi dans l'app **Jeux** avec ses succès Game Center.
+- Android : dans `android/app/src/main/AndroidManifest.xml`, sur la balise `<application>`, ajoutez
+  `android:appCategory="game"`, et choisissez la catégorie **Jeux > Réflexion** dans la Play Console : le tableau
+  de bord de jeu et les modes de jeu du téléphone s'appliquent.
 
 **Dans Android Studio** : *Build > Generate Signed App Bundle*. Créez une clé de signature et
 **gardez-la en lieu sûr** : sans elle, plus aucune mise à jour n'est possible. Activez aussi
