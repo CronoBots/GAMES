@@ -852,7 +852,8 @@ body.sobre #plateau{transition:none}
 .cl-ligne{display:grid;grid-template-columns:30px 34px minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;min-height:54px;padding:8px 12px;margin-bottom:6px;border-radius:16px;border:1px solid var(--trait);background:var(--carte);color:var(--encre);text-align:left;cursor:pointer;font:inherit}
 .cl-ligne.moi{border-color:rgba(var(--acc),.8);background:rgba(var(--acc),.16)}
 .cl-ligne.mecene b{color:var(--or)}
-.cl-ligne b{font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cl-nom{display:grid;min-width:0}.cl-nom b,.cl-nom small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cl-ligne b{font-size:14.5px;font-weight:600}.cl-nom small{font-size:12px;color:var(--pale)}
 .cl-place{font:700 15px var(--f-chiffre);text-align:center;color:var(--pale)}
 .cl-niv{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:1px solid var(--bord);font:600 12px var(--f-chiffre);background:rgba(255,255,255,.04)}
 .cl-niv.grand{width:64px;height:64px;font-size:22px;margin:0 auto 6px}
@@ -2786,7 +2787,8 @@ function valeurCl(t,x){if(t==="jour"||t==="semaine")return '<span class="notrad"
   if(t==="etoiles")return '<span class="notrad">'+SVG_ET+x.valeur+'</span>';if(t==="sansfin")return '<span>Étape '+x.valeur+'</span>';return '<span>'+titreRang(x.valeur)+'</span>';}
 function ligneCl(t,x,moi){var c=cadreDe(x.niveau||1);return '<button class="cl-ligne'+(moi?" moi":"")+(x.mecene?" mecene":"")+'" type="button" data-pid="'+x.pid+'">'+
   '<span class="cl-place notrad"'+(x.place<=3?' style="color:'+MEDAILLES[x.place-1]+'"':"")+'>'+x.place+'</span>'+
-  '<span class="cl-niv notrad'+(c?" cadre-"+c:"")+'">'+(x.niveau||1)+'</span><b class="notrad">'+echapper(x.pseudo||"")+'</b><span class="cl-val">'+valeurCl(t,x)+'</span></button>';}
+  '<span class="cl-niv notrad'+(c?" cadre-"+c:"")+'">'+(x.niveau||1)+'</span><span class="cl-nom"><b class="notrad">'+echapper(x.pseudo||"")+'</b>'+(t==="rang"?'<small>'+titreRang(x.valeur)+'</small>':"")+'</span>'+
+  '<span class="cl-val">'+(t==="rang"?"":valeurCl(t,x))+'</span></button>';}
 function echapper(t){return String(t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
 function chargerClassement(){var t=CL.t,L=document.getElementById("clListe"),M=document.getElementById("clMoi");
   document.querySelectorAll("#clOnglets button").forEach(function(b){b.classList.toggle("actif",b.getAttribute("data-t")===t);});
