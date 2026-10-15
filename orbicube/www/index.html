@@ -724,8 +724,11 @@ body.sobre #plateau{transition:none}
 .bout-hero ul{list-style:none;margin:0 0 16px;padding:0;display:grid;gap:7px;font-size:13.5px}
 .bout-hero li{display:flex;gap:9px;align-items:flex-start;line-height:1.35}
 .bout-hero li svg{width:17px;height:17px;flex:none;stroke:var(--or);fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;margin-top:1px}
-.bout-jeu .bj-tete{display:flex;align-items:center;gap:12px}.bout-jeu .bj-tete .neuf{width:72px;height:72px;flex:none;filter:drop-shadow(0 0 10px rgba(255,207,74,.35))}
-.bout-jeu .bj-tete h3{margin:6px 0 0}.bout-jeu p{margin-top:10px}
+.bout-jeu .bj-tete{display:flex;align-items:center;gap:12px}.bout-jeu .bj-tete .neuf{width:58px;height:58px;flex:none;filter:drop-shadow(0 0 10px rgba(255,207,74,.35))}
+.bout-jeu .bj-tete p{margin:0}.bout-jeu .bj-tete{margin:4px 0 14px}
+/* le titre tient sur une ligne, et s'il doit passer à la ligne, jamais au milieu d'un mot (le client, le 16/10/2026) */
+.bout-jeu h3,.parc-jeu b{hyphens:none;-webkit-hyphens:none;overflow-wrap:normal;text-wrap:balance}
+.bout-jeu h3{font-size:clamp(19px,6.2vw,24px);margin:10px 0 8px}
 .bout-hero.merci{border-color:rgba(var(--acc),.4);background:linear-gradient(160deg,rgba(30,34,70,.95),rgba(14,14,26,.95));box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
 .btn-or{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:52px;padding:0 20px;border-radius:999px;border:0;cursor:pointer;
   font:600 16px var(--f-titre);letter-spacing:.03em;color:#1b1406;background:linear-gradient(180deg,#ffe28e,#f0b623);
@@ -1228,7 +1231,7 @@ var STYLES={
     {id:"aurore",nom:"Aurore",ouv:{pack:"couleurs"}},{id:"galaxie",nom:"Galaxie",ouv:{pack:"couleurs"}},{id:"glace",nom:"Glace",ouv:{pack:"couleurs"}},{id:"joyaux",nom:"Joyaux",ouv:{pack:"couleurs"}},
     {id:"emeraude",nom:"Émeraude",ouv:{voie:0}},{id:"nebuleuse",nom:"Nébuleuse",ouv:{voie:5}},
     {id:"crepuscule",nom:"Crépuscule",ouv:{rang:15}},{id:"abysses",nom:"Abysses",ouv:{rang:25}},{id:"solaire",nom:"Solaire",ouv:{rang:35}}],
-  forme:[{id:"astral",nom:"Style du monde"},{id:"facettes",nom:"Facettes"},{id:"perles",nom:"Perles"},{id:"hexagones",nom:"Hexagones",ouv:{rang:5}},
+  forme:[{id:"facettes",nom:"Facettes"},{id:"astral",nom:"Style du monde"},{id:"perles",nom:"Perles"},{id:"hexagones",nom:"Hexagones",ouv:{rang:5}},
     {id:"gemmes",nom:"Gemmes",ouv:{pack:"formes"}},{id:"etoiles",nom:"Étoiles",ouv:{pack:"formes"}},{id:"cristaux",nom:"Cristaux",ouv:{pack:"formes"}},
     {id:"ecailles",nom:"Écailles",ouv:{voie:2}},{id:"eclats",nom:"Éclats",ouv:{voie:6}}],
   trainee:[{id:"halo",nom:"Halo"},{id:"poussiere",nom:"Poussière d’étoiles",ouv:{rang:10}},{id:"comete",nom:"Comète",ouv:{pack:"effets"}},{id:"sillage",nom:"Sillage",ouv:{voie:1}},{id:"braises",nom:"Braises",ouv:{rang:30}}],
@@ -1236,7 +1239,7 @@ var STYLES={
     {id:"amethyste",nom:"Améthyste",ouv:{voie:3}},{id:"couronne",nom:"Couronne",ouv:{voie:7}},{id:"nacre",nom:"Nacre",ouv:{rang:20}},{id:"orrose",nom:"Or rose",ouv:{rang:40}}],
   victoire:[{id:"confettis",nom:"Confettis"},{id:"pluie",nom:"Pluie d’étoiles",ouv:{chrono:30}},{id:"feux",nom:"Feu d’artifice",ouv:{pack:"effets"}},{id:"supernova",nom:"Supernova",ouv:{voie:4}}]};
 // les styles portés, recalculés par appliquerOptions() (le dessin les lit à chaque image)
-var STY={palette:"monde",forme:"astral",trainee:"halo",orbite:"accent",victoire:"confettis"};
+var STY={palette:"monde",forme:"facettes",trainee:"halo",orbite:"accent",victoire:"confettis"};
 // chaque style d'un pack s'achète aussi à l'unité (le client, le 14/10/2026) : produit orbicube_style_<id>, droit style_<id>
 Object.keys(STYLES).forEach(function(k){STYLES[k].forEach(function(st){if(st.ouv&&st.ouv.pack)PACKS["s_"+st.id]={produit:"orbicube_style_"+st.id,droit:"style_"+st.id,nom:st.nom,unite:true};});});
 // une phrase par style, pour la fiche de l'aperçu : on sait ce qu'on porte ou ce qu'on achète
@@ -1477,15 +1480,16 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
     cx.restore();
     // traînée : les positions des images précédentes
     // traînée : Halo (les positions des images précédentes), Comète (plus longue, cœur blanc), Poussière d'étoiles (éclats)
-    var lgT=TR==="comete"?10:TR==="sillage"||TR==="braises"?12:TR==="poussiere"?7:5;this.trace.push(t);while(this.trace.length>lgT)this.trace.shift();
+    // en jeu, la traînée est plus longue et plus nette (le client, le 16/10/2026 : « ne se voit pas fort en jeu ») ; l'accueil sobre garde la sienne
+    var FT=this.opts.sobre?1:1.7,lgT=Math.round((TR==="comete"?10:TR==="sillage"||TR==="braises"?12:TR==="poussiere"?7:5)*(this.opts.sobre?1:1.6));this.trace.push(t);while(this.trace.length>lgT)this.trace.shift();
     for(var h=0;h<this.trace.length-1;h++){var tp=this.positionsA(this.trace[h]),fr=(h+1)/this.trace.length;
       for(i=0;i<tp.length;i++){if(!tp[i].m)continue;q=this.vers(tp[i].xy);
         if(TR==="poussiere"){for(var z=0;z<2;z++){var jx=Math.sin(i*7.1+h*3.3+z*5)*rp*.9,jy=Math.cos(i*4.3+h*5.1+z*3)*rp*.9;
-            cx.globalAlpha=fr*.75*SB;cx.beginPath();cx.arc(q[0]+jx,q[1]+jy,Math.max(.8,rp*.16*fr),0,6.283);cx.fillStyle=z?"#fff":CL[tp[i].c];cx.fill();}}
-        else if(TR==="sillage"){cx.globalAlpha=fr*.55*SB;cx.beginPath();cx.arc(q[0],q[1],rp*(.18+.3*fr),0,6.283);cx.fillStyle=h%2?"#bdeeff":"#5cc8ff";cx.fill();}   // sillage : un fil de bulles bleu glacé
-        else if(TR==="braises"){cx.globalAlpha=fr*.7*SB;var jb=Math.sin(i*5.3+h*2.1)*rp*.5;cx.beginPath();cx.arc(q[0]+jb,q[1]-jb*.6,rp*(.12+.22*fr),0,6.283);cx.fillStyle=h%3?"#ffb347":"#ff5e3a";cx.fill();}   // braises : des escarbilles orange qui s'éteignent
-        else{cx.globalAlpha=fr*(TR==="comete"?.34:.26)*SB;cx.beginPath();cx.arc(q[0],q[1],rp*(.5+.4*fr),0,Math.PI*2);cx.fillStyle=CL[tp[i].c];cx.fill();
-          if(TR==="comete"){cx.globalAlpha=fr*.5*SB;cx.beginPath();cx.arc(q[0],q[1],rp*.22*fr,0,6.283);cx.fillStyle="#fff";cx.fill();}}}}
+            cx.globalAlpha=Math.min(1,fr*.75*SB*FT);cx.beginPath();cx.arc(q[0]+jx,q[1]+jy,Math.max(.8,rp*.16*fr),0,6.283);cx.fillStyle=z?"#fff":CL[tp[i].c];cx.fill();}}
+        else if(TR==="sillage"){cx.globalAlpha=Math.min(1,fr*.55*SB*FT);cx.beginPath();cx.arc(q[0],q[1],rp*(.18+.3*fr),0,6.283);cx.fillStyle=h%2?"#bdeeff":"#5cc8ff";cx.fill();}   // sillage : un fil de bulles bleu glacé
+        else if(TR==="braises"){cx.globalAlpha=Math.min(1,fr*.7*SB*FT);var jb=Math.sin(i*5.3+h*2.1)*rp*.5;cx.beginPath();cx.arc(q[0]+jb,q[1]-jb*.6,rp*(.12+.22*fr),0,6.283);cx.fillStyle=h%3?"#ffb347":"#ff5e3a";cx.fill();}   // braises : des escarbilles orange qui s'éteignent
+        else{cx.globalAlpha=Math.min(1,fr*(TR==="comete"?.34:.26)*SB*FT);cx.beginPath();cx.arc(q[0],q[1],rp*(.5+.4*fr),0,Math.PI*2);cx.fillStyle=CL[tp[i].c];cx.fill();
+          if(TR==="comete"){cx.globalAlpha=Math.min(1,fr*.5*SB*FT);cx.beginPath();cx.arc(q[0],q[1],rp*.22*fr,0,6.283);cx.fillStyle="#fff";cx.fill();}}}}
     cx.globalAlpha=1;}
   else this.trace.length=0;
   // une face terminée s'illumine : un halo doux de sa couleur rayonne AUTOUR de ses neuf pastilles
@@ -2427,7 +2431,8 @@ function rafraichirSucces(){document.getElementById("sucCompte").textContent=Obj
 /* ========== 14. OPTIONS ========== */
 function appliquerOptions(){var o=PROG.options;
   // une fois : « Couleurs du monde » devient la palette par défaut (le client, le 14/10/2026), même pour qui avait « Classique » par défaut
-  if(!o.pal2){if(!o.palette||o.palette==="classique")o.palette="monde";o.pal2=1;}if(!o.sty3){if(!o.forme||o.forme==="facettes")o.forme="astral";o.sty3=1;}Object.keys(STY).forEach(function(k){STY[k]=styleActif(k);});COUL=PALETTES[STY.palette]||PALETTES.classique;
+  // sty4 : Facettes redevient la forme par défaut (le client, le 16/10/2026)
+  if(!o.pal2){if(!o.palette||o.palette==="classique")o.palette="monde";o.pal2=1;}if(!o.sty4){if(!o.forme||o.forme==="astral")o.forme="facettes";o.sty3=o.sty4=1;}Object.keys(STY).forEach(function(k){STY[k]=styleActif(k);});COUL=PALETTES[STY.palette]||PALETTES.classique;
   // « Animations » décoché = calme forcé, en plus du réglage système prefers-reduced-motion
   CALME=!!((window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)||o.anims===false);
   document.body.classList.toggle("sobre",o.anims===false);
@@ -2624,8 +2629,8 @@ function rendreBoutique(){var c=complet(),tous=["pack_couleurs","pack_formes","p
   // le jeu complet tout en haut, à part (le client, le 16/10/2026 : « perdu dans les packs ») : les 9 orbites d'abord,
   // l'édition intégrale et les packs de styles ont leur onglet (le client, le 16/10/2026)
   var jeu=!c&&CFG.modele!=="complet";
-  document.getElementById("boutJeu").innerHTML=jeu?'<div class="bout-hero bout-jeu"><div class="bj-tete">'+SVG_NEUF+'<div><span class="etiq">Le jeu complet</span><h3>Débloquez les 9 orbites</h3></div></div>'+
-      '<p>Le cube entier : ses neuf cercles, enfin à la fois.</p><ul>'+puce("4 mondes et 48 niveaux de plus")+puce("Tout le jeu libre et les missions élite")+puce("Une aide offerte chaque jour")+'</ul>'+
+  document.getElementById("boutJeu").innerHTML=jeu?'<div class="bout-hero bout-jeu"><span class="etiq">Le jeu complet</span><h3>Débloquez les 9 orbites</h3>'+
+      '<div class="bj-tete">'+SVG_NEUF+'<p>Le cube entier : ses neuf cercles, enfin à la fois.</p></div><ul>'+puce("4 mondes et 48 niveaux de plus")+puce("Tout le jeu libre et les missions élite")+puce("Une aide offerte chaque jour")+'</ul>'+
       '<button class="btn-or" type="button" data-achat="complet"><span>Orbicube complet</span><span class="px notrad">'+PRIX+'</span></button></div>':"";
   document.getElementById("boutStylesT").hidden=!jeu;
   // l'onglet Packs (le client, le 16/10/2026 : « rassembler les packs dans un onglet ») : la collection, puis chaque pack

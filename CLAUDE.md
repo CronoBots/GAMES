@@ -94,7 +94,10 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   corps de verre sombre teinté du monde, liseré de la couleur du monde, pastille plus ronde et plus petite en dégradé presque
   opaque, arête claire, motif par décor (cristal, givre, braise, étincelle). Le petit cube et celui du médaillon suivent
   (`dessinerCube`, `LK`). « Classique » et « Facettes » (corps noir, cube de compétition) restent des choix gratuits.
-  Migrations une fois : `PROG.options.pal2` (classique → monde), `sty3` (facettes → astral).
+  Migrations une fois : `PROG.options.pal2` (classique → monde), `sty3` (facettes → astral). **Depuis le 16/10/2026, la forme
+  par défaut redevient « Facettes »** (le client), première de la liste ; `sty4` remet une seule fois « Style du monde » sur
+  Facettes. La palette par défaut reste « Couleurs du monde ». **Traînées plus visibles en jeu** (le client : « ne se voient
+  pas fort ») : hors accueil sobre, 1,6 fois plus longues et 1,7 fois plus opaques (`FT`, plafonné à 1).
   **Pour donner envie et comprendre** (le client, le 14/10/2026) : phrase d'accueil (gagner en jouant ou acheter), compteur de
   collection sur chaque onglet (« 4/8 »), fiche avec une phrase par style (`DESC_STYLE`) et, pour un style à gagner, sa barre de
   progression (`progresStyle`) ; badge « Nouveau » sur les styles gagnés pas encore vus (`PROG.stylesVus`, `nouveauxStyles`) et
@@ -138,6 +141,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   **Le pack soutien devient un don** (« Faire un don », section « Faire avancer Orbicube », en bas de l'onglet Packs : il
   finance les optimisations ; même produit `orbicube_soutien`, même liseré doré). Compteurs sous les noms. **Sur la carte de la campagne**, le jeu complet se pose comme un monde entre le
   dernier monde gratuit et le premier payant (`.parc-jeu`, item `t:"j"` de `buildParcours`) ; il disparaît après l'achat.
+  Le titre « Débloquez les 9 orbites » prend toute la largeur de la carte et ne se coupe jamais au milieu d'un mot
+  (le client : « or-bites ») : pas de césure, taille selon l'écran.
 - **Ce que l'achat ouvre, dit clairement** (le client, le 14/10/2026 : « Jeu libre », pas « Partie libre » ; donner envie
   d'acheter) : sans achat, le jeu libre n'a que « Facile » sur les orbites du dernier monde gratuit (`orbitesLibres`,
   `libresGratuits`) ; Moyen/Difficile/Expert, Sans fin, Relax et le **défi de la semaine** sont dans une carte dorée
