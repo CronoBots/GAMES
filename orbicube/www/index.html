@@ -1100,7 +1100,7 @@ button.obj:first-child{border-top:0}
         <div class="ligne"><div class="lt"><b>Tout recommencer</b><span>Efface étoiles, succès et records.</span></div>
           <button class="danger" id="btnEffacer" type="button">Effacer</button></div>
       </div>
-      <p class="pied" id="optPied"></p>
+      <p class="pied" id="optPied"></p><p class="pied notrad" id="optPub"></p>
       <p class="pied"><a id="lienConf" href="confidentialite.html" style="color:var(--pale)">Politique de confidentialité</a></p>
     </div></div>
   </section>
@@ -1709,7 +1709,7 @@ function vibrer(ms){if(!PROG.options.vib)return;if(NATIF.vibrer(Array.isArray(ms
 /* ========== 8. NAVIGATION ========== */
 var ECRAN="accueil";
 // sens : +1 on avance (l'écran arrive de la droite), −1 on revient (il arrive de la gauche)
-function montrer(id,sens){var prevEcran=ECRAN;sens=sens||1;document.querySelectorAll(".ecran").forEach(function(e){
+function montrer(id,sens){if(RECHARGER&&id!=="jeu"){location.reload();return;}var prevEcran=ECRAN;sens=sens||1;document.querySelectorAll(".ecran").forEach(function(e){
     if(e.id===id){e.style.transition="none";e.style.setProperty("--dx",(sens*28)+"px");void e.offsetWidth;e.style.transition="";e.classList.add("actif");}
     else{if(e.classList.contains("actif"))e.style.setProperty("--dx",(-sens*28)+"px");e.classList.remove("actif");}});ECRAN=id;
   // l'accueil et les menus gardent le lilas ; la carte et le jeu prennent la couleur de leur monde
@@ -2483,7 +2483,7 @@ function majAchat(){var c=complet();document.getElementById("btnBoutique").hidde
   document.getElementById("grpAchat").hidden=CFG.modele==="complet";
   document.getElementById("achatEtat").textContent=c?"Débloqué. Merci pour votre soutien !":"Les 9 orbites, 4 mondes de plus, tout le jeu libre"+(PRIX?" · "+PRIX:"")+".";
   var b=document.getElementById("btnAchatOpt");b.textContent=c?"Débloqué":"Débloquer";b.disabled=c;
-  document.getElementById("optPied").textContent="Orbicube "+(CFG.version||"")+(c||CFG.modele==="complet"?"":" · version d’essai");}
+  document.getElementById("optPied").textContent="Orbicube "+(CFG.version||"")+(c||CFG.modele==="complet"?"":" · version d’essai");numeroPublication();}
 // ce que le joueur voulait faire quand la boutique s'ouvre ; le gain principal reste le même : les 9 orbites (le client, le 16/10/2026)
 var POURQUOI={indice:"Le jeu complet offre aussi une ampoule chaque jour.",monde:"Chaque monde suivant ajoute une orbite, jusqu’aux 9 à la fois.",libre:"Ce mode se joue sur les 9 orbites.",semaine:"Les missions élite font partie du jeu complet.",accueil:""};
 var SVG_NEUF=(function(){var c=[[0,-7],[-6.1,3.5],[6.1,3.5]],r=[8,10.5,13],cols=["#ffcf4a","#b282ff","#5cb4ff"],h='<svg class="neuf" viewBox="-26 -26 52 52" aria-hidden="true">';
@@ -3019,7 +3019,19 @@ function rattraperXp(){if(PROG.xpInit)return;var x=0;Object.keys(PROG.niveaux).f
   x+=60*Object.keys(PROG.jours||{}).length;PROG.xp=(PROG.xp||0)+x;PROG.xpInit=true;sauver();}
 function demarrer(){rattraperXp();appliquerLangue();parcourir(document.body);appliquerOptions();majAchat();montrer("accueil");NATIF.demarrer();connecterSucces();
   // hors application native, le jeu se joue aussi hors ligne une fois chargé
-  if(!NATIF.natif&&"serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js").catch(function(){});}
+  if(!NATIF.natif&&"serviceWorker" in navigator&&location.protocol==="https:")majWeb();}
+// La version web se met à jour d'elle-même (le client, le 15/10/2026 : « je ne vois pas les optimisations ») : sur iPhone,
+// le jeu posé sur l'écran d'accueil revient de l'arrière-plan sans jamais se recharger, et l'ancien service worker gardait
+// l'ancienne version. On demande une mise à jour à chaque retour au premier plan ; quand la nouvelle version prend la main,
+// la page se recharge, mais jamais au milieu d'une partie (elle attend le retour à l'accueil).
+var RECHARGER=false;
+function majWeb(){var avait=!!navigator.serviceWorker.controller;
+  navigator.serviceWorker.register("sw.js").then(function(reg){
+    document.addEventListener("visibilitychange",function(){if(!document.hidden)reg.update().catch(function(){});});}).catch(function(){});
+  navigator.serviceWorker.addEventListener("controllerchange",function(){if(!avait)return;RECHARGER=true;if(ECRAN!=="jeu")location.reload();});}
+// le numéro de publication (celui du cache du service worker, « orbicube-v152 ») sous les options : on sait ce qu'on voit
+function numeroPublication(){if(!window.caches)return;caches.keys().then(function(k){var v=k.filter(function(x){return /^orbicube-v\d+$/.test(x);}).sort().pop();
+  if(v)document.getElementById("optPub").textContent="v"+v.replace("orbicube-v","");}).catch(function(){});}
 demarrer();
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){Ticker.reveiller();});
 })();

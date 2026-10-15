@@ -346,4 +346,9 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   `finirGeste()` lit la rotation nette : 0 (aller-retour, tour complet) = aucun coup, un quart =
   `U`/`U′`, un demi-tour = `U2`, un seul coup comme dans la notation du cube. Clavier et pavé
   restent un quart de tour = un coup.
+- **Mise à jour de la version web** (le client, le 15/10/2026 : « je ne vois pas les optimisations ») : sur iPhone, le jeu posé
+  sur l'écran d'accueil revient de l'arrière-plan sans se recharger. `majWeb` demande une mise à jour du service worker à
+  chaque retour au premier plan et recharge la page quand la nouvelle version prend la main, jamais en pleine partie
+  (`RECHARGER`, appliqué par `montrer` au retour hors du jeu). Le numéro de publication (`V` de `sw.js`, lu dans le nom du
+  cache) s'affiche sous les options (`#optPub`, « v153 ») : demander au client ce numéro quand il ne voit pas un changement.
 - `?capture` dans l'adresse expose `window.__orbicube.solution()`, pour `outils/captures.js` seulement.
