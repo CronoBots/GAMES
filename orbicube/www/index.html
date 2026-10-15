@@ -1135,7 +1135,7 @@ button.obj:first-child{border-top:0}
       <div class="aide-carte">
         <h3>Gagner des étoiles</h3>
         <p data-html="aide-vue"><b>Glisser le cube</b> au-dessus du plateau le fait pivoter : à gauche ou à droite pour en faire le tour, vers le haut ou le bas pour voir la face du dessous.</p>
-        <p data-html="aide-etoiles">Un niveau est résolu quand chaque groupe de neuf pastilles est d’une seule couleur. <b>Étoiles de coups</b> : trois en au plus autant de coups que le mélange (le « par »), deux jusqu’au double, une au-delà. <b>Étoiles de temps</b> : trois sous l’objectif affiché à côté du chrono, deux sous le double. Le bouton ampoule montre le tour suivant contre une <b>ampoule</b> de votre réserve, et limite le niveau à deux étoiles de coups. On regagne des ampoules avec le défi du jour, en terminant un monde ou en faisant trois étoiles de coups et de temps.</p>
+        <p data-html="aide-etoiles">Un niveau est résolu quand chaque groupe de neuf pastilles est d’une seule couleur. <b>Étoiles de coups</b> : trois en au plus autant de coups que le mélange (le « par »), deux jusqu’au double, une au-delà. <b>Étoiles de temps</b> : trois sous l’objectif affiché à côté du chrono, deux sous le double. Le bouton ampoule montre le tour suivant contre une <b>ampoule</b> de votre réserve, et limite le niveau à deux étoiles de coups. On regagne des ampoules en réussissant toutes les missions, en terminant un monde ou un palier de rang.</p>
         <p data-html="aide-clavier">Au clavier : <span class="m">U D L R F B M E S</span>, Maj pour le sens inverse, Ctrl+Z pour annuler, Échap pour la pause.</p>
       </div>
     </div></div>
@@ -1776,7 +1776,7 @@ function rafraichirAccueil(){var pn=prochainNiveau(),fait=Object.keys(PROG.nivea
   // sinon, le temps avant le prochain défi, sinon sa récompense (le point doré dit déjà qu'il est nouveau)
   var serieVive=PROG.serie>1&&(PROG.dernierJour===cleJour()||estHier(PROG.dernierJour));
   document.getElementById("jourSous").textContent=serieVive?"série de "+PROG.serie:
-    j?(h>=1?"dans "+h+" h":"dans "+Math.max(1,Math.ceil(reste/60000))+" min"):"+1 ampoule";
+    j?(h>=1?"dans "+h+" h":"dans "+Math.max(1,Math.ceil(reste/60000))+" min"):"missions";
   // le rond Défis compte les objectifs du jour qui restent (défi du jour + missions) ; plus rien à 4/4
   var Mo=missionsDuJour(),reste=Mo.l.filter(function(m){return !missionFinie(m);}).length,jp=document.getElementById("jourPoint");
   jp.hidden=!reste;jp.textContent=reste;
@@ -2041,7 +2041,7 @@ J={def:def,fond:ft,hist:[],t0:0,fini:false,indice:false,pret:false,tranches:{}};
   document.getElementById("jTitre").textContent=def.titre;document.getElementById("jSous").textContent=def.sous+" · par "+def.par;
   document.getElementById("btnNiveauxJeu").hidden=def.mode!=="campagne";
   document.getElementById("plateau").removeAttribute("data-indice");
-  construirePave();montrer("jeu");majJeu();majTemps();majAmpoules();cacherBulle(true);document.getElementById("melangeTxt").hidden=false;
+  construirePave();majPave();montrer("jeu");majJeu();majTemps();majAmpoules();cacherBulle(true);document.getElementById("melangeTxt").hidden=false;
   // le mélange se fait à l'abri des regards : le plateau se trouble en tournant, les couleurs changent pendant qu'on
   // ne les voit pas, puis il se dévoile. Montrer les coups un par un permettait de les rejouer à l'envers.
   var jeton=J,z=document.getElementById("zonePlateau"),ecran=document.getElementById("jeu"),voile=CALME?0:420,tenue=CALME?0:900;
@@ -2067,7 +2067,8 @@ function majJeu(){if(!J)return;var n=J.hist.length,par=J.def.par;
   if(perdue>=0){bip(220,.18,"triangle",.05);}
   var nt=document.getElementById("notation");
   if(!n)nt.innerHTML='<span class="vide">'+(J.pret?"Glissez le long d’un cercle":"")+'</span>';
-  else{nt.innerHTML=J.hist.map(function(m,i){return i===n-1?'<span class="der">'+nomDe(m)+'</span>':nomDe(m);}).join(" ");nt.scrollLeft=nt.scrollWidth;}
+  // les coups joués ne s'écrivent plus (le client, le 15/10/2026) : recopiés, ils rejouaient un défi au pavé ou au clavier
+  else nt.innerHTML="";
   document.getElementById("btnAnnuler").disabled=!n;document.getElementById("btnIndice").classList.toggle("off",J.indice);}
 function cheminSolution(){var tout=J.def.melange.slice(),ch=[];J.hist.forEach(function(m){tout.push(m);if(m.d===2)tout.push(m);});for(var i=tout.length-1;i>=0;i--)ch.push(inverse(tout[i]));
   var change=true;while(change){change=false;
@@ -2077,18 +2078,18 @@ function cheminSolution(){var tout=J.def.melange.slice(),ch=[];J.hist.forEach(fu
   return ch;}
 // Les ampoules : une par indice. 3 au départ ; on en gagne avec le défi du jour, en terminant un monde, en faisant
 // 3 étoiles de coups et 3 de temps ; le jeu complet en offre une par jour ; à zéro, une revient après 10 minutes.
-var RECHARGE_AMP=10*60000;
+var RECHARGE_AMP=30*60000;   // à zéro, une ampoule revient après 30 min (10 min avant le 15/10/2026 : trop généreux)
 function ampoules(){if(!PROG.amp&&PROG.ampVide&&Date.now()-PROG.ampVide>=RECHARGE_AMP){PROG.amp=1;PROG.ampVide=0;PROG.ampMaj=Date.now();sauver();}
   var cj=ampoulesDuJour();if(cj&&PROG.ampJour!==cleJour()){PROG.amp=(PROG.amp||0)+cj;PROG.ampJour=cleJour();PROG.ampVide=0;PROG.ampMaj=Date.now();sauver();}return PROG.amp||0;}
 // ampoules offertes chaque jour : une avec le jeu complet, une de plus au rang 10, une encore au rang 20
-function ampoulesDuJour(){var r=rangDe(PROG.xp).r;return (complet()?1:0)+(r>=10?1:0)+(r>=20?1:0);}
+function ampoulesDuJour(){return complet()?1:0;}
 function majAmpoules(){var n=ampoules(),b=document.getElementById("ampNb");b.textContent=n;b.classList.toggle("vide",!n);}
 function gagnerAmpoule(){PROG.amp=ampoules()+1;PROG.ampVide=0;PROG.ampMaj=Date.now();majAmpoules();setTimeout(function(){toast("Ampoule gagnée","+1");},900);}
 // ampoules achetées en boutique (consommables) : créditées tout de suite, comme celles qu'on gagne
 function crediterAmpoules(n){PROG.amp=ampoules()+n;PROG.ampVide=0;PROG.ampMaj=Date.now();sauver();majAmpoules();}
 function depenserAmpoule(){PROG.amp=Math.max(0,ampoules()-1);if(!PROG.amp)PROG.ampVide=Date.now();PROG.ampMaj=Date.now();sauver();majAmpoules();}
 function plusDAmpoules(){var reste=Math.max(1,Math.ceil((RECHARGE_AMP-(Date.now()-PROG.ampVide))/60000));
-  ouvrirFenetre('<h3>Plus d’ampoules</h3><p>Une ampoule revient dans '+reste+' min.</p><p>Vous en gagnez aussi avec le défi du jour, en terminant un monde ou en faisant trois étoiles de coups et de temps.</p>'+
+  ouvrirFenetre('<h3>Plus d’ampoules</h3><p>Une ampoule revient dans '+reste+' min.</p><p>Vous en gagnez aussi en réussissant toutes les missions, en terminant un monde ou un palier de rang.</p>'+
     (complet()?'':'<p>Le jeu complet en offre une chaque jour.</p>')+'<div class="menu">'+(complet()?'':'<button class="bouton or" data-a="boutique" type="button"><span>Jeu complet</span></button>')+
     '<button class="bouton" data-a="x" type="button" style="justify-content:center">Je cherche encore</button></div>',function(a){fermerFenetre();if(a==="boutique")ouvrirBoutique("indice");},"x");}
 function indice(gratuit){if(!J||!J.pret||J.fini||JeuP.occupe())return;var ch=cheminSolution();if(!ch.length)return;JeuP.indice=ch[0];
@@ -2100,14 +2101,14 @@ function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length
     record=record||eT>((av&&av.chrono)||0);
     var gain=(e===3&&eT===3&&!(av&&av.etoiles===3&&av.chrono===3)),finMonde=!av&&MONDES[d.w].coups.every(function(c,i){return estExpert(i)!==estExpert(d.i)||i===d.i||PROG.niveaux[(d.w+1)+"-"+(i+1)];});
     PROG.niveaux[d.id]=av?{etoiles:Math.max(av.etoiles,e),chrono:Math.max(av.chrono||0,eT),coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),sansIndice:av.sansIndice||!J.indice}:{etoiles:e,chrono:eT,coups:n,temps:temps,sansIndice:!J.indice};
-    if(n>=3&&temps<10000)PROG.tips.eclair=1;if(gain)gagnerAmpoule();if(finMonde)gagnerAmpoule();
+    if(n>=3&&temps<10000)PROG.tips.eclair=1;if(finMonde)gagnerAmpoule();   // plus d'ampoule pour un 3+3 : 96 niveaux, c'était 96 ampoules
     // la voie dorée finie (son dernier expert, la première fois) : trois ampoules en tout et le style exclusif du monde
     J.voie=!av&&d.i===MONDES[d.w].coups.length-1;if(J.voie){gagnerAmpoule();gagnerAmpoule();}}
-  else if(d.mode==="jour"){av=PROG.jours[d.id];record=!av;if(!av)gagnerAmpoule();PROG.jours[d.id]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),etoiles:Math.max(av.etoiles,e)}:{coups:n,temps:temps,etoiles:e};
+  else if(d.mode==="jour"){av=PROG.jours[d.id];record=!av;PROG.jours[d.id]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),etoiles:Math.max(av.etoiles,e)}:{coups:n,temps:temps,etoiles:e};
     if(PROG.dernierJour!==d.id){PROG.serie=estHier(PROG.dernierJour)?PROG.serie+1:1;PROG.dernierJour=d.id;
-      // palier de série : une ampoule à 3 jours d'affilée, puis à chaque semaine (7, 14, 21…)
-      if(PROG.serie===3||(PROG.serie>=7&&PROG.serie%7===0))gagnerAmpoule();}PROG.serieMax=Math.max(PROG.serieMax||0,PROG.serie);}
-  else if(d.mode==="semaine"){PROG.semaines=PROG.semaines||{};av=PROG.semaines[d.id];record=!av||temps<av.temps;if(!av){gagnerAmpoule();gagnerAmpoule();}
+      // palier de série : une ampoule à chaque semaine d'affilée (7, 14, 21…) ; plus à 3 jours depuis le 15/10/2026
+      if(PROG.serie>=7&&PROG.serie%7===0)gagnerAmpoule();}PROG.serieMax=Math.max(PROG.serieMax||0,PROG.serie);}
+  else if(d.mode==="semaine"){PROG.semaines=PROG.semaines||{};av=PROG.semaines[d.id];record=!av||temps<av.temps;
     PROG.semaines[d.id]=av?{coups:Math.min(av.coups,n),temps:Math.min(av.temps,temps),etoiles:Math.max(av.etoiles,e)}:{coups:n,temps:temps,etoiles:e};}
   else if(d.mode==="relax"){}
   else if(d.mode==="sansfin"){record=d.etape>(PROG.stats.sansFin||0);PROG.stats.sansFin=Math.max(PROG.stats.sansFin||0,d.etape);}
@@ -2164,7 +2165,7 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
   if(d.mode==="jour"||d.mode==="semaine")html+='<button class="bouton principal" data-a="partager" type="button"><span>Partager mon résultat</span></button>';
   if((d.mode==="jour"||d.mode==="semaine"||d.mode==="sansfin")&&enLigne()&&!PROG.classementOff)html+='<button class="bouton" data-a="classement" type="button" style="justify-content:center">Voir le classement</button>';
   html+='<div class="rangee2"><button class="bouton" data-a="rejouer" type="button">Rejouer</button><button class="bouton" data-a="menu" type="button">'+(d.mode==="campagne"?"Niveaux":"Accueil")+'</button></div>'+
-    (J.hist.length?'<button class="bouton" data-a="revoir" type="button" style="justify-content:center;min-height:46px;font-size:14px;color:var(--pale)">Revoir ma partie</button>':"")+'</div>';
+    (J.hist.length&&!defiClasse()?'<button class="bouton" data-a="revoir" type="button" style="justify-content:center;min-height:46px;font-size:14px;color:var(--pale)">Revoir ma partie</button>':"")+'</div>';
   ouvrirFenetre(html,function(a){if(a==="partager"){partager(e,n,temps);return;}if(a==="classement"){fermerFenetre();ouvrirClassement(d.mode,"accueil");return;}fermerFenetre();if(a==="revoir"){revoir(e,n,temps);return;}
     if(a==="etape"){var k=d.etape+1;if(k>5&&!complet())ouvrirBoutique("libre");else lancer(sansFinDef(k));return;}if(a==="experts"){lancer(niveauDef(d.w,experts));return;}if(a==="suivant"){if(mondePaye(suiv.w))ouvrirBoutique("monde");else lancer(niveauDef(suiv.w,suiv.i));}
     else if(a==="encore")lancer(libreDef(d.n));else if(a==="rejouer")lancer(d.mode==="libre"?libreDef(d.n):d.mode==="sansfin"?sansFinDef(d.etape):d);
@@ -2302,6 +2303,10 @@ document.getElementById("btnAnnuler").addEventListener("click",annuler);
 document.getElementById("btnRecommencer").addEventListener("click",function(){sonClic();recommencer();});
 // le bouton Notation (visible seulement si « Pavé de notation » est activé dans les options) montre/cache le pavé
 document.getElementById("btnPaveT").addEventListener("click",function(){sonClic();var p=document.getElementById("pave");p.hidden=!p.hidden;this.classList.toggle("on",!p.hidden);});
+// un défi classé (jour, semaine) se joue au doigt : le pavé et le clavier permettraient de recopier une suite de coups
+var CAPTURE=/[?&]capture\b/.test(location.search);
+function defiClasse(){return !!(J&&J.def&&(J.def.mode==="jour"||J.def.mode==="semaine"));}
+function majPave(){var o=PROG.options,ok=o.pave&&!defiClasse();document.getElementById("pave").hidden=!ok;var b=document.getElementById("btnPaveT");b.hidden=!ok;b.classList.toggle("on",ok);}
 function construirePave(){var pv=document.getElementById("pave");pv.innerHTML="";if(!J)return;var an=TOUS.filter(function(b){return J.def.anneaux.indexOf(b)>=0;}),liste;
   if(an.length>4){liste=an.concat(an.map(function(b){return b+"'";}));pv.style.setProperty("--n",an.length);}
   else{liste=an.reduce(function(r,b){return r.concat([b,b+"'"]);},[]);pv.style.setProperty("--n",liste.length);}
@@ -2309,7 +2314,7 @@ function construirePave(){var pv=document.getElementById("pave");pv.innerHTML=""
     b.addEventListener("click",function(){jouerCoup(parNom(t));});pv.appendChild(b);});}
 document.addEventListener("keydown",function(e){if(!document.getElementById("voile").hidden){if(e.key==="Escape"&&FEN.esc)FEN.esc();return;}
   if(ECRAN!=="jeu")return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z"){e.preventDefault();annuler();return;}
-  if(e.ctrlKey||e.metaKey||e.altKey)return;if(e.key==="Escape"){pause();return;}var k=e.key.toUpperCase();if(MV[k]){e.preventDefault();jouerCoup(parNom(k+(e.shiftKey?"'":"")));}});
+  if(e.ctrlKey||e.metaKey||e.altKey)return;if(e.key==="Escape"){pause();return;}var k=e.key.toUpperCase();if(MV[k]&&(!defiClasse()||CAPTURE)){e.preventDefault();jouerCoup(parNom(k+(e.shiftKey?"'":"")));}});
 
 /* ========== 12. FENÊTRES, TOAST, CONFETTIS ========== */
 var FEN={cb:null,esc:null};
@@ -2401,8 +2406,8 @@ function appliquerOptions(){var o=PROG.options;
   document.getElementById("optPave").checked=o.pave;document.getElementById("optZen").checked=!!o.zen;document.getElementById("optMusique").checked=o.musique!==false;document.getElementById("optVolMusique").closest(".ligne").hidden=o.musique===false;
   document.querySelectorAll("#optVolMusique button").forEach(function(b){b.classList.toggle("on",+b.dataset.v===(o.volMusique||2));});Musique.regler();document.body.classList.toggle("zen",!!o.zen||!!(J&&J.def.relax));
   document.querySelectorAll("#optVitesse button").forEach(function(b){b.classList.toggle("on",+b.dataset.v===o.vitesse);});
-  mini.hidden=!o.cube;document.getElementById("pave").hidden=!o.pave;
-  document.getElementById("btnPaveT").hidden=!o.pave;document.getElementById("btnPaveT").classList.toggle("on",o.pave);
+  mini.hidden=!o.cube;majPave();
+
   if(ECRAN==="jeu")requestAnimationFrame(redimJeu);Logo.dessiner();JeuP.dessiner();dessinerMini();dessinerLogoCube();}
 function opt(k,v){PROG.options[k]=v;PROG.options.maj=Date.now();sauver();appliquerOptions();}
 [["Son","son"],["Vib","vib"],["Cube","cube"],["Pave","pave"],["Zen","zen"],["Musique","musique"],["Anims","anims"]].forEach(function(c){
@@ -2477,7 +2482,7 @@ function majAchat(){var c=complet();document.getElementById("btnBoutique").hidde
   document.getElementById("optPied").textContent="Orbicube "+(CFG.version||"")+(c||CFG.modele==="complet"?"":" · version d’essai");}
 var POURQUOI={indice:"Le jeu complet en offre une chaque jour.",monde:"Les mondes 5 à 8 font partie du jeu complet.",libre:"Ce mode de jeu libre fait partie du jeu complet.",semaine:"Le défi de la semaine fait partie du jeu complet.",accueil:""};
 function ouvrirBoutique(raison){var web=!NATIF.natif,li=CFG.liens||{};
-  var avantages=[["48 niveaux de plus","Six, sept, huit orbites, puis les neuf à la fois."],["Tout le jeu libre","Moyen, difficile, expert, sans fin et relax, sur les neuf orbites."],["Le défi de la semaine","Un grand mélange chaque semaine, deux ampoules à la clé."],["Une ampoule offerte chaque jour","Pour un indice quand vous bloquez."],["Un seul achat, pour toujours","Sans publicité, sans abonnement."]];
+  var avantages=[["48 niveaux de plus","Six, sept, huit orbites, puis les neuf à la fois."],["Tout le jeu libre","Moyen, difficile, expert, sans fin et relax, sur les neuf orbites."],["Les grandes missions","Le défi de la semaine et trois missions longues, bien mieux récompensées."],["Une ampoule offerte chaque jour","Pour un indice quand vous bloquez."],["Un seul achat, pour toujours","Sans publicité, sans abonnement."]];
   var html='<h3>Orbicube complet</h3>'+(POURQUOI[raison]?'<p>'+POURQUOI[raison]+'</p>':'<p>Vous avez joué la version d’essai. La suite vous attend.</p>')+
     '<div style="display:grid;gap:10px;text-align:left;margin:4px 0 16px">'+avantages.map(function(a){return '<div style="display:flex;gap:10px;align-items:flex-start"><svg viewBox="0 0 24 24" style="width:20px;height:20px;flex:none;margin-top:1px;stroke:var(--or);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b style="display:block">'+a[0]+'</b><span style="color:var(--pale);font-size:13px">'+a[1]+'</span></div></div>';}).join("")+'</div><div class="menu">';
   if(web){html+='<p style="margin:0 0 6px">L’achat se fait dans l’application, sur iPhone ou Android.</p>'+
@@ -2660,8 +2665,8 @@ function xpPour(r){return 60+r*40;}                       // pour passer du rang
 function rangDe(xp){var r=1;xp=xp||0;while(xp>=xpPour(r)){xp-=xpPour(r);r++;}return{r:r,xp:xp,besoin:xpPour(r)};}
 // la route du rang (le client, le 14/10/2026 : « à quoi sert le niveau ? ») : tous les cinq rangs un style à gagner,
 // un cadre autour du pseudo à chaque titre, et des ampoules offertes chaque jour aux rangs 10 et 20
-var ROUTE=[{r:5,l:["Forme Hexagones","Cadre de bronze"]},{r:10,l:["Traînée Poussière d’étoiles","Cadre d’argent","+1 ampoule par jour"]},
-  {r:15,l:["Couleurs Crépuscule","Cadre d’or"]},{r:20,l:["Orbites de nacre","Cadre étoilé","+1 ampoule par jour"]},{r:25,l:["Couleurs Abysses"]},
+var ROUTE=[{r:5,l:["Forme Hexagones","Cadre de bronze"]},{r:10,l:["Traînée Poussière d’étoiles","Cadre d’argent"]},
+  {r:15,l:["Couleurs Crépuscule","Cadre d’or"]},{r:20,l:["Orbites de nacre","Cadre étoilé"]},{r:25,l:["Couleurs Abysses"]},
   {r:30,l:["Traînée Braises","Cadre de cristal"]},{r:35,l:["Couleurs Solaire"]},{r:40,l:["Orbites d’or rose","Cadre légendaire"]}];
 var CADRES=[[5,"bronze"],[10,"argent"],[15,"or"],[20,"etoile"],[30,"cristal"],[40,"legende"]];
 function cadreDe(r){var c="";CADRES.forEach(function(x){if(r>=x[0])c=x[1];});return c;}
@@ -2674,7 +2679,7 @@ function anneauRang(xp,epais){var R=rangDe(xp),f=R.xp/R.besoin,c=2*Math.PI*16;
     '<defs><linearGradient id="gRang" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="rgb('+ACC+')"/><stop offset="1" stop-color="rgb('+ACC_CLAIR+')"/></linearGradient></defs></svg><span>'+R.r+'</span>';}
 function gagnerXp(n){if(!n)return;var avant=rangDe(PROG.xp).r;PROG.xp=(PROG.xp||0)+n;var apres=rangDe(PROG.xp).r;
   for(var r=avant+1;r<=apres;r++){(function(r){var e=ROUTE.filter(function(x){return x.r===r;})[0];
-    setTimeout(function(){toast("Rang "+r,e?e.l[0]:titreRang(r));},400);})(r);gagnerAmpoule();}
+    setTimeout(function(){toast("Rang "+r,e?e.l[0]:titreRang(r));},400);if(e)gagnerAmpoule();})(r);}
   if(apres>avant&&typeof appliquerOptions==="function")appliquerOptions();
 }
 // expérience d'un cube résolu : sa longueur, puis ses étoiles ; les défis comptent double la première fois
@@ -2701,8 +2706,8 @@ var MISSIONS_SEM=[{id:"tours",txt:"{0} tours de cercle",n:[500,700],jeu:"campagn
   {id:"vite",txt:"Un défi en moins de {0} s",n:[30],jeu:"jour"},{id:"sansfin",txt:"Étape {0} en sans fin",n:[8,10],jeu:"libre"},
   {id:"defiSem",txt:"Défi de la semaine",n:[1],jeu:"semaine",fixe:true}];
 // récompenses : un défi donne ses ampoules et son expérience par la victoire elle-même (xpVictoire) ; une mission, son XP ici
-var XP_MISSION=40,XP_MISSION_SEM=150,AMP_BONUS=1,AMP_BONUS_SEM=3;
-function gainsMission(m){return m.id==="defi"?[["amp",1],["xp",100]]:m.id==="defiSem"?[["amp",2],["xp",200]]:[["xp",m.s?XP_MISSION_SEM:XP_MISSION]];}
+var XP_MISSION=40,XP_MISSION_SEM=150,AMP_BONUS=1,AMP_BONUS_SEM=2;
+function gainsMission(m){return m.id==="defi"?[["xp",100]]:m.id==="defiSem"?[["xp",200]]:[["xp",m.s?XP_MISSION_SEM:XP_MISSION]];}
 function tirerMissions(cle,pool,sem){var rnd=graine(cle),p=pool.filter(function(m){return !m.fixe;}),fixe=pool.filter(function(m){return m.fixe;})[0],
     l=[{id:fixe.id,but:1,p:0,s:sem?1:0}];
   while(l.length<4){var m=p.splice(Math.floor(rnd()*p.length),1)[0];l.push({id:m.id,but:m.n[Math.floor(rnd()*m.n.length)],p:0,s:sem?1:0});}return l;}
@@ -2739,7 +2744,7 @@ function rafraichirProfil(){var R=rangDe(PROG.xp),M=missionsDuJour();
   var rc=document.getElementById("rangCarte");rc.classList.toggle("mecene",aDroit("soutien"));poserCadre(rc,R.r);
   majCompte();
   // les récompenses : une phrase pour dire comment on monte, puis la route (la prochaine est en doré) ; plus d'encadré qui la répétait
-  document.getElementById("grpRecomp").innerHTML='<h4>Récompenses du rang</h4><p class="g-intro">Résolvez des cubes, réussissez les défis et les missions pour gagner de l’expérience. Chaque rang offre une ampoule.</p>'+routeHTML();
+  document.getElementById("grpRecomp").innerHTML='<h4>Récompenses du rang</h4><p class="g-intro">Résolvez des cubes, réussissez les défis et les missions pour gagner de l’expérience. Chaque palier offre une ampoule.</p>'+routeHTML();
   rc.innerHTML='<span class="anneau-rang notrad">'+anneauRang(PROG.xp,2.4)+'</span><button class="rc-pseudo" id="btnPseudo" type="button" aria-label="Changer de pseudo"><b class="notrad">'+echapper(pseudo())+'</b>'+
     '<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/></svg></button><h3 class="rc-titre">'+titreRang(R.r)+'</h3>'+(aDroit("soutien")?'<span class="mecene-titre">Mécène d’Orbicube</span>':"")+(voieFinie(MONDES.length-1)?'<span class="mecene-titre maitre">Maître des orbites</span>':"")+
     '<span class="xp notrad">'+R.xp+' / '+R.besoin+' XP</span><span class="rc-et notrad">'+SVG_ET+etoilesTotal()+' '+SVG_ETT+etoilesChrono()+'</span>';
@@ -2807,7 +2812,7 @@ function rafraichirDefis(){var vu=PROG.objVu||(PROG.objVu={n:0,d:""});if(vu.d!==
     '<div class="objs">'+lignesMissions(M,AMP_BONUS,"m","Bonus : toutes les missions")+'</div>'+
     // un seul bouton : tant que le défi du jour n'est pas joué ; ensuite sa ligne suffit pour le rejouer
     (j?"":'<button class="bouton principal" data-a="jour" type="button"><span>Jouer le défi du jour</span></button>')+
-    (serie?'<p class="df-serie-l">'+SVG_FLAMME+'<span>Série de '+PROG.serie+' jours : une ampoule à 3 jours, puis chaque semaine.</span></p>':"")+
+    (serie?'<p class="df-serie-l">'+SVG_FLAMME+'<span>Série de '+PROG.serie+' jours : une ampoule à chaque semaine complète.</span></p>':"")+
     lignePlace("jour")+'</div>';
   // les grandes missions : avec le jeu complet ; sans achat, la même liste derrière un cadenas, pour montrer ce qu'elle rapporte
   h+='<div class="df-carte df-grandes'+(ouv?"":" df-reserve")+'">'+tete(SVG_SEM,"Grandes missions",ouv?(nj>1?"Nouvelles missions dans "+nj+" jours":"Nouvelles missions demain"):"Avec le jeu complet · bien mieux récompensées",fs,S.l.length,!ouv)+
@@ -2998,7 +3003,7 @@ document.getElementById("optLangue").addEventListener("change",function(){PROG.o
   (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(function(){setTimeout(retirer,Math.max(0,1500-(performance.now()-t0)));});
   setTimeout(retirer,2400);})();
 // accès réservé aux outils de captures (npm run captures), actif seulement avec ?capture dans l'adresse
-if(/[?&]capture\b/.test(location.search))window.__orbicube={solution:function(){return J&&J.pret?cheminSolution().map(function(m){return nomDe(m).replace("′","'");}):[];},vus:function(){return Object.keys(VUS);},manques:function(){return Object.keys(MANQUES);},parcours:function(){ouvrirParcours();}};
+if(/[?&]capture\b/.test(location.search))window.__orbicube={dernier:function(){return J&&J.hist.length?nomDe(J.hist[J.hist.length-1]).replace("′","'"):"";},solution:function(){return J&&J.pret?cheminSolution().map(function(m){return nomDe(m).replace("′","'");}):[];},vus:function(){return Object.keys(VUS);},manques:function(){return Object.keys(MANQUES);},parcours:function(){ouvrirParcours();}};
 // le rang est né après les premiers joueurs : leurs niveaux déjà finis lui donnent son expérience, une fois
 function rattraperXp(){if(PROG.xpInit)return;var x=0;Object.keys(PROG.niveaux).forEach(function(k){var w=+k.split("-")[0]-1,i=+k.split("-")[1]-1,r=PROG.niveaux[k];
     if(MONDES[w]&&MONDES[w].coups[i]!=null)x+=Math.min(70,10+4*MONDES[w].coups[i])+5*(r.etoiles||0)+5*(r.chrono||0);});

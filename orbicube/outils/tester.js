@@ -208,7 +208,7 @@ async function resoudre(p) {
     const ctx = await b.newContext({ ...devices["iPhone 13"], locale: "fr-FR" });
     const p = await ctx.newPage();
     p.setDefaultTimeout(8000);
-    await p.goto(URL); await p.waitForTimeout(1000);
+    await p.goto(URL + "?capture"); await p.waitForTimeout(1000);
     // la jeu libre est réservée au jeu complet : on débloque pour tester les gestes sur les neuf cercles
     await p.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k) || "{}"); v.achat = true; localStorage.setItem(k, JSON.stringify(v)); });
     await p.reload(); await p.waitForTimeout(1200);
@@ -223,7 +223,7 @@ async function resoudre(p) {
     await glisser([Math.PI / 2 * 1.1, -Math.PI / 2 * 1.1]);
     (await coups()) === "0" ? ok("un aller-retour d'un quart de tour ne compte aucun coup") : faute("aller-retour compté : " + (await coups()) + " coup(s)");
     await glisser([Math.PI * 1.03]);
-    const nota = (await p.textContent("#notation")).trim();
+    const nota = await p.evaluate(() => window.__orbicube.dernier());   // les coups ne s'affichent plus : on lit le dernier par l'accès de capture
     (await coups()) === "1" && /^U2$/.test(nota) ? ok("un demi-tour en un geste compte un coup, noté U2") : faute("demi-tour : " + (await coups()) + " coup(s), notation « " + nota + " »");
     await p.click("#btnAnnuler"); await p.waitForTimeout(900);
     (await coups()) === "0" ? ok("« Annuler » défait le demi-tour en entier") : faute("annuler le demi-tour laisse " + (await coups()) + " coup(s)");
@@ -297,7 +297,7 @@ async function resoudre(p) {
     const nouveau = async (ampoules) => {
       const ctx = await b.newContext({ ...devices["iPhone 13"], locale: "fr-FR" });
       await brancherEssai(ctx, essai);
-      if (ampoules) await ctx.addInitScript(() => { if (!localStorage.getItem("orbicube-v1")) localStorage.setItem("orbicube-v1", JSON.stringify({ v: 1, campagne: 2, amp: 99, ampMaj: Date.now() + 1e9, niveaux: {}, tips: {}, succes: {}, stats: { tours: 0, tranches: 0, resolus: 0, indices: 0, meilleur: {} }, jours: {}, options: {} })); });
+      if (ampoules) await ctx.addInitScript(() => { if (!localStorage.getItem("orbicube-v1")) localStorage.setItem("orbicube-v1", JSON.stringify({ v: 1, campagne: 2, amp: 99, ampMaj: Date.now() + 1e9, niveaux: {}, tips: {}, succes: {}, stats: { tours: 0, tranches: 0, resolus: 0, indices: 0, meilleur: {} }, jours: {}, options: { pave: true } })); });
       const p = await ctx.newPage(); p.setDefaultTimeout(8000); p.erreurs = [];
       p.on("pageerror", (e) => p.erreurs.push(e.message));
       await p.goto(URL + "?capture"); await p.waitForTimeout(1500); return p;
@@ -309,10 +309,12 @@ async function resoudre(p) {
     await p.tap("#btnJour"); await p.waitForTimeout(900);
     (await p.$$eval("#pJour button.obj.va", (l) => l.length)) >= 3 ? ok("chaque objectif du jour est un bouton qui mène où il se joue") : faute("objectifs non cliquables");
     !(await lire(p)).compte && essai.joueurs.size === 6 ? ok("rien n'est envoyé avant la première victoire, même en ouvrant Défis et son podium") : faute("un profil est créé avant de jouer"); await p.tap('#pJour [data-a="jour"]'); await p.waitForTimeout(2200);
+    (await p.isHidden("#pave")) && (await p.isHidden("#btnPaveT")) ? ok("défi classé : pas de pavé de notation, même activé dans les options") : faute("pavé visible pendant un défi");
     const sol = await p.evaluate(() => window.__orbicube.solution());
     for (const m of sol) { await p.keyboard.press(m.length > 1 ? "Shift+" + m[0] : m[0]); await p.waitForTimeout(450); }
     await p.waitForTimeout(2600);
     const fv = await p.textContent("#fenetre");
+    !/[UDLRFB][′'2]?\s/.test((await p.textContent("#notation")) + " ") && !(await p.$('#fenetre [data-a="revoir"]')) ? ok("les coups ne s'écrivent nulle part, et pas de « Revoir ma partie » sur un défi") : faute("coups visibles : « " + (await p.textContent("#notation")) + " »");
     fv.includes("Mission accomplie") || fv.includes("Missions accomplies") ? ok("la victoire dit la mission accomplie et sa récompense") : faute("victoire sans objectif accompli");
     const moi = (await lire(p)).compte;
     moi && moi.id && /^ORBI-/.test(moi.code) && essai.joueurs.get(moi.id).pseudo === (await p.textContent("#rangTitre")) ? ok("première victoire : profil créé, même pseudo, code de récupération") : faute("profil non créé : " + JSON.stringify(moi));
@@ -348,7 +350,7 @@ async function resoudre(p) {
     await q.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); v.xp = 8740; v.amp = 1; v.ampJour = ""; v.ampMaj = Date.now(); localStorage.setItem(k, JSON.stringify(v)); });
     await q.reload(); await q.waitForTimeout(1500); await q.tap("#btnJour"); await q.waitForTimeout(500); await q.tap('#pJour [data-a="jour"]'); await q.waitForTimeout(2200);
     const r20 = await q.evaluate(() => ({ cadre: document.getElementById("btnRang").className, amp: +document.getElementById("ampNb").textContent }));
-    /cadre-etoile/.test(r20.cadre) && r20.amp === 3 ? ok("rang 20 : cadre étoilé sur la puce, deux ampoules offertes ce jour") : faute("route du rang : " + JSON.stringify(r20));
+    /cadre-etoile/.test(r20.cadre) && r20.amp === 1 ? ok("rang 20 : cadre étoilé sur la puce, et plus d'ampoules offertes chaque jour par le rang") : faute("route du rang : " + JSON.stringify(r20));
     const e5 = p.erreurs.concat(q.erreurs); e5.length ? faute("erreurs : " + e5.join(" | ")) : ok("aucune erreur de script");
     await p.context().close(); await q.context().close();
   }

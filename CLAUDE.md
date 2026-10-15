@@ -152,9 +152,15 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   enchaîné de 6 s, démarre au premier geste, se coupe en arrière-plan, baisse sous la victoire. Le Chromium
   des tests n'a pas l'AAC : son échec de décodage doit rester silencieux.
 - **Ampoules** (le client, le 11/10/2026 ; pas de vidéo publicitaire, qui imposerait pub, suivi et RGPD) :
-  un indice coûte une ampoule (`ampoules()`, `depenserAmpoule()`), 3 au départ ; +1 au défi du jour réussi,
-  +1 par monde terminé, +1 à la première fois 3★ de coups et 3★ de temps sur un niveau ; le jeu complet en
-  offre une par jour ; à zéro, une revient après 10 min (`RECHARGE_AMP`). Fusion par `ampMaj`.
+  un indice coûte une ampoule (`ampoules()`, `depenserAmpoule()`), 3 au départ. **Rendues rares le 15/10/2026** (le client :
+  « trop facilement obtenues, ça gâche la difficulté ») : +1 quand les quatre missions du jour sont réussies, +2 pour les
+  quatre grandes missions, +1 par monde terminé, +1 à chaque palier de la route du rang (tous les cinq rangs, plus à chaque
+  rang), +1 par semaine de série, la voie dorée ; le jeu complet en offre une par jour ; à zéro, une revient après 30 min
+  (`RECHARGE_AMP`). Plus rien pour un défi réussi (de l'XP seulement), un 3★ + 3★, les rangs 10 et 20. Fusion par `ampMaj`.
+- **Les coups joués ne s'affichent jamais** (le client, le 15/10/2026 : recopiés, ils rejoueraient un défi au pavé et
+  écraseraient les scores) : `#notation` ne montre que la consigne avant le premier coup. Sur un **défi classé** (jour,
+  semaine, `defiClasse`) : ni pavé de notation (`majPave`), ni clavier (sauf `?capture`, pour les tests), ni « Revoir ma
+  partie ». Le parcours de test lit le dernier coup par `window.__orbicube.dernier()` (accès de capture seulement).
 - **Accueil** (le client, le 13/10/2026) : titre « ORBICUBE » en capitales fines très espacées (Jost 300,
   `.marque`, lueur d'accent, sans ellipse). **Jost remplace Unbounded partout** (`--f-titre`, graisses 600 et 700 embarquées,
   aussi dans `confidentialite.html` et `outils/captures.js`) ; Unbounded est retirée du dépôt. **Le cube au sommet de l'orbite du haut** (le cube au
