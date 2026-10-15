@@ -1213,7 +1213,7 @@ var PAL_THEME=[   // même ordre que le classique (orange, rouge, jaune, blanc, 
 // petite (de l'air entre les pièces), et un motif par décor : taille de cristal (vert), givre (bleu), braise (rouge), étincelle (violet)
 var LOOK_THEME=[{corps:"#071712",motif:"cristal"},{corps:"#07111F",motif:"givre"},{corps:"#1A090C",motif:"braise"},{corps:"#120A22",motif:"etincelle"}];
 var THEME_COURANT=2;   // l'accueil et les menus ont le décor bleu (bg-2) ; le jeu et la carte prennent celui de leur monde
-var PALETTES={classique:["#FF7A1E","#FA3A47","#FBD101","#F4F4F6","#2DCC4B","#0095D5"],
+var PALETTES={classique:["#FF9014","#FD5440","#FCCD30","#F2F5F0","#21B86F","#3282FC"],   // tons francs et lumineux (le client, le 16/10/2026)
   contraste:["#E69F00","#CC79A7","#F0E442","#FFFFFF","#009E73","#0072B2"],
   pastel:["#FFB27A","#F28B9B","#FFE38A","#F4F1EA","#8FD9A8","#8DB8F2"],
   neon:["#FF7A00","#FF2E63","#F5F500","#E8FFFF","#00FF9C","#00C8FF"],
@@ -1747,8 +1747,10 @@ document.addEventListener("visibilitychange",function(){if(document.hidden)Musiq
 function bip(freq,dur,type,vol,quand){var ac=audio();if(!ac)return;var t=ac.currentTime+(quand||0),o=ac.createOscillator(),g=ac.createGain();
   o.type=type||"sine";o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol||.12,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
   o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+dur+.02);}
-// nf = nombre de faces déjà unies : le son monte à mesure qu'on approche de la résolution (tension)
-function sonTour(mv,nf){var base=[330,392,494][mv.L+1]*(1+mv.a*.12)*(1+(nf||0)*.05);bip(base,.12,"triangle",.09);bip(base*1.5,.09,"sine",.05,.05);}
+// chaque cercle a sa note (le client, le 16/10/2026) : la gamme pentatonique de do, du grave à l'aigu, trois notes par famille
+// d'orbites ; un timbre de kalimba (fondamentale, octave légère, attaque brève) : jouer, c'est faire une petite mélodie
+var NOTES=[261.63,293.66,329.63,392,440,523.25,587.33,659.25,783.99];
+function sonTour(mv){var f=NOTES[mv.a*3+mv.L+1];bip(f,.7,"sine",.11);bip(f*2,.35,"sine",.025,.005);bip(f*3,.08,"triangle",.02);}
 function sonClic(){bip(660,.05,"sine",.05);}
 function sonEtoile(i){bip(880*Math.pow(1.26,i),.25,"sine",.12);bip(1320*Math.pow(1.26,i),.2,"triangle",.05,.02);}
 function sonVictoire(){bip(131,.6,"sine",.09);[523,659,784,1047,1319].forEach(function(f,i){bip(f,.4,"triangle",.1,i*.08);bip(f*2,.3,"sine",.03,i*.08+.02);});}
@@ -2202,9 +2204,10 @@ function victoire(){J.fini=true;var temps=performance.now()-J.t0,n=J.hist.length
   Musique.effacer(3500);[0,1,2,3,4,5].forEach(function(k){bip(392*Math.pow(1.122,k),.12,"sine",.05,k*.075);});
   // les six faces s'illuminent l'une après l'autre, et le cube fait un tour complet sur lui-même
   Object.keys(CENTRE_FACE).forEach(function(k,i){setTimeout(function(){if(J!==jeton)return;JeuP.eclats.push({xy:CENTRE_FACE[k],c:JeuP.col[CLE_CENTRE[k]],t0:performance.now()});Ticker.reveiller();},CALME?0:420+i*110);});
-  var base={y:PIVOT.y,x:PIVOT.x};if(!CALME)(function tour(now){if(J!==jeton){PIVOT=base;return;}var k=Math.min(1,(now-t0-200)/1100);if(k<0){requestAnimationFrame(tour);return;}
-    PIVOT={y:base.y+ease(k)*Math.PI*2,x:base.x};dessinerMini();if(k<1)requestAnimationFrame(tour);else{PIVOT=base;dessinerMini();}})(t0);
-  setTimeout(function(){if(J!==jeton)return;sonVictoire();vibrer([20,40,20]);confettis();fenetreVictoire(e,n,temps,record);verifierSucces();},CALME?300:1150);}
+  var base={y:PIVOT.y,x:PIVOT.x};if(!CALME)(function tour(now){if(J!==jeton){PIVOT=base;return;}var k=Math.min(1,(now-t0-200)/1500);if(k<0){requestAnimationFrame(tour);return;}
+    // un tour complet, le cube se penchant un peu vers l'avant à mi-course (le client, le 16/10/2026 : « c'est beau »)
+    PIVOT={y:base.y+ease(k)*Math.PI*2,x:base.x+Math.sin(Math.PI*k)*.35};dessinerMini();if(k<1)requestAnimationFrame(tour);else{PIVOT=base;dessinerMini();}})(t0);
+  setTimeout(function(){if(J!==jeton)return;sonVictoire();vibrer([20,40,20]);confettis();fenetreVictoire(e,n,temps,record);verifierSucces();},CALME?300:1700);}
 function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
   // campagne : le bouton principal suit le chemin ; un niveau pair du chemin qui ouvre un expert le propose en second
   var experts=null,cS=null;

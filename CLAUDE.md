@@ -111,7 +111,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   d'attente : `www/config.js` > `prixPacks`. Pas de monnaie virtuelle ni de tirage au hasard (décision du 13/10/2026).
   Pack soutien : liseré doré sur la puce du rang et le Profil (« Mécène d'Orbicube »).
 - **Fin de niveau** : les six faces s'illuminent l'une après l'autre et le cube fait un tour sur
-  lui-même (`PIVOT` n'est animé que là) ; « Revoir ma partie » rejoue le mélange puis les coups (`revoir()`).
+  lui-même (`PIVOT` n'est animé que là ; 1,5 s, penché un peu vers l'avant à mi-course, la fenêtre de victoire attend
+  1,7 s pour qu'on le voie, le client le 16/10/2026 : « c'est beau ») ; « Revoir ma partie » rejoue le mélange puis les coups (`revoir()`).
 - **Couleur d'accent par monde** (`ACCENTS`, `accent(w)`) : variable CSS `--acc` (triplet r,g,b) et
   `ACC` pour le canevas (cercle saisi, vague de victoire). Accueil, défi et jeu libre : le lilas.
   **Les orbites du plateau** (trait fin + halo léger, au repos comme à la sélection/au tour) prennent cette
@@ -166,6 +167,10 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   avant le premier niveau) : plus de phrase sous le bouton ni de bande du rang. Le rang reste dans la puce du haut
   (deux progressions distinctes). Les niveaux s'affichent en numéro continu (`numNiveau`, « Niveau 26 »), comme sur la carte.
 - **Faces terminées** : halo discret de leur couleur sous leurs neuf pastilles (`RAYON_FACE`), sur le plateau de jeu.
+- **Une note par cercle** (le client, le 16/10/2026, vu dans une vidéo) : `sonTour` joue la note de son orbite (`NOTES`, gamme
+  pentatonique de do, trois notes par famille, du grave à l'aigu) en timbre de kalimba ; chaque quart de tour d'un glisser
+  la rejoue. **Palette Classique** aux tons francs et lumineux de cette vidéo (#FF9014, #FD5440, #FCCD30, #F2F5F0, #21B86F,
+  #3282FC) ; le logo les reprend (`COUL_LOGO`).
 - **Musique** (`Musique`, `www/audio/nuit-dorbites.m4a`, générée par le client avec Suno sous licence
   commerciale) : AAC 96 kb/s (l'Opus d'origine ne se lit pas sur iPhone), boucle Web Audio avec fondu
   enchaîné de 6 s, démarre au premier geste, se coupe en arrière-plan, baisse sous la victoire. Le Chromium

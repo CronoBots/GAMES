@@ -219,6 +219,8 @@ def cube(im,cx,cy,s,cols=((245,245,240),(0,166,81),(215,25,44))):
 # le logo (2e version, le client, le 16/10/2026 : « le cube au milieu et quelques orbites avec les facettes autour, faisant
 # comprendre le mieux possible le jeu ») : le plateau du jeu, ses neuf orbites (une couleur par famille, la plus grande
 # appuyée) et ses facettes en losanges, résolu ; au centre le cube, qui porte les couleurs des faces voisines
+# les couleurs de la palette Classique du jeu (le client, le 16/10/2026)
+COUL_LOGO = ["#FF9014", "#FD5440", "#FCCD30", "#F2F5F0", "#21B86F", "#3282FC"]
 ORB=[(255,207,74),(178,130,255),(92,200,255)]   # une couleur par famille d'orbites
 
 def stickers():
@@ -262,13 +264,13 @@ def logo_premium(T,ech=0.33,transparent=False,rcube=0.46,mode="A"):
         P=[V(p) for p in pts]
         # ombre / liseré sombre puis la couleur
         poly_arrondi(d,retrecir(P,1.12),(8,8,14,255),T*0.004)
-        poly_arrondi(d,P,hexa(COUL[f])+(255,),T*0.004)
+        poly_arrondi(d,P,hexa(COUL_LOGO[f])+(255,),T*0.004)
         hd.polygon([P[0],P[1],P[3]] if False else retrecir(P,0.55),fill=(255,255,255,40))
     hl=hl.filter(ImageFilter.GaussianBlur(T*0.003)); im.alpha_composite(hl)
     # le cube au centre, avec un halo
     s=rcube*E*0.98
     g=Image.new("RGBA",(T,T),(0,0,0,0)); gd=ImageDraw.Draw(g); gd.ellipse([O[0]-s*1.05,O[1]-s*1.05,O[0]+s*1.05,O[1]+s*1.05],fill=(10,8,24,150)); g=g.filter(ImageFilter.GaussianBlur(s*0.18)); im.alpha_composite(g)
-    cube(im,O[0],O[1]+s*0.02,s,(hexa(COUL[2]),hexa(COUL[4]),hexa(COUL[0])))   # U, F, R : les faces voisines du plateau
+    cube(im,O[0],O[1]+s*0.02,s,(hexa(COUL_LOGO[2]),hexa(COUL_LOGO[4]),hexa(COUL_LOGO[0])))   # U, F, R : les faces voisines du plateau
     return im
 
 def rendre_premium(taille, ech, transparent=False, sur=3):
