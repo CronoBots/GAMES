@@ -27,12 +27,13 @@
     var mots = normal(pseudo).split(/[^a-zñ]+/).filter(Boolean), colle = mots.join("");
     return MOTS.some(function (m) { m = normal(m); return COURTS[m] ? mots.indexOf(m) >= 0 || colle === m : colle.indexOf(m) >= 0; });
   }
-  // lettres (accents compris), chiffres, espace, point, tiret, souligné ; 3 à 16 signes ; ni « Player » suivi de chiffres
+  // lettres latines (accents compris ; NFKC ramène les lettres pleine chasse et les ligatures, et les alphabets
+  // qui imitent le latin, cyrillique ou grec, sont refusés : « аdmin » avec un а cyrillique passait le filtre), chiffres, espace, point, tiret, souligné ; 3 à 16 signes ; ni « Player » suivi de chiffres
   // (réservé aux pseudos donnés par le jeu), ni « Orbicube » ou « CronoBots » (on ne se fait pas passer pour le jeu)
   function valide(pseudo) {
-    var p = String(pseudo || "").trim().replace(/\s+/g, " ");
+    var p = String(pseudo || "").normalize("NFKC").trim().replace(/\s+/g, " ");
     if (p.length < 3 || p.length > 16) return { ok: false, erreur: "longueur" };
-    if (!/^[\p{L}\p{N} ._-]+$/u.test(p)) return { ok: false, erreur: "signes" };
+    if (!/^[\p{Script=Latin}0-9 ._-]+$/u.test(p)) return { ok: false, erreur: "signes" };
     if (/^player\s*\d+$/i.test(p) || /orbicube|cronobots|admin|moderat/i.test(normal(p))) return { ok: false, erreur: "reserve" };
     if (grossier(p)) return { ok: false, erreur: "grossier" };
     return { ok: true, pseudo: p };

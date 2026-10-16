@@ -219,7 +219,14 @@ else {
 }
 // la clé de service de Supabase ne quitte jamais le serveur : aucune trace dans le jeu
 const cleService = [...new Set(aRelire.concat(fs.readdirSync(WWW).filter((f) => /\.(js|html)$/.test(f)).map((f) => path.join(WWW, f))))]
-  .filter((p) => /service_role|SERVICE_ROLE_KEY|sb_secret_/.test(fs.readFileSync(p, "utf8")));
+  .filter((p) => {
+    const t = fs.readFileSync(p, "utf8");
+    if (/service_role|SERVICE_ROLE_KEY|sb_secret_/.test(t)) return true;
+    // l'ancienne clé de service est un JWT : « service_role » n'y apparaît qu'une fois sa charge décodée
+    return [...t.matchAll(/eyJ[\w-]+\.(eyJ[\w-]+)\.[\w-]+/g)].some((m) => {
+      try { return /"role"\s*:\s*"service_role"/.test(Buffer.from(m[1], "base64url").toString("utf8")); } catch (e) { return false; }
+    });
+  });
 cleService.length ? faute("clé de service Supabase dans : " + cleService.join(", ")) : ok("aucune clé de service Supabase dans le jeu");
 console.log(fautes ? "\n" + fautes + " faute(s)." : "\nTout est en ordre.");
 process.exit(fautes ? 1 : 0);

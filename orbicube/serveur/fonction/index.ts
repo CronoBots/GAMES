@@ -12,8 +12,12 @@ const G = globalThis as any;
 const Moteur = G.Moteur, Filtre = G.Filtre;
 const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false } });
 
-const ENTETES = {
-  "Access-Control-Allow-Origin": "*",
+// CORS : l'app (capacitor://localhost sur iOS, https://localhost sur Android) et la version web. Un client hors navigateur
+// n'est pas arrêté par là : c'est le jeton et les vérifications plus bas qui protègent.
+const ORIGINES = ["capacitor://localhost", "https://localhost", "http://localhost", "https://cronobots.github.io"];
+const ENTETES: Record<string, string> = {
+  "Access-Control-Allow-Origin": ORIGINES[3],
+  "Vary": "Origin",
   "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Content-Type": "application/json",
@@ -21,10 +25,22 @@ const ENTETES = {
 const rendre = (corps: unknown, statut = 200) => new Response(JSON.stringify(corps), { status: statut, headers: ENTETES });
 const refus = (erreur: string, statut = 400) => rendre({ erreur }, statut);
 
+// empreinte HMAC avec un secret du serveur (POIVRE, dans les secrets de la fonction) : une copie volée de la table ne
+// permet pas de retrouver les codes de récupération en les essayant tous
+const POIVRE = Deno.env.get("POIVRE") || "";
+let cleHmac: Promise<CryptoKey> | null = null;
 async function empreinte(t: string) {
-  const h = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t));
+  if (!cleHmac) cleHmac = crypto.subtle.importKey("raw", new TextEncoder().encode(POIVRE || "orbicube"), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const h = await crypto.subtle.sign("HMAC", await cleHmac, new TextEncoder().encode(t));
   return [...new Uint8Array(h)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
+// limites de débit (table « limites », fonction SQL « compter ») : au plus « max » fois par fenêtre de « secondes »
+async function limite(cle: string, max: number, secondes: number) {
+  const { data, error } = await db.rpc("compter", { p_cle: cle, p_max: max, p_secondes: secondes });
+  return !error && data === true;
+}
+// le rang se recalcule à partir de l'expérience, comme dans le jeu (xpPour(r) = 60 + 40r)
+function rangDe(xp: number) { let r = 1; while (xp >= 60 + 40 * r && r < 999) { xp -= 60 + 40 * r; r++; } return r; }
 function hasard(n: number, alphabet: string) {
   const o = crypto.getRandomValues(new Uint8Array(n));
   return [...o].map((b) => alphabet[b % alphabet.length]).join("");
@@ -61,10 +77,17 @@ function cleSemaine(t: number) {
   const a = new Date(Date.UTC(d.getUTCFullYear(), 0, 4));
   return d.getUTCFullYear() + "-S" + String(1 + Math.round(((+d - +a) / 864e5 - 3 + (a.getUTCDay() + 6) % 7) / 7)).padStart(2, "0");
 }
+// un défi n'est classé que tant qu'il est le défi en cours quelque part sur Terre (de UTC+14 à UTC−12) : on ne peut plus
+// le préparer à l'avance des jours entiers ni le rejouer une fois passé
 function cleValide(tableau: string, cle: string) {
-  const n = Date.now(), j = 864e5;
-  if (tableau === "jour") return [n - j, n, n + j].map((t) => cleJour(new Date(t))).includes(cle);
-  if (tableau === "semaine") return [n - 7 * j, n, n + 7 * j].map(cleSemaine).includes(cle);
+  const n = Date.now(), h = 36e5, j = 864e5;
+  if (tableau === "jour") {
+    const m = /^(\d{4})(\d{2})(\d{2})$/.exec(cle);
+    if (!m) return false;
+    const debut = Date.UTC(+m[1], +m[2] - 1, +m[3]);
+    return cleJour(new Date(debut)) === cle && n >= debut - 14 * h && n < debut + j + 12 * h;
+  }
+  if (tableau === "semaine") return [n - 14 * h, n + 12 * h].map(cleSemaine).includes(cle);
   return false;
 }
 
@@ -108,8 +131,12 @@ async function classement(tableau: string, cle: string, j: Record<string, unknow
 }
 
 Deno.serve(async (req) => {
+  const o = req.headers.get("origin") || "";
+  ENTETES["Access-Control-Allow-Origin"] = ORIGINES.includes(o) ? o : ORIGINES[3];
   if (req.method === "OPTIONS") return new Response(null, { headers: ENTETES });
   if (req.method !== "POST") return refus("methode", 405);
+  // rien de ce que le jeu envoie ne dépasse 100 Ko (la sauvegarde est le plus gros)
+  if (Number(req.headers.get("content-length") || 0) > 100000) return refus("taille", 413);
   // deno-lint-ignore no-explicit-any
   let c: any;
   try { c = await req.json(); } catch { return refus("json"); }
@@ -118,6 +145,8 @@ Deno.serve(async (req) => {
     switch (c.a) {
       // un nouveau joueur : identifiant, jeton du téléphone, code de récupération et pseudo « Player… »
       case "inscrire": {
+        // sans adresse IP (on n'en garde aucune) : une limite d'ensemble contre les inscriptions en rafale
+        if (!await limite("inscrire", 120, 60)) return refus("occupe", 429);
         const code = nouveauCode(), jeton = nouveauJeton();
         // le pseudo que le téléphone affichait déjà (« Player4821 »), s'il est libre
         let pseudo = /^Player\d{4,8}$/.test(String(c.pseudo)) ? String(c.pseudo) : "";
@@ -129,6 +158,8 @@ Deno.serve(async (req) => {
       }
       // le code de récupération sur un autre téléphone : nouveau jeton, l'ancien téléphone est détaché
       case "recuperer": {
+        // 60 bits ne se devinent pas, mais on ne laisse pas essayer en masse
+        if (!await limite("recuperer", 60, 60)) return refus("occupe", 429);
         const n = normCode(c.code);
         if (n.length !== 12) return refus("code");
         const { data: j } = await db.from("joueurs").select("id,pseudo,sauvegarde").eq("code_hash", await empreinte(n)).maybeSingle();
@@ -157,6 +188,7 @@ Deno.serve(async (req) => {
     switch (c.a) {
       case "moi": return rendre({ pseudo: j.pseudo, code: null });
       case "pseudo": {
+        if (!await limite("pseudo:" + j.id, 10, 86400)) return refus("occupe", 429);
         const v = Filtre.valide(c.nom);
         if (!v.ok) return refus(v.erreur);
         if (v.pseudo.toLowerCase() === String(j.pseudo).toLowerCase()) {
@@ -171,9 +203,13 @@ Deno.serve(async (req) => {
         return rendre({ pseudo: v.pseudo });
       }
       // ce que le profil public montre : bornes larges, rien d'autre n'est gardé
+      // bornées aux vrais maxima du jeu : 96 niveaux à trois étoiles de chaque sorte, huit voies dorées ; le rang se déduit de
+      // l'expérience au lieu d'être cru
       case "stats": {
+        if (!await limite("stats:" + j.id, 30, 3600)) return refus("occupe", 429);
+        const xp = entier(c.xp, 1e7);
         await db.from("joueurs").update({
-          rang: Math.max(1, entier(c.rang, 999)), xp: entier(c.xp, 1e8), etoiles: entier(c.etoiles, 999), etoiles_temps: entier(c.etoilesT, 999),
+          rang: rangDe(xp), xp, etoiles: entier(c.etoiles, 288), etoiles_temps: entier(c.etoilesT, 288),
           voies: entier(c.voies, 8), sansfin: entier(c.sansfin, 999), mecene: !!c.mecene,
         }).eq("id", j.id);
         return rendre({ ok: true });
@@ -182,10 +218,11 @@ Deno.serve(async (req) => {
       case "score": {
         const tableau = String(c.tableau), cle = String(c.cle);
         if (!cleValide(tableau, cle)) return refus("cle");
+        if (!await limite("score:" + j.id, 60, 3600)) return refus("occupe", 429);
         const n = Moteur.verifier(tableau, cle, c.coups);
         if (n < 1) return refus("refuse", 422);
         const temps = entier(c.temps, 864e5);
-        if (temps < n * 120) return refus("refuse", 422);   // plus vite qu'un geste humain
+        if (temps < Math.max(2000, n * 200)) return refus("refuse", 422);   // plus vite qu'un geste humain
         const t = tableau + ":" + cle;
         const { data: av } = await db.from("scores").select("coups,temps_ms").eq("joueur", j.id).eq("tableau", t).maybeSingle();
         if (!av || n < av.coups || (n === av.coups && temps < av.temps_ms))
@@ -194,6 +231,12 @@ Deno.serve(async (req) => {
       }
       case "signaler": {
         if (!/^[0-9a-f-]{36}$/.test(String(c.pid)) || c.pid === j.id) return refus("pid");
+        // seul un joueur installé (un jour d'ancienneté et un défi réussi) peut signaler, cinq fois par jour au plus :
+        // trois profils créés à la chaîne ne suffisent plus à effacer le pseudo de quelqu'un
+        if (Date.now() - +new Date(j.cree_le) < 864e5) return rendre({ ok: true });
+        const { count: sc } = await db.from("scores").select("tableau", { count: "exact", head: true }).eq("joueur", j.id);
+        if (!sc) return rendre({ ok: true });
+        if (!await limite("signaler:" + j.id, 5, 86400)) return rendre({ ok: true });
         await db.from("signalements").upsert({ joueur: c.pid, par: j.id });
         const { count } = await db.from("signalements").select("par", { count: "exact", head: true }).eq("joueur", c.pid);
         if ((count || 0) >= 3) {   // trois joueurs différents : le pseudo redevient « Player… »
@@ -202,11 +245,15 @@ Deno.serve(async (req) => {
         }
         return rendre({ ok: true });
       }
-      // la sauvegarde de la progression, rendue par le code de récupération (300 Ko au plus)
+      // la sauvegarde de la progression, rendue par le code de récupération (80 Ko au plus). Les achats et les aides n'y
+      // sont pas gardés : ils viennent du store, jamais d'une sauvegarde qu'on pourrait écrire à la main
       case "sauver": {
-        const s = JSON.stringify(c.sauvegarde || null);
-        if (s.length > 300000) return refus("taille", 413);
-        await db.from("joueurs").update({ sauvegarde: c.sauvegarde || null, sauvegarde_maj: new Date().toISOString() }).eq("id", j.id);
+        if (!await limite("sauver:" + j.id, 30, 3600)) return refus("occupe", 429);
+        const sv = c.sauvegarde && typeof c.sauvegarde === "object" && !Array.isArray(c.sauvegarde) ? { ...c.sauvegarde } : null;
+        if (sv) for (const k of ["achat", "droits", "amp", "ampMaj", "ampVide", "ampJour", "compte", "envois"]) delete sv[k];
+        const s = JSON.stringify(sv);
+        if (s.length > 80000) return refus("taille", 413);
+        await db.from("joueurs").update({ sauvegarde: sv, sauvegarde_maj: new Date().toISOString() }).eq("id", j.id);
         return rendre({ ok: true });
       }
       // le joueur efface tout : profil, pseudo, scores, sauvegarde, signalements

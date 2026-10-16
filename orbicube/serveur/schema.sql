@@ -50,8 +50,37 @@ alter table scores enable row level security;
 alter table signalements enable row level security;
 revoke all on joueurs, scores, signalements from anon, authenticated;
 
--- ménage : les scores des défis de plus de 60 jours ne servent plus
+-- limites de débit : un compteur par clé (« score:<joueur> », « inscrire ») et par fenêtre ; aucune adresse IP
+create table if not exists limites (
+  cle text not null,
+  fenetre timestamptz not null,
+  n int not null default 0,
+  primary key (cle, fenetre)
+);
+alter table limites enable row level security;
+revoke all on limites from anon, authenticated;
+-- vrai tant que la clé n'a pas dépassé p_max appels dans sa fenêtre de p_secondes (compte et répond en une fois)
+create or replace function compter(p_cle text, p_max int, p_secondes int) returns boolean language plpgsql security definer
+set search_path = public as $$
+declare f timestamptz := to_timestamp(floor(extract(epoch from now()) / p_secondes) * p_secondes); v int;
+begin
+  insert into limites (cle, fenetre, n) values (p_cle, f, 1)
+    on conflict (cle, fenetre) do update set n = limites.n + 1 returning n into v;
+  return v <= p_max;
+end $$;
+revoke all on function compter(text, int, int) from public, anon, authenticated;
+
+-- ménage, une fois par jour : les scores des défis de plus de 60 jours (la politique de confidentialité le promet),
+-- les compteurs passés, et les profils sans aucune visite depuis deux ans
 create or replace function menage_scores() returns void language sql security definer set search_path = public as $$
   delete from scores where quand < now() - interval '60 days';
+  delete from limites where fenetre < now() - interval '2 days';
+  delete from joueurs where vu_le < now() - interval '2 years';
 $$;
 revoke all on function menage_scores() from public, anon, authenticated;
+-- planifié par pg_cron (à activer dans Database > Extensions) : obligatoire avant la sortie
+do $$ begin
+  if exists (select 1 from pg_extension where extname = 'pg_cron') then
+    perform cron.schedule('orbicube-menage', '17 3 * * *', 'select menage_scores()');
+  end if;
+end $$;

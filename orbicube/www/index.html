@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self' https:; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <title>Orbicube</title>
 <meta name="description" content="Le cube 3×3 joué en faisant tourner neuf cercles. 96 niveaux, un défi par jour, sans publicité.">
@@ -3093,7 +3094,7 @@ var SVG_COUPS='<svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4
 function ouvrirClassement(t,depuis){if(t)CL.t=t;ouvrirJoueur("classement",depuis);}
 function valeurCl(t,x){if(t==="jour"||t==="semaine")return '<span class="notrad">'+SVG_COUPS+x.valeur+'</span><span class="notrad">'+SVG_HORLOGE+fmt(x.temps)+'</span>';
   if(t==="etoiles")return '<span class="notrad">'+SVG_ET+x.valeur+'</span>';if(t==="sansfin")return '<span>Étape '+x.valeur+'</span>';return '<span>'+titreRang(x.valeur)+'</span>';}
-function ligneCl(t,x,moi){var c=cadreDe(x.niveau||1);return '<button class="cl-ligne'+(moi?" moi":"")+(x.mecene?" mecene":"")+'" type="button" data-pid="'+x.pid+'">'+
+function ligneCl(t,x,moi){var c=cadreDe(x.niveau||1);return '<button class="cl-ligne'+(moi?" moi":"")+(x.mecene?" mecene":"")+'" type="button" data-pid="'+String(x.pid).replace(/[^0-9a-f-]/g,"")+'">'+
   '<span class="cl-place notrad"'+(x.place<=3?' style="color:'+MEDAILLES[x.place-1]+'"':"")+'>'+x.place+'</span>'+
   '<span class="cl-niv notrad'+(c?" cadre-"+c:"")+'">'+(x.niveau||1)+'</span><span class="cl-nom"><b class="notrad">'+echapper(x.pseudo||"")+'</b>'+(t==="rang"?'<small>'+titreRang(x.valeur)+'</small>':"")+'</span>'+
   '<span class="cl-val">'+(t==="rang"?"":valeurCl(t,x))+'</span></button>';}
@@ -3131,14 +3132,14 @@ function profilPublic(pid){appel("profil",{pid:pid}).then(function(r){if(!r.pseu
       fermerFenetre();},"x");});}
 
 // ---- le pseudo, modifiable depuis l'accueil (la puce du haut ouvre le profil, le crayon le change) ----
-var ERR_PSEUDO={longueur:"Entre 3 et 16 signes.",signes:"Lettres, chiffres, espace, point, tiret ou souligné seulement.",reserve:"Ce pseudo est réservé.",
+var ERR_PSEUDO={occupe:"Trop d’essais : réessayez dans un moment.",longueur:"Entre 3 et 16 signes.",signes:"Lettres, chiffres, espace, point, tiret ou souligné seulement.",reserve:"Ce pseudo est réservé.",
   grossier:"Ce pseudo n’est pas accepté.",pris:"Ce pseudo est déjà pris.",reseau:"Pas de connexion. Réessayez plus tard.",serveur:"Le serveur ne répond pas. Réessayez plus tard."};
 function changerPseudo(){ouvrirFenetre('<h3>Votre pseudo</h3><p>C’est le nom que les autres joueurs voient au classement.</p>'+
     '<input class="champ notrad" id="champPseudo" maxlength="16" autocomplete="off" autocapitalize="off" spellcheck="false" value="'+echapper(pseudo())+'"><p class="champ-err" id="errPseudo"></p>'+
     '<div class="menu"><button class="bouton" data-a="ok" type="button" style="justify-content:center">Valider</button><button class="bouton" data-a="x" type="button" style="justify-content:center;color:var(--pale)">Annuler</button></div>',
   function(a){if(a!=="ok"){fermerFenetre();return;}var v=document.getElementById("champPseudo").value.trim().replace(/\s+/g," "),err=document.getElementById("errPseudo");
     function dire(k){err.textContent=ERR_PSEUDO[k]||ERR_PSEUDO.serveur;}
-    if(v.length<3||v.length>16)return dire("longueur");if(!/^[\p{L}\p{N} ._-]+$/u.test(v))return dire("signes");if(v===pseudo()){fermerFenetre();return;}
+    if(v.length<3||v.length>16)return dire("longueur");if(!/^[\p{Script=Latin}0-9 ._-]+$/u.test(v.normalize("NFKC")))return dire("signes");if(v===pseudo()){fermerFenetre();return;}
     if(!enLigne()||PROG.classementOff){PROG.pseudoLocal=v;PROG.pseudoChoisi=true;sauver();majRang();rafraichirProfil();fermerFenetre();return;}
     err.textContent="…";assurerCompte().then(function(c){if(!c)return{erreur:"reseau"};return appel("pseudo",{nom:v});}).then(function(r){if(!r.pseudo)return dire(r.erreur);
       PROG.compte.pseudo=r.pseudo;PROG.pseudoLocal=r.pseudo;PROG.pseudoChoisi=true;sauver();majRang();rafraichirProfil();fermerFenetre();toast("Pseudo enregistré","");});},"x");
@@ -3159,7 +3160,7 @@ document.getElementById("btnRecuperer").addEventListener("click",function(){sonC
       if(NATIF.identifier)NATIF.identifier(r.id).then(function(l){if(l)appliquerDroits(l);});fermerFenetre();toast("Profil retrouvé","");});},"x");});
 document.getElementById("btnSupprimerCompte").addEventListener("click",function(){sonClic();ouvrirFenetre('<h3>Supprimer mes données ?</h3><p>Votre pseudo, vos scores et votre sauvegarde seront effacés du serveur, et vous n’apparaîtrez plus au classement. Votre partie et vos achats restent sur ce téléphone.</p>'+
     '<div class="menu"><button class="bouton" data-a="non" type="button" style="justify-content:center">Garder mon profil</button><button class="danger" data-a="oui" type="button">Supprimer définitivement</button></div>',
-  function(a){fermerFenetre();if(a!=="oui")return;var fin=function(){PROG.compte=null;PROG.envois=[];PROG.classementOff=true;sauver();majRang();rafraichirProfil();avertir("Classement","Vos données ont été supprimées.");};
+  function(a){fermerFenetre();if(a!=="oui")return;var fin=function(){if(NATIF.oublierIdentite)NATIF.oublierIdentite();PROG.compte=null;PROG.envois=[];PROG.classementOff=true;sauver();majRang();rafraichirProfil();avertir("Classement","Vos données ont été supprimées.");};
     if(!PROG.compte){fin();return;}appel("supprimer").then(function(r){if(r.ok)fin();else avertir("Classement",ERR_PSEUDO[r.erreur]||ERR_PSEUDO.serveur);});},"non");});
 // au lancement : ce qui attendait le réseau part, le profil public se met à jour
 setTimeout(function(){if(PROG.compte){viderEnvois();envoyerStats();}},2500);
