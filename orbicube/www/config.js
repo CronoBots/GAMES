@@ -5,6 +5,9 @@ window.ORBICUBE_CONFIG = {
   // "essai"   : gratuit au téléchargement, les mondes gratuits puis un achat unique débloque tout.
   // "complet" : tout est ouvert (application vendue payante sur le store, ou version de démonstration).
   modele: "essai",
+  // Mode test : le pseudo « Unscoop » ouvre tous les achats et tous les mondes. À passer à false AVANT d'envoyer l'app aux
+  // stores (Apple refuse un contenu payant qui s'ouvre sans achat) ; docs/lancement.md 7 le rappelle.
+  modeTest: true,
   mondesGratuits: 4,          // mondes jouables sans achat (sur 8) : de 2 à 5 orbites ; les neuf à la fois, jamais gratuites
   libresGratuits: [5],        // niveaux de jeu libre jouables sans achat (5, 10, 15, 25)
 

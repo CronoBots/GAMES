@@ -309,6 +309,11 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   ne raccourcit jamais, un seul niveau à un coup, et `genererMelange` refuse qu'une orbite revienne dans une suite de coups sur un même axe (U D U′
   vaudrait D) ; le vérificateur contrôle les trois. Graine `orbicube3-` ; `CAMPAGNE` reste 2 (jeu pas encore sorti :
   les essais du client gardent leurs étoiles).
+- **Mondes 1 à 4 allégés** (le client, le 16/10/2026 : « légèrement plus facile ») : un coup de moins en haut du chemin et sur la
+  voie dorée (monde 1 : 1→4, experts 4→6 ; monde 4 : 3→6, experts 6→9) ; empreinte du vérificateur mise à jour.
+- **Mode test « Unscoop »** (le client, le 16/10/2026) : ce pseudo ouvre tout ce qui s'achète et tous les mondes (`createur()`,
+  lu dans `complet`, `aDroit`, `mondeOuvert`), sans rien écrire dans la sauvegarde ; seulement si `config.js` > `modeTest` est
+  vrai. **À passer à false avant les stores** (Apple : contenu payant ouvert sans achat), rappelé dans `docs/lancement.md` 7.
 - **Mondes gratuits et étoiles** : le monde 3 demande en plus des étoiles de coups (jaunes), le monde 4 des étoiles de
   temps (bleues), comptées sur toute la campagne, achat ou non. **Règle unique** (le client : logique, jamais 100 %) : deux
   étoiles par niveau du chemin des mondes d'avant (`MONDES[w].etoiles` = 2, `seuilEtoiles` : 32 puis 48), le vérificateur

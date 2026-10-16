@@ -1348,7 +1348,7 @@ var DESC_STYLE={trefle:"Les trois familles d’orbites en trèfle : la dispositi
   crepuscule:"Les teintes chaudes d’un coucher de soleil.",abysses:"Les couleurs vives des grands fonds.",solaire:"Toute la chaleur d’une étoile.",prisme:"La lumière éclatée en six couleurs franches.",cosmos:"Les teintes douces d’une galaxie lointaine.",celeste:"Un ciel clair, de la lune aux nuages.",
   braises:"Des escarbilles orange qui s’éteignent derrière les pièces.",nacre:"Des orbites de nacre, pâles et irisées.",orrose:"Des orbites d’or rose, la marque des légendes."};
 function style(k,id){var l=STYLES[k];for(var i=0;i<l.length;i++)if(l[i].id===id)return l[i];return l[0];}
-function aDroit(d){return d==="complet"?complet():!!(PROG.droits&&PROG.droits[d]);}
+function aDroit(d){return d==="complet"?complet():createur()||!!(PROG.droits&&PROG.droits[d]);}
 // un style exclusif s'ouvre en finissant la voie dorée d'un monde (son dernier expert) ; la barre compte ses experts gagnés
 function styleVoie(w){var r=null;Object.keys(STYLES).forEach(function(k){STYLES[k].forEach(function(st){if(st.ouv&&st.ouv.voie===w)r=st;});});return r;}
 function voieFinie(w){return !!PROG.niveaux[(w+1)+"-"+MONDES[w].coups.length];}
@@ -1742,10 +1742,12 @@ function poserFond(t){var el=document.getElementById("fondMonde");if(el)el.style
 var THEME_ACC=["80,226,150","92,180,255","255,110,120","178,130,255"];
 function accentTheme(t){if(typeof suivreTheme==="function")suivreTheme((((t-1)%4)+4)%4+1);ACC=THEME_ACC[(((t-1)%4)+4)%4];ACC_CLAIR=eclaircir(ACC,.65);document.documentElement.style.setProperty("--acc",ACC);}
 var MONDES=[
-  {nom:"Premier cercle",desc:"Le geste s’apprend ici : faites glisser U et R.",anneaux:["U","R"],coups:[1,2,3,3,4,4,5,5,5,6,6,7]},
-  {nom:"Trois faces",desc:"F entre en jeu : chaque pastille a désormais deux chemins.",anneaux:["U","R","F"],coups:[2,3,3,4,4,5,5,6,6,7,7,8]},
-  {nom:"Face cachée",desc:"D tourne sur le même axe que U : pensez en couches.",anneaux:["U","D","R","F"],etoiles:{jaunes:2},coups:[3,3,4,4,5,5,6,6,7,7,8,9]},
-  {nom:"Face à face",desc:"L fait face à R : la moitié du cube bouge à chaque tour.",anneaux:["U","D","L","R","F"],etoiles:{bleues:2},coups:[3,4,4,5,5,6,6,7,7,8,9,10]},
+  // les quatre mondes gratuits, un coup de moins en haut du chemin et sur la voie dorée (le client, le 16/10/2026 :
+  // « légèrement plus facile ») ; le chemin ne raccourcit toujours jamais
+  {nom:"Premier cercle",desc:"Le geste s’apprend ici : faites glisser U et R.",anneaux:["U","R"],coups:[1,2,3,3,4,4,4,4,4,5,5,6]},
+  {nom:"Trois faces",desc:"F entre en jeu : chaque pastille a désormais deux chemins.",anneaux:["U","R","F"],coups:[2,3,3,4,4,5,5,5,5,6,6,7]},
+  {nom:"Face cachée",desc:"D tourne sur le même axe que U : pensez en couches.",anneaux:["U","D","R","F"],etoiles:{jaunes:2},coups:[3,3,4,4,5,5,5,5,6,6,7,8]},
+  {nom:"Face à face",desc:"L fait face à R : la moitié du cube bouge à chaque tour.",anneaux:["U","D","L","R","F"],etoiles:{bleues:2},coups:[3,4,4,5,5,6,6,6,6,7,8,9]},
   {nom:"Six faces",desc:"Les six faces du cube : le vrai casse-tête commence.",anneaux:["U","D","L","R","F","B"],coups:[4,4,5,5,6,7,7,8,8,9,10,11]},
   {nom:"Première tranche",desc:"M, la tranche du milieu, déplace des pastilles sans face à elle.",anneaux:["U","D","L","R","F","B","M"],coups:[4,5,5,6,7,7,8,9,9,10,11,12]},
   {nom:"Deux tranches",desc:"E se glisse entre U et D : presque tout le cube bouge.",anneaux:["U","D","L","R","F","B","M","E"],coups:[5,5,6,7,7,8,9,10,10,11,12,13]},
@@ -1990,7 +1992,12 @@ var ET_PATH='<path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6
 var SVG_ET='<svg viewBox="0 0 24 24" class="etoile">'+ET_PATH+'</svg>',SVG_ET_OFF='<svg viewBox="0 0 24 24" class="etoile eteinte">'+ET_PATH+'</svg>',
   SVG_ETT='<svg viewBox="0 0 24 24" class="etoile temps">'+ET_PATH+'</svg>';
 var CAD='<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>';
-function complet(){return CFG.modele==="complet"||PROG.achat===true;}
+function complet(){return CFG.modele==="complet"||PROG.achat===true||createur();}
+// le pseudo « Unscoop » (le client, le 16/10/2026) : tout ce qui s'achète est ouvert et tous les mondes sont disponibles, sans
+// rien écrire dans la sauvegarde (changer de pseudo referme tout). Seulement tant que config.js > modeTest est vrai : avant la
+// sortie dans les stores, on le passe à false (Apple refuse un contenu payant qui s'ouvre sans achat, règles 2.3.1 et 3.1.1)
+function createur(){if(typeof CFG==="undefined"||!CFG||!CFG.modeTest||typeof PROG==="undefined"||!PROG)return false;   // lu sans rien créer (pseudoLocal() en tirerait un)
+  return /^unscoop$/i.test(String((PROG.compte&&PROG.compte.pseudo)||PROG.pseudoLocal||"").trim());}
 function mondePaye(w){return !complet()&&w>=CFG.mondesGratuits;}
 // un monde gratuit peut demander, en plus du dernier niveau du chemin précédent, des étoiles de coups (jaunes) ou de
 // temps (bleues), comptées sur toute la campagne (le client, le 14/10/2026). Règle unique et lisible : deux étoiles par
@@ -2001,7 +2008,7 @@ function condEtoiles(w){var c=MONDES[w].etoiles;if(!c)return null;var j=!!c.jaun
 function texteCond(c){return c.jaunes?"Pour ouvrir ce monde : "+c.faut+" étoiles de coups, deux par niveau en moyenne. Il en manque "+c.manque+".":"Pour ouvrir ce monde : "+c.faut+" étoiles de temps, deux par niveau en moyenne. Il en manque "+c.manque+".";}
 // le monde où le chemin attend des étoiles (le dixième niveau du précédent est fait), ou -1
 function mondeAttend(){for(var w=1;w<MONDES.length;w++)if(!mondePaye(w)&&PROG.niveaux[w+"-"+BASE]&&condEtoiles(w))return w;return -1;}
-function mondeOuvert(w){return !mondePaye(w)&&(w===0||(!!PROG.niveaux[w+"-"+BASE]&&!condEtoiles(w)));}
+function mondeOuvert(w){if(createur())return true;return !mondePaye(w)&&(w===0||(!!PROG.niveaux[w+"-"+BASE]&&!condEtoiles(w)));}
 // les experts s'ouvrent quand le chemin du monde est fini (le client : la voie dorée est pour après), puis l'un après l'autre
 function niveauOuvert(w,i){if(!mondeOuvert(w))return false;if(estExpert(i))return !!PROG.niveaux[(w+1)+"-"+BASE]&&(i===BASE||!!PROG.niveaux[(w+1)+"-"+i]);   // le chemin fini ET l'expert d'avant (un expert gagné sous une ancienne règle n'ouvre rien tant que le chemin n'est pas fini)
   return i===0||!!PROG.niveaux[(w+1)+"-"+i];}
@@ -3226,6 +3233,8 @@ function profilPublic(pid){appel("profil",{pid:pid}).then(function(r){if(!r.pseu
         toast(masque(pid)?"Joueur masqué":"Joueur visible",masque(pid)?"Son pseudo ne s’affiche plus sur ce téléphone.":"");return;}
       fermerFenetre();},"x");});}
 
+// un pseudo peut ouvrir ou refermer le mode « Unscoop » (createur) : tout ce qui dépend des achats se redessine
+function apresPseudo(){appliquerOptions();majAchat();rafraichirAccueil();if(ECRAN==="joueur")rafraichirProfil();}
 // ---- le pseudo, modifiable depuis l'accueil (la puce du haut ouvre le profil, le crayon le change) ----
 var ERR_PSEUDO={occupe:"Trop d’essais : réessayez dans un moment.",longueur:"Entre 3 et 16 signes.",signes:"Lettres, chiffres, espace, point, tiret ou souligné seulement.",reserve:"Ce pseudo est réservé.",
   grossier:"Ce pseudo n’est pas accepté.",pris:"Ce pseudo est déjà pris.",reseau:"Pas de connexion. Réessayez plus tard.",serveur:"Le serveur ne répond pas. Réessayez plus tard."};
@@ -3235,9 +3244,9 @@ function changerPseudo(){ouvrirFenetre('<h3>Votre pseudo</h3><p>C’est le nom q
   function(a){if(a!=="ok"){fermerFenetre();return;}var v=document.getElementById("champPseudo").value.trim().replace(/\s+/g," "),err=document.getElementById("errPseudo");
     function dire(k){err.textContent=ERR_PSEUDO[k]||ERR_PSEUDO.serveur;}
     if(v.length<3||v.length>16)return dire("longueur");if(!/^[\p{Script=Latin}0-9 ._-]+$/u.test(v.normalize("NFKC")))return dire("signes");if(v===pseudo()){fermerFenetre();return;}
-    if(!enLigne()||PROG.classementOff){PROG.pseudoLocal=v;PROG.pseudoChoisi=true;sauver();majRang();rafraichirProfil();fermerFenetre();return;}
+    if(!enLigne()||PROG.classementOff){PROG.pseudoLocal=v;PROG.pseudoChoisi=true;sauver();majRang();rafraichirProfil();apresPseudo();fermerFenetre();return;}
     err.textContent="…";assurerCompte(true).then(function(c){if(!c)return{erreur:"reseau"};return appel("pseudo",{nom:v});}).then(function(r){if(!r.pseudo)return dire(r.erreur);
-      PROG.compte.pseudo=r.pseudo;PROG.pseudoLocal=r.pseudo;PROG.pseudoChoisi=true;sauver();majRang();rafraichirProfil();fermerFenetre();toast("Pseudo enregistré","");});},"x");
+      PROG.compte.pseudo=r.pseudo;PROG.pseudoLocal=r.pseudo;PROG.pseudoChoisi=true;sauver();majRang();rafraichirProfil();apresPseudo();fermerFenetre();toast("Pseudo enregistré","");});},"x");
   setTimeout(function(){var c=document.getElementById("champPseudo");if(c){c.focus();c.select();}},80);}
 
 // ---- le profil de joueur : code de récupération, reprise sur un autre téléphone, suppression ----

@@ -379,6 +379,7 @@ l'adresse de contact et le nom du responsable** dans la page avant de la publier
 - [ ] `npm run tester` → « Parcours réussi sur les trois téléphones et dans les cinq langues. »
 - [ ] Version identique dans `package.json`, `www/config.js` ; `V` incrémenté dans `www/sw.js`.
 - [ ] Clés RevenueCat publiques dans `www/config.js`.
+- [ ] `modeTest: false` dans `www/config.js` : sinon le pseudo « Unscoop » ouvre tout le contenu payant sans achat.
 - [ ] Adresse de contact remplie dans `www/confidentialite.html`, page publiée en ligne.
 - [ ] Aucune mention de la marque « Rubik's » nulle part. C'est une marque déposée : une fiche qui
       la cite peut être refusée ou retirée. `npm run verifier` le contrôle dans le jeu et la fiche.

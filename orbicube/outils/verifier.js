@@ -191,7 +191,8 @@ else {
   let empreinte = "";
   for (let w = 0; w < 8; w++) for (let i = 0; i < 8; i++) { const d = G.niveauDef(w, i); empreinte += d.id + ":" + d.melange.map((m) => m.a + "," + m.L + "," + m.q).join(";") + "|"; }
   empreinte = require("crypto").createHash("sha256").update(empreinte).digest("hex").slice(0, 16);
-  empreinte === "dd1ec4383e2749b3" ? ok("les 64 niveaux du chemin sont inchangés") : faute("les 64 niveaux du chemin ont changé (empreinte " + empreinte + ")");
+  empreinte === "83dd2ba7cd1ca1be"   // mondes 1 à 4 allégés le 16/10/2026 (le client)
+    ? ok("les 64 niveaux du chemin sont inchangés") : faute("les 64 niveaux du chemin ont changé (empreinte " + empreinte + ")");
   // les neuf anneaux ne vont jamais dans un monde gratuit : ils restent l'avantage du jeu complet (le client, le 14/10/2026)
   const neufLibres = G.MONDES.map((M, w) => w < CFG.mondesGratuits && M.anneaux.length === 9 ? w + 1 : 0).filter(Boolean);
   neufLibres.length ? faute("monde gratuit à neuf anneaux : " + neufLibres.join(", ")) : ok("aucun monde gratuit à neuf anneaux");

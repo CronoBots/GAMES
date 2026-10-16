@@ -204,6 +204,15 @@ async function resoudre(p) {
     await p.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); v.campagne = 1; localStorage.setItem(k, JSON.stringify(v)); });
     await p.reload(); await p.waitForTimeout(1200);
     (await p.textContent("#jouerTxt")) === "Jouer" && (await p.textContent("#btnAchatOpt")) === "Débloqué" ? ok("ancienne campagne : niveaux non repris, achat gardé") : faute("ancienne campagne : « " + (await p.textContent("#jouerTxt")) + " »");
+    // le pseudo « Unscoop » (mode test, le client) : tout ouvert sans rien acheter ; un autre pseudo, rien
+    await p.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); v.achat = false; v.droits = {}; v.pseudoLocal = "Unscoop"; localStorage.setItem(k, JSON.stringify(v)); });
+    await p.reload(); await p.waitForTimeout(1200);
+    const ouvertU = await p.textContent("#btnAchatOpt");
+    await p.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); v.pseudoLocal = "Player1234"; localStorage.setItem(k, JSON.stringify(v)); });
+    await p.reload(); await p.waitForTimeout(1200);
+    ouvertU === "Débloqué" && (await p.textContent("#btnAchatOpt")) !== "Débloqué" ? ok("pseudo « Unscoop » : tout ouvert sans achat ; un autre pseudo, rien") : faute("mode Unscoop : « " + ouvertU + " »");
+    await p.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k)); v.achat = true; localStorage.setItem(k, JSON.stringify(v)); });
+    await p.reload(); await p.waitForTimeout(1200);
     erreurs.length ? faute("erreurs : " + erreurs.join(" | ")) : ok("aucune erreur de script");
     await ctx.close();
   }
