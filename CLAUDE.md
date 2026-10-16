@@ -231,7 +231,9 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   à 16 px du bas et des côtés, fond sombre solide, icônes seules de 25 px, l'écran ouvert en **pilule teintée** de l'accent
   (`majNavBas`, appelée par `montrer` et `ongletJoueur`) ; Accueil · Défis · Classement · Jeu libre · Succès · Boutique (dorée).
   Visible sur l'accueil, l'espace joueur, les succès et la boutique (`NAV_ECRANS`), cachée en jeu et sur la carte ; les écrans
-  lui laissent sa place en bas (`body.avec-nav`). Ni backdrop-filter ni transform sur la barre fixe (iOS).
+  lui laissent sa place en bas (`body.avec-nav`). Ni backdrop-filter ni transform sur la barre fixe (iOS). **Le bouton « Continuer »
+  prend le même habit** (même largeur, verre sombre plein, filet, ombre ; lecture en pilule teintée ; barre de campagne à l'accent) et
+  se pose juste au-dessus de la capsule : un seul bloc de navigation (le client, le 16/10/2026).
   **Le bouton principal en pilule est celui de tout le jeu** (fenêtres de pause, victoire, boutique…), avec des boutons
   secondaires en pilule de verre sombre au contour d'accent, texte centré (`.fenetre .bouton`).
   **Écran de jeu au même langage** : boutons à icône seule (`.ico`, partout) en ronds de verre au contour d'accent,

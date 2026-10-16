@@ -1056,6 +1056,23 @@ body{font-variant-numeric:tabular-nums}
 .capsule .point.nb{top:-8px;right:-12px}
 /* le contenu défile derrière la capsule : chaque écran lui laisse sa place */
 body.avec-nav #accueil .defile,body.avec-nav .ecran:not(#parcours)>.tete+.defile{padding-bottom:calc(84px + var(--navbas))}
+/* « Continuer » au style de la capsule du bas (le client, le 16/10/2026) : même largeur, même verre sombre plein, même filet
+   et même ombre ; le bouton lecture prend la pilule teintée de l'onglet ouvert. Il se pose juste au-dessus de la capsule :
+   les deux se lisent comme un seul bloc de navigation. */
+#accueil .menu{width:min(520px,calc(100vw - 32px));max-width:none}
+body.avec-nav #accueil .defile>:last-child{margin-bottom:0}
+#accueil #btnJouer{width:100%;min-height:68px;padding:8px 22px 8px 9px;gap:14px;border-radius:999px;color:#fff;
+  background:rgba(20,20,34,.92);border:1px solid rgba(255,255,255,.09);box-shadow:0 12px 30px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06)}
+#accueil #btnJouer::before,#accueil #btnJouer::after{display:none}
+#accueil #btnJouer>svg{width:50px;height:50px;padding:15px 14px 15px 17px;border-radius:999px;color:rgb(var(--acc));
+  background:rgba(var(--acc),.24);box-shadow:inset 0 0 0 1px rgba(var(--acc),.38);flex:none}
+#accueil #btnJouer #jouerTxt{font-family:var(--f-titre);font-weight:600;font-size:19px;letter-spacing:.04em}
+#accueil #btnJouer small{color:var(--pale);opacity:1}
+#accueil #btnJouer .prog-camp{background:rgba(255,255,255,.08);box-shadow:none}
+#accueil #btnJouer .prog-camp i{background:rgb(var(--acc));box-shadow:0 0 8px rgba(var(--acc),.6)}
+#accueil #btnJouer #jouerSous{color:var(--encre)}
+#accueil #btnJouer:active{transform:scale(.97)}
+@media (max-height:700px){#accueil #btnJouer{min-height:58px}#accueil #btnJouer>svg{width:42px;height:42px;padding:12px 11px 12px 14px}}
 </style>
 </head>
 <body>
