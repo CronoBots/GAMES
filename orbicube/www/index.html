@@ -1297,7 +1297,7 @@ var PACKS={
   amp30:{produit:"orbicube_ampoules_30",ampoules:30,nom:"30 aides"}};
 // ouv : rien (ouvert), {etoiles:n} de coups, {chrono:n} de temps, {rang:n}, ou {pack:clé}
 var STYLES={
-  palette:[{id:"monde",nom:"Couleurs du monde"},{id:"classique",nom:"Classique"},{id:"contraste",nom:"Daltonien"},{id:"pastel",nom:"Pastel",ouv:{etoiles:45}},{id:"neon",nom:"Néon",ouv:{chrono:45}},
+  palette:[{id:"classique",nom:"Classique"},{id:"monde",nom:"Couleurs du monde"},{id:"contraste",nom:"Daltonien"},{id:"pastel",nom:"Pastel",ouv:{etoiles:45}},{id:"neon",nom:"Néon",ouv:{chrono:45}},
     {id:"aurore",nom:"Aurore",ouv:{pack:"couleurs"}},{id:"galaxie",nom:"Galaxie",ouv:{pack:"couleurs"}},{id:"glace",nom:"Glace",ouv:{pack:"couleurs"}},{id:"joyaux",nom:"Joyaux",ouv:{pack:"couleurs"}},
     {id:"emeraude",nom:"Émeraude",ouv:{voie:0}},{id:"nebuleuse",nom:"Nébuleuse",ouv:{voie:5}},
     {id:"crepuscule",nom:"Crépuscule",ouv:{rang:15}},{id:"abysses",nom:"Abysses",ouv:{rang:25}},{id:"solaire",nom:"Solaire",ouv:{rang:35}},
@@ -1312,7 +1312,7 @@ var STYLES={
     {id:"amethyste",nom:"Améthyste",ouv:{voie:3}},{id:"couronne",nom:"Couronne",ouv:{voie:7}},{id:"nacre",nom:"Nacre",ouv:{rang:20}},{id:"orrose",nom:"Or rose",ouv:{rang:40}}],
   victoire:[{id:"confettis",nom:"Confettis"},{id:"pluie",nom:"Pluie d’étoiles",ouv:{chrono:30}},{id:"feux",nom:"Feu d’artifice",ouv:{pack:"effets"}},{id:"supernova",nom:"Supernova",ouv:{voie:4}}]};
 // les styles portés, recalculés par appliquerOptions() (le dessin les lit à chaque image)
-var STY={palette:"monde",forme:"facettes",dispo:"trefle",trainee:"halo",orbite:"accent",victoire:"confettis"};
+var STY={palette:"classique",forme:"facettes",dispo:"trefle",trainee:"halo",orbite:"accent",victoire:"confettis"};
 // chaque style d'un pack s'achète aussi à l'unité (le client, le 14/10/2026) : produit orbicube_style_<id>, droit style_<id>
 Object.keys(STYLES).forEach(function(k){STYLES[k].forEach(function(st){if(st.ouv&&st.ouv.pack)PACKS["s_"+st.id]={produit:"orbicube_style_"+st.id,droit:"style_"+st.id,nom:st.nom,unite:true};});});
 // une phrase par style, pour la fiche de l'aperçu : on sait ce qu'on porte ou ce qu'on achète
@@ -1774,7 +1774,7 @@ function etoilesChrono(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t
 /* ========== 6. LA PROGRESSION (appareil, et compte si connecté) ========== */
 var CLE_LOCALE="orbicube-v1";
 function progVide(){return{v:1,campagne:CAMPAGNE,niveaux:{},tips:{},succes:{},stats:{tours:0,tranches:0,resolus:0,indices:0,meilleur:{}},jours:{},serie:0,dernierJour:"",amp:3,ampVide:0,ampJour:"",ampMaj:0,xp:0,semaines:{},missions:null,droits:{},stylesVus:{},
-  options:{musique:true,volMusique:2,son:true,vib:true,anims:true,vitesse:1,palette:"monde",cube:true,pave:false,horaire:true,langue:"auto",maj:0}};}
+  options:{musique:true,volMusique:2,son:true,vib:true,anims:true,vitesse:1,palette:"classique",cube:true,pave:false,horaire:true,langue:"auto",maj:0}};}
 // la campagne a été refaite le 14/10/2026 (huit mondes, nouvelle graine) : les niveaux d'une ancienne campagne ne
 // correspondent plus à rien et ne sont pas repris (l'expérience, les succès et les achats, si)
 var CAMPAGNE=2;
@@ -2597,8 +2597,9 @@ function rafraichirSucces(){document.getElementById("sucCompte").textContent=Obj
 /* ========== 14. OPTIONS ========== */
 function appliquerOptions(){var o=PROG.options;
   // une fois : « Couleurs du monde » devient la palette par défaut (le client, le 14/10/2026), même pour qui avait « Classique » par défaut
-  // sty4 : Facettes redevient la forme par défaut (le client, le 16/10/2026)
-  if(!o.pal2){if(!o.palette||o.palette==="classique")o.palette="monde";o.pal2=1;}if(!o.sty4){if(!o.forme||o.forme==="astral")o.forme="facettes";o.sty3=o.sty4=1;}bonusPaliersJC();Object.keys(STY).forEach(function(k){STY[k]=styleActif(k);});COUL=PALETTES[STY.palette]||PALETTES.classique;if(ECRAN!=="boutique")changerGeo(STY.dispo);
+  // sty4 : Facettes redevient la forme par défaut (le client, le 16/10/2026) ; pal3 : Classique (les couleurs de la vidéo)
+  // redevient la palette par défaut (le client, le 16/10/2026), une seule fois
+  if(!o.pal3){if(!o.palette||o.palette==="monde")o.palette="classique";o.pal2=o.pal3=1;}if(!o.sty4){if(!o.forme||o.forme==="astral")o.forme="facettes";o.sty3=o.sty4=1;}bonusPaliersJC();Object.keys(STY).forEach(function(k){STY[k]=styleActif(k);});COUL=PALETTES[STY.palette]||PALETTES.classique;if(ECRAN!=="boutique")changerGeo(STY.dispo);
   // « Animations » décoché = calme forcé, en plus du réglage système prefers-reduced-motion
   CALME=!!((window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)||o.anims===false);
   document.body.classList.toggle("sobre",o.anims===false);

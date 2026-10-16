@@ -112,7 +112,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   (`dessinerCube`, `LK`). « Classique » et « Facettes » (corps noir, cube de compétition) restent des choix gratuits.
   Migrations une fois : `PROG.options.pal2` (classique → monde), `sty3` (facettes → astral). **Depuis le 16/10/2026, la forme
   par défaut redevient « Facettes »** (le client), première de la liste ; `sty4` remet une seule fois « Style du monde » sur
-  Facettes. La palette par défaut reste « Couleurs du monde ». **Traînées plus visibles en jeu** (le client : « ne se voient
+  Facettes. **Depuis le 16/10/2026, la palette par défaut est « Classique »** (les couleurs de la vidéo, le client), première de la
+  liste ; `pal3` remet une seule fois « Couleurs du monde » sur Classique. **Traînées plus visibles en jeu** (le client : « ne se voient
   pas fort ») : hors accueil sobre, 1,6 fois plus longues et 1,7 fois plus opaques (`FT`, plafonné à 1).
   **Pour donner envie et comprendre** (le client, le 14/10/2026) : phrase d'accueil (gagner en jouant ou acheter), compteur de
   collection sur chaque onglet (« 4/8 »), fiche avec une phrase par style (`DESC_STYLE`) et, pour un style à gagner, sa barre de
