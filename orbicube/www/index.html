@@ -1066,24 +1066,22 @@ body.avec-nav #accueil .logoboite{flex:1 1 0;max-height:none}
    lecture occupe le vide du centre, là où les trois petits cercles se croisent (aucune pastille n'y passe) ; une ligne fine
    dit où l'on en est. Position et taille posées par Logo.demarrer. */
 .medaillon{background:none;border:0;box-shadow:none}
-.jouer-rond{position:absolute;z-index:2;display:grid;place-items:center;padding:0;border-radius:50%;cursor:pointer;color:#fff;
-  background:radial-gradient(circle at 50% 28%,rgb(var(--acc)) 0%,rgba(var(--acc),.78) 55%,rgba(var(--acc),.6) 100%),#0d1024;
-  border:1px solid rgba(255,255,255,.35);box-shadow:0 0 0 4px rgba(10,12,28,.85),0 0 0 5px rgba(var(--acc),.45),0 0 26px rgba(var(--acc),.55),0 10px 22px rgba(0,0,0,.6);
-  transition:transform .12s ease}
-.jouer-rond svg{width:48%;height:48%;margin-left:11%;fill:currentColor;stroke:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
-/* l'onde qui invite à jouer passe par l'ombre (elle ne prend pas de place et ne déborde pas) */
-.jouer-rond{animation:jouerOnde 2.6s ease-out infinite}
-@keyframes jouerOnde{0%{box-shadow:0 0 0 4px rgba(10,12,28,.85),0 0 0 5px rgba(var(--acc),.45),0 0 0 5px rgba(var(--acc),.55),0 0 26px rgba(var(--acc),.55),0 10px 22px rgba(0,0,0,.6)}
-  70%,100%{box-shadow:0 0 0 4px rgba(10,12,28,.85),0 0 0 5px rgba(var(--acc),.45),0 0 0 22px rgba(var(--acc),0),0 0 26px rgba(var(--acc),.55),0 10px 22px rgba(0,0,0,.6)}}
+.jouer-rond{position:absolute;z-index:2;display:grid;place-items:center;padding:0;border-radius:50%;cursor:pointer;color:rgb(var(--acc));
+  background:radial-gradient(circle at 50% 35%,rgba(var(--acc),.16),rgba(12,14,30,.92) 70%);border:1px solid rgba(var(--acc),.55);
+  box-shadow:0 0 0 3px rgba(10,12,28,.75),0 6px 16px rgba(0,0,0,.55);transition:transform .12s ease,border-color .2s ease;
+  animation:jouerOnde 3.2s ease-in-out infinite}
+.jouer-rond svg{width:40%;height:40%;margin-left:9%;fill:currentColor;stroke:none}
+/* une respiration lente du filet, par l'ombre (rien ne déborde) : on sait où toucher sans que ça crie */
+@keyframes jouerOnde{0%,100%{box-shadow:0 0 0 3px rgba(10,12,28,.75),0 0 0 3px rgba(var(--acc),0),0 6px 16px rgba(0,0,0,.55)}
+  50%{box-shadow:0 0 0 3px rgba(10,12,28,.75),0 0 0 7px rgba(var(--acc),.14),0 6px 16px rgba(0,0,0,.55)}}
 .jouer-rond:active{transform:scale(.93)}
 .jouer-rond:focus-visible{outline:2px solid rgb(var(--acc));outline-offset:4px}
 @media (prefers-reduced-motion:reduce){.jouer-rond{animation:none}}
-.acc-prog{display:grid;justify-items:center;gap:7px;padding:4px 12px;background:none;border:0;cursor:pointer;color:var(--pale);font:inherit}
+.acc-prog{display:grid;justify-items:center;gap:5px;padding:4px 12px;background:none;border:0;cursor:pointer;color:var(--pale);font:inherit}
 .ap-ligne{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:4px 8px;font-size:13.5px;line-height:1.3}
-.ap-ligne b,#accueil .ap-ligne #jouerTxt{font:600 12px var(--f-titre);letter-spacing:.16em;text-transform:uppercase;color:rgb(var(--acc))}
+.acc-prog .ap-titre,#accueil .acc-prog #jouerTxt{font:600 12px var(--f-titre);letter-spacing:.2em;padding-left:.2em;text-transform:uppercase;color:rgb(var(--acc))}
 .ap-ligne small{font-size:13.5px;color:var(--pale)}
 .ap-ligne small:empty,.ap-ligne small:empty+.ap-et{display:none}
-.ap-sep{opacity:.5}
 .ap-et{display:inline-flex;align-items:center;gap:4px;color:var(--encre);font-family:var(--f-chiffre);font-weight:600}
 .ap-et:empty{display:none}
 .ap-et svg{width:13px;height:13px;fill:#ffcf4a;stroke:none}
@@ -1133,7 +1131,8 @@ body.avec-nav #accueil .logoboite{flex:1 1 0;max-height:none}
       <div class="logoboite"><div class="logo-scene"><div class="medaillon" id="medaillon"><canvas id="logoCube" aria-hidden="true"></canvas></div><canvas id="logo" aria-hidden="true"></canvas><button class="jouer-rond" id="btnJouer" type="button" aria-labelledby="jouerTxt jouerMonde"><svg viewBox="0 0 24 24"><path d="M8 5.5l11 6.5-11 6.5z"/></svg></button></div></div>
       <div style="display:grid;justify-items:center;gap:10px">
         <button class="acc-prog cascade" id="accProg" type="button" tabindex="-1" aria-hidden="true">
-          <span class="ap-ligne"><b id="jouerTxt">Jouer</b><span class="ap-sep" aria-hidden="true">·</span><small id="jouerMonde"></small><span class="ap-et notrad" id="jouerSous"></span></span>
+          <b class="ap-titre" id="jouerTxt">Jouer</b>
+          <span class="ap-ligne"><small id="jouerMonde"></small><span class="ap-et notrad" id="jouerSous"></span></span>
           <span class="prog-camp" aria-hidden="true" hidden><i id="jouerProg"></i></span>
         </button>
         
@@ -2035,8 +2034,12 @@ Logo.demarrer=function(){var box=this.cv.parentNode.parentNode.getBoundingClient
   this.cv.style.marginTop=m+"px";med.style.width=med.style.height=c+"px";med.style.top="calc(50% - "+haut+"px)";
   logoCube.style.width=c+"px";
   // le bouton lecture dans le vide du centre : les petits cercles y passent à 0,196 E, les pastilles à 0,298 E
-  var r=Math.round(Math.max(24,E*.23)),bj=document.getElementById("btnJouer");bj.style.width=bj.style.height=2*r+"px";
+  var r=Math.round(Math.max(23,E*.205)),bj=document.getElementById("btnJouer");bj.style.width=bj.style.height=2*r+"px";
   bj.style.left="calc(50% - "+r+"px)";bj.style.top="calc(50% - "+haut+"px + "+Math.round(m+this.OY-r)+"px)";
+  // le titre à mi-chemin entre la puce du joueur et le haut du cube (le client) : un simple décalage, qui ne change pas la place
+  // des autres blocs ; jamais vers le haut
+  var ti=document.querySelector("#accueil .entete");if(ti){ti.style.translate="";var tr=ti.getBoundingClientRect(),pu=document.getElementById("btnRang").getBoundingClientRect(),
+    hc=box.top+box.height/2-haut,dy=Math.round((pu.bottom+hc)/2-(tr.top+tr.height/2));ti.style.translate=dy>0?"0 "+dy+"px":"";}
   if(!this.sol.length&&!this.pause)melangerLogo();dessinerLogoCube();};
 function etoilesTotal(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t+=PROG.niveaux[k].etoiles||0;});return t;}
 // le chemin d'abord (les dix premiers niveaux des mondes ouverts), puis les experts ouverts, puis la suite payante
