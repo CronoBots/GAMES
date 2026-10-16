@@ -1026,6 +1026,36 @@ body{font-variant-numeric:tabular-nums}
 .indice-boite .badge{position:absolute;top:-5px;right:-5px;z-index:2;pointer-events:none;min-width:20px;height:20px;padding:0 5px;border-radius:99px;
   display:grid;place-items:center;font:700 11.5px/1 var(--f-chiffre);color:#1a1300;background:var(--or);box-shadow:0 0 0 2px var(--nuit)}
 .indice-boite .badge.vide{background:#3a3850;color:var(--pale)}
+/* ═══ LE MENU DU BAS, comme GROUPS (le client, le 16/10/2026 : « le même menu dans le bas de l'app ») ═══
+   Repris de la feuille de GROUPS (« le menu du bas, à la BETSFIX ») : une CAPSULE FLOTTANTE détachée de 16 px du bas et des
+   côtés, fond sombre translucide SOLIDE, filet clair, ombre portée ; des ICÔNES SEULES de 25 px au trait 1,9, grises au repos ;
+   l'écran ouvert est une PILULE TEINTÉE de l'accent, icône grossie d'un dixième. Les noms restent pour les lecteurs d'écran.
+   Comme chez eux, ni backdrop-filter, ni transform, ni will-change sur la barre fixe (ils cassent le position:fixed sous iOS).
+   Sur l'écran d'accueil d'un iPhone, la capsule se pose à cheval sur la zone de la barre d'accueil. */
+:root{--navbas:max(16px, calc(env(safe-area-inset-bottom,0px) - 12px))}
+.navbas{position:fixed;left:0;right:0;bottom:0;z-index:15;display:flex;justify-content:center;pointer-events:none;
+  padding:0 max(16px,env(safe-area-inset-right,0px)) var(--navbas) max(16px,env(safe-area-inset-left,0px))}
+.navbas[hidden]{display:none}
+.navbas>.dock.capsule{pointer-events:auto;margin:0;width:100%;max-width:520px;display:flex;gap:2px;padding:6px 10px;border-radius:999px;
+  background:rgba(20,20,34,.92);border:1px solid rgba(255,255,255,.09);box-shadow:0 12px 30px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06)}
+.capsule .item{position:relative;flex:1;min-width:0;display:grid;place-items:center;gap:0;padding:11px 0;border-radius:999px;
+  font-size:0;color:#9a9aa6;background:transparent;transition:color .18s ease,background-color .18s ease,transform .12s ease}
+.capsule .item .rond{all:unset;position:relative;display:grid;place-items:center}
+.capsule .item svg{width:25px;height:25px;stroke:currentColor;stroke-width:1.9;transition:transform .26s cubic-bezier(.22,1,.36,1)}
+.capsule .item .nom{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.capsule .item:hover:not(.actif){color:#fff;background:rgba(255,255,255,.06)}
+.capsule .item:active{transform:scale(.93)}
+.capsule .item.actif{color:rgb(var(--acc));background:rgba(var(--acc),.24);border-radius:20px;box-shadow:inset 0 0 0 1px rgba(var(--acc),.38)}
+.capsule .item.actif svg{transform:scale(1.1)}
+.capsule .item:focus-visible{outline:none;box-shadow:inset 0 0 0 2px rgb(var(--acc))}
+/* la Boutique garde son or, comme le rond doré d'avant */
+.capsule .item.or{color:var(--or)}
+.capsule .item.or.actif{background:rgba(255,207,74,.18);box-shadow:inset 0 0 0 1px rgba(255,207,74,.4)}
+.capsule .item.or svg{stroke:currentColor}
+.capsule .point{top:-6px;right:-9px}
+.capsule .point.nb{top:-8px;right:-12px}
+/* le contenu défile derrière la capsule : chaque écran lui laisse sa place */
+body.avec-nav #accueil .defile,body.avec-nav .ecran:not(#parcours)>.tete+.defile{padding-bottom:calc(84px + var(--navbas))}
 </style>
 </head>
 <body>
@@ -1035,6 +1065,24 @@ body{font-variant-numeric:tabular-nums}
 <div id="chargement" class="orbites" aria-hidden="true"><svg viewBox="-60 -60 120 120"><g fill="none" stroke-linecap="round"><g class="rails" stroke-width="1"><circle r="26.27" cx="16.64" cy="9.60"/><circle r="32.54" cx="16.64" cy="9.60"/><circle r="39.01" cx="16.64" cy="9.60"/><circle r="26.27" cx="0.00" cy="-19.21"/><circle r="32.54" cx="0.00" cy="-19.21"/><circle r="39.01" cx="0.00" cy="-19.21"/><circle r="26.27" cx="-16.64" cy="9.60"/><circle r="32.54" cx="-16.64" cy="9.60"/><circle r="39.01" cx="-16.64" cy="9.60"/></g>
   <g class="arcs" stroke-width="2.6"><circle class="a00" r="26.27" cx="16.64" cy="9.60" stroke="#4cc9f0" pathLength="100" stroke-dasharray="22 78" stroke-dashoffset="0"/><circle class="a01" r="32.54" cx="16.64" cy="9.60" stroke="#4cc9f0" pathLength="100" stroke-dasharray="22 78" stroke-dashoffset="61"/><circle class="a02" r="39.01" cx="16.64" cy="9.60" stroke="#4cc9f0" pathLength="100" stroke-dasharray="22 78" stroke-dashoffset="22"/><circle class="a10" r="26.27" cx="0.00" cy="-19.21" stroke="#a58bff" pathLength="100" stroke-dasharray="22 78" stroke-dashoffset="37"/><circle class="a11" r="32.54" cx="0.00" cy="-19.21" stroke="#a58bff" pathLength="100" stroke-dasharray="22 78" stroke-dashoffset="98"/><circle class="a12" r="39.01" cx="0.00" cy="-19.21" stroke="#a58bff" pathLength="100" stroke-dasharray="22 78" stroke-dashoffset="59"/><circle class="a20" r="26.27" cx="-16.64" cy="9.60" stroke="#ff6b9d" pathLength="100" stroke-dasharray="22 78" stroke-dashoffset="74"/><circle class="a21" r="32.54" cx="-16.64" cy="9.60" stroke="#ff6b9d" pathLength="100" stroke-dasharray="22 78" stroke-dashoffset="35"/><circle class="a22" r="39.01" cx="-16.64" cy="9.60" stroke="#ff6b9d" pathLength="100" stroke-dasharray="22 78" stroke-dashoffset="96"/></g></g></svg><b class="notrad">ORBICUBE</b></div>
 <div id="app">
+<!-- le menu du bas, comme celui de GROUPS (le client, le 16/10/2026) : une capsule qui flotte à 16 px du bas et des côtés,
+     des icônes seules, l'écran ouvert en pilule teintée ; sur l'accueil, l'espace joueur, les succès et la boutique -->
+<div class="navbas" id="navbas">
+          <nav class="dock capsule" aria-label="Navigation">
+          <button class="item" id="btnAccueilNav" type="button"><i class="rond"><svg viewBox="0 0 24 24"><path d="M3.5 11L12 4l8.5 7"/><path d="M5.5 9.5v10h13v-10"/><path d="M10 19.5v-5h4v5"/></svg></i>
+            <span class="nom">Accueil</span></button>
+          <button class="item" id="btnJour" type="button"><i class="rond"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15.5" r="2"/></svg><b class="point nb notrad" id="jourPoint" hidden></b></i>
+            <span class="nom">Défis</span><span class="sous" id="jourSous"></span></button>
+          <button class="item" id="btnClassementAcc" type="button"><i class="rond"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"/></svg></i>
+            <span class="nom">Classement</span><span class="sous" id="classementSous">mondial</span></button>
+          <button class="item" id="btnLibre" type="button"><i class="rond"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg></i>
+            <span class="nom">Jeu libre</span><span class="sous">chrono</span></button>
+          <button class="item" id="btnSucces" type="button"><i class="rond"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M8.5 14l-1.5 7 5-3 5 3-1.5-7"/></svg></i>
+            <span class="nom">Succès</span><span class="sous notrad" id="succesSous"></span></button>
+          <button class="item or" id="btnBoutique" type="button" hidden><i class="rond"><b class="point" id="boutPoint" hidden></b><svg viewBox="0 0 24 24"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/></svg></i>
+            <span class="nom">Boutique</span><span class="sous" id="stylesAccueil">Styles</span></button>
+          </nav>
+</div>
 
   <section class="ecran actif" id="accueil" aria-label="Accueil">
     <div class="astres" aria-hidden="true"><i class="astre verte"></i><i class="astre rousse"></i><i class="astre roc r1"></i><i class="astre roc r2"></i><i class="astre roc r3"></i></div>
@@ -1055,18 +1103,7 @@ body{font-variant-numeric:tabular-nums}
           <button class="bouton principal" id="btnJouer" type="button">
             <svg viewBox="0 0 24 24"><path d="M7 4l12 8-12 8z" fill="currentColor" stroke="none"/></svg>
             <span class="deuxl"><span id="jouerTxt">Jouer</span><small id="jouerMonde"></small><span class="prog-camp" aria-hidden="true" hidden><i id="jouerProg"></i></span></span><span class="droite notrad" id="jouerSous"></span></button>
-          <nav class="dock" aria-label="Autres modes">
-          <button class="item" id="btnJour" type="button"><i class="rond"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15.5" r="2"/></svg><b class="point nb notrad" id="jourPoint" hidden></b></i>
-            <span class="nom">Défis</span><span class="sous" id="jourSous"></span></button>
-          <button class="item" id="btnClassementAcc" type="button"><i class="rond"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"/></svg></i>
-            <span class="nom">Classement</span><span class="sous" id="classementSous">mondial</span></button>
-          <button class="item" id="btnLibre" type="button"><i class="rond"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg></i>
-            <span class="nom">Jeu libre</span><span class="sous">chrono</span></button>
-          <button class="item" id="btnSucces" type="button"><i class="rond"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M8.5 14l-1.5 7 5-3 5 3-1.5-7"/></svg></i>
-            <span class="nom">Succès</span><span class="sous notrad" id="succesSous"></span></button>
-          <button class="item or" id="btnBoutique" type="button" hidden><i class="rond"><b class="point" id="boutPoint" hidden></b><svg viewBox="0 0 24 24"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/></svg></i>
-            <span class="nom">Boutique</span><span class="sous" id="stylesAccueil">Styles</span></button>
-          </nav>
+
         </div>
         
       </div>
@@ -1905,7 +1942,7 @@ var ECRAN="accueil";
 function changerGeo(id){if(id===DISPO)return;poserGeo(id);Ticker.actifs.forEach(function(p){if(p.taille&&p.visible&&p.col&&p.col.length===S.length)p.dessiner();});if(ECRAN==="jeu")redimJeu();}
 function montrer(id,sens){var tl=id==="jeu"&&J?(J.def.taille||3):3;if(tl!==TAILLE)poserTaille(tl);if(id!=="boutique")changerGeo(STY.dispo);   // l'aperçu d'une disposition ne la porte pas
 // la nouvelle version attend la fin de la partie, même ouverte derrière les options (audit du 16/10/2026)
-if(RECHARGER&&id!=="jeu"&&!OPT_DEPUIS_JEU){location.reload();return;}if(id!=="options"&&id!=="boutique"&&id!=="jeu")OPT_DEPUIS_JEU=false;var prevEcran=ECRAN;sens=sens||1;document.querySelectorAll(".ecran").forEach(function(e){
+if(RECHARGER&&id!=="jeu"&&!OPT_DEPUIS_JEU){location.reload();return;}if(id!=="options"&&id!=="boutique"&&id!=="jeu")OPT_DEPUIS_JEU=false;var prevEcran=ECRAN;sens=sens||1;majNavBas(id);document.querySelectorAll(".ecran").forEach(function(e){
     if(e.id===id){e.style.transition="none";e.style.setProperty("--dx",(sens*28)+"px");void e.offsetWidth;e.style.transition="";e.classList.add("actif");}
     else{if(e.classList.contains("actif"))e.style.setProperty("--dx",(-sens*28)+"px");e.classList.remove("actif");}});ECRAN=id;
   // l'accueil et les menus gardent le lilas ; la carte et le jeu prennent la couleur de leur monde
@@ -2700,7 +2737,13 @@ function fenetreLibre(t){var ouv=complet(),h='<h3>Jeu libre</h3>';
     if(a==="acheter"){ouvrirBoutique("libre");return;}
     if(t!==3){if(a&&a!=="x"){if(tailleOuverte(t))lancer(libreDef(+a,t));else ouvrirBoutique("libre");}return;}
     if(a==="sansfin"){if(ouv)lancer(sansFinDef(1));else ouvrirBoutique("libre");return;}if(a==="relax"){if(ouv)lancer(relaxDef());else ouvrirBoutique("libre");return;}if(a&&a!=="x"){if(libreOuvert(+a))lancer(libreDef(+a));else ouvrirBoutique("libre");}},"x");}
-document.getElementById("btnSucces").addEventListener("click",function(){sonClic();montrer("succes");});
+document.getElementById("btnSucces").addEventListener("click",function(){sonClic();if(ECRAN!=="succes")montrer("succes");});
+document.getElementById("btnAccueilNav").addEventListener("click",function(){sonClic();if(ECRAN!=="accueil")montrer("accueil",-1);});
+// la capsule du bas : visible sur les écrans de navigation, l'écran ouvert en pilule (Défis = Aujourd'hui et Profil)
+var NAV_ECRANS={accueil:1,joueur:1,succes:1,boutique:1};
+function majNavBas(id){var nb=document.getElementById("navbas"),vu=!!NAV_ECRANS[id];nb.hidden=!vu;document.body.classList.toggle("avec-nav",vu);if(!vu)return;
+  var actif=id==="accueil"?"btnAccueilNav":id==="succes"?"btnSucces":id==="boutique"?"btnBoutique":JOUEUR.o==="classement"?"btnClassementAcc":"btnJour";
+  nb.querySelectorAll(".item").forEach(function(b){var on=b.id===actif;b.classList.toggle("actif",on);if(on)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current");});}
 document.getElementById("btnSuccesStore").addEventListener("click",function(){sonClic();NATIF.succesAfficher();});
 document.getElementById("btnOptions").addEventListener("click",function(){sonClic();montrer("options");});
 document.getElementById("btnAide").addEventListener("click",function(){sonClic();montrer("aide");});
@@ -3074,7 +3117,7 @@ function relaxDef(){return{mode:"relax",relax:true,id:"relax",n:8,anneaux:TOUS,p
 var JOUEUR={o:"jour"};
 function ouvrirDefis(){ouvrirJoueur("jour");}
 function ouvrirJoueur(o,depuis){document.getElementById("clRetour").setAttribute("data-retour",depuis||"accueil");if(ECRAN!=="joueur")montrer("joueur");ongletJoueur(o||JOUEUR.o);}
-function ongletJoueur(o){JOUEUR.o=o;document.querySelectorAll("#jOnglets [data-o]").forEach(function(b){var a=b.getAttribute("data-o")===o;b.classList.toggle("actif",a);b.setAttribute("aria-selected",a?"true":"false");});
+function ongletJoueur(o){JOUEUR.o=o;if(ECRAN==="joueur")majNavBas("joueur");document.querySelectorAll("#jOnglets [data-o]").forEach(function(b){var a=b.getAttribute("data-o")===o;b.classList.toggle("actif",a);b.setAttribute("aria-selected",a?"true":"false");});
   ["jour","classement","profil"].forEach(function(k){document.getElementById({jour:"pJour",classement:"pClassement",profil:"pProfil"}[k]).hidden=k!==o;});
   document.getElementById("clMoi").hidden=true;document.getElementById("jDefile").scrollTop=0;
   if(o==="jour")rafraichirDefis();else if(o==="classement")chargerClassement();else rafraichirProfil();}

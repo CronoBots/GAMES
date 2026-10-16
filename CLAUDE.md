@@ -226,6 +226,12 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   **Menu du bas** : le bouton principal en pilule (accent, sans gloss plastique), puis un **dock** de raccourcis ronds
   (`.dock`, icône + nom, **sans sous-titre** depuis le 16/10/2026, le client ; les badges restent : Défis avec le nombre de missions
   qui restent, Classement, Jeu libre, Succès, et « Boutique » en doré dès le premier niveau fini). Plus de bouton musique sur l'accueil : il est dans les options.
+  **Depuis le 16/10/2026, ce dock est le menu du bas de GROUPS** (le client : « le même menu dans le bas de l'app » ; repris en lecture
+  seule de la feuille de GROUPS, rien n'y a été modifié) : une **capsule flottante** (`#navbas`, `.dock.capsule`, hors des écrans)
+  à 16 px du bas et des côtés, fond sombre solide, icônes seules de 25 px, l'écran ouvert en **pilule teintée** de l'accent
+  (`majNavBas`, appelée par `montrer` et `ongletJoueur`) ; Accueil · Défis · Classement · Jeu libre · Succès · Boutique (dorée).
+  Visible sur l'accueil, l'espace joueur, les succès et la boutique (`NAV_ECRANS`), cachée en jeu et sur la carte ; les écrans
+  lui laissent sa place en bas (`body.avec-nav`). Ni backdrop-filter ni transform sur la barre fixe (iOS).
   **Le bouton principal en pilule est celui de tout le jeu** (fenêtres de pause, victoire, boutique…), avec des boutons
   secondaires en pilule de verre sombre au contour d'accent, texte centré (`.fenetre .bouton`).
   **Écran de jeu au même langage** : boutons à icône seule (`.ico`, partout) en ronds de verre au contour d'accent,
