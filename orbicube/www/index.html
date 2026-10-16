@@ -1018,6 +1018,8 @@ body{font-variant-numeric:tabular-nums}
 .vic-lien{display:block;margin:2px auto 0;min-height:44px;padding:0 16px;background:none;border:0;color:var(--pale);font:500 14px var(--f-texte);
   text-decoration:underline;text-decoration-color:rgba(255,255,255,.25);text-underline-offset:4px;cursor:pointer}
 .vic-lien:active{color:var(--encre)}
+/* texte pour les lecteurs d'écran seulement (le nom d'un bouton contient ainsi ce qu'il affiche, règle WCAG 2.5.3) */
+.lecteur{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
 </style>
 </head>
 <body>
@@ -1032,7 +1034,7 @@ body{font-variant-numeric:tabular-nums}
     <div class="astres" aria-hidden="true"><i class="astre verte"></i><i class="astre rousse"></i><i class="astre roc r1"></i><i class="astre roc r2"></i><i class="astre roc r3"></i></div>
     <div class="acc-haut">
       <button class="ico" id="btnAide" type="button" aria-label="Comment jouer"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.8"/><path d="M12 17.2v.1"/></svg></button>
-      <button class="puce-rang" id="btnRang" type="button" aria-label="Profil et rang"><span class="anneau-rang notrad" id="rangAnneau"></span><b id="rangTitre" class="notrad">Novice</b></button>
+      <button class="puce-rang" id="btnRang" type="button"><span class="anneau-rang notrad" id="rangAnneau"></span><b id="rangTitre" class="notrad">Novice</b><span class="lecteur">Profil et rang</span></button>
       <div class="acc-droite">
       <button class="ico" id="btnOptions" type="button" aria-label="Options"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
       </div>
@@ -1469,7 +1471,7 @@ function Plateau(canvas,opts){this.cv=canvas;this.cx=canvas.getContext("2d");thi
 // hpx (optionnel) : hauteur du canvas, >= px. Le plateau du jeu l'utilise pour prendre toute la hauteur
 // dispo, afin que le HALO des faces complétées (qui déborde un peu) ne soit plus coupé par le bord du canvas.
 Plateau.prototype.dimension=function(px,hpx){px=Math.max(40,Math.floor(px));hpx=Math.max(px,Math.floor(hpx||px));this.taille=px;this.hauteur=hpx;var c=this.cv;c.style.width=px+"px";c.style.height=hpx+"px";
-  c.width=Math.round(px*DPR);c.height=Math.round(hpx*DPR);this.cx.setTransform(DPR,0,0,DPR,0,0);this.ECH=px/3.2;this.OX=px/2;this.OY=px/2+0.133*this.ECH+(hpx-px)*(this.haut!=null?this.haut:.5);this.dessiner();};
+  var d=this.opts.dprMax?Math.min(DPR,this.opts.dprMax):DPR;c.width=Math.round(px*d);c.height=Math.round(hpx*d);this.cx.setTransform(d,0,0,d,0,0);this.ECH=px/3.2;this.OX=px/2;this.OY=px/2+0.133*this.ECH+(hpx-px)*(this.haut!=null?this.haut:.5);this.dessiner();};
 Plateau.prototype.vers=function(pt){return[this.OX+pt[0]*this.ECH,this.OY-pt[1]*this.ECH];};
 Plateau.prototype.depuis=function(px,py){return[(px-this.OX)/this.ECH,-(py-this.OY)/this.ECH];};
 // t est déjà la progression affichée (courbe appliquée par pas()) ; il peut dépasser 1 pendant le rebond
@@ -1674,11 +1676,15 @@ var Ticker={actifs:[],tourne:false,reveiller:function(){if(!Ticker.tourne){Ticke
   // la moitié du travail, et rien ne se voit ; un tour, un glisser ou un effet gardent la pleine cadence
   // (seulement s'il reste vivant : l'image sautée sera rattrapée à la suivante)
   tic:function(now){var encore=false;Ticker.actifs.forEach(function(p){if(!p.visible)return;var b=p.pas(now),v=b||p.vivant(now);if(v)encore=true;
+      // sous l'écran de chargement, les plateaux décoratifs (logo) ne dessinent que leur première image (audit du 16/10/2026 :
+      // redessinés sous un écran qui les cache, ils allongeaient le démarrage)
+      if(p.lent&&CHARGEMENT&&p.der)return;
       if(v&&(p.lent||!b&&!p.anim&&!p.eclats.length&&!p.vague&&!Object.keys(p.pops).length&&!G)&&now-(p.der||0)<30)return;
       p.der=now;p.dessiner(now);if(p.apres)p.apres(now);});
     Ticker.tourne=false;if(encore&&!document.hidden)Ticker.reveiller();}};
 document.addEventListener("visibilitychange",function(){if(!document.hidden)Ticker.reveiller();});
 
+var CHARGEMENT=true;
 /* ========== 4. LE CUBE EN PERSPECTIVE ========== */
 var C30=Math.cos(Math.PI/6);
 function dessinerCube(cc,w,col,anim,pivot){cc.clearRect(0,0,w,w);var k=w/(2.2*TAILLE),ox=w/2,oy=w/2,
@@ -1905,16 +1911,20 @@ var OPT_DEPUIS_JEU=false;
 document.querySelectorAll("[data-retour]").forEach(function(b){b.addEventListener("click",function(){sonClic();
   if(OPT_DEPUIS_JEU&&b.closest("#options")){OPT_DEPUIS_JEU=false;if(J&&J.t0&&J.optT){J.t0+=performance.now()-J.optT;}if(J)J.optT=0;J.enPause=false;montrer("jeu",-1);setTimeout(pause,380);return;}
   montrer(b.getAttribute("data-retour"),-1);});});
-function numeroter(racine){if(!racine)return;racine.querySelectorAll(".cascade").forEach(function(c){[].forEach.call(c.children,function(el,i){el.style.setProperty("--i",Math.min(i,14));});
-  // relance l'animation d'entrée à chaque affichage
-  c.style.display="none";void c.offsetWidth;c.style.display="";});}
+// relance l'animation d'entrée à chaque affichage, en un seul calcul de mise en page pour tout l'écran (audit du 16/10/2026 :
+// un par bloc, l'accueil en faisait plusieurs au démarrage)
+function numeroter(racine){if(!racine)return;var cs=racine.querySelectorAll(".cascade");if(!cs.length)return;
+  cs.forEach(function(c){[].forEach.call(c.children,function(el,i){el.style.setProperty("--i",Math.min(i,14));});c.style.display="none";});
+  void racine.offsetWidth;cs.forEach(function(c){c.style.display="";});}
 // onde au toucher sur tout ce qui se presse
 document.addEventListener("pointerdown",function(e){if(CALME)return;var b=e.target.closest(".bouton,.action,.ico");if(!b||b.disabled)return;
   var r=b.getBoundingClientRect(),d=Math.max(r.width,r.height)*2.2,o=document.createElement("span");o.className="onde";
   o.style.width=o.style.height=d+"px";o.style.left=(e.clientX-r.left)+"px";o.style.top=(e.clientY-r.top)+"px";b.appendChild(o);setTimeout(function(){o.remove();},650);},{passive:true});
 
 /* ========== 9. ACCUEIL : le logo vivant ========== */
-var Logo=new Plateau(document.getElementById("logo"),{etiquettes:false,comete:true,sobre:true});Logo.continu=true;Logo.lent=true;Logo.sol=[];Logo.prochain=0;Ticker.actifs.push(Logo);
+// le logo de l'accueil est décoratif et redessiné sans cesse : 2 pixels par point au plus (audit du 16/10/2026 : sur un iPhone
+// à 3×, 2,5 dessinait 56 % de pixels de plus pour une différence invisible, et ce dessin prenait l'essentiel du fil à l'accueil)
+var Logo=new Plateau(document.getElementById("logo"),{etiquettes:false,comete:true,sobre:true,dprMax:2});Logo.continu=true;Logo.lent=true;Logo.sol=[];Logo.prochain=0;Ticker.actifs.push(Logo);
 // le cube en perspective de l'accueil reflète l'état du logo (ses tours automatiques), exactement comme
 // #mini reflète le plateau pendant une partie : le menu a ainsi l'allure d'une partie en cours
 // même inclinaison qu'en jeu : #mini démarre à PIVOT {y:0,x:0} (vue isométrique, trois faces)
@@ -2177,7 +2187,7 @@ JeuP.onFace=function(n){if(!J||!J.pret||J.fini)return;bip(1047,.28,"sine",.07);b
   // le retour grandit avec le nombre de faces finies d'un même coup : une double arrivée est un plus grand moment
   if(n>1){bip(2093,.34,"sine",.045,.12);vibrer(16);}else vibrer(12);};
 var mini=document.getElementById("mini"),miniC=mini.getContext("2d"),PIVOT={y:0,x:0},J=null;
-function dessinerMini(){if(!PROG.options.cube)return;var w=mini.clientWidth||84,px=Math.round(w*DPR);if(mini.width!==px){mini.width=px;mini.height=px;miniC.setTransform(DPR,0,0,DPR,0,0);}
+function dessinerMini(){if(!PROG.options.cube)return;/* caché hors du jeu : rien à dessiner */if(ECRAN!=="jeu"){dessinerMini.cle=null;return;}var w=mini.clientWidth||84,px=Math.round(w*DPR);if(mini.width!==px){mini.width=px;mini.height=px;miniC.setTransform(DPR,0,0,DPR,0,0);}
   // le plateau se redessine à chaque image (indice qui pulse, halos) : le cube, lui, seulement quand il change
   var an=JeuP.anim,cle=TAILLE+"|"+w+"|"+COUL[0]+STY.forme+THEME_COURANT+"|"+JeuP.col.join("")+"|"+PIVOT.y.toFixed(4)+","+PIVOT.x.toFixed(4)+"|"+(an?cleA(an.mv)+an.mv.q+":"+an.t.toFixed(4):"");
   if(cle===dessinerMini.cle)return;dessinerMini.cle=cle;dessinerCube(miniC,w,JeuP.col,an,PIVOT);}
@@ -3301,7 +3311,7 @@ document.getElementById("optLangue").addEventListener("change",function(){PROG.o
 // l'écran de chargement se retire quand les polices sont prêtes : au moins 0,9 s la première fois pour qu'on le voie,
 // 0,5 s ensuite (audit du 16/10/2026 : le joueur qui revient veut jouer), au plus 1,8 s
 (function(){var el=document.getElementById("chargement"),t0=performance.now(),fini=false;
-  function retirer(){if(fini)return;fini=true;el.classList.add("fini");setTimeout(function(){el.remove();},700);}
+  function retirer(){if(fini)return;fini=true;CHARGEMENT=false;Ticker.reveiller();el.classList.add("fini");setTimeout(function(){el.remove();},700);}
   if(/[?&]capture\b/.test(location.search)||CALME){retirer();return;}
   (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(function(){var min=Object.keys((PROG&&PROG.niveaux)||{}).length?500:900;setTimeout(retirer,Math.max(0,min-(performance.now()-t0)));});
   setTimeout(retirer,1800);})();

@@ -183,9 +183,7 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   le **rang** vient de l'expérience (`PROG.xp`, `rangDe`, `xpPour(r)=60+40r`, titres `RANGS`), gagnée à chaque cube
   résolu (`xpVictoire` : longueur puis étoiles ; défis en plus la première fois ; campagne rejouée à moitié) ; chaque
   rang donne une ampoule. **Trois missions du jour** tirées de la date (`MISSIONS`, `missionsDuJour`,
-  `avancerMissions`), +30 XP chacune, une ampoule pour les trois. **Ciels** (`CIELS`, `appliquerCiel`, classes
-  `ciel-…` sur `body`) ouverts par rang : **désactivés depuis le décor CraftPix** (le fond image masque le body) —
-  sélecteur des options masqué, code encore présent, à nettoyer. La tuile **Défis** ouvre le défi du jour et celui de la **semaine**
+  `avancerMissions`), +30 XP chacune, une ampoule pour les trois. Les anciens « ciels » par rang ont disparu avec le décor CraftPix (code retiré). La tuile **Défis** ouvre le défi du jour et celui de la **semaine**
   (`semaineDef`, 14 coups, deux ampoules la première fois). **Relax** (`relaxDef`, depuis Jeu libre) : 8 coups,
   sans chrono, compteur ni étoiles. Écran **Profil** par la puce du rang, au centre de la barre du haut de l'accueil
   (anneau d'expérience, titre, puis une cible et « 1/3 » pour les missions du jour, dorés à 3/3). Les joueurs d'avant le rang reçoivent une fois l'expérience
@@ -325,6 +323,10 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   gardent la pleine cadence (`Ticker.tic`). Le petit cube n'est redessiné que s'il change (`dessinerMini.cle`).
   Occupation du fil : jeu avec indice 73 % → 32 %, accueil 45 % → 26 %. Pendant le mélange, le logo des trois
   anneaux (`.anneaux`) tourne sur le plateau troublé.
+- **Démarrage** (mesuré le 16/10/2026, processeur ralenti ×4 : `demarrer` 380 → 235 ms) : sous l'écran de chargement, les
+  plateaux décoratifs ne dessinent que leur première image (`CHARGEMENT`) ; le petit cube du jeu ne se dessine pas hors du jeu
+  (`dessinerMini`) ; `numeroter` relance les animations d'entrée en un seul calcul de mise en page ; le logo de l'accueil
+  dessine 2 pixels par point au plus (`dprMax`).
 - Pas d'effet `shadowBlur` du canvas sur le plateau : trop lent sur téléphone, il figeait le jeu.
   Les halos sont des traits translucides superposés (`halo()`).
 - **Les langues** : le français est la source. Un observateur traduit tout texte qui apparaît à
