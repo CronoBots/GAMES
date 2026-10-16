@@ -56,7 +56,8 @@ fuites.length ? fuites.forEach((p) => faute("clé secrète RevenueCat dans " + p
 
 console.log("Fichiers hors ligne (sw.js)");
 const sw = fs.readFileSync(path.join(WWW, "sw.js"), "utf8");
-const liste = vm.runInNewContext(sw.match(/var FICHIERS = (\[[\s\S]*?\]);/)[1]);
+const liste = vm.runInNewContext(sw.match(/var FICHIERS = (\[[\s\S]*?\]);/)[1])
+  .concat(vm.runInNewContext(sw.match(/var FICHIERS_MEDIAS = (\[[\s\S]*?\]);/)[1]));
 const manquants = liste.filter((f) => f !== "./" && !fs.existsSync(path.join(WWW, f)));
 manquants.length ? manquants.forEach((f) => faute("sw.js met en cache un fichier absent : " + f)) : ok(liste.length + " fichiers présents");
 const polices = fs.readdirSync(path.join(WWW, "polices")).filter((f) => f.endsWith(".woff2"));

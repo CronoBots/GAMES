@@ -962,6 +962,8 @@ button.obj:first-child{border-top:0}
 .puce-rang.mecene{box-shadow:0 0 0 1px rgba(255,207,74,.7),0 0 18px -6px rgba(255,207,74,.7)}
 .rang-carte.mecene{box-shadow:0 0 0 1px rgba(255,207,74,.6),0 0 30px -10px rgba(255,207,74,.6)}
 .mecene-titre{display:inline-block;margin-top:4px;font:600 11px var(--f-titre);letter-spacing:.14em;text-transform:uppercase;color:var(--or)}
+/* un écran caché n'anime rien (audit du 16/10/2026 : les animations des écrans masqués faisaient tomber la carte de 54 à 30 images/s) */
+.ecran:not(.actif),.ecran:not(.actif) *{animation-play-state:paused!important}
 </style>
 </head>
 <body>
@@ -1672,7 +1674,7 @@ function accent(w){if(w==null&&typeof suivreTheme==="function")suivreTheme(2);AC
 // (stable tant qu'on ne revient pas d'une partie / de la campagne), jeu = thème du monde courant (J.fond).
 var FOND_ACC=0;
 function themeFond(w){return (w%4)+1;}
-function poserFond(t,nebuleuse){var el=document.getElementById("fondMonde");if(el)el.style.backgroundImage="url(img/"+(nebuleuse?"bg-":"fond-")+t+".webp)";}
+function poserFond(t){var el=document.getElementById("fondMonde");if(el)el.style.backgroundImage="url(img/bg-"+t+".webp)";}
 // une teinte d'accent par thème CraftPix (vert / bleu / rouge / violet) : porte les ORBITES et leurs halos
 // (repos comme sélection) et la vague de victoire, pour que le plateau s'accorde au fond du thème.
 var THEME_ACC=["80,226,150","92,180,255","255,110,120","178,130,255"];
@@ -1784,21 +1786,30 @@ function audio(){var ac=contexteAudio();Musique.lancer();return PROG.options.son
 // Musique d'ambiance « Nuit d'orbites » : décodée une fois, jouée en boucle par Web Audio avec un fondu
 // enchaîné de 6 s entre la fin et le début (une balise <audio loop> laisse un blanc, surtout sur iPhone).
 // Elle démarre au premier geste (règle des navigateurs), se tait en arrière-plan et s'efface sous la victoire.
-var Musique={buf:null,charge:false,gain:null,suivante:0,minuterie:0,actif:false,FONDU:6,
+// la musique se lit en flux (audit du 16/10/2026 : décodée d'un bloc, elle occupait 95 Mo sur iPhone, candidate aux
+// fermetures de Safari) : deux lecteurs <audio> se relaient, chacun dans son gain, avec le même fondu enchaîné de 6 s
+var Musique={els:null,gains:null,cur:0,gain:null,minuterie:0,actif:false,FONDU:6,
   volume:function(){return PROG.options.musique===false?0:[0,.18,.32,.5][PROG.options.volMusique||2];},
-  lancer:function(){if(PROG.options.musique===false||this.actif||document.hidden)return;var ac=contexteAudio();if(!ac)return;var self=this;
-    if(!this.buf){if(this.charge)return;this.charge=true;fetch("audio/nuit-dorbites.m4a").then(function(r){return r.arrayBuffer();})
-      .then(function(a){return new Promise(function(ok,ko){var pr=ac.decodeAudioData(a,ok,ko);if(pr&&pr.catch)pr.catch(function(){});});}).then(function(b){self.buf=b;self.charge=false;self.lancer();}).catch(function(){self.charge=false;});return;}
+  preparer:function(ac){if(this.els)return true;try{this.els=[0,1].map(function(){var a=new Audio("audio/nuit-dorbites.m4a");a.preload="auto";
+      a.addEventListener("error",function(){});return a;});
+    this.gains=this.els.map(function(a){var g=ac.createGain();g.gain.value=0;ac.createMediaElementSource(a).connect(g);return g;});return true;}
+    catch(e){this.els=null;return false;}},
+  jouer:function(i,depuis){var a=this.els[i],g=this.gains[i].gain,t=AC.currentTime;if(depuis!=null)try{a.currentTime=depuis;}catch(e){}
+    var p=a.play();if(p&&p.catch)p.catch(function(){});g.cancelScheduledValues(t);g.setValueAtTime(g.value,t);g.linearRampToValueAtTime(1,t+this.FONDU);},
+  lancer:function(){if(PROG.options.musique===false||this.actif||document.hidden)return;var ac=contexteAudio();if(!ac||!this.preparer(ac))return;var self=this;
     this.actif=true;this.gain=ac.createGain();this.gain.gain.setValueAtTime(0,ac.currentTime);this.gain.gain.linearRampToValueAtTime(this.volume(),ac.currentTime+3);
-    this.gain.connect(ac.destination);this.suivante=ac.currentTime+.05;this.programmer();},
-  programmer:function(){var ac=AC,self=this;if(!this.actif||!ac)return;
-    while(this.suivante<ac.currentTime+8){var src=ac.createBufferSource(),g=ac.createGain(),t=this.suivante,d=this.buf.duration,F=this.FONDU;src.buffer=this.buf;
-      g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(1,t+F);g.gain.setValueAtTime(1,t+d-F);g.gain.linearRampToValueAtTime(0,t+d);
-      src.connect(g);g.connect(this.gain);src.start(t);src.stop(t+d+.05);this.suivante=t+d-F;}
-    clearTimeout(this.minuterie);this.minuterie=setTimeout(function(){self.programmer();},3000);},
-  arreter:function(){if(!this.actif)return;this.actif=false;clearTimeout(this.minuterie);var g=this.gain,ac=AC;
+    this.gains.forEach(function(g){g.connect(self.gain);});this.gain.connect(ac.destination);
+    // le second lecteur est « débloqué » pendant le geste (iOS refuse de lancer plus tard un lecteur jamais joué)
+    var autre=this.els[1-this.cur];if(autre.paused&&!autre.dejaDebloque){autre.dejaDebloque=true;var q=autre.play();if(q&&q.then)q.then(function(){if(self.els[self.cur]!==autre)autre.pause();}).catch(function(){});}
+    this.jouer(this.cur,null);this.programmer();},
+  programmer:function(){var self=this;clearInterval(this.minuterie);this.minuterie=setInterval(function(){if(!self.actif||!AC)return;var a=self.els[self.cur],d=a.duration;
+      if(!d||!isFinite(d)||a.currentTime<d-self.FONDU-.3)return;
+      var g=self.gains[self.cur].gain,t=AC.currentTime,vieux=a;g.cancelScheduledValues(t);g.setValueAtTime(g.value,t);g.linearRampToValueAtTime(0,t+self.FONDU);
+      setTimeout(function(){if(vieux!==self.els[self.cur]){vieux.pause();try{vieux.currentTime=0;}catch(e){}}},self.FONDU*1000+400);
+      self.cur=1-self.cur;self.jouer(self.cur,0);},400);},
+  arreter:function(){if(!this.actif)return;this.actif=false;clearInterval(this.minuterie);var g=this.gain,ac=AC,els=this.els,gains=this.gains;
     if(g&&ac){g.gain.cancelScheduledValues(ac.currentTime);g.gain.setValueAtTime(g.gain.value,ac.currentTime);g.gain.linearRampToValueAtTime(0,ac.currentTime+.6);
-      setTimeout(function(){try{g.disconnect();}catch(e){}},700);}},
+      setTimeout(function(){els.forEach(function(a){a.pause();});gains.forEach(function(x){try{x.disconnect(g);}catch(e){}});try{g.disconnect();}catch(e){}},700);}},
   regler:function(){if(PROG.options.musique===false){this.arreter();return;}if(!this.actif){if(AC&&AC.state==="running")this.lancer();return;}var ac=AC;
     this.gain.gain.cancelScheduledValues(ac.currentTime);this.gain.gain.setTargetAtTime(this.volume(),ac.currentTime,.2);},
   // sous la victoire : la musique baisse le temps des jingles, puis revient
@@ -3222,7 +3233,7 @@ function demarrer(){rattraperXp();appliquerLangue();parcourir(document.body);app
 // la page se recharge, mais jamais au milieu d'une partie (elle attend le retour à l'accueil).
 var RECHARGER=false;
 function majWeb(){var avait=!!navigator.serviceWorker.controller;
-  navigator.serviceWorker.register("sw.js").then(function(reg){
+  navigator.serviceWorker.register("sw.js").then(function(reg){reg.update().catch(function(){});
     document.addEventListener("visibilitychange",function(){if(!document.hidden)reg.update().catch(function(){});});}).catch(function(){});
   navigator.serviceWorker.addEventListener("controllerchange",function(){if(!avait)return;RECHARGER=true;if(ECRAN!=="jeu")location.reload();});}
 // le numéro de publication (celui du cache du service worker, « orbicube-v152 ») sous les options : on sait ce qu'on voit

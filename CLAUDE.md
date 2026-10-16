@@ -40,8 +40,9 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   (`docs/lancement.md` 6). Ajouter de la publicité ou de l'analyse impose en plus un consentement RGPD : décision
   du client, pas une optimisation.
 - **Le jeu ne dépend d'aucun réseau** : polices embarquées, pas de CDN. Le classement est le seul appel réseau :
-  sans adresse dans `config.js` ou sans connexion, tout se replie sans bruit et les scores attendent (`PROG.envois`). Une police ou un fichier
-  ajouté va aussi dans la liste `FICHIERS` de `www/sw.js` (le vérificateur le contrôle pour les polices).
+  sans adresse dans `config.js` ou sans connexion, tout se replie sans bruit et les scores attendent (`PROG.envois`). Un fichier ajouté va aussi
+  dans `www/sw.js` : `FICHIERS` pour le code (cache de la version `V`), `FICHIERS_MEDIAS` pour images, polices et musique
+  (cache `MEDIAS`, gardé d'une publication à l'autre : changer son nom quand un média change). Le vérificateur contrôle les polices.
 
 ## Ce qu'il faut savoir du code d'Orbicube
 
@@ -187,8 +188,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   la rejoue. **Palette Classique** aux couleurs du cube de cette vidéo, relevées sur les captures du client (#F59A38, #F2665A,
   #F7D44C, #F2F2EF, #38C987, #4C8DF0) ; le logo les reprend (`COUL_LOGO`).
 - **Musique** (`Musique`, `www/audio/nuit-dorbites.m4a`, générée par le client avec Suno sous licence
-  commerciale) : AAC 96 kb/s (l'Opus d'origine ne se lit pas sur iPhone), boucle Web Audio avec fondu
-  enchaîné de 6 s, démarre au premier geste, se coupe en arrière-plan, baisse sous la victoire. Le Chromium
+  commerciale) : AAC 96 kb/s (l'Opus d'origine ne se lit pas sur iPhone), **lue en flux** par deux lecteurs `<audio>`
+  branchés dans Web Audio qui se relaient avec un fondu enchaîné de 6 s (décodée d'un bloc, elle prenait 95 Mo sur iPhone), démarre au premier geste, se coupe en arrière-plan, baisse sous la victoire. Le Chromium
   des tests n'a pas l'AAC : son échec de décodage doit rester silencieux.
 - **Ampoules**, appelées **« aides »** à l'écran depuis le 16/10/2026 (le client ; en, nl « hints », de « Hilfen », es « ayudas » ;
   le code et les produits des stores gardent `amp`/`ampoules`) (le client, le 11/10/2026 ; pas de vidéo publicitaire, qui imposerait pub, suivi et RGPD) :
