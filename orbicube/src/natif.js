@@ -31,8 +31,14 @@ function droitActif(info) {
   const droit = cfg().droit || 'complet';
   return !!(info && info.entitlements && info.entitlements.active && info.entitlements.active[droit]);
 }
+// le jeu complet, par son identifiant de produit : prendre le premier paquet de l'offering vendrait le mauvais produit si
+// quelqu'un y ajoutait l'Édition intégrale (audit du 16/10/2026)
+const PRODUIT_COMPLET = 'orbicube_complet';
 function paquet() {
-  return Purchases.getOfferings().then((o) => (o.current && o.current.availablePackages[0]) || null);
+  return Purchases.getOfferings().then((o) => {
+    const l = (o.current && o.current.availablePackages) || [];
+    return l.find((x) => x.product && x.product.identifier === PRODUIT_COMPLET) || null;
+  });
 }
 
 window.Natif = {
