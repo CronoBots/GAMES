@@ -137,7 +137,9 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 - **Fin de niveau** : les six faces s'illuminent l'une après l'autre et le cube fait un tour sur
   lui-même (`PIVOT` n'est animé que là ; 1,5 s autour de la verticale, dans l'inclinaison du jeu, sans le relever ; la
   fenêtre de victoire attend 1,7 s pour qu'on le voie, le client le 16/10/2026) ; « Revoir ma partie » rejoue le mélange puis les coups (`revoir()`). La fenêtre de victoire porte en tête où l'on est (`.vic-ou` : « Monde 3 · Niveau 22 », « Défi du jour »…,
-  capitales espacées de la couleur du monde, le client : « de façon pro »).
+  capitales espacées de la couleur du monde, le client : « de façon pro »). Puis (le client : « pas optimisée du tout ») : gains côte à côte
+  (`.vic-gains`), résultat en **deux cartes comme la fiche du niveau** (chiffre, « objectif », étoiles), « Revoir ma partie » en
+  simple lien (`.vic-lien`), et les **confettis derrière la fenêtre** (`#confettis` z-index 19 : ils couvraient chiffres et boutons).
 - **Couleur d'accent par monde** (`ACCENTS`, `accent(w)`) : variable CSS `--acc` (triplet r,g,b) et
   `ACC` pour le canevas (cercle saisi, vague de victoire). Accueil, défi et jeu libre : le lilas.
   **Les orbites du plateau** (trait fin + halo léger, au repos comme à la sélection/au tour) prennent cette

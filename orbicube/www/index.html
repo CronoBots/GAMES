@@ -327,7 +327,7 @@ a.bouton{text-decoration:none;color:inherit}
 .mini-et{display:flex;justify-content:center;gap:2px;margin-top:4px}.mini-et svg{width:14px;height:14px}
 .resume b{display:block;font-family:var(--f-chiffre);font-size:20px;color:var(--encre);letter-spacing:0}
 .nouveau{display:inline-block;background:var(--or-doux);color:var(--or);border-radius:99px;padding:3px 10px;font-size:12px;font-weight:700;margin-bottom:4px}
-#confettis{position:fixed;inset:0;pointer-events:none;z-index:30;width:100%;height:100%}
+#confettis{position:fixed;inset:0;pointer-events:none;z-index:19;width:100%;height:100%}
 #toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 12px);transform:translate(-50%,calc(-100% - env(safe-area-inset-top,0px) - 40px));visibility:hidden;z-index:40;
   background:#1d1a33;border:1px solid var(--or);border-radius:16px;padding:10px 16px;display:flex;gap:10px;align-items:center;
   box-shadow:0 20px 50px -15px rgba(0,0,0,.9);transition:transform .45s var(--ease),visibility 0s .45s;max-width:calc(100% - 32px)}
@@ -1008,6 +1008,16 @@ body{font-variant-numeric:tabular-nums}
   border-radius:99px;border:1px solid rgba(var(--acc),.4);background:rgba(var(--acc),.12);
   font:600 11.5px var(--f-chiffre);letter-spacing:.16em;text-transform:uppercase;color:rgb(var(--acc))}
 .vic-ou i{font-style:normal;opacity:.6}
+/* victoire (le client, le 16/10/2026 : « pas optimisée du tout ») : les confettis passent DERRIÈRE la fenêtre (ils couvraient
+   les chiffres et les boutons) ; gains côte à côte et espacés ; résultat en deux cartes comme la fiche du niveau ;
+   « Revoir ma partie » en simple lien sous les boutons */
+.vic-gains{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:2px 0 4px}
+.vic-gains .nouveau,.vic-gains .xp-gain{margin:0;padding:5px 12px;font-size:12.5px;line-height:1.2}
+.vic-cartes{margin:10px 0 14px}
+.vic-cartes .fiche-carte b{font-size:28px}
+.vic-lien{display:block;margin:2px auto 0;min-height:44px;padding:0 16px;background:none;border:0;color:var(--pale);font:500 14px var(--f-texte);
+  text-decoration:underline;text-decoration-color:rgba(255,255,255,.25);text-underline-offset:4px;cursor:pointer}
+.vic-lien:active{color:var(--encre)}
 </style>
 </head>
 <body>
@@ -2353,9 +2363,12 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
     ouvrirFenetre(hr,function(a){fermerFenetre();if(a==="encore")lancer(relaxDef());else montrer("accueil");},"menu");return;}
   var ou=d.mode==="campagne"?'<span>Monde '+(d.w+1)+'</span><i>·</i><span>'+nomNiveau(d.w,d.i)+'</span>':d.mode==="jour"?'<span>Défi du jour</span>':
     d.mode==="semaine"?'<span>Défi de la semaine</span>':d.mode==="sansfin"?'<span>Sans fin</span><i>·</i><span>Étape '+d.etape+'</span>':'<span>Jeu libre</span>';
-  var html='<div class="vic-ou">'+ou+'</div><div class="gros-et">'+[0,1,2].map(function(k){return k<e?SVG_ET:SVG_ET_OFF;}).join("")+'</div><h3>'+titre+'</h3>'+(record?'<span class="nouveau">Nouveau record</span>':"")+xpTxt+
-    '<div class="resume"><div>Coups<b>'+n+' / '+d.par+'</b><i class="mini-et">'+[0,1,2].map(function(k){return k<e?SVG_ET:SVG_ET_OFF;}).join("")+'</i></div>'+
-    '<div>Temps<b>'+fmt(temps)+' / '+fmt(objectifTemps(d.par))+'</b><i class="mini-et">'+[0,1,2].map(function(k){return k<J.eT?SVG_ETT:SVG_ET_OFF;}).join("")+'</i></div></div>'+
+  var html='<div class="vic-ou">'+ou+'</div><div class="gros-et">'+[0,1,2].map(function(k){return k<e?SVG_ET:SVG_ET_OFF;}).join("")+'</div><h3>'+titre+'</h3>'+(record||J.xp?'<div class="vic-gains">'+(record?'<span class="nouveau">Nouveau record</span>':"")+xpTxt+'</div>':"")+
+    // le même résultat que la fiche du niveau, en deux cartes : ce qu'on a fait, l'objectif, les étoiles
+    '<div class="fiche-cartes vic-cartes"><div class="fiche-carte"><small>Coups</small><b class="notrad">'+n+'</b><span class="obj"><span>objectif</span> <span class="notrad">'+d.par+'</span></span><i class="mini-et">'+
+      [0,1,2].map(function(k){return k<e?SVG_ET:SVG_ET_OFF;}).join("")+'</i></div>'+
+    '<div class="fiche-carte"><small>Temps</small><b class="notrad">'+fmt(temps)+'</b><span class="obj"><span>objectif</span> <span class="notrad">'+fmt(objectifTemps(d.par))+'</span></span><i class="mini-et">'+
+      [0,1,2].map(function(k){return k<J.eT?SVG_ETT:SVG_ET_OFF;}).join("")+'</i></div></div>'+
     (e<3?'<p>'+(J.indice?"L’indice limite le niveau à deux étoiles.":(d.par>1?"Trois étoiles en "+d.par+" coups ou moins.":"Trois étoiles en un seul coup."))+'</p>':"")+
     (experts!=null?'<p class="experts">La voie dorée s’ouvre : quatre niveaux experts vous attendent.</p>':"")+
     (J.voie?'<div class="voie-gain"><b>Voie dorée terminée</b><span>Style exclusif « '+styleVoie(d.w).nom+' » débloqué, et 3 aides.</span></div>':"")+(cS?'<p class="experts">'+texteCond(cS)+'</p>':"")+
@@ -2368,7 +2381,7 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
   if((d.mode==="jour"||d.mode==="semaine"||d.mode==="sansfin")&&enLigne()&&!PROG.classementOff)html+=PROG.compte||PROG.clAccord?'<button class="bouton" data-a="classement" type="button" style="justify-content:center">Voir le classement</button>':
     '<button class="bouton" data-a="rejoindre" type="button" style="justify-content:center">Apparaître au classement</button><p class="cl-accord">Votre pseudo et vos scores, rien d’autre.</p>';
   html+='<div class="rangee2"><button class="bouton" data-a="rejouer" type="button">Rejouer</button><button class="bouton" data-a="menu" type="button">'+(d.mode==="campagne"?"Niveaux":"Accueil")+'</button></div>'+
-    (J.hist.length&&!defiClasse()?'<button class="bouton" data-a="revoir" type="button" style="justify-content:center;min-height:46px;font-size:14px;color:var(--pale)">Revoir ma partie</button>':"")+'</div>';
+    (J.hist.length&&!defiClasse()?'<button class="vic-lien" data-a="revoir" type="button">Revoir ma partie</button>':"")+'</div>';
   ouvrirFenetre(html,function(a){if(a==="partager"){partager(e,n,temps);return;}if(a==="classement"){fermerFenetre();ouvrirClassement(d.mode,"accueil");return;}
     if(a==="rejoindre"){fermerFenetre();rejoindreClassement(d.mode);return;}fermerFenetre();if(a==="revoir"){revoir(e,n,temps);return;}
     if(a==="etape"){var k=d.etape+1;if(k>5&&!complet())ouvrirBoutique("libre");else lancer(sansFinDef(k));return;}if(a==="experts"){lancer(niveauDef(d.w,experts));return;}if(a==="suivant"){if(mondePaye(suiv.w))ouvrirBoutique("monde");else lancer(niveauDef(suiv.w,suiv.i));}
