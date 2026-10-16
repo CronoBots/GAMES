@@ -87,7 +87,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   se confondraient avec elles.
 - **Le plateau se manipule en glissant** : un simple appui sur un cercle ne tourne rien (le parcours de test
   le vérifie). **Le cube en perspective pivote au doigt** (redemandé par le client le 11/10/2026) : gauche/droite
-  autour de la verticale, haut/bas pour la face du dessous, calé au quart de tour au lâcher (`PIVOT`).
+  autour de la verticale, haut/bas pour la face du dessous, calé au quart de tour au lâcher (`PIVOT`), **puis revenu seul à sa vue de jeu** 0,9 s plus tard (`revenir`, le client, le
+  16/10/2026 : tourné, il ne correspondait plus aux orbites) : le pivot sert à regarder les faces cachées.
 - **Facettes** (option « Pastilles », par défaut) : chaque pastille est un losange dont les côtés suivent les
   deux cercles qui se croisent sous elle (`FORME`, tangentes) ; pendant un tour, une pastille qui glisse
   sur un cercle garde un côté collé à ce cercle (sa tangente) et seul l'autre angle passe de celui du départ à
@@ -135,7 +136,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   Pack soutien : liseré doré sur la puce du rang et le Profil (« Mécène d'Orbicube »).
 - **Fin de niveau** : les six faces s'illuminent l'une après l'autre et le cube fait un tour sur
   lui-même (`PIVOT` n'est animé que là ; 1,5 s autour de la verticale, dans l'inclinaison du jeu, sans le relever ; la
-  fenêtre de victoire attend 1,7 s pour qu'on le voie, le client le 16/10/2026) ; « Revoir ma partie » rejoue le mélange puis les coups (`revoir()`).
+  fenêtre de victoire attend 1,7 s pour qu'on le voie, le client le 16/10/2026) ; « Revoir ma partie » rejoue le mélange puis les coups (`revoir()`). La fenêtre de victoire porte en tête où l'on est (`.vic-ou` : « Monde 3 · Niveau 22 », « Défi du jour »…,
+  capitales espacées de la couleur du monde, le client : « de façon pro »).
 - **Couleur d'accent par monde** (`ACCENTS`, `accent(w)`) : variable CSS `--acc` (triplet r,g,b) et
   `ACC` pour le canevas (cercle saisi, vague de victoire). Accueil, défi et jeu libre : le lilas.
   **Les orbites du plateau** (trait fin + halo léger, au repos comme à la sélection/au tour) prennent cette

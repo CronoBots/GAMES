@@ -1003,6 +1003,11 @@ body{font-variant-numeric:tabular-nums}
 /* état vide et carte du classement */
 .cl-ic{display:grid;place-items:center;width:52px;height:52px;margin:0 auto 2px;border-radius:50%;background:rgba(var(--acc),.14);border:1px solid rgba(var(--acc),.35)}
 .cl-ic svg{width:26px;height:26px;fill:none;stroke:rgb(var(--acc));stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* victoire : le niveau gagné en tête, en capitales espacées de la couleur du monde (comme la fiche du niveau) */
+.vic-ou{display:flex;justify-content:center;align-items:center;gap:8px;margin:0 auto 6px;padding:6px 14px;width:max-content;max-width:100%;
+  border-radius:99px;border:1px solid rgba(var(--acc),.4);background:rgba(var(--acc),.12);
+  font:600 11.5px var(--f-chiffre);letter-spacing:.16em;text-transform:uppercase;color:rgb(var(--acc))}
+.vic-ou i{font-style:normal;opacity:.6}
 </style>
 </head>
 <body>
@@ -2174,7 +2179,12 @@ function dessinerMini(){if(!PROG.options.cube)return;var w=mini.clientWidth||84,
   function norm(a){a%=2*Math.PI;return a<0?a+2*Math.PI:a;}
   function caler(){var y0=PIVOT.y,x0=PIVOT.x,y1=Math.round(y0/(Math.PI/2))*Math.PI/2,x1=Math.round(x0/Math.PI)*Math.PI,t0=performance.now(),n=++anim;
     (function pas(now){if(n!==anim)return;var k=Math.min(1,(now-t0)/260),e=ease(k);PIVOT={y:y0+(y1-y0)*e,x:x0+(x1-x0)*e};dessinerMini();
-      if(k<1)requestAnimationFrame(pas);else PIVOT={y:norm(y1),x:norm(x1)};})(t0);}
+      if(k<1)requestAnimationFrame(pas);else{PIVOT={y:norm(y1),x:norm(x1)};if(PIVOT.y||PIVOT.x)setTimeout(function(){if(n===anim)revenir();},900);}})(t0);}
+  // puis il revient de lui-même à sa vue de jeu (le client, le 16/10/2026) : ses trois faces visibles sont celles du centre du
+  // plateau, dans le même sens ; tourné, il ne correspondait plus aux orbites. Le pivot ne sert qu'à regarder les faces cachées.
+  function revenir(){var y0=PIVOT.y>Math.PI?PIVOT.y-2*Math.PI:PIVOT.y,x0=PIVOT.x>Math.PI?PIVOT.x-2*Math.PI:PIVOT.x,t0=performance.now(),n=++anim;
+    (function pas(now){if(n!==anim)return;var k=Math.min(1,(now-t0)/480),e=ease(k);PIVOT={y:y0*(1-e),x:x0*(1-e)};dessinerMini();
+      if(k<1)requestAnimationFrame(pas);else PIVOT={y:0,x:0};})(t0);}
   mini.addEventListener("pointerdown",function(e){if(e.button)return;anim++;g={x:e.clientX,y:e.clientY,bouge:false};try{mini.setPointerCapture(e.pointerId);}catch(_){}});
   mini.addEventListener("pointermove",function(e){if(!g)return;if(e.pointerType==="mouse"&&!e.buttons){lacher();return;}
     var dx=e.clientX-g.x,dy=e.clientY-g.y;if(!g.bouge){if(Math.hypot(dx,dy)<4)return;g.bouge=true;vibrer(6);}
@@ -2341,7 +2351,9 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
   if(d.relax){var hr='<h3>'+titre+'</h3>'+xpTxt+'<p>'+n+' coups · '+fmt(temps)+'</p>'+objectifsGagnes()+'<div class="menu"><button class="bouton principal" data-a="encore" type="button"><span>Nouveau mélange</span></button>'+
       '<button class="bouton" data-a="menu" type="button" style="justify-content:center">Accueil</button></div>';
     ouvrirFenetre(hr,function(a){fermerFenetre();if(a==="encore")lancer(relaxDef());else montrer("accueil");},"menu");return;}
-  var html='<div class="gros-et">'+[0,1,2].map(function(k){return k<e?SVG_ET:SVG_ET_OFF;}).join("")+'</div><h3>'+titre+'</h3>'+(record?'<span class="nouveau">Nouveau record</span>':"")+xpTxt+
+  var ou=d.mode==="campagne"?'<span>Monde '+(d.w+1)+'</span><i>·</i><span>'+nomNiveau(d.w,d.i)+'</span>':d.mode==="jour"?'<span>Défi du jour</span>':
+    d.mode==="semaine"?'<span>Défi de la semaine</span>':d.mode==="sansfin"?'<span>Sans fin</span><i>·</i><span>Étape '+d.etape+'</span>':'<span>Jeu libre</span>';
+  var html='<div class="vic-ou">'+ou+'</div><div class="gros-et">'+[0,1,2].map(function(k){return k<e?SVG_ET:SVG_ET_OFF;}).join("")+'</div><h3>'+titre+'</h3>'+(record?'<span class="nouveau">Nouveau record</span>':"")+xpTxt+
     '<div class="resume"><div>Coups<b>'+n+' / '+d.par+'</b><i class="mini-et">'+[0,1,2].map(function(k){return k<e?SVG_ET:SVG_ET_OFF;}).join("")+'</i></div>'+
     '<div>Temps<b>'+fmt(temps)+' / '+fmt(objectifTemps(d.par))+'</b><i class="mini-et">'+[0,1,2].map(function(k){return k<J.eT?SVG_ETT:SVG_ET_OFF;}).join("")+'</i></div></div>'+
     (e<3?'<p>'+(J.indice?"L’indice limite le niveau à deux étoiles.":(d.par>1?"Trois étoiles en "+d.par+" coups ou moins.":"Trois étoiles en un seul coup."))+'</p>':"")+
