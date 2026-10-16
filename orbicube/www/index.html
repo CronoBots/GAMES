@@ -1389,13 +1389,15 @@ var CEN=[-30,90,210].map(function(d){var r=d*Math.PI/180;return[Math.cos(r)*ECAR
 function inter(c1,r1,c2,r2){var dx=c2[0]-c1[0],dy=c2[1]-c1[1],d=Math.hypot(dx,dy),a=(r1*r1-r2*r2+d*d)/(2*d),h=Math.sqrt(r1*r1-a*a),mx=c1[0]+a*dx/d,my=c1[1]+a*dy/d;
   return[[mx-h*dy/d,my+h*dx/d],[mx+h*dy/d,my-h*dx/d]];}
 // une disposition : ses rayons, l'écart de ses centres, et la place de chaque pastille (au croisement de ses deux cercles)
+// la couche L d'une famille est sur le cercle RAY[DEMI-L] (le client, le 16/10/2026) : la couche +DEMI sur le PETIT cercle, celui qui
+// entoure sa face au centre de la famille ; tourner un cercle fait tourner la face qu'il borde, comme sur le cube
 // les rayons d'un N×N : même cercle du milieu, un pas entre cercles un peu plus serré en 4×4 ; hors 3×3, le plateau est
 // remis à la même étendue que celui d'origine (le 3×3 garde ses proportions exactes)
 function rayonsTaille(n){if(n===3)return RAY0.slice();var pas=n===2?.177:.15,r=[];for(var i=0;i<n;i++)r.push(.904+(i-(n-1)/2)*pas);return r;}
 function geoDe(id){var D=DISPOS[id]||DISPOS.trefle,base=rayonsTaille(TAILLE),kn=TAILLE===3?1:(ECART0+RAY0[2])/(ECART0+base[TAILLE-1]),
     ray=base.map(function(r){return r*kn*D.k;}),e=D.e*kn*D.k,
     cen=[-30,90,210].map(function(d){var r=d*Math.PI/180;return[Math.cos(r)*e,Math.sin(r)*e];});
-  return{ray:ray,e:e,cen:cen,xy:S.map(function(s){var b=(s.a+1)%3,c=(s.a+2)%3,pts=inter(cen[b],ray[s.p[b]+DEMI],cen[c],ray[s.p[c]+DEMI]);
+  return{ray:ray,e:e,cen:cen,xy:S.map(function(s){var b=(s.a+1)%3,c=(s.a+2)%3,pts=inter(cen[b],ray[DEMI-s.p[b]],cen[c],ray[DEMI-s.p[c]]);
     var d=function(q){return Math.hypot(q[0]-cen[s.a][0],q[1]-cen[s.a][1]);};pts.sort(function(u,v){return d(u)-d(v);});return s.s>0?pts[0]:pts[1];})};}
 var CENTRE_FACE={},CLE_CENTRE={},FORME=[],RAYON_FACE=0;
 // Forme des facettes : un losange dont les côtés suivent les deux cercles qui se croisent sous la pastille,
@@ -1548,7 +1550,7 @@ Plateau.prototype.arrivee=function(mv,avant){var now=performance.now(),m=perm(mv
   if(this.opts.eclats){var a0=facesUnies(avant),a1=facesUnies(this.col),self=this,nv=0;
     Object.keys(a1).forEach(function(k){if(!(k in a0)){self.eclats.push({xy:CENTRE_FACE[k],c:a1[k],t0:now});nv++;}});if(nv&&this.onFace)this.onFace(nv);}};
 Plateau.prototype.comete=function(now){var cx=this.cx,E=this.ECH,per=3800,n=Math.floor(now/per),ph=(now%per)/per,k=(n*4+1)%9,a=Math.floor(k/3),L=k%3-1,
-  c=CEN[a],r=RAY[L+DEMI],dir=n%2?1:-1,a0=n*2.1+dir*ph*Math.PI*1.6,al=Math.sin(ph*Math.PI);
+  c=CEN[a],r=RAY[DEMI-L],dir=n%2?1:-1,a0=n*2.1+dir*ph*Math.PI*1.6,al=Math.sin(ph*Math.PI);
   for(var i=0;i<18;i++){var aa=a0-dir*i*.04,p=this.vers([c[0]+r*Math.cos(aa),c[1]+r*Math.sin(aa)]);cx.beginPath();
     cx.arc(p[0],p[1],Math.max(.8,E*(this.opts.sobre?.024:.032)*(1-i/18)),0,Math.PI*2);cx.fillStyle="rgba(222,214,255,"+(al*(1-i/18)*(this.opts.sobre?.5:.9))+")";cx.fill();}};
 Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH,self=this;if(!W)return;now=now||performance.now();
@@ -1560,7 +1562,7 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
   // styles de la boutique : ceux du joueur (STY), ou ceux qu'un plateau impose (l'aperçu de la boutique)
   var CL=this.pal||COUL,FO=this.forme||STY.forme,TR=this.trainee||STY.trainee,OR=this.orbite||(this.opts.sobre?"accent":STY.orbite);
   for(var a=0;a<3;a++)for(var L=-DEMI;L<=DEMI;L++){var k=a+","+L,c=this.vers(CEN[a]),ok=this.permisA(k);
-    cx.save();cx.beginPath();cx.arc(c[0],c[1],RAY[L+DEMI]*E,0,Math.PI*2);
+    cx.save();cx.beginPath();cx.arc(c[0],c[1],RAY[DEMI-L]*E,0,Math.PI*2);
     if(k===act&&this.opts.sobre){halo(cx,ACC,.22,Math.max(1.2,E*.012));cx.strokeStyle="rgba("+ACC+",.9)";cx.lineWidth=Math.max(1.4,E*.011);}
     else if(k===act){var pa=.6+.4*Math.sin(now/320);halo(cx,ACC,.28+.12*pa,Math.max(2,E*.02));cx.strokeStyle="rgba("+ACC_CLAIR+","+(.8+.15*pa)+")";cx.lineWidth=Math.max(2,E*.019);}
     else if(k===ind){var pl=.5+.5*Math.sin(now/220);halo(cx,"255,207,74",.5+.5*pl,Math.max(2.5,E*.03));cx.strokeStyle="rgba(255,207,74,"+(.45+.5*pl)+")";cx.lineWidth=Math.max(2.5,E*.03);}
@@ -1571,7 +1573,7 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
       // Le halo devient fort à la sélection et pendant le tour (branches act/survol), même teinte.
       var oc=couleurOrbite(OR,a);halo(cx,oc,.12*(SB<1?.65:1),Math.max(1,E*.01));cx.strokeStyle="rgba("+oc+","+(SB<1?.44:.55)+")";cx.lineWidth=this.permis?1.4:(SB<1?1.1:1.3);}
     cx.stroke();
-    if(vg>=0){var dk=(vg-ordre*75)/450;if(dk>0&&dk<1){cx.beginPath();cx.arc(c[0],c[1],RAY[L+DEMI]*E,0,Math.PI*2);cx.setLineDash([]);
+    if(vg>=0){var dk=(vg-ordre*75)/450;if(dk>0&&dk<1){cx.beginPath();cx.arc(c[0],c[1],RAY[DEMI-L]*E,0,Math.PI*2);cx.setLineDash([]);
       halo(cx,ACC,Math.sin(dk*Math.PI),Math.max(3,E*.045));cx.strokeStyle="rgba("+ACC_CLAIR+","+Math.sin(dk*Math.PI)+")";cx.lineWidth=Math.max(3,E*.045);cx.stroke();}}
     cx.restore();ordre++;}
   if(vg>1700)this.vague=0;
@@ -1580,7 +1582,7 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
   var t=this.anim?this.anim.t:0,pos=this.positionsA(t),rp=Math.max(3,E*.060*(TAILLE===4?.76:TAILLE===2?1.4:1)),i,q;
   if(this.anim&&!CALME){
     // arcs de couleur qui glissent sur le cercle actif
-    var mvA=this.anim.mv,cA=this.vers(CEN[mvA.a]),rA=RAY[mvA.L+DEMI]*E;
+    var mvA=this.anim.mv,cA=this.vers(CEN[mvA.a]),rA=RAY[DEMI-mvA.L]*E;
     cx.save();cx.lineCap="round";cx.lineWidth=Math.max(3,E*.042);cx.globalAlpha=.5;
     pos.forEach(function(p){if(!p.m||p.f)return;var qq=self.vers(p.xy),an=Math.atan2(qq[1]-cA[1],qq[0]-cA[0]);
       cx.beginPath();cx.arc(cA[0],cA[1],rA,an-.17,an+.17);cx.strokeStyle=CL[p.c];cx.globalAlpha=.16*SB;cx.lineWidth=Math.max(8,E*.1);cx.stroke();cx.globalAlpha=.5*SB;cx.lineWidth=Math.max(3,E*.042);cx.stroke();});
@@ -1623,14 +1625,14 @@ Plateau.prototype.dessiner=function(now){var cx=this.cx,W=this.taille,E=this.ECH
     var lw=Math.max(2,E*.035)*(1-e*.6);cx.lineWidth=lw*3.5;cx.globalAlpha=(1-e)*.2;cx.stroke();cx.globalAlpha=1-e;cx.lineWidth=lw;cx.stroke();cx.restore();return true;});
   if(this.opts.etiquettes!==false){var lab=act||(this.survol&&this.permisA(this.survol)?this.survol:null)||ind;
     if(lab){var nm=this.anim&&act===lab?nomDe(this.anim.mv):(ind===lab&&!act?nomDe(this.indice):NOM_ANNEAU[lab]);this.etiquette(lab,nm,ind===lab&&!act);}}};
-Plateau.prototype.etiquette=function(k,nm,orx){var cx=this.cx,W=this.taille,ab=k.split(",").map(Number),cen=CEN[ab[0]],u=Math.hypot(cen[0],cen[1]),r=RAY[ab[1]+1];
+Plateau.prototype.etiquette=function(k,nm,orx){var cx=this.cx,W=this.taille,ab=k.split(",").map(Number),cen=CEN[ab[0]],u=Math.hypot(cen[0],cen[1]),r=RAY[DEMI-ab[1]];
   var pt=this.vers([cen[0]+cen[0]/u*r,cen[1]+cen[1]/u*r]),px=pt[0]+cen[0]/u*20,py=pt[1]-cen[1]/u*20;
   var fs=Math.round(Math.max(15,this.ECH*.14));cx.font='400 '+fs+'px "STIX Two Text",Georgia,serif';
   var tw=cx.measureText(nm).width+16,th=fs+10;px=Math.min(Math.max(px,tw/2+2),W-tw/2-2);py=Math.min(Math.max(py,th/2+2),(this.hauteur||W)-th/2-2);
   cx.fillStyle="rgba(17,17,27,.92)";cx.strokeStyle=orx?"#ffcf4a":"#5a5680";cx.lineWidth=1;cx.beginPath();
   if(cx.roundRect)cx.roundRect(px-tw/2,py-th/2,tw,th,7);else cx.rect(px-tw/2,py-th/2,tw,th);cx.fill();cx.stroke();
   cx.fillStyle=orx?"#ffcf4a":"#eeedf5";cx.textAlign="center";cx.textBaseline="middle";cx.fillText(nm,px,py+1);};
-Plateau.prototype.fleche=function(mv,now){var cx=this.cx,E=this.ECH,c=CEN[mv.a],r=RAY[mv.L+DEMI],u=Math.hypot(c[0],c[1]),base=Math.atan2(c[1]/u,c[0]/u);
+Plateau.prototype.fleche=function(mv,now){var cx=this.cx,E=this.ECH,c=CEN[mv.a],r=RAY[DEMI-mv.L],u=Math.hypot(c[0],c[1]),base=Math.atan2(c[1]/u,c[0]/u);
   var dir=sensVis(mv),ph=(now%1500)/1500,a0=base-dir*.55+dir*1.1*ph,len=.5,pts=[];
   for(var i=0;i<=16;i++){var aa=a0-dir*len*(1-i/16);pts.push(this.vers([c[0]+r*Math.cos(aa),c[1]+r*Math.sin(aa)]));}
   var al=Math.sin(ph*Math.PI);cx.save();cx.lineCap="round";cx.lineWidth=Math.max(4,E*.05);cx.strokeStyle="rgba(255,207,74,"+al+")";
@@ -1639,7 +1641,7 @@ Plateau.prototype.fleche=function(mv,now){var cx=this.cx,E=this.ECH,c=CEN[mv.a],
   cx.fillStyle="rgba(255,207,74,"+al+")";cx.beginPath();cx.moveTo(p1[0]+Math.cos(ang)*h*.6,p1[1]+Math.sin(ang)*h*.6);
   cx.lineTo(p1[0]+Math.cos(ang+2.4)*h,p1[1]+Math.sin(ang+2.4)*h);cx.lineTo(p1[0]+Math.cos(ang-2.4)*h,p1[1]+Math.sin(ang-2.4)*h);cx.closePath();cx.fill();cx.restore();};
 Plateau.prototype.anneauxSous=function(px,py){var m=this.depuis(px,py),tol=Math.max(22,this.ECH*.2),out=[];
-  for(var a=0;a<3;a++)for(var L=-DEMI;L<=DEMI;L++){var k=a+","+L;if(!this.permisA(k))continue;var d=Math.abs(Math.hypot(m[0]-CEN[a][0],m[1]-CEN[a][1])-RAY[L+DEMI])*this.ECH;
+  for(var a=0;a<3;a++)for(var L=-DEMI;L<=DEMI;L++){var k=a+","+L;if(!this.permisA(k))continue;var d=Math.abs(Math.hypot(m[0]-CEN[a][0],m[1]-CEN[a][1])-RAY[DEMI-L])*this.ECH;
     if(d<=tol)out.push({a:a,L:L,d:d});}
   out.sort(function(u,v){return u.d-v.d;});return out;};
 Plateau.prototype.jouer=function(mv,duree,fin,courbe){this.file.push({mv:mv,duree:duree,fin:fin,courbe:courbe});this.suivant();};
@@ -1861,7 +1863,7 @@ function bip(freq,dur,type,vol,quand){var ac=audio();if(!ac)return;var t=ac.curr
 // chaque cercle a sa note (le client, le 16/10/2026) : la gamme pentatonique de do, du grave à l'aigu, trois notes par famille
 // d'orbites ; un timbre de kalimba (fondamentale, octave légère, attaque brève) : jouer, c'est faire une petite mélodie
 var NOTES=[261.63,293.66,329.63,392,440,523.25,587.33,659.25,783.99];
-function sonTour(mv){var f=NOTES[mv.a*3+Math.round((mv.L+DEMI)/(TAILLE-1)*2)];bip(f,.7,"sine",.11);bip(f*2,.35,"sine",.025,.005);bip(f*3,.08,"triangle",.02);}
+function sonTour(mv){var f=NOTES[mv.a*3+Math.round((DEMI-mv.L)/(TAILLE-1)*2)];bip(f,.7,"sine",.11);bip(f*2,.35,"sine",.025,.005);bip(f*3,.08,"triangle",.02);}
 function sonClic(){bip(660,.05,"sine",.05);}
 function sonEtoile(i){bip(880*Math.pow(1.26,i),.25,"sine",.12);bip(1320*Math.pow(1.26,i),.2,"triangle",.05,.02);}
 function sonVictoire(){bip(131,.6,"sine",.09);[523,659,784,1047,1319].forEach(function(f,i){bip(f,.4,"triangle",.1,i*.08);bip(f*2,.3,"sine",.03,i*.08+.02);});}
@@ -2203,7 +2205,7 @@ function redimJeu(){var jeu=document.getElementById("jeu"),z=document.getElement
   // la famille du haut (les cercles interdits ne sont qu'un pointillé à peine visible) ; le plateau ne bouge pas. Sans
   // place pour ça (petits écrans), il reste centré entre le titre et le cercle.
   mini.style.transform="";if(PROG.options.cube&&getComputedStyle(jeu).display!=="grid"){var h=jeu.querySelector(".jtete").getBoundingClientRect().bottom,
-    rh=RAY[RAY.length-1];if(JeuP.permis){rh=0;for(var LH=DEMI;LH>=-DEMI;LH--)if(JeuP.permis["1,"+LH]){rh=RAY[LH+DEMI];break;}if(!rh)rh=RAY[RAY.length-1];}
+    rh=RAY[RAY.length-1];if(JeuP.permis){rh=0;for(var LH=-DEMI;LH<=DEMI;LH++)if(JeuP.permis["1,"+LH])rh=Math.max(rh,RAY[DEMI-LH]);if(!rh)rh=RAY[RAY.length-1];}
     // position du canevas SANS sa transformation : pendant le mélange (.brouille) il est réduit et tourné, et sa boîte
     // englobante faussait le calcul (le cube restait trop haut une fois le plateau dévoilé)
     var c=z.getBoundingClientRect().top+JeuP.cv.offsetTop+JeuP.OY-(ECART+rh)*JeuP.ECH,m=mini.getBoundingClientRect(),dy=Math.max((h+c)/2-(m.top+m.height/2),c-28-m.bottom);

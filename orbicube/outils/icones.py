@@ -41,7 +41,7 @@ def pastilles():
                     if abs(p[a]) != 1:
                         continue
                     b, c = (a + 1) % 3, (a + 2) % 3
-                    pts = inter(CEN[b], RAY[p[b] + 1], CEN[c], RAY[p[c] + 1])
+                    pts = inter(CEN[b], RAY[1 - p[b]], CEN[c], RAY[1 - p[c]])
                     pts.sort(key=lambda q: math.hypot(q[0] - CEN[a][0], q[1] - CEN[a][1]))
                     face = 2 * a + (0 if p[a] > 0 else 1)  # R L U D F B
                     out.append((pts[0] if p[a] > 0 else pts[1], face))
@@ -232,7 +232,7 @@ def stickers():
                 for a in range(3):
                     if abs(p[a])!=1: continue
                     b,c=(a+1)%3,(a+2)%3
-                    pts=inter(CEN[b],RAY[p[b]+1],CEN[c],RAY[p[c]+1])
+                    pts=inter(CEN[b],RAY[1-p[b]],CEN[c],RAY[1-p[c]])
                     pts.sort(key=lambda q: math.hypot(q[0]-CEN[a][0],q[1]-CEN[a][1]))
                     q=pts[0] if p[a]>0 else pts[1]
                     out.append((q,2*a+(0 if p[a]>0 else 1),(b,p[b]+1),(c,p[c]+1)))

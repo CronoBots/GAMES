@@ -67,6 +67,12 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   `delta()` donne à chacune son vrai déplacement dans le sens du cercle. Prendre le chemin le plus
   court (`normA`) les faisait tourner à contresens et rendait le pas d'un quart de tour nul, ce qui
   figeait le glisser en boucle infinie. Le vérificateur rejoue les 18 tours.
+- **Quel cercle porte quelle couche** (le client, le 16/10/2026, d'après une autre app sur le même principe) : la couche +1 d'une
+  famille est sur son **petit** cercle, la couche −1 sur le grand (`RAY[DEMI-L]`, partout : placement, dessin, saisie, indice,
+  notes). Le petit cercle entoure ainsi la face qu'il fait tourner (U, R, F, au centre de leur famille), le grand longe la face
+  extérieure (D, L, B), et les trois faces du centre sont celles du petit cube au-dessus, **dans le même sens**. Avant, c'était
+  l'inverse (le grand cercle tournait la face du centre, dessinée en miroir). Le moteur, les mélanges et les niveaux n'ont pas
+  changé. Le test des gestes glisse sur le petit cercle (U) ; `outils/icones.py` place les pastilles de la même façon.
 - **Les proportions des cercles** (`RAY`, `ECART`) sont relevées sur la visualisation de référence du
   client (11/10/2026) : cercles grands par rapport à l'écart de leurs centres, milieu vide, neuf
   pastilles de chaque face bien groupées. Une recherche qui maximise seulement l'écart minimal entre

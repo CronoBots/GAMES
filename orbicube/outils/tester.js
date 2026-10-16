@@ -219,7 +219,8 @@ async function resoudre(p) {
     await p.reload(); await p.waitForTimeout(1200);
     await p.click("#btnLibre"); await p.waitForTimeout(300); await p.click('#fenetre [data-a="5"]'); await p.waitForTimeout(2600);
     const bx = await (await p.$("#plateau")).boundingBox(), E = bx.width / 3.2, ox = bx.x + bx.width / 2, oy = bx.y + bx.width / 2 + 0.133 * E;
-    const C = [0, 0.5336], R = 1.0835, pt = (a) => [ox + (C[0] + R * Math.cos(a)) * E, oy - (C[1] + R * Math.sin(a)) * E];
+    const C = [0, 0.5336], R = 0.7296,   // U : le petit cercle de la famille du haut (il borde sa face)
+    pt = (a) => [ox + (C[0] + R * Math.cos(a)) * E, oy - (C[1] + R * Math.sin(a)) * E];
     const coups = async () => (await p.textContent("#jCoups")).split("/")[0].trim();
     // glisse lentement le long du cercle U, d'une suite d'angles (en radians, autour de son centre)
     const glisser = async (etapes) => { let a = -Math.PI / 2; await p.mouse.move(...pt(a)); await p.mouse.down();
