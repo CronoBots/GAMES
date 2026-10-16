@@ -1020,6 +1020,12 @@ body{font-variant-numeric:tabular-nums}
 .vic-lien:active{color:var(--encre)}
 /* texte pour les lecteurs d'écran seulement (le nom d'un bouton contient ainsi ce qu'il affiche, règle WCAG 2.5.3) */
 .lecteur{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+/* le nombre d'aides posé sur le bord du rond Indice, en entier (le client, le 16/10/2026 : « coupé par le cercle ») : le rond
+   rogne ce qui dépasse (pour l'onde du toucher), on le laisse déborder ici et la pastille passe au-dessus */
+.indice-boite{position:relative;display:inline-grid;flex:none}
+.indice-boite .badge{position:absolute;top:-5px;right:-5px;z-index:2;pointer-events:none;min-width:20px;height:20px;padding:0 5px;border-radius:99px;
+  display:grid;place-items:center;font:700 11.5px/1 var(--f-chiffre);color:#1a1300;background:var(--or);box-shadow:0 0 0 2px var(--nuit)}
+.indice-boite .badge.vide{background:#3a3850;color:var(--pale)}
 </style>
 </head>
 <body>
@@ -1081,7 +1087,7 @@ body{font-variant-numeric:tabular-nums}
     <div class="jtete">
       <button class="ico" id="btnPause" type="button" aria-label="Pause"><svg viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg></button>
       <div class="jtitre"><b id="jTitre">Niveau</b><span id="jSous"></span></div>
-      <button class="ico indice" id="btnIndice" type="button" aria-label="Indice"><span class="badge notrad" id="ampNb">3</span><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg></button>
+      <div class="indice-boite"><button class="ico indice" id="btnIndice" type="button" aria-label="Indice"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg></button><span class="badge notrad" id="ampNb" aria-hidden="true">3</span></div>
     </div>
     <div class="jinfo">
       <div class="stat">Coups<b id="jCoups">0</b><div class="jetoiles" id="jEt" role="img" aria-label="Étoiles possibles"></div></div>
