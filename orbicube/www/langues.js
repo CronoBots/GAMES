@@ -14,6 +14,7 @@
     ["Défi du jour", "Daily challenge", "Dagelijkse uitdaging", "Tagesherausforderung", "Reto del día"],
     ["nouveau", "new", "nieuw", "neu", "nuevo"],
     ["Autres modes", "Other modes", "Andere modi", "Weitere Modi", "Otros modos"],
+    ["Contre la montre", "Against the clock", "Tegen de klok", "Gegen die Uhr", "Contrarreloj"],
     ["Navigation", "Navigation", "Navigatie", "Navigation", "Navegación"],
     ["+1 aide", "+1 hint", "+1 hint", "+1 Hilfe", "+1 ayuda"],
     ["réussi · {0}", "done · {0}", "gehaald · {0}", "geschafft · {0}", "superado · {0}"],

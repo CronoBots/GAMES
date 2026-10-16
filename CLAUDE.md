@@ -52,7 +52,9 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   partout les couches vont de −DEMI à DEMI et s'indexent `L+DEMI`. Le centre d'une face sans pastille du milieu est la moyenne de
   ses pastilles. Pièces ×1,4 en 2×2, ×0,76 en 4×4. **Seulement en Jeu libre** (choix de taille en tête de la fenêtre,
   `fenetreLibre`, `PROG.options.tailleLibre`) : 2×2 gratuit (3, 6, 9, 12 coups), 4×4 avec le jeu complet (8, 14, 20, 30) ;
-  records à part (`cleRecord` : « t2-3 »…). `lancer` pose la taille de la partie, `montrer` remet le 3×3 hors du jeu. Le 3×3
+  records à part (`cleRecord` : « t2-3 »…). **Le jeu libre est un écran à part** (`#libre`, `ouvrirLibre`, `rendreLibre` ; le client, le 16/10/2026 : « pas une
+  fenêtre par-dessus les autres ») : la taille en tête, puis « Contre la montre » et « Autres modes » en groupes, ouvert par le menu du
+  bas ; après une partie libre ou sans fin, « Jeu libre » y ramène. Le plateau de l'accueil ne réagit plus au toucher (`#logo` inerte). `lancer` pose la taille de la partie, `montrer` remet le 3×3 hors du jeu. Le 3×3
   reste celui d'origine (le vérificateur le rejoue). `?capture` : `__orbicube.jouer(nom)`, `taille()`.
 - **Dispositions des orbites** (le client, le 16/10/2026 : « acheter d'autres présentations des orbites ») : `DISPOS` (Trèfle, la
   disposition d'origine ; **Anneau**, les six faces en couronne : centres à 0,32 au lieu de 0,5336, le tout agrandi de 1,155),

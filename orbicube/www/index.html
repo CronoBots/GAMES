@@ -470,7 +470,7 @@ body.zen #jeu .jinfo .stat,body.zen #jeu .jetoiles{visibility:hidden}
 
 .sous-jouer{margin:-4px 0 0;text-align:center;font-size:12.5px;color:rgb(var(--acc));display:flex;justify-content:center;gap:6px}
 .sous-jouer[hidden]{display:none}
-#logo{cursor:pointer;touch-action:manipulation}
+#logo{pointer-events:none}
 
 #btnIndice{position:relative}
 #btnIndice .badge{position:absolute;top:2px;right:2px;min-width:16px;height:16px;padding:0 4px;font-size:10px!important;border-radius:99px;display:grid;place-items:center;
@@ -1087,6 +1087,14 @@ body.avec-nav #accueil .logoboite{flex:1 1 0;max-height:none}
 .ap-et svg{width:13px;height:13px;fill:#ffcf4a;stroke:none}
 .acc-prog .prog-camp{width:150px;height:3px;margin:0;background:rgba(255,255,255,.1);box-shadow:none}
 .acc-prog .prog-camp i{background:rgb(var(--acc));box-shadow:0 0 6px rgba(var(--acc),.6)}
+/* l'écran Jeu libre : la taille en tête, une phrase, puis les modes en groupes (même langage que les options) */
+.libre-page{display:grid;gap:14px}
+.libre-page .segment.tailles{margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;width:100%}
+.libre-page .segment.tailles button{display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;min-height:44px;font-size:15px}
+.libre-page .segment.tailles button svg{width:14px;height:14px;flex:none;fill:none;stroke:var(--or);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.lib-intro{margin:0;text-align:center;color:var(--pale);font-size:14px}
+.lib-groupe .menu{display:grid;gap:8px;padding:6px 14px 14px}
+.lib-groupe .bouton{width:100%}
 </style>
 </head>
 <body>
@@ -1283,6 +1291,14 @@ body.avec-nav #accueil .logoboite{flex:1 1 0;max-height:none}
       <p class="pied" id="optPied"></p><p class="pied notrad" id="optPub"></p>
       <p class="pied"><a id="lienConf" href="confidentialite.html" style="color:var(--pale)">Politique de confidentialité</a></p>
     </div></div>
+  </section>
+
+  <section class="ecran" id="libre" aria-label="Jeu libre">
+    <div class="tete">
+      <button class="ico" data-retour="accueil" type="button" aria-label="Retour"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2>Jeu libre</h2><span class="ico vide"></span>
+    </div>
+    <div class="defile" tabindex="0"><div class="centre libre-page" id="libreCorps"></div></div>
   </section>
 
   <section class="ecran" id="succes" aria-label="Succès">
@@ -2019,8 +2035,7 @@ Logo.apres=function(now){dessinerLogoCube();if(this.occupe()||now<this.prochain)
   this.prochain=now+230;this.jouer(this.sol.shift(),500);};   // un coup de la résolution, à cadence régulière
 // la taille vient de la boîte qui l'entoure : la place que le menu laisse, sans dépasser 74 % de la largeur ni 310 px
 // toucher l'orbicube de l'accueil le fait tourner d'un cran : un petit jouet avant d'entrer
-document.getElementById("logo").addEventListener("pointerdown",function(){if(Logo.occupe())return;audio();var b=TOUS[Math.floor(Math.random()*9)],m=MV[b],mv={a:m[0],L:m[1],q:Math.random()<.5?1:-1};
-  Logo.sol.unshift(inverse(mv));Logo.pause=0;Logo.prochain=performance.now()+1200;Logo.jouer(mv,300,null,"rebond");sonTour(mv);vibrer(8);});
+// le plateau de l'accueil est un décor : il ne réagit pas au toucher (le client, le 16/10/2026) ; seul le bouton lecture se touche
 // le médaillon du cube se pose sur le sommet du cercle du haut : 1,617 unité au-dessus du centre du plateau, soit
 // 0,116 unité sous le bord du canvas (OY = milieu + 0,133). Sa moitié haute dépasse : la scène lui garde cette place.
 // AIR : un espace au-dessus du médaillon, égal au vide que le bas du canvas laisse sous les orbites (0,117 unité)
@@ -2461,8 +2476,8 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
     cS=suiv&&suiv.w!==d.w&&!mondePaye(suiv.w)?condEtoiles(suiv.w):null;if(cS)suiv=null;}
   var titre=d.relax?"Résolu":e===3?"Parfait":e===2?"Bien joué":"Résolu",xpTxt=J.xp?'<span class="xp-gain notrad">+'+J.xp+' XP</span>':"";
   if(d.relax){var hr='<h3>'+titre+'</h3>'+xpTxt+'<p>'+n+' coups · '+fmt(temps)+'</p>'+objectifsGagnes()+'<div class="menu"><button class="bouton principal" data-a="encore" type="button"><span>Nouveau mélange</span></button>'+
-      '<button class="bouton" data-a="menu" type="button" style="justify-content:center">Accueil</button></div>';
-    ouvrirFenetre(hr,function(a){fermerFenetre();if(a==="encore")lancer(relaxDef());else montrer("accueil");},"menu");return;}
+      '<button class="bouton" data-a="menu" type="button" style="justify-content:center">Jeu libre</button></div>';
+    ouvrirFenetre(hr,function(a){fermerFenetre();if(a==="encore")lancer(relaxDef());else ouvrirLibre();},"menu");return;}
   var ou=d.mode==="campagne"?'<span>Monde '+(d.w+1)+'</span><i>·</i><span>'+nomNiveau(d.w,d.i)+'</span>':d.mode==="jour"?'<span>Défi du jour</span>':
     d.mode==="semaine"?'<span>Défi de la semaine</span>':d.mode==="sansfin"?'<span>Sans fin</span><i>·</i><span>Étape '+d.etape+'</span>':'<span>Jeu libre</span>';
   var html='<div class="vic-ou">'+ou+'</div><div class="gros-et">'+[0,1,2].map(function(k){return k<e?SVG_ET:SVG_ET_OFF;}).join("")+'</div><h3>'+titre+'</h3>'+(record||J.xp?'<div class="vic-gains">'+(record?'<span class="nouveau">Nouveau record</span>':"")+xpTxt+'</div>':"")+
@@ -2482,13 +2497,13 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
   if(d.mode==="jour"||d.mode==="semaine")html+='<button class="bouton principal" data-a="partager" type="button"><span>Partager mon résultat</span></button>';
   if((d.mode==="jour"||d.mode==="semaine"||d.mode==="sansfin")&&enLigne()&&!PROG.classementOff)html+=PROG.compte||PROG.clAccord?'<button class="bouton" data-a="classement" type="button" style="justify-content:center">Voir le classement</button>':
     '<button class="bouton" data-a="rejoindre" type="button" style="justify-content:center">Apparaître au classement</button><p class="cl-accord">Votre pseudo et vos scores, rien d’autre.</p>';
-  html+='<div class="rangee2"><button class="bouton" data-a="rejouer" type="button">Rejouer</button><button class="bouton" data-a="menu" type="button">'+(d.mode==="campagne"?"Niveaux":"Accueil")+'</button></div>'+
+  html+='<div class="rangee2"><button class="bouton" data-a="rejouer" type="button">Rejouer</button><button class="bouton" data-a="menu" type="button">'+(d.mode==="campagne"?"Niveaux":d.mode==="libre"||d.mode==="sansfin"?"Jeu libre":"Accueil")+'</button></div>'+
     (J.hist.length&&!defiClasse()?'<button class="vic-lien" data-a="revoir" type="button">Revoir ma partie</button>':"")+'</div>';
   ouvrirFenetre(html,function(a){if(a==="partager"){partager(e,n,temps);return;}if(a==="classement"){fermerFenetre();ouvrirClassement(d.mode,"accueil");return;}
     if(a==="rejoindre"){fermerFenetre();rejoindreClassement(d.mode);return;}fermerFenetre();if(a==="revoir"){revoir(e,n,temps);return;}
     if(a==="etape"){var k=d.etape+1;if(k>5&&!complet())ouvrirBoutique("libre");else lancer(sansFinDef(k));return;}if(a==="experts"){lancer(niveauDef(d.w,experts));return;}if(a==="suivant"){if(mondePaye(suiv.w))ouvrirBoutique("monde");else lancer(niveauDef(suiv.w,suiv.i));}
     else if(a==="encore")lancer(libreDef(d.n,d.taille));else if(a==="rejouer")lancer(d.mode==="libre"?libreDef(d.n,d.taille):d.mode==="sansfin"?sansFinDef(d.etape):d);
-    else if(d.mode==="campagne")ouvrirParcours();else montrer("accueil");},"menu");
+    else if(d.mode==="campagne")ouvrirParcours();else if(d.mode==="libre"||d.mode==="sansfin")ouvrirLibre();else montrer("accueil");},"menu");
   document.querySelectorAll("#fenetre .gros-et svg").forEach(function(s,k){setTimeout(function(){s.classList.add("vu");if(k<e)sonEtoile(k);},250+k*260);});}
 // Partager le défi du jour, comme on partage une grille de mots : un résumé sans aucune donnée personnelle
 // Une étoile dessinée sur le canvas de la carte (pleine = gagnée, creuse = manquée)
@@ -2761,31 +2776,37 @@ var SVG_RESERVE='<svg class="cad" viewBox="0 0 24 24">'+CAD+'</svg>';
 function carteReserve(lignes,titre){return '<div class="reserve"><div class="reserve-tete">'+SVG_RESERVE+'<span>'+(titre||"Avec les 9 orbites · jeu complet")+'</span></div>'+
   lignes.map(function(l){return '<button class="reserve-ligne" data-a="'+l[0]+'" type="button"><b>'+l[1]+'</b><small>'+l[2]+'</small></button>';}).join("")+
   '<button class="bouton principal" data-a="acheter" type="button"><span>Débloquer</span>'+(PRIX?'<span class="droite">'+PRIX+'</span>':"")+'</button></div>';}
-document.getElementById("btnLibre").addEventListener("click",function(){audio();sonClic();fenetreLibre(PROG.options.tailleLibre||3);});
-function fenetreLibre(t){var ouv=complet(),h='<h3>Jeu libre</h3>';
+document.getElementById("btnLibre").addEventListener("click",function(){audio();sonClic();ouvrirLibre();});
+// le jeu libre est un écran à part, dans le menu du bas (le client, le 16/10/2026 : « pas une fenêtre par-dessus les autres, un
+// onglet avec les différents modes ») : la taille du cube en tête, puis les modes en groupes, comme les options
+function ouvrirLibre(){rendreLibre(PROG.options.tailleLibre||3);if(ECRAN!=="libre")montrer("libre");}
+function rendreLibre(t){var ouv=complet(),h='';
   // la taille du cube : 2×2 (trois fois deux orbites), 3×3, 4×4 (trois fois quatre) ; le 4×4 avec le jeu complet
   h+='<div class="segment tailles" role="tablist" aria-label="Taille du cube">'+[2,3,4].map(function(x){return '<button type="button" role="tab" aria-selected="'+(x===t)+'" class="'+(x===t?"on":"")+'" data-a="t'+x+'"><span class="notrad">'+x+'×'+x+'</span>'+(tailleOuverte(x)?"":SVG_RESERVE)+'</button>';}).join("")+'</div>';
   function ligne(l){var m=PROG.stats.meilleur[t===3?l.n:"t"+t+"-"+l.n];return '<button class="bouton" data-a="'+l.n+'" type="button"><span>'+l.nom+' · '+l.n+' coups</span><span class="droite">'+(m?"record "+fmt(m.temps):ouv||t!==3?"":orbitesLibres().length+" orbites")+'</span></button>';}
-  if(t===2)h+='<p>Six orbites, 24 pièces : le cube 2×2, pour s’échauffer.</p><div class="menu">'+LIBRES_T[2].map(ligne).join("");
-  else if(t===4)h+=ouv?'<p>Douze orbites, 96 pièces : le cube 4×4, le grand défi.</p><div class="menu">'+LIBRES_T[4].map(ligne).join(""):
-    '<p>Douze orbites, 96 pièces : le cube 4×4, le grand défi.</p><div class="menu">'+carteReserve([["acheter","Le cube 4×4","Quatre orbites par famille, quatre niveaux de difficulté"]],"Avec le jeu complet");
-  else if(ouv)h+='<p>Les neuf orbites, un mélange au hasard, le chrono tourne.</p><div class="menu">'+LIBRES.map(ligne).join("")+
-    '<button class="bouton" data-a="relax" type="button"><span>Relax · sans chrono</span><span class="droite">8 coups</span></button>'+
-    '<button class="bouton or" data-a="sansfin" type="button"><span>Sans fin</span><span class="droite">'+(PROG.stats.sansFin?"record étape "+PROG.stats.sansFin:"nouveau")+'</span></button>';
-  else h+='<p>Un mélange au hasard, le chrono tourne.</p><div class="menu">'+LIBRES.filter(function(l){return libreOuvert(l.n);}).map(ligne).join("")+
+  function groupe(titre,corps){return '<div class="groupe lib-groupe"><h4>'+titre+'</h4><div class="menu">'+corps+'</div></div>';}
+  if(t===2)h+='<p class="lib-intro">Six orbites, 24 pièces : le cube 2×2, pour s’échauffer.</p>'+groupe("Contre la montre",LIBRES_T[2].map(ligne).join(""));
+  else if(t===4)h+='<p class="lib-intro">Douze orbites, 96 pièces : le cube 4×4, le grand défi.</p>'+(ouv?groupe("Contre la montre",LIBRES_T[4].map(ligne).join("")):
+    carteReserve([["acheter","Le cube 4×4","Quatre orbites par famille, quatre niveaux de difficulté"]],"Avec le jeu complet"));
+  else if(ouv)h+='<p class="lib-intro">Les neuf orbites, un mélange au hasard, le chrono tourne.</p>'+groupe("Contre la montre",LIBRES.map(ligne).join(""))+
+    groupe("Autres modes",'<button class="bouton or" data-a="sansfin" type="button"><span>Sans fin</span><span class="droite">'+(PROG.stats.sansFin?"record étape "+PROG.stats.sansFin:"nouveau")+'</span></button>'+
+      '<button class="bouton" data-a="relax" type="button"><span>Relax · sans chrono</span><span class="droite">8 coups</span></button>');
+  else h+='<p class="lib-intro">Un mélange au hasard, le chrono tourne.</p>'+groupe("Contre la montre",LIBRES.filter(function(l){return libreOuvert(l.n);}).map(ligne).join(""))+
     carteReserve([["10","Moyen, difficile, expert","10, 15 et 25 coups sur les neuf orbites"],["sansfin","Sans fin","Un coup de plus à chaque étape : jusqu’où irez-vous ?"],["relax","Relax","Sans chrono ni compteur, pour le plaisir de tourner"]]);
-  ouvrirFenetre(h+'<button class="bouton" data-a="x" type="button" style="justify-content:center;color:var(--pale)">Fermer</button></div>',function(a){
-    if(a&&a.charAt(0)==="t"){sonClic();PROG.options.tailleLibre=+a.slice(1);sauver();fenetreLibre(+a.slice(1));return;}
-    fermerFenetre();
-    if(a==="acheter"){ouvrirBoutique("libre");return;}
-    if(t!==3){if(a&&a!=="x"){if(tailleOuverte(t))lancer(libreDef(+a,t));else ouvrirBoutique("libre");}return;}
-    if(a==="sansfin"){if(ouv)lancer(sansFinDef(1));else ouvrirBoutique("libre");return;}if(a==="relax"){if(ouv)lancer(relaxDef());else ouvrirBoutique("libre");return;}if(a&&a!=="x"){if(libreOuvert(+a))lancer(libreDef(+a));else ouvrirBoutique("libre");}},"x");}
+  var c=document.getElementById("libreCorps");c.innerHTML=h;c.dataset.t=t;}
+document.getElementById("libreCorps").addEventListener("click",function(e){var b=e.target.closest("[data-a]");if(!b)return;var a=b.getAttribute("data-a"),t=+this.dataset.t||3,ouv=complet();
+  if(a.charAt(0)==="t"){sonClic();PROG.options.tailleLibre=+a.slice(1);sauver();rendreLibre(+a.slice(1));return;}
+  sonClic();
+  if(a==="acheter"){ouvrirBoutique("libre");return;}
+  if(t!==3){if(tailleOuverte(t))lancer(libreDef(+a,t));else ouvrirBoutique("libre");return;}
+  if(a==="sansfin"){if(ouv)lancer(sansFinDef(1));else ouvrirBoutique("libre");return;}if(a==="relax"){if(ouv)lancer(relaxDef());else ouvrirBoutique("libre");return;}
+  if(libreOuvert(+a))lancer(libreDef(+a));else ouvrirBoutique("libre");});
 document.getElementById("btnSucces").addEventListener("click",function(){sonClic();if(ECRAN!=="succes")montrer("succes");});
 document.getElementById("btnAccueilNav").addEventListener("click",function(){sonClic();if(ECRAN!=="accueil")montrer("accueil",-1);});
 // la capsule du bas : visible sur les écrans de navigation, l'écran ouvert en pilule (Défis = Aujourd'hui et Profil)
-var NAV_ECRANS={accueil:1,joueur:1,succes:1,boutique:1};
+var NAV_ECRANS={accueil:1,joueur:1,succes:1,boutique:1,libre:1};
 function majNavBas(id){var nb=document.getElementById("navbas"),vu=!!NAV_ECRANS[id];nb.hidden=!vu;document.body.classList.toggle("avec-nav",vu);if(!vu)return;
-  var actif=id==="accueil"?"btnAccueilNav":id==="succes"?"btnSucces":id==="boutique"?"btnBoutique":JOUEUR.o==="classement"?"btnClassementAcc":"btnJour";
+  var actif=id==="accueil"?"btnAccueilNav":id==="succes"?"btnSucces":id==="libre"?"btnLibre":id==="boutique"?"btnBoutique":JOUEUR.o==="classement"?"btnClassementAcc":"btnJour";
   nb.querySelectorAll(".item").forEach(function(b){var on=b.id===actif;b.classList.toggle("actif",on);if(on)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current");});}
 document.getElementById("btnSuccesStore").addEventListener("click",function(){sonClic();NATIF.succesAfficher();});
 document.getElementById("btnOptions").addEventListener("click",function(){sonClic();montrer("options");});

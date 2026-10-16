@@ -100,11 +100,12 @@ async function resoudre(p) {
     // jeu libre : « Facile » ouvert sur les cinq orbites gratuites, le reste dans la carte « Avec le jeu complet »
     await p.tap("#parcours [data-retour]"); await p.waitForTimeout(400);
     await p.tap("#btnLibre"); await p.waitForTimeout(300);
-    const lib = await p.evaluate(() => { const f = document.querySelector("#fenetre"); const fa = f.querySelector('[data-a="5"]'); return { facile: !!fa && !fa.closest(".reserve") && fa.textContent.includes("5 orbites"), carte: !!f.querySelector(".reserve") && f.querySelector(".reserve").textContent.includes("9 orbites"), reserves: [...f.querySelectorAll(".reserve [data-a]")].map((b) => b.dataset.a).join(",") }; });
+    const lib = await p.evaluate(() => { const f = document.querySelector("#libre"); const fa = f.querySelector('[data-a="5"]'); return { facile: !!fa && !fa.closest(".reserve") && fa.textContent.includes("5 orbites"), carte: !!f.querySelector(".reserve") && f.querySelector(".reserve").textContent.includes("9 orbites"), reserves: [...f.querySelectorAll(".reserve [data-a]")].map((b) => b.dataset.a).join(",") }; });
     lib.facile && lib.carte && lib.reserves === "10,sansfin,relax,acheter" ? ok("jeu libre : Facile sur 5 orbites, le reste réservé et annoncé") : faute("jeu libre sans achat : " + JSON.stringify(lib));
-    await p.tap('#fenetre [data-a="10"]'); await p.waitForTimeout(400);
+    await p.tap('#libre [data-a="10"]'); await p.waitForTimeout(400);
     (await p.textContent("#fenetre")).includes("9 orbites") ? ok("jeu libre « Moyen » réservé, et la boutique met en avant les 9 orbites") : faute("« Moyen » n'est pas réservé");
     await p.tap('#fenetre [data-a="x"]'); await p.waitForTimeout(300);
+    (await p.isVisible("#libre.actif")) && (await p.getAttribute("#btnLibre", "aria-current")) === "page" ? ok("jeu libre : un écran à part, ouvert dans le menu du bas") : faute("jeu libre : pas d'écran à part");
     // défis : celui du jour est gratuit, celui de la semaine réservé au jeu complet
     await p.tap("#btnJour"); await p.waitForTimeout(500);
     const sem = await p.evaluate(() => { const f = document.querySelector("#joueur"); return f.classList.contains("actif") && f.querySelectorAll('.df-reserve .obj.verrou[data-a="acheter"]').length === 4 && !f.querySelector('.obj[data-a="jour"]').classList.contains("verrou"); });
@@ -226,7 +227,7 @@ async function resoudre(p) {
     // la jeu libre est réservée au jeu complet : on débloque pour tester les gestes sur les neuf cercles
     await p.evaluate(() => { const k = "orbicube-v1", v = JSON.parse(localStorage.getItem(k) || "{}"); v.achat = true; localStorage.setItem(k, JSON.stringify(v)); });
     await p.reload(); await p.waitForTimeout(1200);
-    await p.click("#btnLibre"); await p.waitForTimeout(300); await p.click('#fenetre [data-a="5"]'); await p.waitForTimeout(2600);
+    await p.click("#btnLibre"); await p.waitForTimeout(300); await p.click('#libre [data-a="5"]'); await p.waitForTimeout(2600);
     const bx = await (await p.$("#plateau")).boundingBox(), E = bx.width / 3.2, ox = bx.x + bx.width / 2, oy = bx.y + bx.width / 2 + 0.133 * E;
     const C = [0, 0.5336], R = 0.7296,   // U : le petit cercle de la famille du haut (il borde sa face)
     pt = (a) => [ox + (C[0] + R * Math.cos(a)) * E, oy - (C[1] + R * Math.sin(a)) * E];
@@ -320,9 +321,9 @@ async function resoudre(p) {
     const p = await ctx.newPage(); p.setDefaultTimeout(8000); const err = []; p.on("pageerror", (e) => err.push(e.message));
     await p.goto(URL + "?capture"); await p.waitForTimeout(1500);
     const gagner = async () => { for (const m of await p.evaluate(() => window.__orbicube.solution())) { await p.evaluate((x) => window.__orbicube.jouer(x), m); await p.waitForTimeout(450); } await p.waitForTimeout(2600); };
-    await p.tap("#btnLibre"); await p.waitForTimeout(400); await p.tap('#fenetre [data-a="t4"]'); await p.waitForTimeout(400);
-    (await p.$('#fenetre .reserve [data-a="acheter"]')) && !(await p.$('#fenetre .menu > [data-a="8"]')) ? ok("4×4 réservé au jeu complet") : faute("le 4×4 n'est pas réservé");
-    await p.tap('#fenetre [data-a="t2"]'); await p.waitForTimeout(400); await p.tap('#fenetre [data-a="3"]'); await p.waitForTimeout(2600); await p.tap("#bulleOk").catch(() => {});
+    await p.tap("#btnLibre"); await p.waitForTimeout(400); await p.tap('#libre [data-a="t4"]'); await p.waitForTimeout(400);
+    (await p.$('#libre .reserve [data-a="acheter"]')) && !(await p.$('#libre .menu > [data-a="8"]')) ? ok("4×4 réservé au jeu complet") : faute("le 4×4 n'est pas réservé");
+    await p.tap('#libre [data-a="t2"]'); await p.waitForTimeout(400); await p.tap('#libre [data-a="3"]'); await p.waitForTimeout(2600); await p.tap("#bulleOk").catch(() => {});
     const t2 = await p.evaluate(() => [window.__orbicube.taille(), document.getElementById("jTitre").textContent]);
     t2[0] === 2 && t2[1] === "Jeu libre 2×2" ? ok("2×2 gratuit : six orbites, 24 pièces") : faute("2×2 : " + JSON.stringify(t2));
     await gagner();
@@ -430,10 +431,10 @@ async function resoudre(p) {
     await p.waitForTimeout(2200); await mesurer("victoire"); await go('#fenetre [data-a="suivant"]', 2000);
     await go("#btnIndice", 400); await mesurer("indice"); await go('#fenetre [data-a="oui"]'); await go("#btnPause"); await go('#fenetre [data-a="niveaux"]', 600); await mesurer("niveaux");
     await mesurer("parcours"); await go(".parc-sect.paye"); await mesurer("boutique"); await fermer();
-    await go("#parcours [data-retour]"); await go("#btnLibre"); await mesurer("jeu libre"); await go('#fenetre [data-a="10"]'); await mesurer("boutique jeu libre moyen"); await fermer();
+    await go("#parcours [data-retour]"); await go("#btnLibre"); await mesurer("jeu libre"); await go('#libre [data-a="10"]'); await mesurer("boutique jeu libre moyen"); await fermer();
     await go("#btnJour", 900); await mesurer("défis"); await go('#pJour .df-reserve [data-a="acheter"]', 600); await mesurer("boutique défi de la semaine"); await fermer(); await go("#joueur [data-retour]");
     await go("#btnClassementAcc", 900); await mesurer("classement depuis l'accueil"); await go("#joueur [data-retour]");
-    await go("#btnLibre"); await go('#fenetre [data-a="relax"]'); await mesurer("boutique jeu libre"); await fermer();
+    await go("#btnLibre"); await go('#libre [data-a="relax"]'); await mesurer("boutique jeu libre"); await fermer(); await go("#libre [data-retour]");
     await go("#btnRang"); await mesurer("profil"); await go("#btnPseudo"); await mesurer("pseudo"); await fermer();
     await go("#btnRecuperer"); await mesurer("code de récupération"); await fermer(); await go("#btnSupprimerCompte"); await mesurer("supprimer"); await fermer();
     await go('#jOnglets [data-o="classement"]', 900); await mesurer("classement");
