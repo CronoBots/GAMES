@@ -1,6 +1,6 @@
 // Version web (PWA) : tout le jeu est mis en cache pour se jouer hors ligne.
 // Incrémenter V à chaque publication, sinon les joueurs gardent l'ancienne version.
-var V = "orbicube-v183";
+var V = "orbicube-v184";
 // les médias (images, polices, musique) changent rarement : leur cache survit aux publications, on ne les retélécharge
 // pas à chaque version (audit du 16/10/2026 : 5 Mo à chaque mise à jour). Changer MEDIAS quand l'un d'eux change.
 var MEDIAS = "orbicube-medias-2";

@@ -218,7 +218,10 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   disque (`#medaillon` dépouillé, taille 0,9 E entre 56 et 124 px, 14 px d'air), et **le bouton de campagne est le bouton lecture au
   cœur du plateau** (`#btnJouer.jouer-rond`, rayon 0,23 E : les petits cercles passent à 0,196 E du centre, les pastilles à 0,298 E ;
   onde par l'ombre, qui ne déborde pas) ; dessous, une ligne discrète « CONTINUER · Niveau 22 · Face cachée ★ 52 » et une fine
-  barre (`#accProg`, qui lance aussi). `Logo.demarrer` pose cube, plateau et bouton. Le gros bouton « Continuer » n'existe plus.
+  barre (`#accProg`, qui lance aussi). `Logo.demarrer` pose cube, plateau et bouton. Le gros bouton « Continuer » n'existe plus. Le titre reste en haut, la ligne
+  contre le menu, et la boîte du logo prend toute la place libre où cube et plateau se centrent. **En jeu**, le cube se pose
+  au-dessus du plus grand cercle de la famille du haut, jouable ou non (`redimJeu` : depuis l'inversion des cercles, viser le cercle
+  jouable le faisait descendre dans les premiers mondes, où seul U, le petit, est jouable).
   Avant : **Le cube au sommet de l'orbite du haut** (le cube au
   centre était trop petit et touchait les pastilles) : un seul visuel, le plateau prend la place libre et le cube se pose
   sur le sommet du cercle du haut (1,617 unité au-dessus du centre), dans un **médaillon** (`#medaillon` : disque sombre

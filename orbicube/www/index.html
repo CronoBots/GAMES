@@ -1056,7 +1056,11 @@ body{font-variant-numeric:tabular-nums}
 .capsule .point.nb{top:-8px;right:-12px}
 /* le contenu défile derrière la capsule : chaque écran lui laisse sa place */
 body.avec-nav #accueil .defile,body.avec-nav .ecran:not(#parcours)>.tete+.defile{padding-bottom:calc(84px + var(--navbas))}
+/* accueil : le titre en haut, la ligne de progression contre le menu, le cube et le plateau centrés dans la place qui reste
+   (la boîte du logo prend tout l'espace libre ; Logo.demarrer y centre le cube et le plateau) */
+body.avec-nav #accueil .defile>:first-child{margin-top:0}
 body.avec-nav #accueil .defile>:last-child{margin-bottom:0}
+body.avec-nav #accueil .logoboite{flex:1 1 0;max-height:none}
 /* ═══ Accueil allégé (le client, le 16/10/2026 : « séparer le cube des orbites comme en jeu », « le bouton de campagne dans
    les orbites », « texte de progression discret en dessous ») : le cube flotte au-dessus du plateau, sans disque ; le bouton
    lecture occupe le vide du centre, là où les trois petits cercles se croisent (aucune pastille n'y passe) ; une ligne fine
@@ -2318,7 +2322,9 @@ function redimJeu(){var jeu=document.getElementById("jeu"),z=document.getElement
   // la famille du haut (les cercles interdits ne sont qu'un pointillé à peine visible) ; le plateau ne bouge pas. Sans
   // place pour ça (petits écrans), il reste centré entre le titre et le cercle.
   mini.style.transform="";if(PROG.options.cube&&getComputedStyle(jeu).display!=="grid"){var h=jeu.querySelector(".jtete").getBoundingClientRect().bottom,
-    rh=RAY[RAY.length-1];if(JeuP.permis){rh=0;for(var LH=-DEMI;LH<=DEMI;LH++)if(JeuP.permis["1,"+LH])rh=Math.max(rh,RAY[DEMI-LH]);if(!rh)rh=RAY[RAY.length-1];}
+    // le cube se pose au-dessus du plus grand cercle de la famille du haut, jouable ou non (il est dessiné) : depuis que U est sur
+    // le PETIT cercle, viser le cercle jouable le faisait descendre dans le plateau dans les premiers mondes (le client)
+    rh=RAY[RAY.length-1];
     // position du canevas SANS sa transformation : pendant le mélange (.brouille) il est réduit et tourné, et sa boîte
     // englobante faussait le calcul (le cube restait trop haut une fois le plateau dévoilé)
     var c=z.getBoundingClientRect().top+JeuP.cv.offsetTop+JeuP.OY-(ECART+rh)*JeuP.ECH,m=mini.getBoundingClientRect(),dy=Math.max((h+c)/2-(m.top+m.height/2),c-28-m.bottom);
