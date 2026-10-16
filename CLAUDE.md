@@ -214,7 +214,12 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 - **Accueil** (le client, le 13/10/2026) : titre « ORBICUBE » en capitales fines très espacées (Jost 300,
   `.marque`, lueur d'accent, sans ellipse). **Jost remplace Unbounded partout** (`--f-titre`, graisses 600 et 700 embarquées,
   aussi dans `confidentialite.html` et `outils/captures.js`) ; Unbounded est retirée du dépôt. **Deux familles seulement depuis le 16/10/2026** (passe de design) : Jost pour les titres, les chiffres et les
-  étiquettes en capitales (`--f-chiffre` = Jost ; JetBrains Mono est retirée), Instrument Sans pour le texte ; chiffres tabulaires partout. **Le cube au sommet de l'orbite du haut** (le cube au
+  étiquettes en capitales (`--f-chiffre` = Jost ; JetBrains Mono est retirée), Instrument Sans pour le texte ; chiffres tabulaires partout. **Depuis le 16/10/2026, le cube est séparé des orbites, comme en jeu** (le client) : il flotte au-dessus du plateau, sans
+  disque (`#medaillon` dépouillé, taille 0,9 E entre 56 et 124 px, 14 px d'air), et **le bouton de campagne est le bouton lecture au
+  cœur du plateau** (`#btnJouer.jouer-rond`, rayon 0,23 E : les petits cercles passent à 0,196 E du centre, les pastilles à 0,298 E ;
+  onde par l'ombre, qui ne déborde pas) ; dessous, une ligne discrète « CONTINUER · Niveau 22 · Face cachée ★ 52 » et une fine
+  barre (`#accProg`, qui lance aussi). `Logo.demarrer` pose cube, plateau et bouton. Le gros bouton « Continuer » n'existe plus.
+  Avant : **Le cube au sommet de l'orbite du haut** (le cube au
   centre était trop petit et touchait les pastilles) : un seul visuel, le plateau prend la place libre et le cube se pose
   sur le sommet du cercle du haut (1,617 unité au-dessus du centre), dans un **médaillon** (`#medaillon` : disque sombre
   qui masque le trait, fin anneau d'accent, halo) pour ne pas le confondre avec une pièce du plateau. Tailles en `ECH` :

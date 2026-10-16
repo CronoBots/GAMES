@@ -505,7 +505,7 @@ body{background:
 #accueil .bouton.principal{min-height:64px;padding:0 24px 0 10px;gap:14px}
 #accueil .bouton.principal small{opacity:.9}
 #accueil .bouton.principal svg{width:44px;height:44px;padding:13px 12px 13px 14px;background:rgba(255,255,255,.2)}
-#accueil #jouerTxt{font-size:19px;letter-spacing:.08em}
+
 #accueil .bouton.principal .deuxl{flex:1}
 #accueil .bouton.principal{padding-top:8px;padding-bottom:8px}
 .prog-camp{display:block;height:4px;margin-top:7px;border-radius:4px;background:rgba(4,10,40,.32);box-shadow:inset 0 1px 1px rgba(0,0,0,.25);overflow:hidden;pointer-events:none}
@@ -1056,23 +1056,35 @@ body{font-variant-numeric:tabular-nums}
 .capsule .point.nb{top:-8px;right:-12px}
 /* le contenu défile derrière la capsule : chaque écran lui laisse sa place */
 body.avec-nav #accueil .defile,body.avec-nav .ecran:not(#parcours)>.tete+.defile{padding-bottom:calc(84px + var(--navbas))}
-/* « Continuer » au style de la capsule du bas (le client, le 16/10/2026) : même largeur, même verre sombre plein, même filet
-   et même ombre ; le bouton lecture prend la pilule teintée de l'onglet ouvert. Il se pose juste au-dessus de la capsule :
-   les deux se lisent comme un seul bloc de navigation. */
-#accueil .menu{width:min(520px,calc(100vw - 32px));max-width:none}
 body.avec-nav #accueil .defile>:last-child{margin-bottom:0}
-#accueil #btnJouer{width:100%;min-height:68px;padding:8px 22px 8px 9px;gap:14px;border-radius:999px;color:#fff;
-  background:rgba(20,20,34,.92);border:1px solid rgba(255,255,255,.09);box-shadow:0 12px 30px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06)}
-#accueil #btnJouer::before,#accueil #btnJouer::after{display:none}
-#accueil #btnJouer>svg{width:50px;height:50px;padding:15px 14px 15px 17px;border-radius:999px;color:rgb(var(--acc));
-  background:rgba(var(--acc),.24);box-shadow:inset 0 0 0 1px rgba(var(--acc),.38);flex:none}
-#accueil #btnJouer #jouerTxt{font-family:var(--f-titre);font-weight:600;font-size:19px;letter-spacing:.04em}
-#accueil #btnJouer small{color:var(--pale);opacity:1}
-#accueil #btnJouer .prog-camp{background:rgba(255,255,255,.08);box-shadow:none}
-#accueil #btnJouer .prog-camp i{background:rgb(var(--acc));box-shadow:0 0 8px rgba(var(--acc),.6)}
-#accueil #btnJouer #jouerSous{color:var(--encre)}
-#accueil #btnJouer:active{transform:scale(.97)}
-@media (max-height:700px){#accueil #btnJouer{min-height:58px}#accueil #btnJouer>svg{width:42px;height:42px;padding:12px 11px 12px 14px}}
+/* ═══ Accueil allégé (le client, le 16/10/2026 : « séparer le cube des orbites comme en jeu », « le bouton de campagne dans
+   les orbites », « texte de progression discret en dessous ») : le cube flotte au-dessus du plateau, sans disque ; le bouton
+   lecture occupe le vide du centre, là où les trois petits cercles se croisent (aucune pastille n'y passe) ; une ligne fine
+   dit où l'on en est. Position et taille posées par Logo.demarrer. */
+.medaillon{background:none;border:0;box-shadow:none}
+.jouer-rond{position:absolute;z-index:2;display:grid;place-items:center;padding:0;border-radius:50%;cursor:pointer;color:#fff;
+  background:radial-gradient(circle at 50% 28%,rgb(var(--acc)) 0%,rgba(var(--acc),.78) 55%,rgba(var(--acc),.6) 100%),#0d1024;
+  border:1px solid rgba(255,255,255,.35);box-shadow:0 0 0 4px rgba(10,12,28,.85),0 0 0 5px rgba(var(--acc),.45),0 0 26px rgba(var(--acc),.55),0 10px 22px rgba(0,0,0,.6);
+  transition:transform .12s ease}
+.jouer-rond svg{width:48%;height:48%;margin-left:11%;fill:currentColor;stroke:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+/* l'onde qui invite à jouer passe par l'ombre (elle ne prend pas de place et ne déborde pas) */
+.jouer-rond{animation:jouerOnde 2.6s ease-out infinite}
+@keyframes jouerOnde{0%{box-shadow:0 0 0 4px rgba(10,12,28,.85),0 0 0 5px rgba(var(--acc),.45),0 0 0 5px rgba(var(--acc),.55),0 0 26px rgba(var(--acc),.55),0 10px 22px rgba(0,0,0,.6)}
+  70%,100%{box-shadow:0 0 0 4px rgba(10,12,28,.85),0 0 0 5px rgba(var(--acc),.45),0 0 0 22px rgba(var(--acc),0),0 0 26px rgba(var(--acc),.55),0 10px 22px rgba(0,0,0,.6)}}
+.jouer-rond:active{transform:scale(.93)}
+.jouer-rond:focus-visible{outline:2px solid rgb(var(--acc));outline-offset:4px}
+@media (prefers-reduced-motion:reduce){.jouer-rond{animation:none}}
+.acc-prog{display:grid;justify-items:center;gap:7px;padding:4px 12px;background:none;border:0;cursor:pointer;color:var(--pale);font:inherit}
+.ap-ligne{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:4px 8px;font-size:13.5px;line-height:1.3}
+.ap-ligne b,#accueil .ap-ligne #jouerTxt{font:600 12px var(--f-titre);letter-spacing:.16em;text-transform:uppercase;color:rgb(var(--acc))}
+.ap-ligne small{font-size:13.5px;color:var(--pale)}
+.ap-ligne small:empty,.ap-ligne small:empty+.ap-et{display:none}
+.ap-sep{opacity:.5}
+.ap-et{display:inline-flex;align-items:center;gap:4px;color:var(--encre);font-family:var(--f-chiffre);font-weight:600}
+.ap-et:empty{display:none}
+.ap-et svg{width:13px;height:13px;fill:#ffcf4a;stroke:none}
+.acc-prog .prog-camp{width:150px;height:3px;margin:0;background:rgba(255,255,255,.1);box-shadow:none}
+.acc-prog .prog-camp i{background:rgb(var(--acc));box-shadow:0 0 6px rgba(var(--acc),.6)}
 </style>
 </head>
 <body>
@@ -1114,14 +1126,12 @@ body.avec-nav #accueil .defile>:last-child{margin-bottom:0}
       <div class="entete">
         <h1 class="marque notrad">OrbiCube</h1>
       </div>
-      <div class="logoboite"><div class="logo-scene"><div class="medaillon" id="medaillon"><canvas id="logoCube" aria-hidden="true"></canvas></div><canvas id="logo" aria-hidden="true"></canvas></div></div>
+      <div class="logoboite"><div class="logo-scene"><div class="medaillon" id="medaillon"><canvas id="logoCube" aria-hidden="true"></canvas></div><canvas id="logo" aria-hidden="true"></canvas><button class="jouer-rond" id="btnJouer" type="button" aria-labelledby="jouerTxt jouerMonde"><svg viewBox="0 0 24 24"><path d="M8 5.5l11 6.5-11 6.5z"/></svg></button></div></div>
       <div style="display:grid;justify-items:center;gap:10px">
-        <div class="menu cascade">
-          <button class="bouton principal" id="btnJouer" type="button">
-            <svg viewBox="0 0 24 24"><path d="M7 4l12 8-12 8z" fill="currentColor" stroke="none"/></svg>
-            <span class="deuxl"><span id="jouerTxt">Jouer</span><small id="jouerMonde"></small><span class="prog-camp" aria-hidden="true" hidden><i id="jouerProg"></i></span></span><span class="droite notrad" id="jouerSous"></span></button>
-
-        </div>
+        <button class="acc-prog cascade" id="accProg" type="button" tabindex="-1" aria-hidden="true">
+          <span class="ap-ligne"><b id="jouerTxt">Jouer</b><span class="ap-sep" aria-hidden="true">·</span><small id="jouerMonde"></small><span class="ap-et notrad" id="jouerSous"></span></span>
+          <span class="prog-camp" aria-hidden="true" hidden><i id="jouerProg"></i></span>
+        </button>
         
       </div>
     </div>
@@ -2012,11 +2022,17 @@ document.getElementById("logo").addEventListener("pointerdown",function(){if(Log
 // 0,116 unité sous le bord du canvas (OY = milieu + 0,133). Sa moitié haute dépasse : la scène lui garde cette place.
 // AIR : un espace au-dessus du médaillon, égal au vide que le bas du canvas laisse sous les orbites (0,117 unité)
 // plus la marge du menu, pour que l'emblème respire autant sous le titre qu'au-dessus du bouton
-Logo.demarrer=function(){var box=this.cv.parentNode.parentNode.getBoundingClientRect(),dep=MEDAILLON/2-.116,
-  orbit=Math.round(.96*Math.min((box.height-AIR)/(1+dep/3.2+.117/3.2),innerWidth*.92,400));if(orbit<=0)return;
-  this.dimension(orbit);var E=this.ECH,m=Math.round(E*MEDAILLON),haut=Math.round(E*dep),air=AIR+Math.round(E*.117),med=document.getElementById("medaillon");
-  this.cv.style.marginTop=(haut+air)+"px";med.style.width=med.style.height=m+"px";med.style.top="calc(50% - "+Math.round((orbit+haut+air)/2-air)+"px)";
-  logoCube.style.width=Math.round(E*CUBE_LOGO)+"px";
+Logo.demarrer=function(){var box=this.cv.parentNode.parentNode.getBoundingClientRect(),G=14;
+  // le cube au-dessus du plateau, séparé de ses orbites comme en jeu (le client, le 16/10/2026) : sa taille c = 0,9 E (64 à 124 px),
+  // puis G px d'air, puis le plateau, dont les cercles commencent à 0,116 E sous le haut du canevas
+  var E0=Math.min((box.height-AIR-G)/(3.2-.116+.9),innerWidth*.92/3.2,400/3.2),orbit=Math.round(.96*3.2*E0);if(orbit<=0)return;
+  this.dimension(orbit);var E=this.ECH,c=Math.round(Math.max(56,Math.min(124,E*.9))),med=document.getElementById("medaillon"),
+    m=Math.round(c+G-E*.116),haut=Math.round((orbit+m)/2);
+  this.cv.style.marginTop=m+"px";med.style.width=med.style.height=c+"px";med.style.top="calc(50% - "+haut+"px)";
+  logoCube.style.width=c+"px";
+  // le bouton lecture dans le vide du centre : les petits cercles y passent à 0,196 E, les pastilles à 0,298 E
+  var r=Math.round(Math.max(24,E*.23)),bj=document.getElementById("btnJouer");bj.style.width=bj.style.height=2*r+"px";
+  bj.style.left="calc(50% - "+r+"px)";bj.style.top="calc(50% - "+haut+"px + "+Math.round(m+this.OY-r)+"px)";
   if(!this.sol.length&&!this.pause)melangerLogo();dessinerLogoCube();};
 function etoilesTotal(){var t=0;Object.keys(PROG.niveaux).forEach(function(k){t+=PROG.niveaux[k].etoiles||0;});return t;}
 // le chemin d'abord (les dix premiers niveaux des mondes ouverts), puis les experts ouverts, puis la suite payante
@@ -2727,6 +2743,7 @@ document.getElementById("btnEffacer").addEventListener("click",function(){ouvrir
 /* ========== 15. AIDE ET ACCUEIL ========== */
 var AideP=new Plateau(document.getElementById("aideCanvas"));AideP.continu=true;AideP.lent=true;AideP.prochain=0;AideP.etape=0;Ticker.actifs.push(AideP);
 AideP.apres=function(now){if(this.occupe()||now<this.prochain)return;this.prochain=now+900;var noms=["U","U'","R","R'","F","F'","M","M'"];this.jouer(parNom(noms[this.etape%noms.length]),700);this.etape++;};
+document.getElementById("accProg").addEventListener("click",function(){document.getElementById("btnJouer").click();});
 document.getElementById("btnJouer").addEventListener("click",function(){audio();sonClic();if(!Object.keys(PROG.niveaux).length)lancer(niveauDef(0,0));else ouvrirParcours();});
 document.getElementById("btnJour").addEventListener("click",function(){audio();sonClic();ouvrirDefis();});
 // jeu libre (le client, le 14/10/2026 : « donner vraiment envie d'acheter ») : sans achat, « Facile » se joue sur les
