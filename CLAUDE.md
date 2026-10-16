@@ -117,7 +117,7 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   **Pour donner envie et comprendre** (le client, le 14/10/2026) : phrase d'accueil (gagner en jouant ou acheter), compteur de
   collection sur chaque onglet (« 4/8 »), fiche avec une phrase par style (`DESC_STYLE`) et, pour un style à gagner, sa barre de
   progression (`progresStyle`) ; badge « Nouveau » sur les styles gagnés pas encore vus (`PROG.stylesVus`, `nouveauxStyles`) et
-  point doré sur le rond Boutique de l'accueil ; prix barré « au lieu de » sur chaque pack et édition (`prixSomme`, calculé avec
+  point doré sur le rond Boutique de l'accueil ; « Valeur à l'unité » sur chaque pack et édition, jamais de prix barré (directive Omnibus, audit du 16/10/2026 ; `prixSomme`, calculé avec
   les prix du store, rien d'affiché si un prix manque) ; un style acheté seul est porté aussitôt ; ampoules expliquées ; pied
   de page rassurant (paiement par le store, restaurable). Le style
   porté est dans `PROG.options` et lu par `STY` (recalculé par `appliquerOptions`, un style reperdu retombe sur le premier) ;
@@ -155,7 +155,7 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   Collection, les trois packs puis les aides à acheter, compteur « n/3 », sans aperçu). **Offres groupées en grandes cartes**
   (le client : « pas bien présentées ») : l'intégrale montre ses deux parts (le jeu complet + tous les styles), la collection
   la vignette de ses onze styles, chacune avec son économie en pourcentage (`economie`, rien si un prix manque).
-  **Le pack soutien devient un don** (« Faire un don », section « Faire avancer Orbicube », en bas de l'onglet Packs : il
+  **Le pack soutien devient un pourboire** (« Soutenir le développeur » depuis l'audit du 16/10/2026 : Apple réserve le don aux organismes reconnus ; section « Faire avancer Orbicube », en bas de l'onglet Packs : il
   finance les optimisations ; même produit `orbicube_soutien`, même liseré doré). Compteurs sous les noms. **Sur la carte de la campagne**, le jeu complet se pose comme un monde entre le
   dernier monde gratuit et le premier payant (`.parc-jeu`, item `t:"j"` de `buildParcours`) ; il disparaît après l'achat.
   Le titre « Débloquez les 9 orbites » prend toute la largeur de la carte et ne se coupe jamais au milieu d'un mot
@@ -328,7 +328,9 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 - **Classement du jeu** (le client, le 14/10/2026 : un classement interne, pseudo « PlayerX » modifiable, stats visibles
   des autres, et il doit marcher sans Game Center) : serveur Supabase dans `orbicube/serveur/` (`LISEZMOI.md` : une
   fonction `orbicube`, trois tables à RLS fermé). Pas de compte : `PROG.compte` = identifiant, jeton du téléphone, code de
-  récupération (`ORBI-XXXX-XXXX-XXXX`, empreinte seule sur le serveur) et pseudo ; créé à la première victoire
+  récupération (`ORBI-XXXX-XXXX-XXXX`, empreinte seule sur le serveur) et pseudo ; créé **avec l'accord du joueur** (`PROG.clAccord`, bouton « Apparaître au classement » dans la victoire d'un défi ou carte de
+  l'onglet Classement ; changer de pseudo, afficher son code ou signaler le valent) ; dans l'app sans serveur, le classement est masqué (`body.sans-cl`) ;
+  « Masquer ce joueur » sur une fiche (`PROG.masques`, sur ce téléphone seulement) ; créé à la première victoire acceptée
   (`assurerCompte`) avec le « Player1234 » déjà affiché (`pseudoLocal`). Le code rend pseudo, progression (sauvegarde
   envoyée au plus une fois par minute, `sauverNuage`) et achats (RevenueCat `logIn` avec l'identifiant, `NATIF.identifier`) ;
   le saisir ailleurs change le jeton, l'ancien téléphone reçoit 401 « ailleurs » et se détache (`detache`). **Les scores des

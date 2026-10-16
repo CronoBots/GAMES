@@ -26,7 +26,7 @@ Ils changent : vérifiez-les sur les pages officielles au moment de vous inscrir
   un pseudo, un identifiant tiré au hasard et les scores (section 3 quinquies) : pas de bandeau de consentement
   (ni publicité ni suivi), mais une politique de confidentialité qui le dit et des questionnaires à jour (section 6).
 - **La boutique** (le client, le 13/10/2026) vend aussi, en option, des **packs de styles** (couleurs, formes
-  des pastilles, effets), deux éditions groupées, des **aides** et un **don** (« Faire un don », ex-pack soutien) : voir 3 quater. Les
+  des pastilles, effets), deux éditions groupées, des **aides** et un **pourboire** (« Soutenir le développeur », ex-pack soutien) : voir 3 quater. Les
   styles ne changent rien au jeu ; une partie se gagne aussi en jouant (étoiles, rang).
 - **Changer de modèle** ne demande aucun code : `www/config.js`.
   - `modele: "complet"` : tout est ouvert. Choisissez ce réglage pour vendre l'application payante
@@ -240,7 +240,7 @@ sont ceux de `PACKS` dans `www/index.html` ; les prix affichés en attendant le 
 | `orbicube_pack_effets` « Effets stellaires » | Non consommable | 1,99 € | `pack_effets` |
 | `orbicube_collection` « Collection complète » | Non consommable | 3,99 € | `pack_couleurs`, `pack_formes`, `pack_effets` |
 | `orbicube_integrale` « Édition intégrale » | Non consommable | 7,99 € | `complet`, `pack_couleurs`, `pack_formes`, `pack_effets` |
-| `orbicube_soutien` « Faire un don » | Non consommable | 2,99 € | `soutien` |
+| `orbicube_soutien` « Soutenir le développeur » | Non consommable | 2,99 € | `soutien` |
 | `orbicube_ampoules_10` « 10 aides » | **Consommable** | 0,99 € | aucun : le jeu crédite les aides |
 | `orbicube_ampoules_30` « 30 aides » | **Consommable** | 1,99 € | aucun |
 | `orbicube_style_<id>` : chaque style d'un pack, **à l'unité** (12 produits, voir ci-dessous) | Non consommable | 0,99 € | `style_<id>` |

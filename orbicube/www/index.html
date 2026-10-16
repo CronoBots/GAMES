@@ -965,6 +965,13 @@ button.obj:first-child{border-top:0}
 .mecene-titre{display:inline-block;margin-top:4px;font:600 11px var(--f-titre);letter-spacing:.14em;text-transform:uppercase;color:var(--or)}
 /* un écran caché n'anime rien (audit du 16/10/2026 : les animations des écrans masqués faisaient tomber la carte de 54 à 30 images/s) */
 .ecran:not(.actif),.ecran:not(.actif) *{animation-play-state:paused!important}
+/* classement : absent de l'app tant qu'il n'a pas de serveur ; carte pour le rejoindre ; joueur masqué */
+body.sans-cl #btnClassementAcc,body.sans-cl #jOnglets [data-o="classement"],body.sans-cl #grpCompte{display:none!important}
+.cl-rejoindre{display:grid;gap:10px;padding:18px;border-radius:18px;background:rgba(var(--acc),.08);border:1px solid rgba(var(--acc),.28);text-align:center}
+.cl-rejoindre b{font-family:var(--f-titre);font-size:17px;font-weight:600}
+.cl-rejoindre p{margin:0;font-size:13.5px;line-height:1.5;color:var(--pale)}
+.cl-accord{margin:-4px 0 2px;text-align:center;font-size:12.5px;color:var(--pale)}
+.cl-masque{font-weight:500;font-style:italic;color:var(--sourd)}
 </style>
 </head>
 <body>
@@ -1254,7 +1261,7 @@ var PACKS={
   effets:{produit:"orbicube_pack_effets",droit:"pack_effets",nom:"Effets stellaires",desc:"Traînée comète, orbites d’argent ou arc-en-ciel, feu d’artifice."},
   collection:{produit:"orbicube_collection",droits:["pack_couleurs","pack_formes","pack_effets"],nom:"Collection complète",desc:"Les trois packs de styles."},
   integrale:{produit:"orbicube_integrale",droits:["complet","pack_couleurs","pack_formes","pack_effets"],nom:"Édition intégrale",desc:"Le jeu complet et les trois packs de styles."},
-  soutien:{produit:"orbicube_soutien",droit:"soutien",nom:"Faire un don",desc:"Il finance les prochaines optimisations et nouveautés d’Orbicube. En remerciement, un liseré doré et le titre de Mécène sur votre profil."},
+  soutien:{produit:"orbicube_soutien",droit:"soutien",nom:"Soutenir le développeur",desc:"Un pourboire qui finance les prochaines optimisations et nouveautés d’Orbicube. En remerciement, un liseré doré et le titre de Mécène sur votre profil."},
   amp10:{produit:"orbicube_ampoules_10",ampoules:10,nom:"10 aides"},
   amp30:{produit:"orbicube_ampoules_30",ampoules:30,nom:"30 aides"}};
 // ouv : rien (ouvert), {etoiles:n} de coups, {chrono:n} de temps, {rang:n}, ou {pack:clé}
@@ -1759,7 +1766,7 @@ function fusion(a,b){if(!b||typeof b!=="object")return a;var r=JSON.parse(JSON.s
   if(b.options&&(b.options.maj||0)>=(r.options.maj||0))r.options=Object.assign({},r.options,b.options);
   // audit du 16/10/2026 : ces champs se perdaient à chaque relance (refus du classement, missions élite, scores en attente,
   // phrase d'explication des missions)
-  r.classementOff=!!(r.classementOff||b.classementOff);
+  r.classementOff=!!(r.classementOff||b.classementOff);r.clAccord=!!(r.clAccord||b.clAccord);if(b.masques)r.masques=Object.assign({},r.masques||{},b.masques);
   if(b.missionsSem&&(!r.missionsSem||b.missionsSem.sem>r.missionsSem.sem))r.missionsSem=b.missionsSem;
   else if(b.missionsSem&&r.missionsSem&&b.missionsSem.sem===r.missionsSem.sem){r.missionsSem.bonus=r.missionsSem.bonus||b.missionsSem.bonus;
     r.missionsSem.l.forEach(function(m,i){var o=b.missionsSem.l[i];if(o&&o.id===m.id)m.p=Math.max(m.p,o.p);});}
@@ -2313,10 +2320,12 @@ function fenetreVictoire(e,n,temps,record){var d=J.def,suiv=null;
   if(d.mode==="libre")html+='<button class="bouton principal" data-a="encore" type="button"><span>Nouveau mélange</span></button>';
   if(d.mode==="sansfin")html+='<button class="bouton principal" data-a="etape" type="button"><span>Étape suivante</span></button>';
   if(d.mode==="jour"||d.mode==="semaine")html+='<button class="bouton principal" data-a="partager" type="button"><span>Partager mon résultat</span></button>';
-  if((d.mode==="jour"||d.mode==="semaine"||d.mode==="sansfin")&&enLigne()&&!PROG.classementOff)html+='<button class="bouton" data-a="classement" type="button" style="justify-content:center">Voir le classement</button>';
+  if((d.mode==="jour"||d.mode==="semaine"||d.mode==="sansfin")&&enLigne()&&!PROG.classementOff)html+=PROG.compte||PROG.clAccord?'<button class="bouton" data-a="classement" type="button" style="justify-content:center">Voir le classement</button>':
+    '<button class="bouton" data-a="rejoindre" type="button" style="justify-content:center">Apparaître au classement</button><p class="cl-accord">Votre pseudo et vos scores, rien d’autre.</p>';
   html+='<div class="rangee2"><button class="bouton" data-a="rejouer" type="button">Rejouer</button><button class="bouton" data-a="menu" type="button">'+(d.mode==="campagne"?"Niveaux":"Accueil")+'</button></div>'+
     (J.hist.length&&!defiClasse()?'<button class="bouton" data-a="revoir" type="button" style="justify-content:center;min-height:46px;font-size:14px;color:var(--pale)">Revoir ma partie</button>':"")+'</div>';
-  ouvrirFenetre(html,function(a){if(a==="partager"){partager(e,n,temps);return;}if(a==="classement"){fermerFenetre();ouvrirClassement(d.mode,"accueil");return;}fermerFenetre();if(a==="revoir"){revoir(e,n,temps);return;}
+  ouvrirFenetre(html,function(a){if(a==="partager"){partager(e,n,temps);return;}if(a==="classement"){fermerFenetre();ouvrirClassement(d.mode,"accueil");return;}
+    if(a==="rejoindre"){fermerFenetre();rejoindreClassement(d.mode);return;}fermerFenetre();if(a==="revoir"){revoir(e,n,temps);return;}
     if(a==="etape"){var k=d.etape+1;if(k>5&&!complet())ouvrirBoutique("libre");else lancer(sansFinDef(k));return;}if(a==="experts"){lancer(niveauDef(d.w,experts));return;}if(a==="suivant"){if(mondePaye(suiv.w))ouvrirBoutique("monde");else lancer(niveauDef(suiv.w,suiv.i));}
     else if(a==="encore")lancer(libreDef(d.n,d.taille));else if(a==="rejouer")lancer(d.mode==="libre"?libreDef(d.n,d.taille):d.mode==="sansfin"?sansFinDef(d.etape):d);
     else if(d.mode==="campagne")ouvrirParcours();else montrer("accueil");},"menu");
@@ -2756,7 +2765,8 @@ function contenuCles(cle){var P=PACKS[cle];if(P.droits)return P.droits.map(funct
   var l=[];Object.keys(PACKS).forEach(function(k){var st=PACKS[k].unite&&k.slice(2);if(!st)return;Object.keys(STYLES).forEach(function(r){STYLES[r].forEach(function(x){if(x.id===st&&x.ouv&&x.ouv.pack===cle)l.push(k);});});});return l;}
 function economie(cle){var t=prixSomme(contenuCles(cle),PRIXP[cle]),a=prixVal(t),p=prixVal(PRIXP[cle]);if(!a||!p)return"";
   var n=Math.round((1-p/a)*100);return n>=5?'<span class="eco-pct notrad">−'+n+' %</span>':"";}
-function auLieuDe(cle){var t=prixSomme(contenuCles(cle),PRIXP[cle]);return t?'<span class="eco-ligne">au lieu de <s class="notrad">'+t+'</s></span>':"";}
+// la somme des prix à l'unité, sans prix barré (la directive Omnibus réserve le prix barré à un prix réellement pratiqué)
+function auLieuDe(cle){var t=prixSomme(contenuCles(cle),PRIXP[cle]);return t?'<span class="eco-ligne"><span>Valeur à l’unité</span> <span class="notrad">'+t+'</span></span>':"";}
 function lignePack(cle,ic){var P=PACKS[cle],a=P.droit?aDroit(P.droit):(P.droits||[]).every(aDroit);
   return'<div class="bout-ligne'+(a?" acquis":"")+'" id="pack-'+cle+'"><span class="ic"><svg viewBox="0 0 24 24">'+ic+'</svg></span><div class="lt"><b>'+P.nom+'</b><span>'+P.desc+'</span>'+(a?"":auLieuDe(cle))+'</div>'+
     (a?'<span class="bout-acquis">'+COCHE+'Acquis</span>':'<button class="btn-or" type="button" data-achat="'+cle+'"><span class="px notrad">'+PRIXP[cle]+'</span></button>')+contenuPack(cle)+'</div>';}
@@ -2791,7 +2801,7 @@ function rendreBoutique(){var c=complet(),tous=["pack_couleurs","pack_formes","p
   // les aides aussi dans l'onglet Packs (le client, le 16/10/2026)
   pk+='<div class="bout-sous">Aides</div><p class="bout-note">Une aide = un indice : le prochain tour s’affiche sur le plateau.</p><div class="bout-amp" id="boutAmpoules"></div>';
   // le soutien devient un don pour faire avancer le jeu (le client, le 16/10/2026)
-  pk+='<div class="bout-sous">Faire avancer Orbicube</div>'+(aDroit("soutien")?'<div class="bout-ligne acquis"><span class="ic"><svg viewBox="0 0 24 24">'+IC.cœur+'</svg></span><div class="lt"><b>Merci pour votre don !</b><span>Votre liseré doré brille sur votre profil.</span></div></div>':lignePack("soutien",IC.cœur));
+  pk+='<div class="bout-sous">Faire avancer Orbicube</div>'+(aDroit("soutien")?'<div class="bout-ligne acquis"><span class="ic"><svg viewBox="0 0 24 24">'+IC.cœur+'</svg></span><div class="lt"><b>Merci pour votre soutien !</b><span>Votre liseré doré brille sur votre profil.</span></div></div>':lignePack("soutien",IC.cœur));
   document.querySelectorAll("#boutRayons button").forEach(function(b){b.classList.toggle("on",b.dataset.r===RAYON);
     if(b.dataset.r==="packs"){b.querySelector(".cpt").textContent=["couleurs","formes","effets"].filter(function(k){return aDroit(PACKS[k].droit);}).length+"/3";return;}
     var ks=b.dataset.r==="effets"?["trainee","orbite","victoire"]:b.dataset.r==="forme"?["forme","dispo"]:[b.dataset.r],n=0,t=0;ks.forEach(function(k){STYLES[k].forEach(function(st){t++;if(styleOuvert(k,st.id))n++;});});
@@ -3052,6 +3062,9 @@ document.getElementById("btnClassementAcc").addEventListener("click",function(){
    classer. Sans adresse dans config.js, ou sans réseau, le jeu ne change pas : tout se replie sans bruit. */
 var SRV=CFG.classement||{};
 function enLigne(){return !!SRV.url;}
+// dans l'app, sans serveur, le classement ne se montre pas du tout (une fonction visible qui ne marche pas est un motif de
+// refus d'Apple) ; la version web garde son « ouvrira avec la sortie du jeu »
+document.body.classList.toggle("sans-cl",!!NATIF.natif&&!enLigne());
 function appel(a,d){if(!SRV.url)return Promise.resolve({erreur:"hors"});d=d||{};d.a=a;var c=PROG.compte;if(c&&c.id&&!d.code){d.id=c.id;d.jeton=c.jeton;}
   var ctl=window.AbortController?new AbortController():null,t=setTimeout(function(){if(ctl)ctl.abort();},9000);
   return fetch(SRV.url,{method:"POST",headers:{"Content-Type":"application/json",apikey:SRV.cle||""},body:JSON.stringify(d),signal:ctl?ctl.signal:undefined})
@@ -3061,7 +3074,10 @@ function appel(a,d){if(!SRV.url)return Promise.resolve({erreur:"hors"});d=d||{};
 function pseudoLocal(){if(!PROG.pseudoLocal){PROG.pseudoLocal="Player"+(1000+Math.floor(Math.random()*9000));sauver();}return PROG.pseudoLocal;}
 function pseudo(){return(PROG.compte&&PROG.compte.pseudo)||pseudoLocal();}
 // le profil de joueur, créé à la première victoire ou au premier passage par le classement (rien n'est envoyé avant)
-function assurerCompte(){var c=PROG.compte;if(c&&c.id)return Promise.resolve(c);if(PROG.classementOff||!enLigne())return Promise.resolve(null);
+// rien ne part sans l'accord du joueur (audit du 16/10/2026) : « Apparaître au classement » après un défi, la carte du
+// classement, ou un geste qui le suppose (changer de pseudo, afficher son code, signaler)
+function assurerCompte(explicite){var c=PROG.compte;if(c&&c.id)return Promise.resolve(c);if(PROG.classementOff||!enLigne())return Promise.resolve(null);
+  if(explicite){if(!PROG.clAccord){PROG.clAccord=true;sauver();}}else if(!PROG.clAccord)return Promise.resolve(null);
   if(assurerCompte.p)return assurerCompte.p;
   return assurerCompte.p=appel("inscrire",{pseudo:pseudoLocal()}).then(function(r){assurerCompte.p=null;if(!r.id)return null;
     PROG.compte={id:r.id,jeton:r.jeton,code:r.code,pseudo:r.pseudo};sauver();
@@ -3083,6 +3099,8 @@ function envoyerScore(d,temps){if(d.mode!=="jour"&&d.mode!=="semaine")return;PRO
 function viderEnvois(){if(!PROG.compte||!(PROG.envois||[]).length||viderEnvois.en)return;viderEnvois.en=true;var e=PROG.envois[0];
   appel("score",e).then(function(r){viderEnvois.en=false;if(r.erreur==="reseau"||r.erreur==="serveur"||r.erreur==="hors"||r.erreur==="ailleurs")return;
     PROG.envois=PROG.envois.filter(function(x){return x!==e;});sauver();viderEnvois();});}
+function rejoindreClassement(t){assurerCompte(true).then(function(){viderEnvois();envoyerStats();sauverNuage(true);setTimeout(function(){ouvrirClassement(t||CL.t,"accueil");},350);});
+  if(ECRAN==="joueur")chargerClassement();}
 function apresVictoireClassement(d,temps){if(d.mode==="jour"||d.mode==="semaine")envoyerScore(d,temps);else assurerCompte();envoyerStats();sauverNuage(true);}
 
 // ---- l'écran du classement ----
@@ -3094,9 +3112,10 @@ var SVG_COUPS='<svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4
 function ouvrirClassement(t,depuis){if(t)CL.t=t;ouvrirJoueur("classement",depuis);}
 function valeurCl(t,x){if(t==="jour"||t==="semaine")return '<span class="notrad">'+SVG_COUPS+x.valeur+'</span><span class="notrad">'+SVG_HORLOGE+fmt(x.temps)+'</span>';
   if(t==="etoiles")return '<span class="notrad">'+SVG_ET+x.valeur+'</span>';if(t==="sansfin")return '<span>Étape '+x.valeur+'</span>';return '<span>'+titreRang(x.valeur)+'</span>';}
-function ligneCl(t,x,moi){var c=cadreDe(x.niveau||1);return '<button class="cl-ligne'+(moi?" moi":"")+(x.mecene?" mecene":"")+'" type="button" data-pid="'+String(x.pid).replace(/[^0-9a-f-]/g,"")+'">'+
+function masque(pid){return !!(PROG.masques&&PROG.masques[pid]);}
+function ligneCl(t,x,moi){var c=cadreDe(x.niveau||1);if(!moi&&masque(x.pid))x={pid:x.pid,place:x.place,niveau:1,pseudo:"",valeur:x.valeur,temps:x.temps,masque:1};return '<button class="cl-ligne'+(moi?" moi":"")+(x.mecene?" mecene":"")+'" type="button" data-pid="'+String(x.pid).replace(/[^0-9a-f-]/g,"")+'">'+
   '<span class="cl-place notrad"'+(x.place<=3?' style="color:'+MEDAILLES[x.place-1]+'"':"")+'>'+x.place+'</span>'+
-  '<span class="cl-niv notrad'+(c?" cadre-"+c:"")+'">'+(x.niveau||1)+'</span><span class="cl-nom"><b class="notrad">'+echapper(x.pseudo||"")+'</b>'+(t==="rang"?'<small>'+titreRang(x.valeur)+'</small>':"")+'</span>'+
+  '<span class="cl-niv notrad'+(c?" cadre-"+c:"")+'">'+(x.niveau||1)+'</span><span class="cl-nom">'+(x.masque?'<b class="cl-masque">Joueur masqué</b>':'<b class="notrad">'+echapper(x.pseudo||"")+'</b>')+''+(t==="rang"?'<small>'+titreRang(x.valeur)+'</small>':"")+'</span>'+
   '<span class="cl-val">'+(t==="rang"?"":valeurCl(t,x))+'</span></button>';}
 function echapper(t){return String(t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
 function chargerClassement(){var t=CL.t,L=document.getElementById("clListe"),M=document.getElementById("clMoi");
@@ -3105,6 +3124,9 @@ function chargerClassement(){var t=CL.t,L=document.getElementById("clListe"),M=d
   if(!enLigne()){L.innerHTML='<p class="cl-vide">Le classement ouvrira avec la sortie du jeu.</p>';return;}
   if(PROG.classementOff){L.innerHTML='<p class="cl-vide">Vous n’apparaissez pas au classement.</p><button class="bouton" id="clRevenir" type="button" style="justify-content:center;width:100%">Revenir au classement</button>';
     document.getElementById("clRevenir").onclick=function(){sonClic();PROG.classementOff=false;sauver();chargerClassement();};return;}
+  if(!PROG.compte&&!PROG.clAccord){L.innerHTML='<div class="cl-rejoindre"><b>Rejoindre le classement</b><p>Votre pseudo, vos scores des défis, vos étoiles et votre rang, visibles des autres joueurs. Ni compte, ni e-mail, ni nom. Vous pouvez tout effacer depuis le Profil.</p>'+
+    '<button class="bouton principal" id="clRejoindre" type="button"><span>Apparaître au classement</span></button></div>';
+    document.getElementById("clRejoindre").onclick=function(){sonClic();rejoindreClassement(t);};return;}
   L.innerHTML='<p class="cl-vide">Chargement…</p>';var cle=t==="jour"?cleJour():t==="semaine"?cleSemaine():"";
   appel("classement",{tableau:t,cle:cle}).then(function(r){if(CL.t!==t||JOUEUR.o!=="classement")return;
     if(!r.liste){L.innerHTML='<p class="cl-vide">'+(r.erreur==="reseau"?"Pas de connexion. Le classement revient dès que le téléphone est en ligne.":"Le classement ne répond pas. Réessayez plus tard.")+'</p>';return;}
@@ -3121,14 +3143,17 @@ function profilPublic(pid){appel("profil",{pid:pid}).then(function(r){if(!r.pseu
   var c=cadreDe(r.niveau||1),moi=PROG.compte&&PROG.compte.id===pid,sj=(r.scores||[]).filter(function(x){return x.tableau==="jour:"+cleJour();})[0],
     sw=(r.scores||[]).filter(function(x){return x.tableau==="semaine:"+cleSemaine();})[0];
   function st(v,l){return '<div class="pp-st"><b class="notrad">'+v+'</b><span>'+l+'</span></div>';}
-  ouvrirFenetre('<div class="pp-tete'+(r.mecene?" mecene":"")+'"><span class="cl-niv grand notrad'+(c?" cadre-"+c:"")+'">'+r.niveau+'</span><h3 class="notrad">'+echapper(r.pseudo)+'</h3><p>'+titreRang(r.niveau)+'</p>'+
+  ouvrirFenetre('<div class="pp-tete'+(r.mecene?" mecene":"")+'"><span class="cl-niv grand notrad'+(c?" cadre-"+c:"")+'">'+r.niveau+'</span><h3'+(masque(pid)&&!moi?'>Joueur masqué':' class="notrad">'+echapper(r.pseudo))+'</h3><p>'+titreRang(r.niveau)+'</p>'+
     (r.mecene?'<span class="mecene-titre">Mécène d’Orbicube</span>':"")+'</div><div class="pp-grille">'+st(SVG_ET+r.etoiles,"étoiles de coups")+st(SVG_ETT+r.etoilesT,"étoiles de temps")+
     st(r.voies+"/"+MONDES.length,"voies dorées")+st(r.sansfin||"–","étape en sans fin")+
     st(sj?sj.coups+" · "+fmt(sj.temps_ms):"–","défi du jour")+st(sw?sw.coups+" · "+fmt(sw.temps_ms):"–","défi de la semaine")+'</div>'+
-    '<div class="menu">'+(moi?"":'<button class="bouton" data-a="signaler" type="button" style="justify-content:center;color:var(--pale)">Signaler ce pseudo</button>')+
+    '<div class="menu">'+(moi?"":'<div class="rangee2"><button class="bouton" data-a="masquer" type="button">'+(masque(pid)?"Ne plus masquer":"Masquer ce joueur")+'</button>'+
+      '<button class="bouton" data-a="signaler" type="button">Signaler ce pseudo</button></div>')+
     '<button class="bouton" data-a="x" type="button" style="justify-content:center">Fermer</button></div>',function(a){
       if(a==="signaler"){ouvrirFenetre('<h3>Signaler ce pseudo ?</h3><p>S’il est choquant, il sera remplacé par un pseudo « Player ».</p><div class="menu"><button class="bouton" data-a="non" type="button" style="justify-content:center">Annuler</button><button class="danger" data-a="oui" type="button">Signaler</button></div>',
-        function(b){fermerFenetre();if(b==="oui")assurerCompte().then(function(){return appel("signaler",{pid:pid});}).then(function(x){avertir("Signalement",x.ok?"Merci, c’est noté.":"Réessayez plus tard.");});},"non");return;}
+        function(b){fermerFenetre();if(b==="oui")assurerCompte(true).then(function(){return appel("signaler",{pid:pid});}).then(function(x){avertir("Signalement",x.ok?"Merci, c’est noté.":"Réessayez plus tard.");});},"non");return;}
+      if(a==="masquer"){PROG.masques=PROG.masques||{};if(PROG.masques[pid])delete PROG.masques[pid];else PROG.masques[pid]=1;sauver();fermerFenetre();chargerClassement();
+        toast(masque(pid)?"Joueur masqué":"Joueur visible",masque(pid)?"Son pseudo ne s’affiche plus sur ce téléphone.":"");return;}
       fermerFenetre();},"x");});}
 
 // ---- le pseudo, modifiable depuis l'accueil (la puce du haut ouvre le profil, le crayon le change) ----
@@ -3141,14 +3166,14 @@ function changerPseudo(){ouvrirFenetre('<h3>Votre pseudo</h3><p>C’est le nom q
     function dire(k){err.textContent=ERR_PSEUDO[k]||ERR_PSEUDO.serveur;}
     if(v.length<3||v.length>16)return dire("longueur");if(!/^[\p{Script=Latin}0-9 ._-]+$/u.test(v.normalize("NFKC")))return dire("signes");if(v===pseudo()){fermerFenetre();return;}
     if(!enLigne()||PROG.classementOff){PROG.pseudoLocal=v;PROG.pseudoChoisi=true;sauver();majRang();rafraichirProfil();fermerFenetre();return;}
-    err.textContent="…";assurerCompte().then(function(c){if(!c)return{erreur:"reseau"};return appel("pseudo",{nom:v});}).then(function(r){if(!r.pseudo)return dire(r.erreur);
+    err.textContent="…";assurerCompte(true).then(function(c){if(!c)return{erreur:"reseau"};return appel("pseudo",{nom:v});}).then(function(r){if(!r.pseudo)return dire(r.erreur);
       PROG.compte.pseudo=r.pseudo;PROG.pseudoLocal=r.pseudo;PROG.pseudoChoisi=true;sauver();majRang();rafraichirProfil();fermerFenetre();toast("Pseudo enregistré","");});},"x");
   setTimeout(function(){var c=document.getElementById("champPseudo");if(c){c.focus();c.select();}},80);}
 
 // ---- le profil de joueur : code de récupération, reprise sur un autre téléphone, suppression ----
 function majCompte(){var c=PROG.compte;document.getElementById("btnCode").textContent=c&&c.code?c.code:enLigne()&&!PROG.classementOff?"Afficher":"—";
   document.getElementById("grpCompte").hidden=!enLigne();}
-document.getElementById("btnCode").addEventListener("click",function(){sonClic();assurerCompte().then(function(c){majCompte();if(!c||!c.code){avertir("Classement",ERR_PSEUDO.reseau);return;}
+document.getElementById("btnCode").addEventListener("click",function(){sonClic();assurerCompte(true).then(function(c){majCompte();if(!c||!c.code){avertir("Classement",ERR_PSEUDO.reseau);return;}
   if(navigator.clipboard)navigator.clipboard.writeText(c.code).then(function(){toast("Code copié","");},function(){});});});
 document.getElementById("btnRecuperer").addEventListener("click",function(){sonClic();ouvrirFenetre('<h3>Utiliser un code</h3><p>Le code de récupération noté sur votre autre téléphone. Le profil de ce téléphone sera remplacé.</p>'+
     '<input class="champ notrad" id="champCode" maxlength="24" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ORBI-XXXX-XXXX-XXXX"><p class="champ-err" id="errCode"></p>'+
@@ -3213,12 +3238,13 @@ function appliquerLangue(){var o=PROG.options.langue||"auto";changerLangue(o==="
 document.getElementById("optLangue").addEventListener("change",function(){PROG.options.langue=this.value;PROG.options.maj=Date.now();sauver();appliquerLangue();sonClic();});
 
 /* ========== 16. DÉMARRAGE ========== */
-// l'écran de chargement se retire quand les polices sont prêtes (au moins 1,5 s pour qu'on le voie, au plus 2,4 s)
+// l'écran de chargement se retire quand les polices sont prêtes : au moins 0,9 s la première fois pour qu'on le voie,
+// 0,5 s ensuite (audit du 16/10/2026 : le joueur qui revient veut jouer), au plus 1,8 s
 (function(){var el=document.getElementById("chargement"),t0=performance.now(),fini=false;
   function retirer(){if(fini)return;fini=true;el.classList.add("fini");setTimeout(function(){el.remove();},700);}
   if(/[?&]capture\b/.test(location.search)||CALME){retirer();return;}
-  (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(function(){setTimeout(retirer,Math.max(0,1500-(performance.now()-t0)));});
-  setTimeout(retirer,2400);})();
+  (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(function(){var min=Object.keys((PROG&&PROG.niveaux)||{}).length?500:900;setTimeout(retirer,Math.max(0,min-(performance.now()-t0)));});
+  setTimeout(retirer,1800);})();
 // accès réservé aux outils de captures (npm run captures), actif seulement avec ?capture dans l'adresse
 if(/[?&]capture\b/.test(location.search))window.__orbicube={jouer:function(t){jouerCoup(parNom(t));},taille:function(){return TAILLE;},dernier:function(){return J&&J.hist.length?nomDe(J.hist[J.hist.length-1]).replace("′","'"):"";},solution:function(){return J&&J.pret?cheminSolution().map(function(m){return nomDe(m).replace("′","'");}):[];},vus:function(){return Object.keys(VUS);},manques:function(){return Object.keys(MANQUES);},parcours:function(){ouvrirParcours();}};
 // le rang est né après les premiers joueurs : leurs niveaux déjà finis lui donnent son expérience, une fois

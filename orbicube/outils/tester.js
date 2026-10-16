@@ -125,10 +125,10 @@ async function resoudre(p) {
     (await p.isVisible("#boutique.actif")) && (await p.$$eval("#boutRayon .style", (l) => l.length)) === 17 ? ok("boutique : dix-sept palettes en vitrine, dont « Couleurs du monde », deux exclusives de la voie dorée, trois du rang et trois du rang avec le jeu complet") : faute("boutique : rayon des couleurs absent");
     (await p.textContent('#boutRayons [data-r="palette"] .cpt')) === "3/17" ? ok("boutique : compteur de collection (3/17 palettes pour un débutant)") : faute("compteur de collection faux : " + (await p.textContent('#boutRayons [data-r="palette"] .cpt')));
     await p.tap('#boutRayons [data-r="packs"]'); await p.waitForTimeout(400);
-    (await p.isVisible("#boutJeu .bout-jeu")) && !(await p.$("#boutJeu #pack-integrale")) && (await p.isVisible("#boutRayon #pack-integrale")) && (await p.isVisible("#pack-couleurs")) && (await p.isVisible('#boutRayon [data-achat="amp10"]')) && (await p.textContent("#boutRayon #pack-soutien")).includes("Faire un don") && (await p.isVisible("#pack-collection .of-vitrine")) && (await p.textContent("#pack-integrale")).includes("%") && !(await p.isVisible("#boutApercu")) && (await p.textContent('#boutRayons [data-r="packs"] .cpt')) === "0/3"
-      ? ok("boutique : le jeu complet en haut ; dans l'onglet Packs, les offres groupées détaillées (économie en %), les packs, les aides et le don") : faute("onglet Packs de la boutique");
+    (await p.isVisible("#boutJeu .bout-jeu")) && !(await p.$("#boutJeu #pack-integrale")) && (await p.isVisible("#boutRayon #pack-integrale")) && (await p.isVisible("#pack-couleurs")) && (await p.isVisible('#boutRayon [data-achat="amp10"]')) && (await p.textContent("#boutRayon #pack-soutien")).includes("Soutenir le développeur") && (await p.isVisible("#pack-collection .of-vitrine")) && (await p.textContent("#pack-integrale")).includes("%") && !(await p.isVisible("#boutApercu")) && (await p.textContent('#boutRayons [data-r="packs"] .cpt')) === "0/3"
+      ? ok("boutique : le jeu complet en haut ; dans l'onglet Packs, les offres groupées détaillées (économie en %), les packs, les aides et le soutien") : faute("onglet Packs de la boutique");
     const dPk = await debordements(p); dPk.length ? faute("débordement dans l'onglet Packs : " + dPk) : ok("onglet Packs sans débordement");
-    (await p.textContent("#pack-couleurs")).includes("au lieu de") && (await p.textContent("#pack-couleurs")).includes("3,96") ? ok("boutique : le pack montre ce que coûterait son contenu à l'unité (3,96 €)") : faute("prix barré du pack absent");
+    (await p.textContent("#pack-couleurs")).includes("Valeur à l’unité") && (await p.textContent("#pack-couleurs")).includes("3,96") && !(await p.$("#pack-couleurs s")) ? ok("boutique : le pack montre sa valeur à l'unité (3,96 €), sans prix barré") : faute("valeur à l'unité du pack absente");
     await p.tap('#boutRayons [data-r="palette"]'); await p.waitForTimeout(400);
     await p.tap('.style[data-id="contraste"]'); await p.waitForTimeout(300);
     (await p.$('.style.porte[data-id="contraste"]')) ? ok("boutique : un style ouvert se porte d'un toucher") : faute("le style choisi n'est pas porté");
@@ -267,8 +267,8 @@ async function resoudre(p) {
     const scores = await p.evaluate(() => window.__scores);
     scores.some((s) => s[0] === "orbicube.classement.etoiles" && s[1] > 0) ? ok("total d'étoiles envoyé au classement de Game Center") : faute("classement des étoiles non envoyé : " + JSON.stringify(scores));
     // le classement est celui du jeu (le client, le 14/10/2026) : sans serveur réglé, il le dit, sans erreur
-    await p.click("#btnRang"); await p.waitForTimeout(400); await p.click('#jOnglets [data-o="classement"]'); await p.waitForTimeout(500);
-    (await p.isVisible("#pClassement")) && (await p.textContent("#clListe")).includes("ouvrira") ? ok("le Profil ouvre le classement du jeu (sans serveur : « ouvrira avec la sortie »)") : faute("bouton Classement absent ou inactif");
+    await p.click("#btnRang"); await p.waitForTimeout(400);
+    !(await p.isVisible('#jOnglets [data-o="classement"]')) && !(await p.isVisible("#btnClassementAcc")) ? ok("dans l'app sans serveur, le classement ne se montre pas (ni onglet ni rond)") : faute("classement visible dans l'app sans serveur");
     await p.click("#joueur [data-retour]"); await p.waitForTimeout(400);
     await p.click("#btnSucces"); await p.waitForTimeout(400);
     (await p.isVisible("#btnSuccesStore")) && (await p.textContent("#btnSuccesStore")).includes("Game Center") ? ok("bouton « Game Center » sur l'écran des succès") : faute("bouton Game Center absent");
@@ -350,13 +350,15 @@ async function resoudre(p) {
     const fv = await p.textContent("#fenetre");
     !/[UDLRFB][′'2]?\s/.test((await p.textContent("#notation")) + " ") && !(await p.$('#fenetre [data-a="revoir"]')) ? ok("les coups ne s'écrivent nulle part, et pas de « Revoir ma partie » sur un défi") : faute("coups visibles : « " + (await p.textContent("#notation")) + " »");
     fv.includes("Mission accomplie") || fv.includes("Missions accomplies") ? ok("la victoire dit la mission accomplie et sa récompense") : faute("victoire sans objectif accompli");
+    !(await lire(p)).compte && fv.includes("Apparaître au classement") ? ok("rien ne part sans accord : « Apparaître au classement » après le défi") : faute("profil créé sans accord, ou question absente");
+    await p.tap('#fenetre [data-a="rejoindre"]'); await p.waitForTimeout(1400);
     const moi = (await lire(p)).compte;
-    moi && moi.id && /^ORBI-/.test(moi.code) && essai.joueurs.get(moi.id).pseudo === (await p.textContent("#rangTitre")) ? ok("première victoire : profil créé, même pseudo, code de récupération") : faute("profil non créé : " + JSON.stringify(moi));
+    moi && moi.id && /^ORBI-/.test(moi.code) && essai.joueurs.get(moi.id).pseudo === (await p.textContent("#rangTitre")) ? ok("accord donné : profil créé, même pseudo, code de récupération") : faute("profil non créé : " + JSON.stringify(moi));
     [...essai.scores.values()].some((x) => x.j === moi.id && x.coups === sol.length) ? ok("défi du jour : coups rejoués et acceptés par le serveur (" + sol.length + " coups)") : faute("score du défi non classé");
     const faux = await p.evaluate(async (m) => (await fetch("https://essai.orbicube/f", { method: "POST", body: JSON.stringify({ a: "score", id: m.id, jeton: m.jeton, tableau: "jour", cle: m.cle, coups: ["U", "R"], temps: 5000 }) })).status, { ...moi, cle: [...essai.scores.values()][0].t.slice(5) });
     faux === 422 ? ok("un faux score (coups qui ne résolvent pas le cube) est refusé") : faute("faux score accepté : " + faux);
-    await p.tap('#fenetre [data-a="classement"]'); await p.waitForTimeout(900);
-    (await p.textContent("#clListe .cl-ligne.moi")).includes(moi.pseudo) ? ok("« Voir le classement » : le joueur dans la liste du jour") : faute("joueur absent de la liste du jour");
+    await p.waitForTimeout(600);
+    (await p.textContent("#clListe .cl-ligne.moi")).includes(moi.pseudo) ? ok("après l'accord : le joueur dans la liste du jour") : faute("joueur absent de la liste du jour");
     await p.tap('#clOnglets [data-t="etoiles"]'); await p.waitForTimeout(700);
     (await p.$$eval("#clListe .cl-ligne", (l) => l.length)) >= 6 ? ok("onglet Étoiles : les joueurs classés") : faute("onglet Étoiles vide");
     const d4 = await debordements(p); d4.length ? faute("débordement au classement : " + d4) : ok("classement sans débordement");
