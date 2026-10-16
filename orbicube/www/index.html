@@ -1095,6 +1095,15 @@ body.avec-nav #accueil .logoboite{flex:1 1 0;max-height:none}
 .lib-intro{margin:0;text-align:center;color:var(--pale);font-size:14px}
 .lib-groupe .menu{display:grid;gap:8px;padding:6px 14px 14px}
 .lib-groupe .bouton{width:100%}
+/* le nœud « à jouer » pulse (un calque à lui) : peint au-dessus des autres nœuds, il n'oblige plus tout ce qui le recouvrait
+   à monter dans un calque géant (3 860 px de haut, mesuré) */
+.parc-niv.courant{z-index:4}
+/* la carte : le décor est peint dans #parcCiel, fixe derrière le défilement ; les bandes ne sont plus que des données */
+.parc-ciel{position:absolute;left:0;top:0;z-index:0;pointer-events:none;display:block}
+#parcoursDefile{z-index:1;background:transparent}
+#parcours{background:#06060c}
+.parc-bg,.parc-planets,.parc-starsb,.parc-meteorsb{display:none!important}
+.parc-fond{background:transparent}
 </style>
 </head>
 <body>
@@ -1154,6 +1163,7 @@ body.avec-nav #accueil .logoboite{flex:1 1 0;max-height:none}
       <h2>Campagne</h2>
       <span class="puce"><svg viewBox="0 0 24 24" class="etoile"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg><span id="parcEt">0</span><svg viewBox="0 0 24 24" class="etoile temps"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg><span id="parcEtT">0</span></span>
     </div>
+    <canvas class="parc-ciel" id="parcCiel" aria-hidden="true"></canvas>
     <div class="defile" id="parcoursDefile"><div class="chemin" id="chemin"></div></div>
   </section>
 
@@ -2228,15 +2238,27 @@ var parcRaf=0;
 // à chaque image du défilement : aucune recherche dans la page (les bandes sont listées une fois par carte, PARC_BANDES),
 // aucune écriture inutile (un style n'est touché que s'il change), une seule lecture de la position
 var PARC_BANDES=null,PARC_VIT={"parc-bg":-.18,"parc-planets":-.09,"parc-starsb":-.05,"parc-meteorsb":0};   // nébuleuse, planètes et étoiles bougent (le client) ; les météores restent fixes (mémoire)
-function parcParallax(){var pd=document.getElementById("parcoursDefile");if(!pd)return;
+// LE DÉCOR DE LA CARTE EST PEINT DANS UN SEUL CANEVAS DE LA TAILLE DE L'ÉCRAN (le client, le 16/10/2026 : Safari fermait la page
+// « de plus en plus souvent »). Mesuré à 3× : les bandes d'image en calques GPU (nébuleuse, planètes, étoiles, météores) et tout
+// ce qui passait par-dessus faisaient ~22 calques, de l'ordre de 400 Mo ; l'accueil et le jeu, ~65 Mo. Les bandes restent dans
+// la page comme simples données (cachées) ; ce canevas fixe derrière le défilement les redessine quand on fait défiler, avec la
+// même parallaxe et le même fondu haut/bas (en fines lamelles), à 2 pixels par point au plus.
+var PARC_IMG={};function parcImg(u){var im=PARC_IMG[u];if(!im){im=PARC_IMG[u]=new Image();im.decoding="async";im.onload=function(){parcParallax();};im.src=u;}return im;}
+function parcParallax(){var pd=document.getElementById("parcoursDefile"),cv=document.getElementById("parcCiel");if(!pd||!cv)return;
   if(!PARC_BANDES||!PARC_BANDES.length||!PARC_BANDES[0].isConnected)PARC_BANDES=[].map.call(pd.querySelectorAll(".parc-bg,.parc-planets,.parc-starsb,.parc-meteorsb"),function(el){
-    return{el:el,t:parseFloat(el.style.top)||0,h:parseFloat(el.style.height)||0,cy:+el.dataset.cy,sp:PARC_VIT[el.className.split(" ")[0]]||0,vu:null,y:null};});
-  var st=pd.scrollTop,vh=pd.clientHeight,sc=st+vh/2,C=CALME;
-  PARC_BANDES.forEach(function(b){var vu=b.t+b.h>st-vh*.25&&b.t<st+vh*1.25;
-    if(b.vu!==vu){b.vu=vu;b.el.style.display=vu?"":"none";
-      // seules les bandes visibles qui bougent deviennent un calque GPU : fluide, sans rouvrir le gouffre de mémoire (au plus 9)
-      b.el.style.willChange=vu&&b.sp&&!C?"transform":"";if(!vu){b.el.style.transform="";b.y=null;}}
-    if(vu&&b.sp&&!C){var y=Math.round((b.cy-sc)*b.sp*2)/2;if(y!==b.y){b.y=y;b.el.style.transform="translate3d(0,"+y+"px,0)";}}});}
+    var u=(el.style.backgroundImage||"").replace(/^url\(["']?|["']?\)$/g,"");
+    return{u:u,t:parseFloat(el.style.top)||0,h:parseFloat(el.style.height)||0,cy:+el.dataset.cy,sp:PARC_VIT[el.className.split(" ")[0]]||0};});
+  var W=pd.clientWidth,vh=pd.clientHeight,d=Math.min(DPR,2);if(!W||!vh)return;
+  if(cv.width!==Math.round(W*d)||cv.height!==Math.round(vh*d)){cv.width=Math.round(W*d);cv.height=Math.round(vh*d);cv.style.width=W+"px";cv.style.height=vh+"px";}
+  var cx=cv.getContext("2d"),st=pd.scrollTop,sc=st+vh/2,x0=-.03*W,bw=1.06*W;cx.setTransform(d,0,0,d,0,0);cx.globalAlpha=1;cx.fillStyle="#06060c";cx.fillRect(0,0,W,vh);
+  PARC_BANDES.forEach(function(b){var y=CALME||!b.sp?0:Math.round((b.cy-sc)*b.sp*2)/2,top=b.t-st+y,bas=top+b.h;if(bas<0||top>vh)return;
+    var im=parcImg(b.u);if(!im.complete||!im.naturalWidth)return;
+    var k=Math.max(bw/im.naturalWidth,b.h/im.naturalHeight),dx=x0+(bw-im.naturalWidth*k)/2,dy=top+(b.h-im.naturalHeight*k)/2,f=b.h*.1,
+      sx=(x0-dx)/k,sw=bw/k,y1=Math.max(0,top),y2=Math.min(vh,bas);
+    // le fondu du masque d'origine (transparent → opaque sur 10 % en haut et en bas) : des lamelles de 6 px d'opacité croissante
+    for(var a=y1;a<y2;){var r=a-top,z,al;if(r<f){z=Math.min(y2,a+6,top+f);al=(r+3)/f;}else if(bas-a<=f){z=Math.min(y2,a+6);al=(bas-a-3)/f;}else{z=Math.min(y2,bas-f);al=1;}
+      if(z<=a)z=Math.min(y2,a+1);cx.globalAlpha=Math.max(0,Math.min(1,al));cx.drawImage(im,sx,(a-dy)/k,sw,(z-a)/k,x0,a,bw,z-a);a=z;}});
+  cx.globalAlpha=1;}
 // révélation : les nœuds apparaissent (fondu + pop) quand ils entrent dans la fenêtre pendant qu'on monte
 var parcIO=null;function parcRevele(ch){var root=document.getElementById("parcoursDefile");
   if(CALME||!("IntersectionObserver" in window)){[].forEach.call(ch.querySelectorAll(".parc-niv"),function(n){n.classList.add("vu");});return;}

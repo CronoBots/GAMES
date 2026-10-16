@@ -321,6 +321,13 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   redessine pas sous la carte ; `parcParallax` ne cherche rien dans la page à chaque image (`PARC_BANDES`, listées une
   fois par carte) et ne touche un style que s'il change. Mesuré, processeur ralenti ×4 : 37 → 52 images/s avec les étoiles en mouvement. Le parcours de test exige au plus
   12 bandes affichées. Nœuds « E1 » à « E4 ». Le chemin numérote 1 à 64 sans eux (`numNiveau`, `nomNiveau`).
+- **Le décor de la carte est peint dans un seul canevas** (`#parcCiel`, `parcParallax`, le client, le 16/10/2026 : Safari fermait la
+  page « de plus en plus souvent ») : mesuré à 3×, les bandes en calques GPU et ce qui passait par-dessus faisaient ~22 calques
+  (≈ 400 Mo) sur la carte contre ~65 Mo ailleurs. Les bandes `.parc-bg…` ne sont plus que des données cachées ; le canevas fixe,
+  derrière le défilement, les redessine au défilement (même parallaxe, fondu haut/bas en lamelles de 6 px, 2 pixels par point au
+  plus). Le nœud « à jouer », qui pulse, est peint au-dessus des autres (`z-index:4`) : sinon tout ce qui le recouvrait montait
+  dans un calque de 3 860 px. Carte : 10 calques, ≈ 175 Mo estimés dont l'essentiel est le défilement (iOS n'en garde que la
+  partie visible). Les paragraphes « Mémoire » et « Fluidité » ci-dessus décrivent l'état d'avant.
 - **Vraie progression** (le client : deux niveaux de suite se ressemblaient ; « trouver le bon compromis
   difficulté/progression/orbites ») : une orbite de plus par monde ; dans un monde, un coup de plus tous les deux niveaux
   (les trois premiers montent d'un coup chacun), pente plus raide avec les orbites ; chaque monde repart un peu plus bas
