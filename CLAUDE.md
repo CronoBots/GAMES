@@ -19,7 +19,7 @@ Les jeux de CronoBots, un dossier par jeu. Le premier : `orbicube/`.
 | `src/natif.js` | `npm run construire`, et committer `www/natif.js` avec : la CI refuse un pont pas à jour |
 | une version publiée | même numéro dans `package.json` et `www/config.js` ; `V` incrémenté dans `www/sw.js` |
 | un texte affiché | sa ligne dans `www/langues.js`, en cinq langues : `npm run tester` signale toute phrase affichée sans traduction |
-| un succès | sa clé dans `www/config.js` > `succesStores` (iOS et Android), sa ligne dans `docs/lancement.md` 3 bis, son image (`npm run icones`) |
+| un succès | sa clé dans `www/config.js` > `succesStores` (iOS et Android), sa ligne dans `docs/lancement.md` 3 bis (1 000 points Apple au plus), son image (`npm run icones`) : le vérificateur contrôle les quatre |
 | l'aspect du jeu | **ne pas** régénérer les captures en passant : `npm run captures` et le montage se font seulement quand le client valide **définitivement** le design, et sur sa demande |
 
 Un contrôle qui ne peut pas échouer ne contrôle rien : chaque contrôle du vérificateur a été
@@ -323,8 +323,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   tout se replie sans bruit. Le module natif n'a jamais été compilé ici : la première build Xcode
   et Android Studio le validera. **21 succès** (le client, le 16/10/2026 : « des succès, notamment qui nécessitent le jeu
   complet ») : neuf demandent le jeu complet (`complet:1` dans `SUCCES` : m3, m5, m6, p60, expert, voies, neuf, semaine, elite),
-  marqués « Jeu complet » (`.suc-jc`) tant qu'il n'est pas acheté. 995 points Apple sur 1 000 : plus de place pour un succès
-  sans en rééquilibrer d'autres. `PROG.tips.missionsJour` / `elite` notent les quatre missions réussies.
+  marqués « Jeu complet » (`.suc-jc`) tant qu'il n'est pas acheté. 995 points Apple sur 1 000 (rééquilibrés le 16/10/2026 : la somme dépassait 1 145) ; plus de place pour un
+  succès sans en rééquilibrer d'autres. `PROG.tips.missionsJour` / `elite` notent les quatre missions réussies.
 - **Classement du jeu** (le client, le 14/10/2026 : un classement interne, pseudo « PlayerX » modifiable, stats visibles
   des autres, et il doit marcher sans Game Center) : serveur Supabase dans `orbicube/serveur/` (`LISEZMOI.md` : une
   fonction `orbicube`, trois tables à RLS fermé). Pas de compte : `PROG.compte` = identifiant, jeton du téléphone, code de
@@ -349,7 +349,7 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   « 4 missions mais un bonus pour 3, pas logique ») : **Missions du jour**, pour tous (le défi du jour + 3 missions `MISSIONS`
   à +40 XP, renouvelées chaque jour, bonus +1 ampoule quand les QUATRE sont réussies) et **Missions élite** (« Grandes missions » jusqu'au 16/10/2026, le client : « il faut appeler ça autrement »), avec le jeu
   complet (le défi de la semaine + 3 missions longues `MISSIONS_SEM` à +150 XP qui cumulent la semaine, renouvelées le
-  lundi, bonus +3 ampoules quand les quatre sont réussies). Sans achat, les missions élite se montrent derrière un
+  lundi, bonus +2 ampoules quand les quatre sont réussies, `AMP_BONUS_SEM`). Sans achat, les missions élite se montrent derrière un
   cadenas avec leurs récompenses (`.df-reserve`, lignes `verrou` qui mènent à la boutique, un bouton « Débloquer ») et
   n'avancent pas (`avancerMissions`). **Le défi est une mission de la liste** (`defi` / `defiSem`, `fixe`, toujours en tête,
   `tirerMissions` ; son XP et ses ampoules viennent de la victoire, `gainsMission` ne fait que les afficher) ; une liste
@@ -379,8 +379,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
 - **Route du rang** (le client, le 14/10/2026 : « à quoi sert le niveau ? ») : `ROUTE`, un style à gagner tous les cinq rangs
   (Hexagones 5, Poussière d'étoiles 10, Crépuscule 15, Nacre 20, Abysses 25, Braises 30, Solaire 35, Or rose 40), un cadre
   autour du pseudo à chaque titre (`CADRES`, `cadreDe`, `poserCadre` : bronze, argent, or, étoilé, cristal, légendaire ; sur la
-  puce, la carte du Profil et au classement), et des ampoules offertes chaque jour aux rangs 10 et 20 (`ampoulesDuJour`,
-  en plus de celle du jeu complet). Liste au Profil (`routeHTML`, onglet Profil de l'espace joueur). **Chaque palier montre
+  puce, la carte du Profil et au classement), et une aide à chaque palier (depuis le 15/10/2026, plus d'aides
+  quotidiennes aux rangs 10 et 20 : `ampoulesDuJour` ne donne que celle du jeu complet). Liste au Profil (`routeHTML`, onglet Profil de l'espace joueur). **Chaque palier montre
   l'aperçu de sa récompense** (le client, le 16/10/2026 : « sinon on ne comprend pas » ; `ROUTE[].v` : vignette du style par
   `vignette`, cadre en anneau `.rt-cadre`). **Trois paliers réservés au jeu complet** (`jc` : palettes Prisme 12, Cosmos 22,
   Céleste 32, `ouv:{rang,complet}`) : sans achat, cadenas doré et « Jeu complet », un toucher ouvre l'achat (`POURQUOI.rang`) ;

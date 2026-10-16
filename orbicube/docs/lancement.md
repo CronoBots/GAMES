@@ -75,7 +75,8 @@ premier million.
 
 ## 3. Les produits à créer **[vous]**
 
-Un seul produit, avec le **même identifiant partout** : `orbicube_complet`.
+Le produit principal, avec le **même identifiant partout** : `orbicube_complet` (les packs, styles, aides et le don
+sont dans la section 3 quater).
 
 1. **App Store Connect** > votre app > Achats intégrés > **Non consommable**
    - Identifiant produit : `orbicube_complet`
@@ -88,7 +89,8 @@ Un seul produit, avec le **même identifiant partout** : `orbicube_complet`.
    - Un projet « Orbicube » et deux apps : iOS (identifiant de paquet `com.cronobots.orbicube`)
      et Android (nom de paquet identique).
    - **Entitlement** `complet`, auquel on attache le produit `orbicube_complet` des deux stores.
-   - **Offering** `default` (celle marquée « current ») avec **un seul package** qui contient ce produit.
+   - **Offering** `default` (celle marquée « current ») avec un package qui contient ce produit (le jeu le
+     cherche par son identifiant `orbicube_complet` : d'autres packages peuvent s'y ajouter sans risque).
    - Copiez les deux **clés publiques du SDK** (elles commencent par `appl_` et `goog_`) dans
      `www/config.js` > `revenuecat`. Ce sont des clés faites pour être dans l'application.
      **Jamais une clé secrète `sk_`** : `npm run verifier` refuse d'en laisser passer une.
@@ -106,25 +108,25 @@ Google Play Jeux, avec la bannière « Succès déverrouillé » du système. Le
 ne change : les succès restent dans le jeu.
 
 **Les succès à créer**, avec les images de `ressources/succes/` (`apple/` en 1024 × 1024,
-`google/` en 512 × 512). Les points totalisent 995 sur les 1 000 qu'Apple autorise. Neuf succès demandent le jeu complet
+`google/` en 512 × 512). Les points totalisent 995 sur les 1 000 qu'Apple autorise (le vérificateur le contrôle). Neuf succès demandent le jeu complet
 (m3, m5, m6, p60, expert, voies, neuf, semaine, elite) : le jeu les marque « Jeu complet » tant qu'il n'est pas acheté.
 
 | Clé du jeu | Identifiant Apple | Nom | Description | Points |
 |---|---|---|---|---|
 | premier | `orbicube.premier` | Premier tour | Résoudre le premier niveau. | 10 |
 | m1 | `orbicube.monde1` | Initié | Terminer le monde 1. | 25 |
-| m3 | `orbicube.tranches` | Trancheur | Terminer le monde des tranches. | 50 |
-| m5 | `orbicube.orbite` | En orbite | Terminer le monde 5. | 75 |
+| m5 | `orbicube.orbite` | En orbite | Terminer le monde 5. | 50 |
+| m3 | `orbicube.tranches` | Trancheur | Terminer le monde 7. | 75 |
 | m6 | `orbicube.grandmaitre` | Grand maître | Terminer toute la campagne. | 100 |
-| p10 | `orbicube.precision` | Précision | Trois étoiles sur 10 niveaux. | 50 |
+| p10 | `orbicube.precision` | Précision | Trois étoiles sur 10 niveaux. | 25 |
 | pm | `orbicube.perfectionniste` | Perfectionniste | Trois étoiles sur tout un monde. | 75 |
 | p60 | `orbicube.sansfaute` | Sans faute | Toutes les étoiles de la campagne. | 100 |
-| eclair | `orbicube.eclair` | Éclair | Résoudre un niveau d'au moins 3 coups en moins de 10 secondes. | 50 |
+| eclair | `orbicube.eclair` | Éclair | Résoudre un niveau d'au moins 3 coups en moins de 10 secondes. | 25 |
 | jour | `orbicube.rendezvous` | Rendez-vous | Réussir un défi du jour. | 25 |
 | serie3 | `orbicube.serie3` | Trois jours de suite | Réussir le défi du jour trois jours d'affilée. | 75 |
-| expert | `orbicube.expert` | Expert | Résoudre une partie de 25 coups en jeu libre. | 100 |
-| axes | `orbicube.troisaxes` | Trois axes | Tourner M, E et S dans une même partie résolue. | 50 |
-| tours | `orbicube.milletours` | Mille tours | Tourner les cercles 1 000 fois. | 100 |
+| expert | `orbicube.expert` | Expert | Résoudre une partie de 25 coups en jeu libre. | 75 |
+| axes | `orbicube.troisaxes` | Trois axes | Tourner M, E et S dans une même partie résolue. | 25 |
+| tours | `orbicube.milletours` | Mille tours | Tourner les cercles 1 000 fois. | 50 |
 | voies | `orbicube.voiedoree` | Voie dorée | Finir la voie dorée des huit mondes. | 100 |
 | missions | `orbicube.missions` | Mission accomplie | Réussir les quatre missions du jour. | 10 |
 | fidele | `orbicube.fidele` | Fidèle | Réussir sept défis du jour. | 25 |
@@ -146,7 +148,7 @@ de la fiche. Aucun succès n'est caché.
 1. Play Console > votre app > **Services de jeux Play** > Configuration : créez le projet de jeu
    et reliez-le à l'app (Google vous guide pour les identifiants OAuth et l'empreinte SHA-1 de la
    clé de signature).
-2. **Succès** > créez les 14. Google donne à chacun un identifiant de la forme `CgkI…` :
+2. **Succès** > créez les 21. Google donne à chacun un identifiant de la forme `CgkI…` :
    recopiez-les dans `www/config.js` > `succesStores.android`, en face de la bonne clé.
 3. Copiez l'**ID du projet** (un nombre) dans `android/app/src/main/res/values/strings.xml` :
    `<string name="game_services_project_id" translatable="false">123456789012</string>`.
@@ -217,7 +219,7 @@ noter le code, le saisir sur un second téléphone (pseudo, progression et achat
 
 ---
 
-## 3 ter. Les langues
+## 3 sexies. Les langues
 
 Le jeu parle **français, anglais, néerlandais, allemand et espagnol**. Il prend la langue du
 téléphone, et le joueur peut la changer dans *Options > Langue*. Déclarez ces cinq langues sur
@@ -266,7 +268,7 @@ npm run construire          # compile le pont natif (www/natif.js)
 npm run verifier            # doit répondre « Tout est en ordre. »
 npx cap add ios             # une seule fois : crée le projet Xcode (dossier ios/)
 npx cap add android         # une seule fois : crée le projet Android (dossier android/)
-npx @capacitor/assets generate --iconBackgroundColor '#07070c' --splashBackgroundColor '#07070c'
+npx @capacitor/assets generate --assetPath ressources --iconBackgroundColor '#07070c' --splashBackgroundColor '#07070c'
                             # icônes et écrans de démarrage, depuis ressources/
 npm run cap:sync            # recopie www/ dans les deux projets
 npm run cap:ios             # ouvre Xcode
@@ -278,7 +280,16 @@ npm run cap:android         # ouvre Android Studio
 - ajoutez la capacité **In-App Purchase** ;
 - appareils : *iPhone* seul, ou *iPhone + iPad*. Si vous gardez l'iPad, il faut aussi les
   captures iPad (déjà prêtes) ;
-- orientation : portrait et paysage, les deux fonctionnent.
+- orientation : portrait et paysage, les deux fonctionnent ;
+- numéro de build : l'augmenter à chaque envoi (*General > Identity > Build*, et `versionCode` dans
+  `android/app/build.gradle`), la *Version* restant celle de `package.json`.
+
+**Fichiers qu'Apple exige** (dans `ios/App/App/`) :
+- `Info.plist` : `ITSAppUsesNonExemptEncryption` = `NO` (le jeu n'utilise que le HTTPS du système : plus de
+  question sur le chiffrement à chaque envoi) ;
+- `PrivacyInfo.xcprivacy` (*File > New > File > App Privacy*) : déclarer *User ID*, *Other User Content*,
+  *Product Interaction*, *Other Data*, *Purchase History*, non liés à l'identité, sans suivi ; et l'API
+  *UserDefaults* (raison `CA92.1`), qu'utilise Preferences. Sans ce fichier, l'envoi est refusé.
 
 **Faire reconnaître Orbicube comme un jeu** (mode Jeu du téléphone, app Jeux d'Apple, tableau de bord de jeu
 d'Android) :
@@ -305,7 +316,7 @@ Après chaque modification du jeu : `npm run cap:sync`, puis reconstruire.
 - **Android** : piste de **test interne**, avec votre adresse dans les *testeurs de licence*.
   L'achat est simulé.
 - À vérifier sur un vrai téléphone :
-  1. monde 3 → la boutique s'ouvre, avec le bon prix ;
+  1. la carte, au bout du monde 4 → la carte « Le jeu complet » ouvre l'achat, avec le bon prix ;
   2. l'achat débloque les mondes 5 à 8, tout le jeu libre et le défi de la semaine ;
   3. désinstaller, réinstaller, puis *Options > Restaurer* : tout revient ;
   4. le mode avion : le jeu se joue, la boutique dit que le store ne répond pas ;
@@ -336,12 +347,15 @@ Le flux `.github/workflows/orbicube.yml` publie `orbicube/www` (le jeu jouable d
 navigateur, et la page `confidentialite.html`) une fois Pages activé dans
 *Settings > Pages > Source : GitHub Actions*. Sur un dépôt privé, Pages demande un abonnement
 GitHub payant ; sinon, hébergez la seule page `confidentialite.html` ailleurs. **Complétez
-l'adresse de contact** dans la page avant de la publier.
+l'adresse de contact et le nom du responsable** dans la page avant de la publier (FR et EN).
 
 **Questionnaires des stores** (réponses pour cette version) :
-- Âge : 4+ (Apple), PEGI 3 / Tout public (Google). Aucune violence, aucun achat aléatoire.
+- Âge : aucune violence, aucun achat aléatoire, mais des **pseudos visibles des autres joueurs** (contenu généré) :
+  répondre « oui » à la question du contenu généré par les utilisateurs ; Apple propose alors un âge plus élevé
+  que 4+ (à accepter tel quel), PEGI 3 / Tout public chez Google avec la mention « Les utilisateurs interagissent ».
 - Publicité : non.
-- Achats intégrés : oui, un non consommable.
+- Achats intégrés : oui, 19 non consommables (jeu complet, packs, éditions, styles à l'unité, don) et 2 consommables
+  (aides). Sur Google Play, déclarer les aides comme **consommables** (sinon elles ne s'achètent qu'une fois).
 - Collecte de données (depuis le classement, le 14/10/2026) :
   - **Apple « App Privacy »** : *Identifiers > User ID* (l'identifiant tiré au hasard), *User Content > Other
     User Content* (le pseudo), *Usage Data > Product Interaction* et *Other Data* (scores, étoiles, sauvegarde),
@@ -350,7 +364,9 @@ l'adresse de contact** dans la page avant de la publier.
   - **Google « Sécurité des données »** : *Identifiants de l'appareil ou autres > ID utilisateur*, *Activité dans
     l'appli > Autre contenu généré par l'utilisateur* (pseudo) et *Interactions avec l'appli* (scores), *Infos
     financières > Historique d'achats*. Collecté, non partagé, chiffré en transit, **suppression possible depuis
-    l'appli** (Profil > « Supprimer mes données »), finalité : fonctionnalités de l'appli.
+    l'appli** (Profil > « Supprimer mes données »), finalité : fonctionnalités de l'appli. Google demande aussi
+    une **adresse web** pour demander la suppression sans l'appli : la section « Vos droits » de
+    `confidentialite.html` en ligne (l'adresse de contact remplie) suffit.
   - **Contenu généré par les utilisateurs** (Apple 1.2, Google UGC) : les pseudos. Filtre à l'enregistrement,
     « Signaler ce pseudo » sur chaque fiche, renommage à trois signalements (`serveur/LISEZMOI.md`).
 - Chiffrement (Apple) : aucun chiffrement propre → « Non ».
@@ -360,15 +376,17 @@ l'adresse de contact** dans la page avant de la publier.
 ## 7. Avant de soumettre
 
 - [ ] `npm run verifier` → « Tout est en ordre. »
-- [ ] `npm run tester` → « Parcours réussi sur les trois téléphones. »
+- [ ] `npm run tester` → « Parcours réussi sur les trois téléphones et dans les cinq langues. »
 - [ ] Version identique dans `package.json`, `www/config.js` ; `V` incrémenté dans `www/sw.js`.
 - [ ] Clés RevenueCat publiques dans `www/config.js`.
 - [ ] Adresse de contact remplie dans `www/confidentialite.html`, page publiée en ligne.
 - [ ] Aucune mention de la marque « Rubik's » nulle part. C'est une marque déposée : une fiche qui
       la cite peut être refusée ou retirée. `npm run verifier` le contrôle dans le jeu et la fiche.
 - [ ] Testé sur un vrai iPhone et un vrai Android (section 5).
-- [ ] Note pour la vérification Apple : « Le jeu complet se débloque par un achat non
-      consommable depuis le monde 3 ou depuis Options. Le bouton Restaurer est dans Options. »
+- [ ] Note pour la vérification Apple : « Les quatre premiers mondes sont gratuits. Le jeu complet et les styles
+      s'achètent dans la Boutique (rond doré de l'accueil, après le premier niveau, ou Options > Styles) et sur la carte
+      de la campagne, à la fin du monde 4. Restaurer : en bas de la Boutique et dans Options. Le classement n'exige
+      aucun compte ; un pseudo se signale depuis sa fiche. »
 
 ---
 

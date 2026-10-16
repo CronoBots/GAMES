@@ -21,7 +21,7 @@ window.ORBICUBE_CONFIG = {
   revenuecat: { ios: "", android: "" },
   droit: "complet",           // identifiant de l'« entitlement » RevenueCat
 
-  // Succès des stores : identifiant de chacun des 15 succès du jeu dans Game Center (iOS) et Google Play Jeux
+  // Succès des stores : identifiant de chacun des 21 succès du jeu dans Game Center (iOS) et Google Play Jeux
   // (Android). Les identifiants Apple sont choisis par nous et créés tels quels dans App Store Connect ;
   // ceux de Google sont donnés par la Play Console à la création (« CgkI… ») : à recopier ici.
   // Un identifiant vide = ce succès reste local sur cette plateforme. Voir docs/lancement.md, section 3 bis.

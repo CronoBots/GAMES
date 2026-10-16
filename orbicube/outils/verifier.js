@@ -112,6 +112,23 @@ console.log("Succès des stores");
     if (pf === "ios" && remplis.some((v) => !/^[A-Za-z0-9._]+$/.test(v))) { faute("ios : identifiant Game Center invalide (lettres, chiffres, point, soulignement)"); soucis++; }
   }
   if (!soucis) ok(ids.length + " succès, chacun avec sa correspondance iOS et Android");
+// la fiche des succès (docs/lancement.md 3 bis) : un succès par ligne, l'identifiant Apple de config.js, et au plus
+// 1 000 points (Apple refuse au-delà) ; chaque succès a son image pour les deux stores
+{
+  const doc = fs.readFileSync(path.join(RACINE, "docs", "lancement.md"), "utf8");
+  const lignes = [...doc.matchAll(/^\| ([a-z0-9]+) \| `([^`]+)` \| [^|]+ \| [^|]+ \| (\d+) \|$/gm)];
+  const cles = lignes.map((l) => l[1]), ios = (CFG.succesStores || {}).ios || {};
+  let soucis = 0;
+  const ecart = ids.filter((i) => !cles.includes(i)).concat(cles.filter((i) => !ids.includes(i)));
+  if (ecart.length || cles.length !== ids.length) { faute("docs/lancement.md 3 bis : succès absents ou en trop " + ecart.join(", ")); soucis++; }
+  const fauxIds = lignes.filter((l) => ios[l[1]] !== l[2]).map((l) => l[1]);
+  if (fauxIds.length) { faute("docs/lancement.md 3 bis : identifiant Apple différent de config.js pour " + fauxIds.join(", ")); soucis++; }
+  const points = lignes.reduce((t, l) => t + +l[3], 0);
+  if (points > 1000) { faute("succès : " + points + " points Game Center, Apple en autorise 1 000 au plus"); soucis++; }
+  const sansImage = ids.filter((i) => ["apple", "google"].some((d) => !fs.existsSync(path.join(RACINE, "ressources", "succes", d, i + ".png"))));
+  if (sansImage.length) { faute("succès sans image (npm run icones) : " + sansImage.join(", ")); soucis++; }
+  if (!soucis) ok("fiche des succès à jour, " + points + " points sur 1 000, une image chacun");
+}
 }
 
 console.log("Classements des stores");

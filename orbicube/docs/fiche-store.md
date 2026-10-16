@@ -2,6 +2,8 @@
 
 Limites de longueur indiquées entre parenthèses. Aucun texte ne cite la marque déposée du célèbre cube :
 `npm run verifier` relit ce fichier.
+Sur l'App Store, ne citer que **Game Center** ; sur Google Play, que **Google Play Jeux** (chaque store refuse le nom du
+service de l'autre).
 
 ## Français
 
@@ -28,9 +30,9 @@ elles. Regroupez chaque couleur pour gagner.
 • Un tutoriel intégré : on comprend en jouant
 • Trois étoiles en un minimum de coups
 • Un défi du jour et un défi de la semaine, les mêmes pour tout le monde
-• Des rangs à gravir, trois missions chaque jour et des ciels à débloquer
-• Un jeu libre chronométré, de facile à expert, un mode sans fin et un mode relax
-• Des étoiles de coups et des étoiles de temps, chacune avec ses récompenses
+• Des rangs à gravir, des missions du jour et des missions élite
+• Un jeu libre chronométré, de facile à expert, avec des cubes 2×2 et 4×4, un mode sans fin et un mode relax
+• Trois étoiles de coups et trois étoiles de temps par niveau, chacune avec ses récompenses
 • 21 succès, aussi dans Game Center et Google Play Jeux
 • En français, anglais, néerlandais, allemand et espagnol
 • Des gestes faits pour le pouce : glisser, lancer, enchaîner les tours sans lever le doigt
@@ -70,15 +72,17 @@ twelve dots turn, and the 3D cube turns with them. Group every colour to win.
 
 • 96 levels across 8 worlds, one more orbit in every world, up to all nine
 • A built-in tutorial: you learn by playing
-• Three stars for the fewest moves
-• A daily challenge, the same for everyone
-• Timed free play, from easy to expert, and an endless mode
-• Move stars and time stars, each with its own rewards
-• 15 achievements, also in Game Center and Google Play Games
+• Three stars for the fewest moves, three more for speed
+• A daily and a weekly challenge, the same for everyone
+• Ranks to climb, daily missions and elite missions
+• Timed free play, from easy to expert, with 2×2 and 4×4 cubes, an endless mode and a relax mode
+• 21 achievements, also in Game Center and Google Play Games
+• A worldwide leaderboard with your nickname, no account to create
+• A rank road: styles, frames and hints to earn by playing
 • In English, French, Dutch, German and Spanish
 • Gestures made for your thumb: swipe, flick, chain turns without lifting your finger
 • A colour-blind friendly palette
-• Offline, no ads, no account, no data collection
+• Plays offline, no ads, no tracking
 
 The first four worlds are free. All nine orbits at once come with the full game. A single purchase unlocks the whole game, forever. Optional style packs dress up the board: palettes, shapes, effects.
 
@@ -105,12 +109,14 @@ twaalf bolletjes draaien, en de 3D-kubus draait mee. Breng elke kleur samen om t
 
 • 96 levels in 8 werelden, elke wereld een baan meer, tot alle negen
 • Een ingebouwde uitleg: je leert al spelend
-• Drie sterren voor zo weinig mogelijk zetten
-• Elke dag een nieuwe uitdaging, voor iedereen dezelfde
-• Vrij spel op tijd, van makkelijk tot expert
-• 15 prestaties, ook in Game Center en Google Play Games
+• Drie sterren voor zo weinig mogelijk zetten, drie voor snelheid
+• Een dagelijkse en een wekelijkse uitdaging, voor iedereen dezelfde
+• Rangen om te beklimmen, dagmissies en elitemissies
+• Vrij spel op tijd, van makkelijk tot expert, met 2×2- en 4×4-kubussen, een eindeloze en een relaxmodus
+• 21 prestaties, ook in Game Center en Google Play Games
+• Een wereldwijd klassement met je eigen bijnaam, zonder account
 • Een palet voor kleurenblinden · in 5 talen
-• Offline, zonder reclame, zonder account, zonder gegevensverzameling
+• Speelbaar offline, zonder reclame of tracking
 
 De eerste vier werelden zijn gratis. Alle negen banen tegelijk speel je met het volledige spel. Eén aankoop ontgrendelt het hele spel, voor altijd. Optionele stijlpakketten kleden het bord aan: paletten, vormen, effecten.
 
@@ -136,12 +142,14 @@ um zu gewinnen.
 
 • 96 Level in 8 Welten, jede Welt eine Bahn mehr, bis zu allen neun
 • Eine eingebaute Anleitung: Du lernst beim Spielen
-• Drei Sterne für möglichst wenige Züge
-• Jeden Tag ein neues Rätsel, für alle gleich
-• Freies Spiel mit Zeit, von leicht bis Experte
-• 15 Erfolge, auch in Game Center und Google Play Spiele
+• Drei Sterne für möglichst wenige Züge, drei für Tempo
+• Eine tägliche und eine wöchentliche Herausforderung, für alle gleich
+• Ränge zum Aufsteigen, Tagesmissionen und Elite-Missionen
+• Freies Spiel mit Zeit, von leicht bis Experte, mit 2×2- und 4×4-Würfeln, Endlos- und Entspannungsmodus
+• 21 Erfolge, auch in Game Center und Google Play Spiele
+• Eine weltweite Rangliste mit deinem Spitznamen, ohne Konto
 • Eine Palette für Farbenblinde · in 5 Sprachen
-• Offline, ohne Werbung, ohne Konto, ohne Datensammlung
+• Offline spielbar, ohne Werbung und ohne Tracking
 
 Die ersten vier Welten sind kostenlos. Alle neun Bahnen auf einmal gibt es in der Vollversion. Ein einziger Kauf schaltet das ganze Spiel frei, für immer. Optionale Stilpakete schmücken das Brett: Paletten, Formen, Effekte.
 
@@ -166,12 +174,14 @@ círculo: giran doce bolitas, y el cubo en 3D gira con ellas. Reúne cada color 
 
 • 96 niveles en 8 mundos, una órbita más en cada mundo, hasta las nueve
 • Un tutorial integrado: se aprende jugando
-• Tres estrellas con el mínimo de movimientos
-• Un reto diario, el mismo para todos
-• Juego libre cronometrado, de fácil a experto
-• 15 logros, también en Game Center y Google Play Juegos
+• Tres estrellas con el mínimo de movimientos, tres más por rapidez
+• Un reto diario y uno semanal, los mismos para todos
+• Rangos que escalar, misiones diarias y misiones élite
+• Juego libre cronometrado, de fácil a experto, con cubos 2×2 y 4×4, modo infinito y modo relax
+• 21 logros, también en Game Center y Google Play Juegos
+• Una clasificación mundial con tu apodo, sin crear cuenta
 • Una paleta apta para daltónicos · en 5 idiomas
-• Sin conexión, sin anuncios, sin cuenta, sin recogida de datos
+• Se juega sin conexión, sin anuncios ni rastreo
 
 Los cuatro primeros mundos son gratis. Las nueve órbitas a la vez se juegan con el juego completo. Una sola compra desbloquea todo el juego, para siempre. Packs de estilos opcionales visten el tablero: paletas, formas, efectos.
 
