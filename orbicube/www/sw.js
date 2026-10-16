@@ -1,9 +1,9 @@
 // Version web (PWA) : tout le jeu est mis en cache pour se jouer hors ligne.
 // Incrémenter V à chaque publication, sinon les joueurs gardent l'ancienne version.
-var V = "orbicube-v172";
+var V = "orbicube-v173";
 // les médias (images, polices, musique) changent rarement : leur cache survit aux publications, on ne les retélécharge
 // pas à chaque version (audit du 16/10/2026 : 5 Mo à chaque mise à jour). Changer MEDIAS quand l'un d'eux change.
-var MEDIAS = "orbicube-medias-1";
+var MEDIAS = "orbicube-medias-2";
 var FICHIERS = ["index.html", "config.js", "natif.js", "langues.js", "manifest.webmanifest", "confidentialite.html"];
 var FICHIERS_MEDIAS = [
   "img/bg-1.webp", "img/bg-2.webp", "img/bg-3.webp", "img/bg-4.webp",
@@ -13,7 +13,7 @@ var FICHIERS_MEDIAS = [
   "icones/favicon.png", "icones/apple-touch-icon.png", "icones/icon-192.png",
   "polices/polices.css", "polices/Jost-normal-300.woff2", "polices/Jost-normal-600.woff2", "polices/Jost-normal-700.woff2",
   "polices/STIXTwoText-normal-400.woff2", "polices/STIXTwoText-italic-400.woff2",
-  "polices/InstrumentSans.woff2", "polices/JetBrainsMono.woff2", "audio/nuit-dorbites.m4a"];
+  "polices/InstrumentSans.woff2", "audio/nuit-dorbites.m4a"];
 // cache:"reload" : on prend le fichier au serveur, jamais au cache HTTP du navigateur (sinon une publication pouvait
 // remettre en cache l'ancien langues.js)
 function remplir(nom, liste, seulementManquants) {

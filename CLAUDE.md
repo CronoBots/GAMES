@@ -204,7 +204,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   partie ». Le parcours de test lit le dernier coup par `window.__orbicube.dernier()` (accès de capture seulement).
 - **Accueil** (le client, le 13/10/2026) : titre « ORBICUBE » en capitales fines très espacées (Jost 300,
   `.marque`, lueur d'accent, sans ellipse). **Jost remplace Unbounded partout** (`--f-titre`, graisses 600 et 700 embarquées,
-  aussi dans `confidentialite.html` et `outils/captures.js`) ; Unbounded est retirée du dépôt. **Le cube au sommet de l'orbite du haut** (le cube au
+  aussi dans `confidentialite.html` et `outils/captures.js`) ; Unbounded est retirée du dépôt. **Deux familles seulement depuis le 16/10/2026** (passe de design) : Jost pour les titres, les chiffres et les
+  étiquettes en capitales (`--f-chiffre` = Jost ; JetBrains Mono est retirée), Instrument Sans pour le texte ; chiffres tabulaires partout. **Le cube au sommet de l'orbite du haut** (le cube au
   centre était trop petit et touchait les pastilles) : un seul visuel, le plateau prend la place libre et le cube se pose
   sur le sommet du cercle du haut (1,617 unité au-dessus du centre), dans un **médaillon** (`#medaillon` : disque sombre
   qui masque le trait, fin anneau d'accent, halo) pour ne pas le confondre avec une pièce du plateau. Tailles en `ECH` :
