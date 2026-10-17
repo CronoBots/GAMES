@@ -9,6 +9,15 @@ Les jeux de CronoBots, un dossier par jeu. Le premier : `orbicube/`.
   pull request sauf demande.
 - **Pas de maquette** : on code dans le jeu, on vérifie, on pousse ; le client corrige sur la vraie page.
 - **Ne rien toucher au dépôt `groups`** depuis une session consacrée aux jeux (demande expresse du client).
+- **Notion** (le client, le 17/10/2026 : « optimise au maximum le projet avec Notion ») : page « OrbiCube »
+  (`3fce92d8c96c818a993dee1d66d619cc`) et quatre bases. **Retours** (`collection://cda936b3-eec8-475b-84d2-14737ba8dea8`) :
+  « Traite les retours Notion » = lire ceux « À faire », corriger, vérifier, publier, puis passer chaque ligne à « Fait » avec
+  « Corrigé en » (vXXX) et « Réponse de Claude » ; « Refusé » avec la raison si on ne le fait pas. Une demande faite dans la
+  conversation y entre aussi, une fois faite. **Versions** (`collection://fba27c10-6e32-4f62-b6ff-cadd14d21664`) : une ligne à
+  chaque publication (V de `sw.js`, date, changements, « À vérifier » sur le téléphone). **Décisions**
+  (`collection://727ceb39-7d8d-4ea6-878d-06014ff0ad07`) : chaque choix du client qui tranche, avec sa raison (en plus de ce
+  fichier). **Lancement** (`collection://e3d43591-12ca-456f-a93e-ad57e732404d`) : la liste de `docs/lancement.md`, à cocher
+  quand une étape est faite. Notion ne remplace pas GitHub : le code, les tests et la publication y restent.
 
 ## Avant chaque commit sur Orbicube
 
@@ -387,7 +396,8 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   affiche le pseudo et ouvre le Profil), filtre des pseudos (`serveur/fonction/filtre.js`), trois signalements = pseudo
   « Player ». Profil > « Mon profil de joueur » : code, « Utiliser un code », « Supprimer mes données » (`classementOff`).
   `npm run tester` joue tout contre `outils/classement-essai.js` (faux serveur en mémoire, mêmes réponses). **Mise en
-  ligne en attente** : la limite de deux projets Supabase gratuits est atteinte (le client doit libérer une place) ;
+  ligne en attente** : le projet ira dans l'organisation Supabase **JAYDEN** (le client, le 17/10/2026 ; le projet « PIZZERIA PINO »
+  de PIZZERIAPINO sert GROUPS, on n'y touche pas) ; le connecteur doit être reconnecté sur JAYDEN avant ;
   `www/config.js` > `classement` reste vide d'ici là, et l'écran dit « ouvrira avec la sortie du jeu ».
 - **Espace joueur** (`#joueur`, le client, le 15/10/2026 : « on s'y perd entre le profil, les missions et les défis »,
   « intuitif, compréhensible et professionnel ») : **un seul écran, trois onglets** en commande segmentée dans l'en-tête
