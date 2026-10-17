@@ -217,12 +217,12 @@ contresens). Un contrôle neuf s'éprouve de la même façon avant d'être cru.
   `.marque`, lueur d'accent, sans ellipse). **Jost remplace Unbounded partout** (`--f-titre`, graisses 600 et 700 embarquées,
   aussi dans `confidentialite.html` et `outils/captures.js`) ; Unbounded est retirée du dépôt. **Deux familles seulement depuis le 16/10/2026** (passe de design) : Jost pour les titres, les chiffres et les
   étiquettes en capitales (`--f-chiffre` = Jost ; JetBrains Mono est retirée), Instrument Sans pour le texte ; chiffres tabulaires partout. **Depuis le 16/10/2026, le cube est séparé des orbites, comme en jeu** (le client) : il flotte au-dessus du plateau, sans
-  disque (`#medaillon` dépouillé, taille 0,9 E entre 56 et 124 px, 14 px d'air), et **le bouton de campagne est le bouton lecture au
-  cœur du plateau** (`#btnJouer.jouer-rond`, rayon 0,23 E : les petits cercles passent à 0,196 E du centre, les pastilles à 0,298 E ;
-  onde par l'ombre, qui ne déborde pas) ; dessous, une ligne discrète « CONTINUER · Niveau 22 · Face cachée ★ 52 » et une fine
-  barre (`#accProg`, qui lance aussi ; « CONTINUER » sur sa propre ligne au-dessus du niveau). Le bouton lecture est
+  disque (`#medaillon` dépouillé, taille 0,9 E entre 56 et 124 px, 14 px d'air), et **le bouton lecture ouvre la ligne « Continuer » sous le
+  plateau** (le client, le 17/10/2026 : « au niveau de continuer et pas dans le jeu » ; avant, il était au cœur du plateau) :
+  `#btnJouer.acc-prog`, un seul bouton, le rond `.jouer-rond` (48 px, onde par l'ombre) puis « CONTINUER », « Niveau 22 · Face
+  cachée ★ 52 » et une fine barre de campagne. Le bouton lecture est
   discret (verre sombre, fin anneau d'accent, icône à l'accent, respiration lente du filet) ; le titre est décalé (`translate`, sans
-  toucher la mise en page) pour se centrer entre la puce du joueur et le haut du cube. `Logo.demarrer` pose cube, plateau et bouton. Le gros bouton « Continuer » n'existe plus. Le titre reste en haut, la ligne
+  toucher la mise en page) pour se centrer entre la puce du joueur et le haut du cube. `Logo.demarrer` pose cube et plateau. Le gros bouton « Continuer » n'existe plus. Le titre reste en haut, la ligne
   contre le menu, et la boîte du logo prend toute la place libre où cube et plateau se centrent. **En jeu**, le cube se pose
   au-dessus du plus grand cercle de la famille du haut, jouable ou non (`redimJeu` : depuis l'inversion des cercles, viser le cercle
   jouable le faisait descendre dans les premiers mondes, où seul U, le petit, est jouable).
