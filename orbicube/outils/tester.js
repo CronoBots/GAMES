@@ -40,8 +40,9 @@ async function resoudre(p) {
     }
     const ind = await p.getAttribute("#plateau", "data-indice");
     if (!ind) {
-      // la fenêtre de victoire arrive un peu après le dernier tour : on la laisse venir avant de demander un indice
-      await p.waitForTimeout(1400);
+      // la fenêtre de victoire arrive 1,7 s après le dernier tour (plus sur une machine lente) : on la laisse venir
+      // avant de demander un indice, sinon elle s'ouvre pendant le toucher et le bloque
+      await p.waitForSelector("#voile", { state: "visible", timeout: 3500 }).catch(() => {});
       if ((await p.$('#fenetre [data-a="rejouer"]')) || (await p.isVisible("#voile"))) continue;
       await p.tap("#btnIndice"); await p.waitForTimeout(250); continue;
     }
